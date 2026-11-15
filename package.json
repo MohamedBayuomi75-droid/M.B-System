@@ -12,7 +12,9 @@
     "check": "node tools/check-structure.js",
     "dist": "electron-builder --win nsis",
     "dist:dir": "electron-builder --win dir",
-    "test": "node tools/test-security.js"
+    "test": "node tools/test-security.js",
+    "test:ui": "node tests-merge/run-all.js",
+    "inventory": "node tools/web/inventory.js"
   },
   "dependencies": {
     "xlsx": "^0.18.5"

@@ -1,0 +1,1430 @@
+{
+  "generatedFrom": "runtime+static",
+  "schemaVersion": 9,
+  "entries": {
+    "_cfAligned": {
+      "kind": "doc",
+      "source": "runtime",
+      "refs": 8,
+      "files": [
+        "core/helpers.js"
+      ],
+      "unit": "hr",
+      "storage": "docs (كائن كامل)"
+    },
+    "_cfAligned2": {
+      "kind": "doc",
+      "source": "runtime",
+      "unit": "hr",
+      "storage": "docs (كائن كامل)"
+    },
+    "_cfAllHiddenFixed": {
+      "kind": "meta-flag",
+      "source": "runtime",
+      "refs": 2,
+      "files": [
+        "core/helpers.js"
+      ],
+      "unit": "hr",
+      "storage": "docs: meta (أعلام ترحيل/حالة)"
+    },
+    "_cfAutoFlagsReset": {
+      "kind": "meta-flag",
+      "source": "runtime",
+      "refs": 2,
+      "files": [
+        "core/helpers.js"
+      ],
+      "unit": "hr",
+      "storage": "docs: meta (أعلام ترحيل/حالة)"
+    },
+    "_cfRegKeys": {
+      "kind": "doc",
+      "source": "runtime",
+      "refs": 4,
+      "files": [
+        "core/helpers.js"
+      ],
+      "unit": "hr",
+      "storage": "docs (كائن كامل)"
+    },
+    "_cfShowInTableMigrated": {
+      "kind": "meta-flag",
+      "source": "runtime",
+      "refs": 2,
+      "files": [
+        "core/helpers.js"
+      ],
+      "unit": "hr",
+      "storage": "docs: meta (أعلام ترحيل/حالة)"
+    },
+    "alertState": {
+      "kind": "doc",
+      "source": "runtime",
+      "refs": 4,
+      "files": [
+        "core/alerts-center.js"
+      ],
+      "unit": "hr",
+      "storage": "docs (كائن كامل)"
+    },
+    "archiveAttachments": {
+      "kind": "legacy-ref",
+      "source": "static (no init found)",
+      "refs": 2,
+      "files": [
+        "core/helpers.js"
+      ],
+      "unit": "hr",
+      "storage": "— يتراجع (مقروء بس، مفيش تهيئة/كتابة في الكود)"
+    },
+    "archiveTrash": {
+      "kind": "collection",
+      "source": "runtime",
+      "refs": 16,
+      "files": [
+        "core/data-store.js",
+        "core/helpers.js",
+        "core/pages-archive.js"
+      ],
+      "unit": "hr",
+      "storage": "records (صف لكل سجل)"
+    },
+    "attachments": {
+      "kind": "collection",
+      "source": "static",
+      "refs": 1,
+      "files": [
+        "modules/hr/pages-dashboard.js"
+      ],
+      "unit": "hr",
+      "storage": "records (صف لكل سجل)"
+    },
+    "attendance": {
+      "kind": "collection",
+      "source": "runtime",
+      "refs": 23,
+      "files": [
+        "core/data-store.js",
+        "core/helpers.js",
+        "modules/hr/pages-attendance.js",
+        "modules/hr/pages-dashboard.js",
+        "modules/hr/pages-employee-detail.js",
+        "modules/hr/pages-reports.js"
+      ],
+      "unit": "hr",
+      "storage": "records (صف لكل سجل)"
+    },
+    "auditLog": {
+      "kind": "system-table",
+      "source": "runtime",
+      "refs": 27,
+      "files": [
+        "core/data-store.js",
+        "core/follow-center.js",
+        "core/helpers.js",
+        "core/pages-backup.js",
+        "modules/ledger/glue.js",
+        "modules/ledger/helpers.js"
+      ],
+      "unit": "system",
+      "storage": "جدول مخصص (users / audit_log)"
+    },
+    "autoFields": {
+      "kind": "doc",
+      "source": "runtime",
+      "refs": 6,
+      "files": [
+        "core/helpers.js"
+      ],
+      "unit": "config",
+      "storage": "docs (كائن كامل)"
+    },
+    "clients.activities": {
+      "kind": "collection",
+      "source": "runtime",
+      "unit": "clients",
+      "storage": "records (صف لكل سجل)"
+    },
+    "clients.boqs": {
+      "kind": "collection",
+      "source": "runtime",
+      "unit": "clients",
+      "storage": "records (صف لكل سجل)"
+    },
+    "clients.collections": {
+      "kind": "collection",
+      "source": "runtime",
+      "unit": "clients",
+      "storage": "records (صف لكل سجل)"
+    },
+    "clients.contracts": {
+      "kind": "collection",
+      "source": "runtime",
+      "unit": "clients",
+      "storage": "records (صف لكل سجل)"
+    },
+    "clients.customers": {
+      "kind": "collection",
+      "source": "runtime",
+      "refs": 1,
+      "files": [
+        "core/pages-general.js"
+      ],
+      "unit": "clients",
+      "storage": "records (صف لكل سجل)"
+    },
+    "clients.docs": {
+      "kind": "collection",
+      "source": "runtime",
+      "unit": "clients",
+      "storage": "records (صف لكل سجل)"
+    },
+    "clients.guarantees": {
+      "kind": "collection",
+      "source": "runtime",
+      "unit": "clients",
+      "storage": "records (صف لكل سجل)"
+    },
+    "clients.invoices": {
+      "kind": "collection",
+      "source": "runtime",
+      "unit": "clients",
+      "storage": "records (صف لكل سجل)"
+    },
+    "clients.opportunities": {
+      "kind": "collection",
+      "source": "runtime",
+      "unit": "clients",
+      "storage": "records (صف لكل سجل)"
+    },
+    "clients.settings": {
+      "kind": "doc",
+      "source": "runtime",
+      "refs": 1,
+      "files": [
+        "modules/clients/project-workflow.js"
+      ],
+      "unit": "clients",
+      "storage": "docs (كائن كامل)"
+    },
+    "clients.workSurveys": {
+      "kind": "collection",
+      "source": "runtime",
+      "unit": "clients",
+      "storage": "records (صف لكل سجل)"
+    },
+    "costItemHidden": {
+      "kind": "doc",
+      "source": "static",
+      "refs": 11,
+      "files": [
+        "modules/hr/pages-costs.js"
+      ],
+      "unit": "hr",
+      "storage": "docs (كائن كامل)"
+    },
+    "costItemPools": {
+      "kind": "doc",
+      "source": "static",
+      "refs": 11,
+      "files": [
+        "modules/hr/pages-costs.js"
+      ],
+      "unit": "hr",
+      "storage": "docs (كائن كامل)"
+    },
+    "costSections": {
+      "kind": "doc",
+      "source": "runtime",
+      "refs": 24,
+      "files": [
+        "modules/hr/pages-costs.js"
+      ],
+      "unit": "hr",
+      "storage": "docs (كائن كامل)"
+    },
+    "costs": {
+      "kind": "collection",
+      "source": "runtime",
+      "refs": 37,
+      "files": [
+        "core/cost-center.js",
+        "core/data-store.js",
+        "core/follow-center.js",
+        "core/helpers.js",
+        "core/project-links.js",
+        "modules/accounts/pages-reports.js",
+        "modules/hr/pages-costs.js",
+        "modules/hr/pages-dashboard.js",
+        "modules/hr/pages-supervisors.js",
+        "modules/hr/project-statement.js"
+      ],
+      "unit": "hr",
+      "storage": "records (صف لكل سجل)"
+    },
+    "customCards": {
+      "kind": "collection",
+      "source": "runtime",
+      "refs": 9,
+      "files": [
+        "core/helpers.js",
+        "core/pages-backup.js"
+      ],
+      "unit": "config",
+      "storage": "records (صف لكل سجل)"
+    },
+    "customFieldDefs": {
+      "kind": "doc",
+      "source": "runtime",
+      "refs": 17,
+      "files": [
+        "core/data-store.js",
+        "core/helpers.js"
+      ],
+      "unit": "config",
+      "storage": "docs (كائن كامل)"
+    },
+    "dailyPayItemPool": {
+      "kind": "lookup",
+      "source": "runtime",
+      "refs": 2,
+      "files": [
+        "core/data-store.js"
+      ],
+      "unit": "hr",
+      "storage": "docs (قائمة مرجعية كاملة)"
+    },
+    "dailyTasks": {
+      "kind": "collection",
+      "source": "runtime",
+      "refs": 9,
+      "files": [
+        "core/data-store.js",
+        "core/follow-center.js"
+      ],
+      "unit": "hr",
+      "storage": "records (صف لكل سجل)"
+    },
+    "deadFields": {
+      "kind": "doc",
+      "source": "runtime",
+      "refs": 4,
+      "files": [
+        "core/helpers.js"
+      ],
+      "unit": "config",
+      "storage": "docs (كائن كامل)"
+    },
+    "departments": {
+      "kind": "collection",
+      "source": "runtime",
+      "refs": 82,
+      "files": [
+        "core/data-store.js",
+        "core/extras.js",
+        "core/helpers.js",
+        "core/pages-archive.js",
+        "core/smart-tools.js",
+        "modules/hr/pages-dashboard.js",
+        "modules/hr/pages-departments.js",
+        "modules/hr/pages-leaves.js",
+        "modules/hr/pages-reports.js"
+      ],
+      "unit": "hr",
+      "storage": "records (صف لكل سجل)"
+    },
+    "documentTypeHidden": {
+      "kind": "lookup",
+      "source": "runtime",
+      "refs": 14,
+      "files": [
+        "core/data-store.js",
+        "core/helpers.js",
+        "modules/hr/pages-ops.js"
+      ],
+      "unit": "hr",
+      "storage": "docs (قائمة مرجعية كاملة)"
+    },
+    "documentTypes": {
+      "kind": "lookup",
+      "source": "runtime",
+      "refs": 15,
+      "files": [
+        "core/data-store.js",
+        "core/helpers.js",
+        "modules/hr/pages-ops.js"
+      ],
+      "unit": "hr",
+      "storage": "docs (قائمة مرجعية كاملة)"
+    },
+    "documentTypesByKind": {
+      "kind": "doc",
+      "source": "runtime",
+      "refs": 12,
+      "files": [
+        "core/data-store.js",
+        "core/helpers.js"
+      ],
+      "unit": "hr",
+      "storage": "docs (كائن كامل)"
+    },
+    "driverCategories": {
+      "kind": "lookup",
+      "source": "runtime",
+      "refs": 2,
+      "files": [
+        "core/data-store.js"
+      ],
+      "unit": "hr",
+      "storage": "docs (قائمة مرجعية كاملة)"
+    },
+    "driverPayments": {
+      "kind": "legacy-ref",
+      "source": "static (no init found)",
+      "refs": 1,
+      "files": [
+        "modules/hr/pages-reports.js"
+      ],
+      "unit": "hr",
+      "storage": "— يتراجع (مقروء بس، مفيش تهيئة/كتابة في الكود)"
+    },
+    "drivers": {
+      "kind": "collection",
+      "source": "runtime",
+      "refs": 94,
+      "files": [
+        "core/data-store.js",
+        "core/excel-import.js",
+        "core/follow-center.js",
+        "core/helpers.js",
+        "core/pages-archive.js",
+        "core/pages-backup.js",
+        "core/project-links.js",
+        "core/smart-tools.js",
+        "modules/hr/pages-dashboard.js",
+        "modules/hr/pages-departments.js",
+        "modules/hr/pages-equipment.js",
+        "modules/hr/pages-leaves.js",
+        "modules/hr/pages-ops.js",
+        "modules/hr/pages-person-detail.js",
+        "modules/hr/pages-reports.js",
+        "modules/hr/pages-worker-attendance.js",
+        "modules/hr/pages-worker-dues.js",
+        "modules/hr/project-statement.js"
+      ],
+      "unit": "hr",
+      "storage": "records (صف لكل سجل)"
+    },
+    "employeeCategories": {
+      "kind": "lookup",
+      "source": "runtime",
+      "refs": 2,
+      "files": [
+        "core/data-store.js"
+      ],
+      "unit": "hr",
+      "storage": "docs (قائمة مرجعية كاملة)"
+    },
+    "employeePenalties": {
+      "kind": "collection",
+      "source": "runtime",
+      "refs": 16,
+      "files": [
+        "core/data-store.js",
+        "core/helpers.js",
+        "modules/hr/pages-reports.js",
+        "modules/hr/pages-worker-dues.js"
+      ],
+      "unit": "hr",
+      "storage": "records (صف لكل سجل)"
+    },
+    "employees": {
+      "kind": "collection",
+      "source": "runtime",
+      "refs": 77,
+      "files": [
+        "core/data-store.js",
+        "core/excel-import.js",
+        "core/follow-center.js",
+        "core/helpers.js",
+        "core/pages-archive.js",
+        "core/pages-backup.js",
+        "core/project-links.js",
+        "core/smart-tools.js",
+        "modules/hr/modals-employees.js",
+        "modules/hr/pages-attendance.js",
+        "modules/hr/pages-dashboard.js",
+        "modules/hr/pages-departments.js",
+        "modules/hr/pages-employees.js",
+        "modules/hr/pages-leaves.js",
+        "modules/hr/pages-ops.js",
+        "modules/hr/pages-reports.js",
+        "modules/hr/pages-worker-dues.js",
+        "modules/hr/project-statement.js"
+      ],
+      "unit": "hr",
+      "storage": "records (صف لكل سجل)"
+    },
+    "equipment": {
+      "kind": "collection",
+      "source": "runtime",
+      "refs": 84,
+      "files": [
+        "core/data-store.js",
+        "core/excel-import.js",
+        "core/follow-center.js",
+        "core/helpers.js",
+        "core/pages-archive.js",
+        "core/pages-backup.js",
+        "core/project-links.js",
+        "core/smart-tools.js",
+        "modules/hr/pages-dashboard.js",
+        "modules/hr/pages-equipment.js",
+        "modules/hr/pages-ops.js",
+        "modules/hr/pages-reports.js",
+        "modules/hr/pages-worker-attendance.js",
+        "modules/hr/pages-worker-dues.js",
+        "modules/hr/project-statement.js"
+      ],
+      "unit": "hr",
+      "storage": "records (صف لكل سجل)"
+    },
+    "equipmentCategories": {
+      "kind": "lookup",
+      "source": "runtime",
+      "refs": 2,
+      "files": [
+        "core/data-store.js"
+      ],
+      "unit": "hr",
+      "storage": "docs (قائمة مرجعية كاملة)"
+    },
+    "equipmentDaily": {
+      "kind": "collection",
+      "source": "runtime",
+      "refs": 45,
+      "files": [
+        "core/data-store.js",
+        "core/helpers.js",
+        "core/project-links.js",
+        "modules/hr/pages-dashboard.js",
+        "modules/hr/pages-equipment.js",
+        "modules/hr/pages-projects.js",
+        "modules/hr/pages-reports.js",
+        "modules/hr/pages-supervisors.js",
+        "modules/hr/pages-worker-attendance.js",
+        "modules/hr/pages-worker-dues.js",
+        "modules/hr/project-statement.js"
+      ],
+      "unit": "hr",
+      "storage": "records (صف لكل سجل)"
+    },
+    "equipmentLogs": {
+      "kind": "collection",
+      "source": "runtime",
+      "refs": 19,
+      "files": [
+        "core/data-store.js",
+        "core/helpers.js",
+        "core/project-links.js",
+        "modules/hr/pages-dashboard.js",
+        "modules/hr/pages-equipment.js",
+        "modules/hr/pages-reports.js",
+        "modules/hr/project-statement.js"
+      ],
+      "unit": "hr",
+      "storage": "records (صف لكل سجل)"
+    },
+    "equipmentTypes": {
+      "kind": "lookup",
+      "source": "runtime",
+      "refs": 17,
+      "files": [
+        "core/data-store.js",
+        "core/helpers.js"
+      ],
+      "unit": "hr",
+      "storage": "docs (قائمة مرجعية كاملة)"
+    },
+    "expenseItemHidden": {
+      "kind": "doc",
+      "source": "static",
+      "refs": 12,
+      "files": [
+        "modules/hr/pages-ops.js"
+      ],
+      "unit": "hr",
+      "storage": "docs (كائن كامل)"
+    },
+    "expenseItemPool": {
+      "kind": "lookup",
+      "source": "runtime",
+      "refs": 6,
+      "files": [
+        "core/data-store.js",
+        "modules/hr/pages-ops.js"
+      ],
+      "unit": "hr",
+      "storage": "docs (قائمة مرجعية كاملة)"
+    },
+    "expenseItemPools": {
+      "kind": "doc",
+      "source": "runtime",
+      "refs": 16,
+      "files": [
+        "core/data-store.js",
+        "modules/hr/pages-ops.js"
+      ],
+      "unit": "hr",
+      "storage": "docs (كائن كامل)"
+    },
+    "expenseSections": {
+      "kind": "doc",
+      "source": "runtime",
+      "refs": 12,
+      "files": [
+        "core/data-store.js",
+        "modules/hr/pages-ops.js"
+      ],
+      "unit": "hr",
+      "storage": "docs (كائن كامل)"
+    },
+    "expenseTypes": {
+      "kind": "lookup",
+      "source": "runtime",
+      "refs": 2,
+      "files": [
+        "core/data-store.js"
+      ],
+      "unit": "hr",
+      "storage": "docs (قائمة مرجعية كاملة)"
+    },
+    "expenses": {
+      "kind": "collection",
+      "source": "runtime",
+      "refs": 60,
+      "files": [
+        "core/boards.js",
+        "core/cost-center.js",
+        "core/data-store.js",
+        "core/extras.js",
+        "core/follow-center.js",
+        "core/helpers.js",
+        "core/project-links.js",
+        "modules/accounts/pages-reports.js",
+        "modules/hr/pages-dashboard.js",
+        "modules/hr/pages-equipment.js",
+        "modules/hr/pages-ops.js",
+        "modules/hr/pages-person-detail.js",
+        "modules/hr/pages-reports.js",
+        "modules/hr/project-statement.js"
+      ],
+      "unit": "hr",
+      "storage": "records (صف لكل سجل)"
+    },
+    "formCols": {
+      "kind": "doc",
+      "source": "static",
+      "refs": 6,
+      "files": [
+        "core/helpers.js",
+        "core/pages-backup.js"
+      ],
+      "unit": "config",
+      "storage": "docs (كائن كامل)"
+    },
+    "formLayouts": {
+      "kind": "doc",
+      "source": "runtime",
+      "refs": 62,
+      "files": [
+        "core/extras.js",
+        "core/helpers.js",
+        "core/pages-backup.js"
+      ],
+      "unit": "config",
+      "storage": "docs (كائن كامل)"
+    },
+    "fuelLogs": {
+      "kind": "collection",
+      "source": "runtime",
+      "refs": 20,
+      "files": [
+        "core/data-store.js",
+        "core/helpers.js",
+        "core/project-links.js",
+        "modules/hr/pages-equipment.js",
+        "modules/hr/pages-ops.js",
+        "modules/hr/pages-projects.js",
+        "modules/hr/project-statement.js"
+      ],
+      "unit": "hr",
+      "storage": "records (صف لكل سجل)"
+    },
+    "leaves": {
+      "kind": "collection",
+      "source": "runtime",
+      "refs": 34,
+      "files": [
+        "core/data-store.js",
+        "core/helpers.js",
+        "core/pages-backup.js",
+        "modules/hr/pages-dashboard.js",
+        "modules/hr/pages-employee-detail.js",
+        "modules/hr/pages-leaves.js",
+        "modules/hr/pages-reports.js"
+      ],
+      "unit": "hr",
+      "storage": "records (صف لكل سجل)"
+    },
+    "ledger.archiveFolders": {
+      "kind": "collection",
+      "source": "runtime",
+      "refs": 4,
+      "files": [
+        "modules/ledger/data-store.js"
+      ],
+      "unit": "ledger",
+      "storage": "records (صف لكل سجل)"
+    },
+    "ledger.archiveSections": {
+      "kind": "lookup",
+      "source": "runtime",
+      "refs": 4,
+      "files": [
+        "modules/ledger/data-store.js"
+      ],
+      "unit": "ledger",
+      "storage": "docs (قائمة مرجعية كاملة)"
+    },
+    "ledger.archiveTrash": {
+      "kind": "collection",
+      "source": "runtime",
+      "refs": 13,
+      "files": [
+        "modules/ledger/data-store.js",
+        "modules/ledger/modals.js",
+        "modules/ledger/pages-archive.js"
+      ],
+      "unit": "ledger",
+      "storage": "records (صف لكل سجل)"
+    },
+    "ledger.customCategories": {
+      "kind": "lookup",
+      "source": "runtime",
+      "refs": 8,
+      "files": [
+        "modules/ledger/app.js",
+        "modules/ledger/data-store.js",
+        "modules/ledger/helpers.js"
+      ],
+      "unit": "ledger",
+      "storage": "docs (قائمة مرجعية كاملة)"
+    },
+    "ledger.customInternalCodes": {
+      "kind": "lookup",
+      "source": "runtime",
+      "refs": 3,
+      "files": [
+        "modules/ledger/data-store.js",
+        "modules/ledger/helpers.js"
+      ],
+      "unit": "ledger",
+      "storage": "docs (قائمة مرجعية كاملة)"
+    },
+    "ledger.customItemDescriptions": {
+      "kind": "lookup",
+      "source": "runtime",
+      "refs": 3,
+      "files": [
+        "modules/ledger/data-store.js",
+        "modules/ledger/helpers.js"
+      ],
+      "unit": "ledger",
+      "storage": "docs (قائمة مرجعية كاملة)"
+    },
+    "ledger.customItemNames": {
+      "kind": "lookup",
+      "source": "runtime",
+      "refs": 3,
+      "files": [
+        "modules/ledger/data-store.js",
+        "modules/ledger/helpers.js"
+      ],
+      "unit": "ledger",
+      "storage": "docs (قائمة مرجعية كاملة)"
+    },
+    "ledger.customLinkedItems": {
+      "kind": "lookup",
+      "source": "runtime",
+      "refs": 15,
+      "files": [
+        "modules/ledger/data-store.js",
+        "modules/ledger/helpers.js",
+        "modules/ledger/pages-categories.js"
+      ],
+      "unit": "ledger",
+      "storage": "docs (قائمة مرجعية كاملة)"
+    },
+    "ledger.customProjects": {
+      "kind": "lookup",
+      "source": "runtime",
+      "refs": 17,
+      "files": [
+        "modules/ledger/app.js",
+        "modules/ledger/data-store.js",
+        "modules/ledger/helpers.js",
+        "modules/ledger/pages-categories.js"
+      ],
+      "unit": "ledger",
+      "storage": "docs (قائمة مرجعية كاملة)"
+    },
+    "ledger.customSupplierItemCodes": {
+      "kind": "lookup",
+      "source": "runtime",
+      "refs": 3,
+      "files": [
+        "modules/ledger/data-store.js",
+        "modules/ledger/helpers.js"
+      ],
+      "unit": "ledger",
+      "storage": "docs (قائمة مرجعية كاملة)"
+    },
+    "ledger.documentTypeHidden": {
+      "kind": "lookup",
+      "source": "runtime",
+      "refs": 15,
+      "files": [
+        "modules/ledger/data-store.js",
+        "modules/ledger/pages-archive.js"
+      ],
+      "unit": "ledger",
+      "storage": "docs (قائمة مرجعية كاملة)"
+    },
+    "ledger.documentTypes": {
+      "kind": "lookup",
+      "source": "runtime",
+      "refs": 11,
+      "files": [
+        "modules/ledger/data-store.js",
+        "modules/ledger/pages-archive.js"
+      ],
+      "unit": "ledger",
+      "storage": "docs (قائمة مرجعية كاملة)"
+    },
+    "ledger.hiddenProjects": {
+      "kind": "lookup",
+      "source": "runtime",
+      "refs": 13,
+      "files": [
+        "modules/ledger/app.js",
+        "modules/ledger/data-store.js",
+        "modules/ledger/helpers.js",
+        "modules/ledger/pages-categories.js"
+      ],
+      "unit": "ledger",
+      "storage": "docs (قائمة مرجعية كاملة)"
+    },
+    "ledger.hiddenSuggestions": {
+      "kind": "lookup",
+      "source": "runtime",
+      "refs": 7,
+      "files": [
+        "modules/ledger/app.js",
+        "modules/ledger/data-store.js",
+        "modules/ledger/helpers.js"
+      ],
+      "unit": "ledger",
+      "storage": "docs (قائمة مرجعية كاملة)"
+    },
+    "ledger.invoices": {
+      "kind": "collection",
+      "source": "runtime",
+      "refs": 130,
+      "files": [
+        "core/alerts-center.js",
+        "core/boards.js",
+        "core/cost-center.js",
+        "core/extras.js",
+        "core/follow-center.js",
+        "core/project-links.js",
+        "modules/accounts/pages-reports.js",
+        "modules/ledger/app.js",
+        "modules/ledger/data-store.js",
+        "modules/ledger/excel-import.js",
+        "modules/ledger/exports.js",
+        "modules/ledger/helpers.js",
+        "modules/ledger/modals.js",
+        "modules/ledger/pages-archive.js",
+        "modules/ledger/pages-categories.js",
+        "modules/ledger/pages-dashboard.js",
+        "modules/ledger/pages-invoices.js",
+        "modules/ledger/pages-payments.js",
+        "modules/ledger/pages-quarterly.js",
+        "modules/ledger/pages-reports.js",
+        "modules/ledger/pages-suppliers.js",
+        "modules/ledger/statement.js",
+        "modules/warehouses/pages-home.js"
+      ],
+      "unit": "ledger",
+      "storage": "records (صف لكل سجل)"
+    },
+    "ledger.payments": {
+      "kind": "collection",
+      "source": "runtime",
+      "refs": 64,
+      "files": [
+        "core/boards.js",
+        "core/follow-center.js",
+        "modules/accounts/pages-reports.js",
+        "modules/ledger/app.js",
+        "modules/ledger/data-store.js",
+        "modules/ledger/excel-import.js",
+        "modules/ledger/exports.js",
+        "modules/ledger/helpers.js",
+        "modules/ledger/modals.js",
+        "modules/ledger/pages-archive.js",
+        "modules/ledger/pages-dashboard.js",
+        "modules/ledger/pages-payments.js",
+        "modules/ledger/pages-suppliers.js",
+        "modules/ledger/statement.js"
+      ],
+      "unit": "ledger",
+      "storage": "records (صف لكل سجل)"
+    },
+    "ledger.suppliers": {
+      "kind": "collection",
+      "source": "runtime",
+      "refs": 58,
+      "files": [
+        "core/boards.js",
+        "core/extras.js",
+        "core/follow-center.js",
+        "core/helpers.js",
+        "modules/ledger/app.js",
+        "modules/ledger/data-store.js",
+        "modules/ledger/excel-import.js",
+        "modules/ledger/exports.js",
+        "modules/ledger/helpers.js",
+        "modules/ledger/modals.js",
+        "modules/ledger/pages-archive.js",
+        "modules/ledger/pages-categories.js",
+        "modules/ledger/pages-suppliers.js",
+        "modules/warehouses/pages-home.js"
+      ],
+      "unit": "ledger",
+      "storage": "records (صف لكل سجل)"
+    },
+    "licenseExpenseFieldDefs": {
+      "kind": "lookup",
+      "source": "runtime",
+      "refs": 2,
+      "files": [
+        "core/data-store.js"
+      ],
+      "unit": "hr",
+      "storage": "docs (قائمة مرجعية كاملة)"
+    },
+    "licenseExpenseSections": {
+      "kind": "lookup",
+      "source": "runtime",
+      "refs": 2,
+      "files": [
+        "core/data-store.js"
+      ],
+      "unit": "hr",
+      "storage": "docs (قائمة مرجعية كاملة)"
+    },
+    "licenseExpenses": {
+      "kind": "collection",
+      "source": "runtime",
+      "refs": 12,
+      "files": [
+        "core/data-store.js",
+        "modules/hr/pages-ops.js",
+        "modules/hr/pages-reports.js"
+      ],
+      "unit": "hr",
+      "storage": "records (صف لكل سجل)"
+    },
+    "network": {
+      "kind": "legacy-ref",
+      "source": "static (no init found)",
+      "refs": 1,
+      "files": [
+        "core/data-store.js"
+      ],
+      "unit": "hr",
+      "storage": "— يتراجع (مقروء بس، مفيش تهيئة/كتابة في الكود)"
+    },
+    "paymentItemPool": {
+      "kind": "lookup",
+      "source": "runtime",
+      "refs": 2,
+      "files": [
+        "core/data-store.js"
+      ],
+      "unit": "hr",
+      "storage": "docs (قائمة مرجعية كاملة)"
+    },
+    "payments": {
+      "kind": "collection",
+      "source": "runtime",
+      "refs": 5,
+      "files": [
+        "core/data-store.js",
+        "core/excel-import.js"
+      ],
+      "unit": "hr",
+      "storage": "records (صف لكل سجل)"
+    },
+    "payroll": {
+      "kind": "collection",
+      "source": "runtime",
+      "refs": 20,
+      "files": [
+        "core/data-store.js",
+        "core/helpers.js",
+        "core/pages-backup.js",
+        "modules/hr/pages-employee-detail.js",
+        "modules/hr/pages-reports.js",
+        "modules/hr/pages-worker-dues.js"
+      ],
+      "unit": "hr",
+      "storage": "records (صف لكل سجل)"
+    },
+    "penaltyItemPool": {
+      "kind": "lookup",
+      "source": "runtime",
+      "refs": 2,
+      "files": [
+        "core/data-store.js"
+      ],
+      "unit": "hr",
+      "storage": "docs (قائمة مرجعية كاملة)"
+    },
+    "performanceReviews": {
+      "kind": "collection",
+      "source": "runtime",
+      "refs": 13,
+      "files": [
+        "core/data-store.js",
+        "core/helpers.js",
+        "modules/hr/pages-dashboard.js",
+        "modules/hr/pages-ops.js",
+        "modules/hr/pages-reports.js"
+      ],
+      "unit": "hr",
+      "storage": "records (صف لكل سجل)"
+    },
+    "personDocuments": {
+      "kind": "collection",
+      "source": "runtime",
+      "refs": 49,
+      "files": [
+        "core/data-store.js",
+        "core/helpers.js",
+        "core/pages-archive.js",
+        "core/smart-tools.js",
+        "modules/hr/pages-dashboard.js",
+        "modules/hr/pages-ops.js",
+        "modules/hr/pages-person-detail.js"
+      ],
+      "unit": "hr",
+      "storage": "records (صف لكل سجل)"
+    },
+    "personExpenseItems": {
+      "kind": "doc",
+      "source": "runtime",
+      "refs": 5,
+      "files": [
+        "core/data-store.js",
+        "modules/hr/pages-ops.js"
+      ],
+      "unit": "hr",
+      "storage": "docs (كائن كامل)"
+    },
+    "projectDaily": {
+      "kind": "collection",
+      "source": "runtime",
+      "refs": 10,
+      "files": [
+        "core/data-store.js",
+        "core/helpers.js",
+        "core/project-links.js",
+        "modules/hr/pages-projects.js",
+        "modules/hr/project-statement.js"
+      ],
+      "unit": "hr",
+      "storage": "records (صف لكل سجل)"
+    },
+    "projectLinksLog": {
+      "kind": "doc",
+      "source": "runtime",
+      "refs": 1,
+      "files": [
+        "core/project-links.js"
+      ],
+      "unit": "hr",
+      "storage": "docs (كائن كامل)"
+    },
+    "projectPlans": {
+      "kind": "collection",
+      "source": "runtime",
+      "refs": 6,
+      "files": [
+        "core/data-store.js",
+        "core/helpers.js",
+        "modules/hr/project-statement.js"
+      ],
+      "unit": "hr",
+      "storage": "records (صف لكل سجل)"
+    },
+    "projects": {
+      "kind": "collection",
+      "source": "runtime",
+      "refs": 83,
+      "files": [
+        "core/alerts-center.js",
+        "core/boards.js",
+        "core/cost-center.js",
+        "core/data-store.js",
+        "core/excel-import.js",
+        "core/extras.js",
+        "core/follow-center.js",
+        "core/helpers.js",
+        "core/pages-archive.js",
+        "core/project-links.js",
+        "modules/clients/helpers.js",
+        "modules/clients/pages-customers.js",
+        "modules/clients/pages-tasks.js",
+        "modules/clients/pages-work-surveys.js",
+        "modules/clients/project-workflow.js",
+        "modules/clients/workflow-editor.js",
+        "modules/hr/pages-dashboard.js",
+        "modules/hr/pages-ops.js",
+        "modules/hr/pages-projects.js",
+        "modules/hr/pages-reports.js",
+        "modules/hr/pages-supervisors.js",
+        "modules/hr/pages-worker-attendance.js",
+        "modules/warehouses/pages-home.js"
+      ],
+      "unit": "hr",
+      "storage": "records (صف لكل سجل)"
+    },
+    "requiredDocsByKind": {
+      "kind": "doc",
+      "source": "runtime",
+      "refs": 26,
+      "files": [
+        "core/data-store.js",
+        "core/helpers.js",
+        "core/pages-backup.js"
+      ],
+      "unit": "hr",
+      "storage": "docs (كائن كامل)"
+    },
+    "requiredDocsEmpty": {
+      "kind": "doc",
+      "source": "static",
+      "refs": 11,
+      "files": [
+        "core/helpers.js",
+        "core/pages-backup.js"
+      ],
+      "unit": "hr",
+      "storage": "docs (كائن كامل)"
+    },
+    "resignedArchive": {
+      "kind": "collection",
+      "source": "runtime",
+      "refs": 13,
+      "files": [
+        "core/data-store.js",
+        "core/helpers.js"
+      ],
+      "unit": "hr",
+      "storage": "records (صف لكل سجل)"
+    },
+    "resourceTransfers": {
+      "kind": "collection",
+      "source": "runtime",
+      "refs": 16,
+      "files": [
+        "core/boards.js",
+        "core/data-store.js",
+        "core/project-links.js",
+        "modules/hr/pages-dashboard.js",
+        "modules/hr/pages-ops.js",
+        "modules/hr/pages-reports.js",
+        "modules/hr/project-statement.js"
+      ],
+      "unit": "hr",
+      "storage": "records (صف لكل سجل)"
+    },
+    "schemaVersion": {
+      "kind": "meta-flag",
+      "source": "runtime",
+      "refs": 3,
+      "files": [
+        "core/data-store.js"
+      ],
+      "unit": "hr",
+      "storage": "docs: meta (أعلام ترحيل/حالة)"
+    },
+    "settings": {
+      "kind": "doc",
+      "source": "runtime",
+      "refs": 93,
+      "files": [
+        "core/app.js",
+        "core/data-store.js",
+        "core/excel-import.js",
+        "core/extras.js",
+        "core/helpers.js",
+        "core/network.js",
+        "core/pages-backup.js",
+        "core/smart-tools.js",
+        "modules/hr/modals-employees.js",
+        "modules/hr/pages-equipment.js",
+        "modules/hr/pages-leaves.js",
+        "modules/hr/pages-reports.js",
+        "modules/ledger/data-store.js",
+        "modules/ledger/glue.js",
+        "modules/ledger/helpers.js",
+        "modules/ledger/statement.js"
+      ],
+      "unit": "config",
+      "storage": "docs (كائن كامل)"
+    },
+    "supervisorCategories": {
+      "kind": "lookup",
+      "source": "runtime",
+      "refs": 2,
+      "files": [
+        "core/data-store.js"
+      ],
+      "unit": "hr",
+      "storage": "docs (قائمة مرجعية كاملة)"
+    },
+    "supervisorExpenses": {
+      "kind": "collection",
+      "source": "runtime",
+      "refs": 23,
+      "files": [
+        "core/data-store.js",
+        "core/excel-import.js",
+        "core/helpers.js",
+        "modules/hr/pages-dashboard.js",
+        "modules/hr/pages-ops.js",
+        "modules/hr/pages-reports.js"
+      ],
+      "unit": "hr",
+      "storage": "records (صف لكل سجل)"
+    },
+    "supervisorPayments": {
+      "kind": "collection",
+      "source": "static",
+      "refs": 1,
+      "files": [
+        "modules/hr/pages-reports.js"
+      ],
+      "unit": "hr",
+      "storage": "records (صف لكل سجل)"
+    },
+    "supervisors": {
+      "kind": "collection",
+      "source": "runtime",
+      "refs": 78,
+      "files": [
+        "core/data-store.js",
+        "core/excel-import.js",
+        "core/follow-center.js",
+        "core/helpers.js",
+        "core/pages-archive.js",
+        "core/pages-backup.js",
+        "core/project-links.js",
+        "core/smart-tools.js",
+        "modules/hr/pages-dashboard.js",
+        "modules/hr/pages-departments.js",
+        "modules/hr/pages-leaves.js",
+        "modules/hr/pages-ops.js",
+        "modules/hr/pages-reports.js",
+        "modules/hr/pages-supervisors.js",
+        "modules/hr/pages-worker-attendance.js",
+        "modules/hr/pages-worker-dues.js",
+        "modules/hr/project-statement.js"
+      ],
+      "unit": "hr",
+      "storage": "records (صف لكل سجل)"
+    },
+    "tableLayouts": {
+      "kind": "legacy-ref",
+      "source": "static (no init found)",
+      "refs": 1,
+      "files": [
+        "core/extras.js"
+      ],
+      "unit": "config",
+      "storage": "— يتراجع (مقروء بس، مفيش تهيئة/كتابة في الكود)"
+    },
+    "transfers": {
+      "kind": "collection",
+      "source": "static",
+      "refs": 1,
+      "files": [
+        "modules/hr/pages-reports.js"
+      ],
+      "unit": "hr",
+      "storage": "records (صف لكل سجل)"
+    },
+    "users": {
+      "kind": "system-table",
+      "source": "runtime",
+      "refs": 39,
+      "files": [
+        "core/data-store.js",
+        "core/follow-center.js",
+        "core/network.js",
+        "core/pages-users.js",
+        "modules/hr/pages-dashboard.js"
+      ],
+      "unit": "system",
+      "storage": "جدول مخصص (users / audit_log)"
+    },
+    "vehicleExpenseItems": {
+      "kind": "doc",
+      "source": "runtime",
+      "refs": 3,
+      "files": [
+        "core/data-store.js"
+      ],
+      "unit": "hr",
+      "storage": "docs (كائن كامل)"
+    },
+    "warehouses.items": {
+      "kind": "collection",
+      "source": "runtime",
+      "refs": 1,
+      "files": [
+        "core/helpers.js"
+      ],
+      "unit": "warehouses",
+      "storage": "records (صف لكل سجل)"
+    },
+    "warehouses.locations": {
+      "kind": "collection",
+      "source": "runtime",
+      "unit": "warehouses",
+      "storage": "records (صف لكل سجل)"
+    },
+    "warehouses.movements": {
+      "kind": "collection",
+      "source": "runtime",
+      "refs": 3,
+      "files": [
+        "core/cost-center.js",
+        "core/helpers.js",
+        "core/project-links.js"
+      ],
+      "unit": "warehouses",
+      "storage": "records (صف لكل سجل)"
+    },
+    "warehouses.settings": {
+      "kind": "doc",
+      "source": "runtime",
+      "unit": "warehouses",
+      "storage": "docs (كائن كامل)"
+    },
+    "warehouses.stocktakes": {
+      "kind": "collection",
+      "source": "runtime",
+      "unit": "warehouses",
+      "storage": "records (صف لكل سجل)"
+    },
+    "workerAttendance": {
+      "kind": "collection",
+      "source": "runtime",
+      "refs": 57,
+      "files": [
+        "core/data-store.js",
+        "core/excel-import.js",
+        "core/helpers.js",
+        "core/pages-backup.js",
+        "core/project-links.js",
+        "modules/hr/pages-dashboard.js",
+        "modules/hr/pages-projects.js",
+        "modules/hr/pages-reports.js",
+        "modules/hr/pages-supervisors.js",
+        "modules/hr/pages-worker-attendance.js",
+        "modules/hr/project-statement.js"
+      ],
+      "unit": "hr",
+      "storage": "records (صف لكل سجل)"
+    },
+    "workerCategories": {
+      "kind": "lookup",
+      "source": "runtime",
+      "refs": 2,
+      "files": [
+        "core/data-store.js"
+      ],
+      "unit": "hr",
+      "storage": "docs (قائمة مرجعية كاملة)"
+    },
+    "workerPayments": {
+      "kind": "collection",
+      "source": "runtime",
+      "refs": 55,
+      "files": [
+        "core/data-store.js",
+        "core/excel-import.js",
+        "core/helpers.js",
+        "modules/hr/pages-person-detail.js",
+        "modules/hr/pages-reports.js",
+        "modules/hr/pages-worker-dues.js"
+      ],
+      "unit": "hr",
+      "storage": "records (صف لكل سجل)"
+    },
+    "workerPenalties": {
+      "kind": "collection",
+      "source": "static",
+      "refs": 1,
+      "files": [
+        "modules/hr/pages-reports.js"
+      ],
+      "unit": "hr",
+      "storage": "records (صف لكل سجل)"
+    },
+    "workers": {
+      "kind": "collection",
+      "source": "runtime",
+      "refs": 87,
+      "files": [
+        "core/boards.js",
+        "core/data-store.js",
+        "core/excel-import.js",
+        "core/follow-center.js",
+        "core/helpers.js",
+        "core/pages-archive.js",
+        "core/pages-backup.js",
+        "core/project-links.js",
+        "core/smart-tools.js",
+        "modules/hr/pages-dashboard.js",
+        "modules/hr/pages-departments.js",
+        "modules/hr/pages-leaves.js",
+        "modules/hr/pages-ops.js",
+        "modules/hr/pages-reports.js",
+        "modules/hr/pages-supervisors.js",
+        "modules/hr/pages-worker-attendance.js",
+        "modules/hr/pages-worker-dues.js",
+        "modules/hr/pages-workers.js",
+        "modules/hr/project-statement.js"
+      ],
+      "unit": "hr",
+      "storage": "records (صف لكل سجل)"
+    }
+  }
+}

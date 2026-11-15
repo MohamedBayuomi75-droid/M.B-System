@@ -1,0 +1,36 @@
+PASS hash returns salt+hash (hex)
+PASS verify accepts correct password
+PASS verify rejects wrong password
+PASS verify rejects empty salt/hash
+PASS policy: too short
+PASS policy: default password blocked (any case)
+PASS policy: good password accepted
+PASS NEW verify accepts hash created by ORIGINAL server code
+PASS ORIGINAL verify accepts hash created by NEW code
+PASS embedded default-admin salt/hash == admin123
+PASS IPC hash handler works
+PASS IPC verify handler true/false
+PASS IPC verify tolerates garbage payload
+PASS server starts
+PASS login with wrong password rejected
+PASS seeded admin can log in with the default password
+PASS login response says mustChangePassword = true
+PASS self-change rejects the default password
+PASS self-change rejects short password
+PASS self-change requires a session
+PASS forced change succeeds without old password
+PASS old default password no longer works
+PASS new password works and flag is cleared
+PASS normal change now REQUIRES the current password
+PASS normal change with correct current password works
+PASS users.json has no plaintext passwords
+PASS create user: weak password rejected
+PASS create user: missing password rejected (no more silent 123456)
+PASS create user: strong password accepted
+PASS new user logs in, no forced change
+PASS GET /api/data works
+PASS saving data with ledger+clients sections accepted
+PASS ledger section survives round trip
+PASS clients section survives round trip
+PASS HR keys still intact next to the sections
+NODE TESTS: 35 passed, 0 failed

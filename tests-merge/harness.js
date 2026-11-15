@@ -1,10 +1,16 @@
 // Playwright harness for the unified system renderer (no Electron needed)
 const path = require('path');
-const { chromium } = require('/opt/npm-tools/node_modules/playwright');
-const ROOT = process.env.APP_ROOT || '/home/claude/work/unified/unified-system';
+const fs = require('fs');
+// كل المسارات من env (مع افتراضات معقولة) — مفيش مسارات ثابتة لجهاز معيّن.
+//   PLAYWRIGHT_PATH : مسار حزمة playwright لو مش متاحة بـ require('playwright')
+//   CHROME_PATH     : مسار متصفح Chromium/Chrome (اختياري — الافتراضي متصفح playwright نفسه)
+//   APP_ROOT        : جذر المشروع (الافتراضي: المجلد الأب لـ tests-merge)
+const { chromium } = require(process.env.PLAYWRIGHT_PATH || 'playwright');
+const ROOT = process.env.APP_ROOT || path.resolve(__dirname, '..');
+const CHROME_PATH = process.env.CHROME_PATH || '';
 
 async function openApp(seed, opts = {}) {
-  const browser = await chromium.launch({ executablePath: '/usr/bin/google-chrome', args: ['--no-sandbox', '--allow-file-access-from-files'] });
+  const browser = await chromium.launch({ ...(CHROME_PATH && fs.existsSync(CHROME_PATH) ? { executablePath: CHROME_PATH } : {}), args: ['--no-sandbox', '--allow-file-access-from-files'] });
   const ctx = await browser.newContext({ viewport: { width: 1400, height: 900 }, locale: 'ar-EG' });
   const page = await ctx.newPage();
   const errors = [];

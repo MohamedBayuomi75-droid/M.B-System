@@ -1,0 +1,61 @@
+
+[1] index.html scripts
+  ✓ 83 script tags found
+  ✓ no duplicate scripts
+  ✓ all referenced script files exist
+
+[2] every renderer JS file is registered
+  ✓ 83 renderer JS files, all registered
+
+[2b] merged ledger module (codemod output + glue)
+  ✓ 17 ledger JS files incl. glue.js
+  ✓ ledger scripts load after HR scripts and before modules.js
+  ✓ glue.js is the last ledger script
+  ✓ ledger.css is linked from index.html
+  ✓ ledger code never reads its keys straight from DATA (all via DATA.ledger)
+  ✓ no global name is declared in both the ledger and the rest of the program (368 ledger names)
+  ✓ codemod config + rename map are kept for reference
+
+[3] load order
+  ✓ config.js loads first
+  ✓ app.js loads last
+  ✓ modules.js loads before app.js
+  ✓ state.js loads before data-store.js
+
+[4] syntax (all JS files)
+  ✓ 105 files parsed without syntax errors
+
+[5] brand consistency
+  ✓ package.json productName == config.js name ("النظام الموحد")
+  ✓ build.productName matches productName
+  ✓ <title> matches config.js name
+  ✓ package.json name == brand.js PACKAGE_NAME ("unified-system") — needed by the updater guard
+  ✓ build.extraMetadata.name matches package name
+
+[6] navigation design (sections + pages)
+  ✓ 11 sections in the designed order
+  ✓ 44 page keys, each in exactly one section
+  ✓ all 20 original HR pages are reachable from the navigation
+  ✓ unprefixed keys are only original HR pages
+  ✓ every prefixed key uses a known source prefix
+  ✓ glue.js LEDGER_PAGES == the ledger pages in the navigation
+  ✓ every prefixed page is either implemented or a "قيد الدمج" placeholder
+  ✓ no page is both implemented and a placeholder
+  ✓ every placeholder is in the navigation
+  ✓ general.overview has a renderer in app.js
+  ✓ every navigation page is in the permission matrix
+  ✓ every prefixed page has a label in the users matrix
+  ✓ sectionOfPage / moduleOfPage resolve correctly
+
+[7] main-process requires
+  ✓ 26 relative requires all resolve
+
+[8] security + data layout
+  ✓ no plaintext default password in renderer code
+  ✓ preload exposes hashPassword/verifyPassword
+  ✓ main.js loads the auth IPC handlers
+  ✓ SCHEMA_VERSION (9) equals the latest migration
+  ✓ DATA has ledger + clients sections
+  ✓ DATA has warehouses section (state or ensureWarehousesSection)
+
+✓ ALL CHECKS PASSED  (41 passed, 0 failed)

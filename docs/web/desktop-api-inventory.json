@@ -1,0 +1,698 @@
+{
+  "exposed": [
+    {
+      "name": "loadData",
+      "args": "",
+      "kind": "invoke",
+      "channel": "data:load"
+    },
+    {
+      "name": "saveData",
+      "args": "data",
+      "kind": "invoke",
+      "channel": "data:save"
+    },
+    {
+      "name": "saveDataSync",
+      "args": "data",
+      "kind": "sendSync",
+      "channel": "data:saveSync"
+    },
+    {
+      "name": "serverStart",
+      "args": "port",
+      "kind": "invoke",
+      "channel": "server:start"
+    },
+    {
+      "name": "serverStop",
+      "args": "",
+      "kind": "invoke",
+      "channel": "server:stop"
+    },
+    {
+      "name": "serverStatus",
+      "args": "",
+      "kind": "invoke",
+      "channel": "server:status"
+    },
+    {
+      "name": "openExternalLink",
+      "args": "url",
+      "kind": "invoke",
+      "channel": "open-external-url"
+    },
+    {
+      "name": "saveFile",
+      "args": "filename, content",
+      "kind": "invoke",
+      "channel": "file:save"
+    },
+    {
+      "name": "snapshotData",
+      "args": "label",
+      "kind": "invoke",
+      "channel": "data:snapshot"
+    },
+    {
+      "name": "getExtraBackupDir",
+      "args": "",
+      "kind": "invoke",
+      "channel": "backup:getExtraDir"
+    },
+    {
+      "name": "pickExtraBackupDir",
+      "args": "",
+      "kind": "invoke",
+      "channel": "backup:pickExtraDir"
+    },
+    {
+      "name": "clearExtraBackupDir",
+      "args": "",
+      "kind": "invoke",
+      "channel": "backup:clearExtraDir"
+    },
+    {
+      "name": "backupNow",
+      "args": "",
+      "kind": "invoke",
+      "channel": "backup:runNow"
+    },
+    {
+      "name": "getLockInfo",
+      "args": "",
+      "kind": "invoke",
+      "channel": "app:lockInfo"
+    },
+    {
+      "name": "savePdf",
+      "args": "payload",
+      "kind": "invoke",
+      "channel": "pdf:save"
+    },
+    {
+      "name": "savePdfHtml",
+      "args": "payload",
+      "kind": "invoke",
+      "channel": "pdf:saveHtml"
+    },
+    {
+      "name": "openFile",
+      "args": "",
+      "kind": "invoke",
+      "channel": "file:open"
+    },
+    {
+      "name": "getDataPath",
+      "args": "",
+      "kind": "invoke",
+      "channel": "app:dataPath"
+    },
+    {
+      "name": "getDefaultDataPath",
+      "args": "",
+      "kind": "invoke",
+      "channel": "app:getDefaultDataPath"
+    },
+    {
+      "name": "pickDataDir",
+      "args": "",
+      "kind": "invoke",
+      "channel": "app:pickDataDir"
+    },
+    {
+      "name": "setDataDir",
+      "args": "dir, moveData",
+      "kind": "invoke",
+      "channel": "app:setDataDir"
+    },
+    {
+      "name": "resetDataDir",
+      "args": "",
+      "kind": "invoke",
+      "channel": "app:resetDataDir"
+    },
+    {
+      "name": "importExcel",
+      "args": "",
+      "kind": "invoke",
+      "channel": "excel:import"
+    },
+    {
+      "name": "exportExcel",
+      "args": "payload",
+      "kind": "invoke",
+      "channel": "excel:export"
+    },
+    {
+      "name": "pickAttachments",
+      "args": "ownerId, preferredName",
+      "kind": "invoke",
+      "channel": "attachment:pick"
+    },
+    {
+      "name": "openAttachment",
+      "args": "filePath",
+      "kind": "invoke",
+      "channel": "attachment:open"
+    },
+    {
+      "name": "readAttachmentDataUrl",
+      "args": "filePath",
+      "kind": "invoke",
+      "channel": "attachment:readDataUrl"
+    },
+    {
+      "name": "deleteAttachment",
+      "args": "filePath",
+      "kind": "invoke",
+      "channel": "attachment:delete"
+    },
+    {
+      "name": "cleanupOrphans",
+      "args": "payload",
+      "kind": "invoke",
+      "channel": "storage:cleanupOrphans"
+    },
+    {
+      "name": "saveAttachmentBuffer",
+      "args": "ownerId, fileName, base64, mime, preferredName",
+      "kind": "invoke",
+      "channel": "attachment:saveBuffer"
+    },
+    {
+      "name": "scanWindows",
+      "args": "",
+      "kind": "invoke",
+      "channel": "scan:windows"
+    },
+    {
+      "name": "openWindowsScanApp",
+      "args": "",
+      "kind": "invoke",
+      "channel": "scan:openWindowsScanApp"
+    },
+    {
+      "name": "askPin",
+      "args": "opts",
+      "kind": "invoke",
+      "channel": "app:askPin"
+    },
+    {
+      "name": "pickInstaller",
+      "args": "",
+      "kind": "invoke",
+      "channel": "app:pickInstaller"
+    },
+    {
+      "name": "runInstaller",
+      "args": "filePath",
+      "kind": "invoke",
+      "channel": "app:runInstaller"
+    },
+    {
+      "name": "inspectUpdate",
+      "args": "filePath",
+      "kind": "invoke",
+      "channel": "app:inspectUpdate"
+    },
+    {
+      "name": "getAppVersion",
+      "args": "",
+      "kind": "invoke",
+      "channel": "app:getVersion"
+    },
+    {
+      "name": "exportArchive",
+      "args": "payload",
+      "kind": "invoke",
+      "channel": "archive:export"
+    },
+    {
+      "name": "hashPassword",
+      "args": "password",
+      "kind": "invoke",
+      "channel": "auth:hashPassword"
+    },
+    {
+      "name": "verifyPassword",
+      "args": "password, salt, hash",
+      "kind": "invoke",
+      "channel": "auth:verifyPassword"
+    }
+  ],
+  "usage": {
+    "getLockInfo": {
+      "count": 2,
+      "files": {
+        "renderer/core/app.js": 2
+      }
+    },
+    "loadData": {
+      "count": 3,
+      "files": {
+        "renderer/core/app.js": 1,
+        "renderer/core/data-store.js": 2
+      }
+    },
+    "saveData": {
+      "count": 4,
+      "files": {
+        "renderer/core/data-store.js": 4
+      }
+    },
+    "saveDataSync": {
+      "count": 4,
+      "files": {
+        "renderer/core/data-store.js": 2,
+        "renderer/core/network.js": 2
+      }
+    },
+    "importExcel": {
+      "count": 3,
+      "files": {
+        "renderer/core/excel-import.js": 2,
+        "renderer/modules/ledger/excel-import.js": 1
+      }
+    },
+    "exportExcel": {
+      "count": 3,
+      "files": {
+        "renderer/core/helpers.js": 2,
+        "renderer/modules/ledger/helpers.js": 1
+      }
+    },
+    "saveFile": {
+      "count": 5,
+      "files": {
+        "renderer/core/helpers.js": 2,
+        "renderer/core/pages-backup.js": 2,
+        "renderer/modules/ledger/helpers.js": 1
+      }
+    },
+    "scanWindows": {
+      "count": 6,
+      "files": {
+        "renderer/core/helpers.js": 2,
+        "renderer/core/modals-common.js": 1,
+        "renderer/modules/hr/pages-ops.js": 2,
+        "renderer/modules/ledger/modals.js": 1
+      }
+    },
+    "pickAttachments": {
+      "count": 21,
+      "files": {
+        "renderer/core/helpers.js": 8,
+        "renderer/core/pages-archive.js": 2,
+        "renderer/modules/clients/attachments.js": 3,
+        "renderer/modules/hr/pages-ops.js": 2,
+        "renderer/modules/ledger/pages-archive.js": 6
+      }
+    },
+    "scanAttachment": {
+      "count": 2,
+      "files": {
+        "renderer/core/helpers.js": 2
+      }
+    },
+    "openAttachment": {
+      "count": 19,
+      "files": {
+        "renderer/core/helpers.js": 2,
+        "renderer/core/pages-archive.js": 4,
+        "renderer/modules/clients/attachments.js": 2,
+        "renderer/modules/ledger/app.js": 1,
+        "renderer/modules/ledger/modals.js": 5,
+        "renderer/modules/ledger/pages-archive.js": 5
+      }
+    },
+    "deleteAttachment": {
+      "count": 23,
+      "files": {
+        "renderer/core/helpers.js": 2,
+        "renderer/core/pages-archive.js": 6,
+        "renderer/modules/clients/project-path.js": 2,
+        "renderer/modules/ledger/app.js": 1,
+        "renderer/modules/ledger/modals.js": 4,
+        "renderer/modules/ledger/pages-archive.js": 8
+      }
+    },
+    "cleanupOrphans": {
+      "count": 2,
+      "files": {
+        "renderer/core/helpers.js": 2
+      }
+    },
+    "savePdf": {
+      "count": 3,
+      "files": {
+        "renderer/core/helpers.js": 2,
+        "renderer/modules/ledger/helpers.js": 1
+      }
+    },
+    "exportArchive": {
+      "count": 6,
+      "files": {
+        "renderer/core/helpers.js": 2,
+        "renderer/modules/ledger/pages-archive.js": 4
+      }
+    },
+    "readAttachmentDataUrl": {
+      "count": 2,
+      "files": {
+        "renderer/core/helpers.js": 2
+      }
+    },
+    "savePdfHtml": {
+      "count": 4,
+      "files": {
+        "renderer/core/helpers.js": 4
+      }
+    },
+    "openWindowsScanApp": {
+      "count": 2,
+      "files": {
+        "renderer/core/modals-common.js": 1,
+        "renderer/modules/ledger/modals.js": 1
+      }
+    },
+    "saveAttachmentBuffer": {
+      "count": 2,
+      "files": {
+        "renderer/core/modals-common.js": 1,
+        "renderer/modules/ledger/modals.js": 1
+      }
+    },
+    "hashPassword": {
+      "count": 2,
+      "files": {
+        "renderer/core/network.js": 2
+      }
+    },
+    "verifyPassword": {
+      "count": 2,
+      "files": {
+        "renderer/core/network.js": 2
+      }
+    },
+    "getAppVersion": {
+      "count": 3,
+      "files": {
+        "renderer/core/network.js": 1,
+        "renderer/core/pages-backup.js": 2
+      }
+    },
+    "serverStart": {
+      "count": 6,
+      "files": {
+        "renderer/core/network.js": 4,
+        "renderer/core/pages-backup.js": 2
+      }
+    },
+    "serverStop": {
+      "count": 4,
+      "files": {
+        "renderer/core/network.js": 2,
+        "renderer/core/pages-backup.js": 2
+      }
+    },
+    "getExtraBackupDir": {
+      "count": 2,
+      "files": {
+        "renderer/core/pages-backup.js": 2
+      }
+    },
+    "pickExtraBackupDir": {
+      "count": 2,
+      "files": {
+        "renderer/core/pages-backup.js": 2
+      }
+    },
+    "backupNow": {
+      "count": 7,
+      "files": {
+        "renderer/core/pages-backup.js": 3,
+        "renderer/modules/ledger/glue.js": 4
+      }
+    },
+    "clearExtraBackupDir": {
+      "count": 2,
+      "files": {
+        "renderer/core/pages-backup.js": 2
+      }
+    },
+    "openFile": {
+      "count": 4,
+      "files": {
+        "renderer/core/pages-backup.js": 2,
+        "renderer/modules/clients/helpers.js": 2
+      }
+    },
+    "snapshotData": {
+      "count": 8,
+      "files": {
+        "renderer/core/pages-backup.js": 4,
+        "renderer/core/project-links.js": 2,
+        "renderer/modules/clients/helpers.js": 2
+      }
+    },
+    "getDataPath": {
+      "count": 4,
+      "files": {
+        "renderer/core/pages-backup.js": 4
+      }
+    },
+    "pickDataDir": {
+      "count": 2,
+      "files": {
+        "renderer/core/pages-backup.js": 2
+      }
+    },
+    "setDataDir": {
+      "count": 2,
+      "files": {
+        "renderer/core/pages-backup.js": 2
+      }
+    },
+    "resetDataDir": {
+      "count": 2,
+      "files": {
+        "renderer/core/pages-backup.js": 2
+      }
+    },
+    "pickInstaller": {
+      "count": 2,
+      "files": {
+        "renderer/core/pages-backup.js": 2
+      }
+    },
+    "inspectUpdate": {
+      "count": 2,
+      "files": {
+        "renderer/core/pages-backup.js": 2
+      }
+    },
+    "runInstaller": {
+      "count": 1,
+      "files": {
+        "renderer/core/pages-backup.js": 1
+      }
+    },
+    "serverStatus": {
+      "count": 2,
+      "files": {
+        "renderer/core/pages-backup.js": 2
+      }
+    },
+    "safetyBackup": {
+      "count": 2,
+      "files": {
+        "renderer/modules/ledger/helpers.js": 2
+      }
+    },
+    "openExternalLink": {
+      "count": 4,
+      "files": {
+        "renderer/modules/ledger/modals.js": 4
+      }
+    }
+  },
+  "missing": [
+    "scanAttachment",
+    "safetyBackup"
+  ],
+  "unused": [
+    "getDefaultDataPath",
+    "askPin"
+  ],
+  "web": {
+    "loadData": [
+      "data",
+      "GET /api/bootstrap"
+    ],
+    "saveData": [
+      "data",
+      "POST /api/sync (diff)"
+    ],
+    "saveDataSync": [
+      "data",
+      "fetch keepalive / sendBeacon → /api/sync"
+    ],
+    "snapshotData": [
+      "backup",
+      "POST /api/backups (أدمن)"
+    ],
+    "backupNow": [
+      "backup",
+      "POST /api/backups"
+    ],
+    "getExtraBackupDir": [
+      "remove",
+      "لا ينطبق (النسخ على السيرفر)"
+    ],
+    "pickExtraBackupDir": [
+      "remove",
+      "لا ينطبق"
+    ],
+    "clearExtraBackupDir": [
+      "remove",
+      "لا ينطبق"
+    ],
+    "safetyBackup": [
+      "backup",
+      "POST /api/backups (سبب)"
+    ],
+    "serverStart": [
+      "remove",
+      "وضع الشبكة القديم يتلغى"
+    ],
+    "serverStop": [
+      "remove",
+      "يتلغى"
+    ],
+    "serverStatus": [
+      "remove",
+      "يتلغى"
+    ],
+    "openExternalLink": [
+      "browser",
+      "window.open"
+    ],
+    "saveFile": [
+      "browser",
+      "Blob + download"
+    ],
+    "openFile": [
+      "browser",
+      "<input type=file>"
+    ],
+    "savePdf": [
+      "pdf",
+      "POST /api/pdf"
+    ],
+    "savePdfHtml": [
+      "pdf",
+      "POST /api/pdf"
+    ],
+    "exportArchive": [
+      "pdf",
+      "POST /api/archive (ZIP stream)"
+    ],
+    "getLockInfo": [
+      "remove",
+      "لا ينطبق (السيرفر هو القفل)"
+    ],
+    "getDataPath": [
+      "remove",
+      "لا ينطبق"
+    ],
+    "getDefaultDataPath": [
+      "remove",
+      "لا ينطبق"
+    ],
+    "pickDataDir": [
+      "remove",
+      "لا ينطبق"
+    ],
+    "setDataDir": [
+      "remove",
+      "لا ينطبق"
+    ],
+    "resetDataDir": [
+      "remove",
+      "لا ينطبق"
+    ],
+    "importExcel": [
+      "browser",
+      "xlsx في المتصفح"
+    ],
+    "exportExcel": [
+      "browser",
+      "xlsx في المتصفح"
+    ],
+    "pickAttachments": [
+      "attach",
+      "input file + POST /api/attachments"
+    ],
+    "openAttachment": [
+      "attach",
+      "GET /api/attachments/:id (signed URL)"
+    ],
+    "readAttachmentDataUrl": [
+      "attach",
+      "GET /api/attachments/:id"
+    ],
+    "deleteAttachment": [
+      "attach",
+      "DELETE /api/attachments/:id"
+    ],
+    "saveAttachmentBuffer": [
+      "attach",
+      "POST /api/attachments"
+    ],
+    "cleanupOrphans": [
+      "attach",
+      "POST /api/admin/attachments/cleanup (dry-run)"
+    ],
+    "scanWindows": [
+      "attach",
+      "كاميرا / رفع PDF"
+    ],
+    "openWindowsScanApp": [
+      "remove",
+      "لا ينطبق"
+    ],
+    "scanAttachment": [
+      "attach",
+      "كاميرا / رفع PDF"
+    ],
+    "askPin": [
+      "auth",
+      "يتراجع: صلاحيات السيرفر بدل PIN"
+    ],
+    "pickInstaller": [
+      "remove",
+      "لا updater في الويب"
+    ],
+    "runInstaller": [
+      "remove",
+      "لا ينطبق"
+    ],
+    "inspectUpdate": [
+      "remove",
+      "لا ينطبق"
+    ],
+    "getAppVersion": [
+      "data",
+      "GET /api/health (version)"
+    ],
+    "hashPassword": [
+      "auth",
+      "POST /api/users (السيرفر يشفّر)"
+    ],
+    "verifyPassword": [
+      "auth",
+      "POST /api/auth/login"
+    ]
+  }
+}
