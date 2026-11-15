@@ -1,0 +1,76 @@
+{
+  "name": "unified-system",
+  "productName": "النظام الموحد",
+  "version": "1.3.53",
+  "description": "النظام الموحد 1.1.1 — رؤوس موحّدة + CSS مدمج + فلاتر موحّدة",
+  "main": "main.js",
+  "author": "النظام الموحد",
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "check": "node tools/check-structure.js",
+    "dist": "electron-builder --win nsis",
+    "dist:dir": "electron-builder --win dir",
+    "test": "node tools/test-security.js"
+  },
+  "dependencies": {
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "electron": "^31.0.0",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.local.unified-system",
+    "productName": "النظام الموحد",
+    "copyright": "Copyright © النظام الموحد",
+    "asar": false,
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "src/**/*",
+      "renderer/**/*",
+      "icon.png",
+      "icon.ico",
+      "package.json",
+      "vendor/**/*"
+    ],
+    "extraMetadata": {
+      "name": "unified-system"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.ico",
+      "artifactName": "Unified-System-Setup-${version}.${ext}"
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": false,
+      "allowElevation": true,
+      "createDesktopShortcut": "always",
+      "createStartMenuShortcut": true,
+      "shortcutName": "النظام الموحد",
+      "uninstallDisplayName": "النظام الموحد",
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico",
+      "installerHeaderIcon": "build/icon.ico",
+      "runAfterFinish": true,
+      "menuCategory": false,
+      "deleteAppDataOnUninstall": false
+    },
+    "icon": "build/icon.ico"
+  }
+}

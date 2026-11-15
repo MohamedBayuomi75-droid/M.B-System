@@ -1,0 +1,160 @@
+{
+ "srcDir": "../../../w/ledger-app-final-review_1_/ledger-app/renderer/js",
+ "outDir": "../../renderer/modules/ledger",
+ "hrDirs": [
+  "../../renderer/core",
+  "../../renderer/modules/hr"
+ ],
+ "reportFile": "rename-map.json",
+ "prefix": "lg",
+ "toHr": [
+  "DATA",
+  "uiDensity",
+  "uiZoom",
+  "readOnlyMode"
+ ],
+ "domainKeys": [
+  "suppliers",
+  "invoices",
+  "payments",
+  "customCategories",
+  "customInternalCodes",
+  "customSupplierItemCodes",
+  "customItemNames",
+  "customLinkedItems",
+  "customProjects",
+  "hiddenProjects",
+  "customItemDescriptions",
+  "hiddenSuggestions",
+  "archiveFolders",
+  "archiveTrash",
+  "archiveSections",
+  "documentTypes",
+  "documentTypeHidden"
+ ],
+ "permPrefix": "ledger.",
+ "files": {
+  "state.js": {
+   "dropStatements": [
+    "uiDensity",
+    "uiZoom"
+   ]
+  },
+  "data-store.js": {
+   "keep": [
+    "__indexes",
+    "rebuildIndexes",
+    "sanitizeLoadedData",
+    "migrateData",
+    "nextPaymentNo"
+   ],
+   "dropStatements": [
+    "beforeunload"
+   ],
+   "textPatches": [
+    {
+     "find": "  if(!DATA.settings || typeof DATA.settings !== 'object') DATA.settings = { companyName: '', managerName: '', nextPaymentNo: 1 };\n  if(DATA.settings.managerName == null) DATA.settings.managerName = '';\n  if(DATA.settings.companyName == null) DATA.settings.companyName = '';\n",
+     "replace": ""
+    },
+    {
+     "find": "  if(!Array.isArray(DATA.auditLog)) DATA.auditLog = [];\n",
+     "replace": ""
+    },
+    {
+     "find": "  // قص سجل التدقيق لو كبر\n  if(DATA.auditLog.length > 500) DATA.auditLog = DATA.auditLog.slice(0, 500);\n",
+     "replace": ""
+    },
+    {
+     "find": "DATA.settings = { companyName: '', managerName: '' };",
+     "replace": "DATA.settings = {};",
+     "all": true
+    }
+   ]
+  },
+  "helpers.js": {
+   "dropStatements": [
+    "startInputUnlockWatchdog"
+   ],
+   "textPatches": [
+    {
+     "find": "const managerName = (DATA.settings && DATA.settings.managerName) ? String(DATA.settings.managerName).trim() : '';",
+     "replace": "const managerName = (DATA.settings && DATA.settings.companyManager) ? String(DATA.settings.companyManager).trim() : '';"
+    },
+    {
+     "find": "  if(!Array.isArray(DATA[listKey])) DATA[listKey] = [];\n  if(DATA[listKey].includes(v)) return false;\n  DATA[listKey].push(v);",
+     "replace": "  if(!Array.isArray(DATA.ledger[listKey])) DATA.ledger[listKey] = [];\n  if(DATA.ledger[listKey].includes(v)) return false;\n  DATA.ledger[listKey].push(v);"
+    }
+   ]
+  },
+  "modals.js": {},
+  "statement.js": {},
+  "excel-import.js": {},
+  "exports.js": {
+   "drop": [
+    "exportFullBackup",
+    "handleImportFullBackup",
+    "exportBackupJson",
+    "handleImportBackup",
+    "confirmResetAll"
+   ]
+  },
+  "app.js": {
+   "drop": [
+    "render",
+    "applyUiZoom",
+    "applyUiDensity",
+    "ensureModalZoomObserver"
+   ],
+   "dropStatements": [
+    "initAppEntry",
+    "addEventListener\\('error'",
+    "addEventListener\\('unhandledrejection'"
+   ],
+   "dropIfPageEquals": [
+    "backup",
+    "users"
+   ],
+   "textPatches": [
+    {
+     "find": "document.addEventListener('keydown', (e)=>{\n  if(e.key === 'Escape' || e.code === 'Escape'){",
+     "replace": "document.addEventListener('keydown', (e)=>{\n  if(!lgIsActive()) return;   // (الموحّد) الاختصارات دي لصفحات الدفتر بس\n  if(e.key === 'Escape' || e.code === 'Escape'){"
+    },
+    {
+     "find": "    else if(currentPage==='backup') pc.innerHTML = renderBackupPage();\n    else if(currentPage==='users') pc.innerHTML = renderUsersPage();\n",
+     "replace": "",
+     "all": true
+    },
+    {
+     "find": "window.__revalidateAfterEdit = true; settingsTab = 'maintenance';\n      openAddEditInvoiceModal(btn.getAttribute('data-fix-edit'));",
+     "replace": "window.__revalidateAfterEdit = true;\n      openAddEditInvoiceModal(btn.getAttribute('data-fix-edit'));"
+    },
+    {
+     "find": "window.__revalidateAfterEdit = true; settingsTab = 'maintenance';\n      openAddEditInvoiceModal(row.getAttribute('data-fix-invid'));",
+     "replace": "window.__revalidateAfterEdit = true;\n      openAddEditInvoiceModal(row.getAttribute('data-fix-invid'));"
+    },
+    {
+     "find": "  if(currentPage==='backup' && window.__revalidateAfterEdit){\n    window.__revalidateAfterEdit = false;\n    setTimeout(()=>{ const b=document.getElementById('runValidationBtn'); if(b) b.click(); }, 50);\n  }",
+     "replace": "  if(window.__revalidateAfterEdit){\n    window.__revalidateAfterEdit = false;\n    setTimeout(()=>{ try{ openGlobalValidationModal(); }catch(e){} }, 50);\n  }"
+    }
+   ]
+  },
+  "pages-archive.js": {},
+  "pages-categories.js": {},
+  "pages-dashboard.js": {},
+  "pages-invoices.js": {},
+  "pages-payments.js": {},
+  "pages-quarterly.js": {},
+  "pages-reports.js": {},
+  "pages-suppliers.js": {},
+  "network.js": "drop",
+  "permissions.js": "drop",
+  "pages-users.js": "drop",
+  "pages-backup.js": "drop"
+ },
+ "extraRename": {
+  "render": "lgRender"
+ },
+ "forceRename": [
+  "migrateData"
+ ]
+}

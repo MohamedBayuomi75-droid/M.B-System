@@ -1,0 +1,30 @@
+const { openApp } = require('./harness');
+const { baseUser, ok, eq, summary } = require('./lib');
+(async () => {
+  const seed = { users: [baseUser], schemaVersion: 9, projects: [{ id: 'pA', code: 'P1', name: 'مشروع أ', status: 'التنفيذ', budget: 100 }], expenses: [{ id: 'e1', project: 'مشروع أ', amount: 500, date: '2026-02-01' }],
+    clients: { customers: [{ id: 'cA', name: 'ع', code: 'C1', projects: [], boqs: [], workSurveys: [], contracts: [], collections: [], invoices: [{ no: 'I1', status: 'معتمد', date: '2026-01-01', value: 900, project: 'مشروع أ', paid: 300 }] }] } };
+  const { browser, page, errors } = await openApp(seed);
+  eq(await page.evaluate(() => currentPage), 'dashboard', 'lands on follow center');
+  ok(await page.evaluate(() => document.querySelectorAll('.fc-kpi').length === 0 && document.querySelectorAll('.fc-tile').length >= 24 && !!document.querySelector('.fc-card svg')), 'KPIs + charts');
+  eq(await page.evaluate(() => [...document.querySelectorAll('.nav-sections .nav-btn')][0].innerText.includes('مركز المتابعة')), true, 'section renamed');
+  eq(await page.evaluate(() => document.querySelectorAll('.nav-pages .nav-btn').length), 0, 'no other pages in section');
+  await page.evaluate(() => { currentPage = 'clients.dashboard'; rerenderCurrentPage(); });
+  eq(await page.evaluate(() => currentPage), 'dashboard', 'legacy dashboards redirect');
+  await page.click('.fc-tile[data-fc-go="clients.collections"]'); await page.waitForTimeout(300);
+  eq(await page.evaluate(() => currentPage), 'clients.collections', 'KPI navigates');
+  await page.evaluate(() => goToPage('dashboard', true)); await page.waitForTimeout(300);
+  ok(await page.evaluate(() => !document.querySelector('.fc-action') && !document.querySelector('#acLimitBtn') && !document.querySelector('.alert-center [data-src="approvals"]')), 'quick actions / limit / approvals tab removed');
+  await page.click('#fcTaskAdd'); await page.waitForTimeout(200);
+  await page.fill('#fctWho', 'م. سامي'); await page.fill('#fctText', 'متابعة التوريد'); await page.click('#fctSave'); await page.waitForTimeout(300);
+  ok(await page.evaluate(() => DATA.dailyTasks.length === 1 && document.querySelector('.fc-tasks').innerText.includes('متابعة التوريد') && document.querySelector('.fc-tasks').innerText.includes('كتبها')), 'daily task added + shows author');
+  await page.evaluate(() => document.querySelector('[data-fc-tdone]').click()); await page.waitForTimeout(250);
+  ok(await page.evaluate(() => DATA.dailyTasks[0].done === true), 'task done toggles');
+  const yr = await page.evaluate(() => { const y = document.querySelectorAll('.fc-year'); return y.length; });
+  ok(yr >= 2, 'year filter pills ' + yr);
+  await page.evaluate(() => document.querySelectorAll('.fc-year')[1].click()); await page.waitForTimeout(250);
+  ok(await page.evaluate(() => !!document.querySelector('.fc-year.is-on') && !!document.querySelector('.fc-scroll, .alert-empty')), 'year filter applies');
+  ok(await page.evaluate(() => document.querySelector('.follow-center').lastElementChild.id === 'fclog'), 'log at the very bottom');
+  eq(await page.evaluate(() => (goToPage('dashboard', true), document.querySelectorAll('.fc-clients').length)), 0, 'clients dashboard embed removed');
+  ok(errors.length === 0, 'no errors ' + JSON.stringify(errors.slice(0, 3)));
+  await browser.close(); summary();
+})();
