@@ -14,7 +14,11 @@
     "dist:dir": "electron-builder --win dir",
     "test": "node tools/test-security.js",
     "test:ui": "node tests-merge/run-all.js",
-    "inventory": "node tools/web/inventory.js"
+    "inventory": "node tools/web/inventory.js",
+    "server:build": "npm --prefix server run build",
+    "server:test": "npm --prefix server test",
+    "server:up": "docker compose -f docker/docker-compose.yml up -d --build",
+    "server:down": "docker compose -f docker/docker-compose.yml down"
   },
   "dependencies": {
     "xlsx": "^0.18.5"

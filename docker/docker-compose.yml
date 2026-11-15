@@ -1,0 +1,55 @@
+# التشغيل:  cp docker/.env.example docker/.env  (وغيّر الأسرار)  ثم  docker compose -f docker/docker-compose.yml up -d --build
+# الترتيب: db (صحية) → migrate (يطبّق كل الـ migrations من الصفر ويخرج) → server
+# Caddy (HTTPS) بيتضاف في A9، و MinIO في A5.
+name: unified
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER:-unified}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD is required in docker/.env}
+      POSTGRES_DB: ${DB_NAME:-unified}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    # مفيش ports: الداتابيز مش مكشوفة برّه شبكة Compose
+
+  migrate:
+    build: { context: ../server, dockerfile: ../docker/server.Dockerfile }
+    image: unified-server:local
+    init: true
+    command: ["node", "node_modules/typeorm/cli.js", "migration:run", "-d", "dist/database/data-source.js"]
+    environment: &server-env
+      NODE_ENV: ${NODE_ENV:-production}
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: ${DB_USER:-unified}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME:-unified}
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET is required in docker/.env (min 32 chars)}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      SWAGGER_ENABLED: ${SWAGGER_ENABLED:-false}
+    depends_on:
+      db: { condition: service_healthy }
+    restart: "no"
+
+  server:
+    image: unified-server:local
+    init: true
+    restart: unless-stopped
+    environment:
+      <<: *server-env
+      PORT: 3000
+    ports:
+      - "${SERVER_PORT:-3000}:3000"
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+
+volumes:
+  pgdata:

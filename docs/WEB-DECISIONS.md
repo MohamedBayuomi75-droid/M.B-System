@@ -42,6 +42,34 @@ NestJS + TypeORM (`synchronize:false`، migrations مرقّمة) + PostgreSQL 16
 ## D-008 — مسارات الاختبارات
 `tests-merge/harness.js` بقى بياخد كل المسارات من env: `PLAYWRIGHT_PATH` (افتراضي `require('playwright')`)، `CHROME_PATH` (افتراضي متصفح playwright)، `APP_ROOT` (افتراضي جذر المشروع). وأضفنا `npm run test:ui` يشغّل الـ 58 ملف.
 
+## D-009 — NestJS 11 مش 12 (A1، 2026-11-15)
+**الموقف:** NestJS 12 (أحدث نسخة) بقى **ESM فقط**. السيرفر بيشتغل عادي على Node 22، بس Jest على Node 22 مش بيقدر يحمّله (محتاج Node ≥ 24.9).
+**القرار:** نثبّت خط **NestJS 11** (`@nestjs/* ^11.2`، `@nestjs/swagger ^11.4`، `@nestjs/typeorm ^11`، `@nestjs/config ^4`) — CommonJS ومستقر، ونفس الـ API تقريبًا. TypeORM 1.1 و TypeScript 5.9 (ts-jest مش بيدعم TS 7 لسه).
+**إعادة النظر:** لما نرقّي لـ Node 24 LTS (أو قبل B0)، الترقية لـ 12 = تغيير أرقام النسخ + تشغيل الاختبارات.
+
+## D-010 — تصميم جداول الطبقة 1 (A1)
+- **`users`**: `id uuid` (`gen_random_uuid()`) + `legacy_id` (id الديسكتوب للترحيل). اسم المستخدم فريد بدون حساسية للحالة (`uq_users_username_lower` على `lower(username)`).
+  كلمة المرور: `password_algo ∈ {argon2id, scrypt}` + `password_hash` + `password_salt` (إجباري لو scrypt — CHECK). الصلاحيات العامة كأعمدة (`can_edit_data`, `can_delete_data`, `can_manage_users`)، و`project_scope text[]` (null = كل المشاريع). كمان `failed_attempts`/`locked_until` (A2)، `token_version` (خروج من كل الأجهزة)، `totp_*` (A8).
+  `manageNetwork` القديم **اتشال** (وضع الشبكة القديم بيتلغى في الويب).
+- **`user_permissions`**: صف لكل (مستخدم، صفحة) بـ `can_view/add/edit/delete` — نفس شكل `pages[page]` في الديسكتوب، تخصيص فوق قالب الدور.
+- **`roles`**: `key` + `permissions jsonb` (نفس شكل `roleTemplates()`). **FK من `users.role` لـ `roles.key` مأجّل لـ A2** مع الـ seed.
+- **`records`**: PK `(collection, id)`، `rev > 0`، `project_id` مستخرج، soft delete بـ `deleted_at` + فهرس جزئي للسجلات الحية.
+- **`changes`**: `seq bigserial`، `op ∈ {insert, update, delete}`. الـ trigger بتاع `LISTEN/NOTIFY` مأجّل لـ A3 (migration منفصلة).
+- **`sessions`**: بنخزن **hash** الـ refresh token بس + `replaced_by` لاكتشاف إعادة استخدام توكن مسروق.
+- `schema_meta`: `legacy_schema_version = 9`، `data_layer = "records-v1"`.
+- الـ migrations مستوردة صراحةً في `src/migrations/index.ts` (مش glob) عشان نفس القائمة تشتغل في ts-jest و`dist`.
+- اختبار **drift** (`createSchemaBuilder().log()` لازم يرجع صفر استعلامات) بيضمن إن الـ entities = الـ migrations.
+
+## D-011 — Docker (A1)
+- صورة واحدة `unified-server` (multi-stage، `node:22-alpine`، بتشتغل كمستخدم `node` مش root، HEALTHCHECK على `/api/health`).
+- خدمة `migrate` منفصلة بتشغّل `migration:run` وتخرج، والـ `server` مايقومش غير بعد ما تخلص بنجاح (`service_completed_successfully`). السيرفر في الإنتاج **مابيشغّلش migrations بنفسه**.
+- PostgreSQL مش مكشوف برّه شبكة Compose. الأسرار من `docker/.env` (متجاهل في git)، و Compose بيرفض يقوم من غير `DB_PASSWORD` و`JWT_SECRET`.
+- `init: true` بدل تثبيت `tini` (أبسط، ومن غير ما نحتاج apk وقت الـ build).
+- secret اختياري `npm_ca` وقت الـ build للبيئات اللي ورا proxy بيفك TLS (زي بيئة التطوير دي). مابيتنسخش للصورة، ومن غيره الـ build عادي.
+
+## D-012 — سياسة كلمات المرور في السيرفر (تكملة D-005)
+`PasswordService`: argon2id (`m=19MiB, t=3, p=1`)، قطع عند 256 حرف (نفس الديسكتوب)، و`needsRehash` بيرجع true للـ scrypt أو argon2 بإعدادات أضعف. السياسة للكلمات الجديدة: 10–128 حرف، و`admin123`/`123456` ممنوعين.
+
 ## ⏳ قرارات مستنية صاحب المشروع (الخطة §8)
 - [ ] الدومين
 - [ ] الاستضافة (Hetzner / DigitalOcean / AWS / سيرفر داخلي)
@@ -51,4 +79,4 @@ NestJS + TypeORM (`synchronize:false`، migrations مرقّمة) + PostgreSQL 16
 - [ ] أدوار إضافية (مثلًا مدير مشروع يشوف مشاريعه بس)
 - [ ] نسخة `data.json` حقيقية + المرفقات (مطلوبة لتقرير الأحجام والـ legacy-refs)
 - [ ] مكتبة UI لـ Angular
-- [ ] اسم الـ branch: نكمّل على `claude/new-session-vlpwzt` ولا نعمل `web`؟ (D-004)
+- [x] اسم الـ branch: **نكمّل على `claude/new-session-vlpwzt`** (اتأكد 2026-11-15، D-004)

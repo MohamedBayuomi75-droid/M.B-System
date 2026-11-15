@@ -4,10 +4,45 @@
 
 | المرحلة | الحالة |
 |---|---|
-| **A0 — خط أساس** | ✅ خلصت (2026-11-15). مستنية موافقة قبل A1 |
-| A1 — هيكل السيرفر والداتابيز | ⏸️ لم تبدأ |
+| A0 — خط أساس | ✅ خلصت واتوافق عليها (2026-11-15) |
+| **A1 — هيكل السيرفر والداتابيز** | ✅ خلصت (2026-11-15). مستنية موافقة قبل A2 |
 | A2 … A9 | ⏸️ |
 | B0 … B5 | ⏸️ |
+
+---
+
+## A1 — هيكل السيرفر والداتابيز (2026-11-15)
+
+### اللي اتعمل
+1. **`server/`**: NestJS 11 + TypeORM 1.1 + PostgreSQL 16 + TypeScript 5.9 (شوف D-009 عن سبب 11 مش 12).
+   - `GET /api/health`: حالة السيرفر، والداتابيز (اتصال وزمن ونسخة)، والـ migrations (اللي اتطبقت واللي pending)، و`legacySchemaVersion`. بيرجّع `200` لو ok/degraded و`503` لو الداتابيز واقعة.
+   - **Swagger** على `/api/docs` (والـ JSON على `/api/docs-json`)، بـ DTOs موثّقة من أول endpoint.
+   - **pino** (JSON logs، `x-request-id`، وإخفاء `authorization`/`cookie`/كلمات المرور من السجلات).
+   - **config من env** بيتحقق بـ class-validator عند الإقلاع، والإنتاج بيرفض يقوم من غير `JWT_SECRET` (32+ حرف) وكلمة سر الداتابيز.
+   - `ValidationPipe({whitelist, forbidNonWhitelisted, transform})` global، ومن غير `x-powered-by`.
+2. **Migration `InitLayer1`**: الجداول العشرة بتاعة الطبقة 1 (`users, sessions, roles, user_permissions, records, docs, changes, audit_log, attachments, schema_meta`) بـ PK/FK/CHECK/فهارس. التفاصيل في D-010.
+3. **`PasswordService`**: argon2id للجديد + تحقق scrypt القديم بنفس `normalize` (قطع 256) + `needsRehash`.
+4. **Docker Compose** (`docker/`): `db` ← `migrate` ← `server`. التفاصيل في D-011.
+5. سكربتات في الجذر: `npm run server:build | server:test | server:up | server:down`. وفيه `server/README.md`.
+
+### الاختبارات
+| الأمر | النتيجة |
+|---|---|
+| `server: npm run lint` (tsc) | ✅ |
+| `server: npm run test:unit` | ✅ 20/20: توافق scrypt (متجه ثابت + الكود الفعلي لـ `src/main/password.js` + كود HR الأصلي + القطع عند 256 + مدخلات تالفة)، ومسار الترقية لـ argon2id، وrehash للإعدادات الضعيفة، والسياسة، والتحقق من env |
+| `server: npm run test:e2e` (PostgreSQL حقيقي، قاعدة مؤقتة) | ✅ 16/16: migrations من الصفر، **مفيش drift** بين الـ entities والـ schema، الـ seed، القيود (اسم مستخدم فريد بدون حساسية للحالة، salt إجباري للـ scrypt، rev>0، op، cascade)، revert كامل وإعادة تطبيق، health 200/503، و Swagger |
+| `docker compose up` من volume فاضي | ✅ `migrate` خرج بـ 0 بعد ما طبّق `InitLayer1`، و`server` بقى healthy، و`/api/health` = ok، و`/api/docs` = 200. وتشغيل تاني = «No migrations are pending». المستخدم جوه الحاوية `node`، وport الداتابيز مش مكشوف |
+| `npm run check` / `npm test` (الديسكتوب) | ✅ 41/41 · 35/35 |
+| `npm run test:ui` (الديسكتوب) | ✅ 58/58 ملف، 781 assertion (من غير تغيير) |
+
+**معيار القبول** («`docker compose up` يشغّل كل حاجة وmigrations من الصفر») ✅
+
+### ملاحظات
+- في بيئة التطوير دي الـ build محتاج `--network host` + build-arg للـ proxy + secret الـ CA (D-011). ده خاص بالبيئة، وعلى VPS عادي `docker compose up --build` كفاية.
+- `users.role → roles.key` FK والـ seed بتاع الأدوار في A2. والـ NOTIFY trigger على `changes` في A3.
+
+### الخطوة الجاية (بعد الموافقة)
+A2: Passport local + JWT (15 دقيقة) + refresh token في `sessions` (cookie `HttpOnly; Secure; SameSite=Lax`) مع التدوير، وrate limit وقفل مؤقت للحساب، وتغيير كلمة المرور الإجباري، وCRUD المستخدمين، و`roles.ts` من `renderer/core/permissions.js` + seed، و`GET /api/me`.
 
 ---
 
