@@ -18,7 +18,8 @@
     "server:build": "npm --prefix server run build",
     "server:test": "npm --prefix server test",
     "server:up": "docker compose -f docker/docker-compose.yml up -d --build",
-    "server:down": "docker compose -f docker/docker-compose.yml down"
+    "server:down": "docker compose -f docker/docker-compose.yml down",
+    "gen:collections": "node tools/web/gen-server-collections.js"
   },
   "dependencies": {
     "xlsx": "^0.18.5"

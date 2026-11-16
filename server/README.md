@@ -1,6 +1,6 @@
 # سيرفر النظام الموحد (NestJS + PostgreSQL)
 
-المرحلة الحالية: **A2** (هيكل + داتابيز + health + مصادقة + مستخدمين + أدوار). الخطة: [`../docs/UNIFIED-WEB-PLAN.md`](../docs/UNIFIED-WEB-PLAN.md).
+المرحلة الحالية: **A3** (هيكل + داتابيز + مصادقة + مستخدمين + أدوار + طبقة البيانات + المزامنة + البث اللحظي). الخطة: [`../docs/UNIFIED-WEB-PLAN.md`](../docs/UNIFIED-WEB-PLAN.md).
 
 ## التشغيل بـ Docker (كل حاجة)
 ```bash
@@ -22,6 +22,17 @@ curl -H "authorization: Bearer $TOKEN" localhost:3000/api/me      # المستخ
 ```
 - الأدوار والصفحات: `src/authz/roles.ts` (المصدر الوحيد). endpoint عام = `@Public()`، وصلاحية = `@RequirePerms({ flag: 'manageUsers' })` أو `@RequirePerms({ page: 'payroll', action: 'edit' })`.
 - أكواد الأخطاء الثابتة: `src/auth/auth.types.ts` (`AuthErrorCode`).
+
+## طبقة البيانات (A3) — بسرعة
+```bash
+curl -H "authorization: Bearer $TOKEN" localhost:3000/api/bootstrap          # DATA مفلتر + meta.revs
+curl -H "authorization: Bearer $TOKEN" -H 'content-type: application/json' localhost:3000/api/sync \
+  -d '{"changes":[{"collection":"employees","id":"e1","op":"upsert","baseRev":0,"set":{"name":"محمد"}}]}'
+curl -H "authorization: Bearer $TOKEN" 'localhost:3000/api/changes?since=0'    # catch-up
+# Socket.IO: io(origin, { path: '/api/stream', auth: { token } }) → أحداث 'change' / 'resync' / 'reauth_required'
+```
+- صلاحيات البيانات: `src/data/collection-pages.ts` (قراءة/كتابة/مشروع لكل collection)، `field-guards.ts` (حقول محمية)، `financial-fields.ts` (تعارض صريح).
+- لو اتغيّرت خريطة الـ collections: `npm run inventory` ثم `npm run gen:collections` (من الجذر).
 
 ## التطوير المحلي
 ```bash
@@ -58,5 +69,8 @@ src/
   authz/                     roles.ts (المصدر الوحيد)، effective-permissions، guards عامة، decorators
   users/                     /api/users (manageUsers)، /api/me، جلسات الـ refresh
   audit/                     AuditService (audit_log)
+  data/                      bootstrap / sync / changes + policy (collection-pages، field-guards، financial-fields)
+  realtime/                  Socket.IO gateway (/api/stream) + LISTEN/NOTIFY listener
+  events/                    أحداث داخلية (user.changed)
   health/                    GET /api/health
 ```

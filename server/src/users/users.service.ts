@@ -6,6 +6,7 @@ import { PasswordService } from '../auth/password.service';
 import { effectivePermissions } from '../authz/effective-permissions';
 import { roleTemplates, RoleKey, isRoleKey, ROLES_REQUIRING_PROJECT_SCOPE } from '../authz/roles';
 import { UserEntity, UserPermissionEntity } from '../entities';
+import { DomainEvents } from '../events/domain-events';
 import { SessionsService } from './sessions.service';
 import { CreateUserDto, PageOverrideDto, ResetPasswordDto, UpdateUserDto, UserDto } from './users.dto';
 
@@ -15,6 +16,7 @@ export class UsersService {
     @InjectDataSource() private readonly ds: DataSource,
     private readonly passwords: PasswordService,
     private readonly sessions: SessionsService,
+    private readonly events: DomainEvents,
   ) {}
 
   private get users() { return this.ds.getRepository(UserEntity); }
@@ -82,7 +84,7 @@ export class UsersService {
   }
 
   async update(id: string, dto: UpdateUserDto, actor: AuthUser): Promise<{ user: UserDto; changed: string[] }> {
-    return this.ds.transaction(async (em) => {
+    const res = await this.ds.transaction(async (em) => {
       const repo = em.getRepository(UserEntity);
       const u = await repo.createQueryBuilder('u').setLock('pessimistic_write').where('u.id = :id', { id }).getOne();
       if (!u) throw new NotFoundException('المستخدم مش موجود');
@@ -121,6 +123,8 @@ export class UsersService {
       if (dto.active === false && changed.includes('active')) await this.sessions.revokeAll(id, true, em);
       return { user: this.toDto(u, await em.getRepository(UserPermissionEntity).findBy({ userId: id })), changed };
     });
+    if (res.changed.length) this.events.emit('user.changed', id);
+    return res;
   }
 
   async resetPassword(id: string, dto: ResetPasswordDto, actor: AuthUser): Promise<void> {
@@ -142,6 +146,7 @@ export class UsersService {
       });
       await this.sessions.revokeAll(id, true, em);
     });
+    this.events.emit('user.changed', id);
   }
 
   countUsers(): Promise<number> { return this.users.count(); }

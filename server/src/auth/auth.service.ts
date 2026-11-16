@@ -7,6 +7,7 @@ import { AuditService, clientIp } from '../audit/audit.service';
 import { UserEntity } from '../entities';
 import { SessionsService } from '../users/sessions.service';
 import { UsersService } from '../users/users.service';
+import { DomainEvents } from '../events/domain-events';
 import { AuthConfig } from './auth.config';
 import { AccessTokenPayload, AuthErrorCode, AuthUser } from './auth.types';
 import { ARGON2_OPTIONS, PasswordService } from './password.service';
@@ -27,6 +28,7 @@ export class AuthService {
     private readonly jwt: JwtService,
     private readonly cfg: AuthConfig,
     private readonly audit: AuditService,
+    private readonly events: DomainEvents,
   ) {
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     this.dummyHash = require('argon2').hash('dummy-password-for-timing', ARGON2_OPTIONS);
@@ -94,6 +96,7 @@ export class AuthService {
     if (r.kind === 'reuse') {
       await this.audit.record({ action: 'auth.refresh_reuse_detected', userId: r.userId, details: { revokedAllSessions: true }, req });
       this.log.warn(`refresh token reuse detected for user ${r.userId} — all sessions revoked`);
+      this.events.emit('user.changed', r.userId);
     }
     if (r.kind !== 'ok') throw new UnauthorizedException({ statusCode: 401, code: AuthErrorCode.REFRESH_INVALID, message: 'الجلسة انتهت — سجّل دخول تاني' });
     return this.issue(r.userId, r.session.id, r.token);
@@ -116,6 +119,7 @@ export class AuthService {
 
   async logoutAll(actor: AuthUser, req: Request) {
     await this.sessions.revokeAll(actor.id, true);
+    this.events.emit('user.changed', actor.id);
     await this.audit.record({ action: 'auth.logout_all', userId: actor.id, username: actor.username, req });
   }
 

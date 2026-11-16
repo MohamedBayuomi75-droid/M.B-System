@@ -80,7 +80,7 @@ function unitRole(prefix: string): Permissions {
  */
 function projectManagerRole(): Permissions {
   const p = allPages(false, false, false, false);
-  const view = ['dashboard', 'general.overview', 'tasks.my', 'projects', 'workers', 'supervisors', 'equipment', 'drivers', 'attendance', 'costs', 'reports',
+  const view = ['dashboard', 'general.overview', 'tasks.my', 'projects', 'workers', 'supervisors', 'equipment', 'drivers', 'costs',
     'clients.dashboard', 'clients.contracts', 'clients.invoices', 'clients.reports', 'warehouses.home'];
   const work = ['workerAttendance', 'transfers', 'expenses', 'clients.workSurveys', 'clients.boqs'];
   for (const k of view) p[k] = perm(true);
