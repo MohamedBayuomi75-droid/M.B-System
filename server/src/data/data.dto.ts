@@ -52,6 +52,7 @@ export class AppliedRecordDto {
   @ApiProperty({ description: 'الـ rev الجديد (يتحفظ عند العميل كـ baseRev للمرة الجاية)' }) rev: number;
   @ApiProperty({ enum: ['insert', 'update', 'delete', 'noop', 'ignored'] }) op: string;
   @ApiPropertyOptional({ type: [String], description: 'حقول نصية اتعدّلت من حد تاني بعد baseRev واتكتب فوقها (آخر واحد يكسب)' }) overwrote?: string[];
+  @ApiPropertyOptional({ type: 'object', additionalProperties: true, description: 'السجل بعد الدمج — بيرجع لما حد تاني كان عدّل نفس السجل بعد baseRev (العميل يستبدل نسخته بيه)' }) data?: unknown;
 }
 
 export class ConflictRecordDto {
@@ -68,6 +69,7 @@ export class AppliedDocDto {
   @ApiProperty() rev: number;
   @ApiProperty({ enum: ['set', 'patch', 'arrayDelta', 'noop', 'ignored'] }) op: string;
   @ApiPropertyOptional({ type: [String] }) overwrote?: string[];
+  @ApiPropertyOptional({ description: 'القيمة بعد الدمج (arrayDelta أو لما حد تاني عدّل بعد baseRev)' }) data?: unknown;
 }
 
 export class ConflictDocDto {
@@ -101,6 +103,8 @@ export class BootstrapMetaDto {
   @ApiProperty({ description: 'يقدر يعدّل القوائم المرجعية والإعدادات' }) docsWritable: boolean;
   @ApiProperty({ type: 'object', additionalProperties: { type: 'array', items: { type: 'string' } }, description: 'collection → حقول اتشالت (صلاحية)' })
   hiddenFields: Record<string, string[]>;
+  @ApiProperty({ type: 'object', additionalProperties: { type: 'string', enum: ['collection', 'lookup', 'doc', 'meta-flag', 'system-table', 'legacy-ref'] }, description: 'نوع كل مفتاح في DATA (العميل بيبني الـ diff على أساسه)' })
+  catalog: Record<string, string>;
 }
 
 export class BootstrapDto {

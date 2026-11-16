@@ -21,7 +21,7 @@ services:
     # مفيش ports: الداتابيز مش مكشوفة برّه شبكة Compose
 
   migrate:
-    build: { context: ../server, dockerfile: ../docker/server.Dockerfile }
+    build: { context: .., dockerfile: docker/server.Dockerfile }
     image: unified-server:local
     init: true
     command: ["node", "node_modules/typeorm/cli.js", "migration:run", "-d", "dist/database/data-source.js"]

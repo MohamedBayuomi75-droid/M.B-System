@@ -19,7 +19,8 @@ const REVALIDATE_MS = Number(process.env.REALTIME_REVALIDATE_MS || 30_000);
  *    لكل مجموعة مستخدمين بنفس توقيع الصلاحيات (بيتحسب مرة واحدة للمجموعة).
  *  - 'resync' لما صلاحيات المستخدم تتغيّر (العميل يعمل bootstrap من جديد).
  */
-@WebSocketGateway({ path: '/api/stream', cors: { origin: false }, serveClient: false })
+// serveClient: الواجهة بتحمّل /api/stream/socket.io.js من نفس السيرفر (نفس الأصل، من غير CDN)
+@WebSocketGateway({ path: '/api/stream', cors: { origin: false }, serveClient: true })
 export class RealtimeGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect, OnModuleDestroy {
   private readonly log = new Logger(RealtimeGateway.name);
   @WebSocketServer() server: Server;

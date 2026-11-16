@@ -198,6 +198,18 @@
       "unit": "clients",
       "storage": "records (صف لكل سجل)"
     },
+    "clients.paidReconcileLog": {
+      "kind": "doc",
+      "source": "manual (A4 web tests)",
+      "unit": "clients",
+      "storage": "docs (كائن كامل)"
+    },
+    "clients.projectsUnifyLog": {
+      "kind": "doc",
+      "source": "manual (A4 web tests)",
+      "unit": "clients",
+      "storage": "docs (كائن كامل)"
+    },
     "clients.settings": {
       "kind": "doc",
       "source": "runtime",

@@ -1,6 +1,7 @@
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import cookieParser from 'cookie-parser';
+import { mountLegacyUi } from './legacy-ui';
 import { SERVER_VERSION } from './version';
 
 /** إعدادات مشتركة بين main.ts والاختبارات (عشان الاختبار يختبر نفس السلوك بالظبط). */
@@ -15,6 +16,8 @@ export function setupApp(app: INestApplication): void {
   const http = app.getHttpAdapter().getInstance();
   http.disable?.('x-powered-by');
   http.set?.('trust proxy', 'loopback, uniquelocal'); // خلف Caddy
+
+  if (process.env.LEGACY_UI !== 'false') mountLegacyUi(app);
 
   const swaggerOn = process.env.SWAGGER_ENABLED ? process.env.SWAGGER_ENABLED === 'true' : process.env.NODE_ENV !== 'production';
   if (swaggerOn) {

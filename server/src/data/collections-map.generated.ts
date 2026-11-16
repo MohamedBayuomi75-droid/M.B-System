@@ -27,6 +27,8 @@ export const COLLECTIONS_MAP: Readonly<Record<string, CatalogKind>> = {
   "clients.guarantees": "collection",
   "clients.invoices": "collection",
   "clients.opportunities": "collection",
+  "clients.paidReconcileLog": "doc",
+  "clients.projectsUnifyLog": "doc",
   "clients.settings": "doc",
   "clients.workSurveys": "collection",
   "costItemHidden": "doc",

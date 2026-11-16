@@ -6,7 +6,7 @@
 |---|---|---|
 | **collection** | 53 | records (صف لكل سجل) |
 | **lookup** | 27 | docs (قائمة مرجعية كاملة) |
-| **doc** | 25 | docs (كائن كامل) |
+| **doc** | 27 | docs (كائن كامل) |
 | **meta-flag** | 5 | docs: meta (أعلام ترحيل/حالة) |
 | **system-table** | 2 | جدول مخصص (users / audit_log) |
 | **legacy-ref** | 3 | — يتراجع (مقروء بس، مفيش تهيئة/كتابة في الكود) |
@@ -39,6 +39,8 @@
 | `clients.guarantees` | collection | clients | 0 | runtime |  |
 | `clients.invoices` | collection | clients | 0 | runtime |  |
 | `clients.opportunities` | collection | clients | 0 | runtime |  |
+| `clients.paidReconcileLog` | doc | clients | 0 | manual (A4 web tests) |  |
+| `clients.projectsUnifyLog` | doc | clients | 0 | manual (A4 web tests) |  |
 | `clients.settings` | doc | clients | 1 | runtime | modules/clients/project-workflow.js |
 | `clients.workSurveys` | collection | clients | 0 | runtime |  |
 | `costItemHidden` | doc | hr | 11 | static | modules/hr/pages-costs.js |

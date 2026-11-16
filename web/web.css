@@ -1,0 +1,23 @@
+/* نسخة الويب (A4): شاشة الدخول + إخفاء أجزاء الديسكتوب بس (من غير تعديل ملفات الواجهة) */
+.web-auth-overlay { position: fixed; inset: 0; z-index: 100000; display: flex; align-items: center; justify-content: center;
+  background: var(--paper, #f6f5f1); padding: 16px; font-family: inherit; }
+.web-auth-card { width: 100%; max-width: 380px; background: #fff; border: 1px solid var(--line, #e3dfd3); border-radius: 16px;
+  padding: 28px 24px; box-shadow: 0 10px 40px rgba(0,0,0,.08); }
+.web-auth-brand { font-size: 13px; font-weight: 700; color: var(--accent, #8a6d3b); margin-bottom: 6px; }
+.web-auth-card h2 { margin: 0 0 6px; font-size: 22px; }
+.web-auth-sub { margin: 0 0 18px; color: var(--ink-soft, #6b6555); font-size: 14px; }
+.web-auth-field { display: block; margin-bottom: 12px; font-size: 14px; }
+.web-auth-field span { display: block; margin-bottom: 4px; color: var(--ink-soft, #6b6555); }
+.web-auth-field input { width: 100%; box-sizing: border-box; }
+.web-auth-err { min-height: 20px; color: #b42318; font-size: 13px; margin: 4px 0 10px; white-space: pre-line; }
+.web-auth-btn { width: 100%; margin-top: 6px; }
+
+/* أجزاء خاصة بالديسكتوب (D-007: remove) */
+.web-mode .settings-panel[data-panel="system"],
+.web-mode .set-tab[data-panel="system"],
+.web-mode .settings-panel[data-panel="network"],
+.web-mode .set-tab[data-panel="network"],
+.web-mode .settings-card:has(#pickDataDirBtn),
+.web-mode .settings-card:has(#safeUpdateBtn),
+.web-mode #scanWiaBtn,
+.web-mode #scanOpenWinAppBtn { display: none !important; }

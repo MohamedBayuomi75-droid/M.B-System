@@ -160,6 +160,9 @@ function sizes(file) {
     if (!map[p]) { const ty = sniff(p); map[p] = { kind: classify(p, ty, false), source: 'static' + (ty ? '' : ' (no init found)') }; }
     map[p].refs = (map[p].refs || 0) + o.refs; map[p].files = [...new Set([...(map[p].files || []), ...o.files])].sort();
   }
+  // مفاتيح بتتكتب بشكل غير مباشر (alias زي cl.x = ...) والتحليل الثابت مابيلقطهاش — اتلقطت في اختبارات الويب (A4)
+  const MANUAL = { 'clients.projectsUnifyLog': 'doc', 'clients.paidReconcileLog': 'doc' };
+  for (const [p, k] of Object.entries(MANUAL)) if (!map[p]) map[p] = { kind: k, source: 'manual (A4 web tests)' };
   // مفاتيح موجودة في data.json الحقيقي ومش في الكود/التهيئة
   if (process.env.DATA_JSON) {
     const real = JSON.parse(fs.readFileSync(process.env.DATA_JSON, 'utf8'));

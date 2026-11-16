@@ -102,7 +102,7 @@ export class DataService {
 
       return {
         seq: Number(seq), schemaVersion: LEGACY_SCHEMA_VERSION, data,
-        meta: { revs, docRevs, hidden, writable, docsWritable: isAnyEditor(user) && !!user.permissions.editData, hiddenFields: hiddenFieldsMap },
+        meta: { revs, docRevs, hidden, writable, docsWritable: isAnyEditor(user) && !!user.permissions.editData, hiddenFields: hiddenFieldsMap, catalog: { ...COLLECTIONS_MAP } },
       };
     } catch (e) {
       if (qr.isTransactionActive) await qr.rollbackTransaction();
@@ -311,10 +311,10 @@ export class DataService {
     let diff: Json;
     let fields: string[];
     if (p.kind === 'insert') {
-      await qr.query(`INSERT INTO records (collection, id, data, rev, project_id, created_by, updated_by) VALUES ($1, $2, $3::jsonb, 1, $4, $5, $5)`, [c.collection, c.id, JSON.stringify(p.data), pid(p.data), user.id]);
+      await qr.query(`INSERT INTO records (collection, id, data, rev, project_id, created_by, updated_by, created_at) VALUES ($1, $2, $3::jsonb, 1, $4, $5, $5, clock_timestamp())`, [c.collection, c.id, JSON.stringify(p.data), pid(p.data), user.id]);
       rev = 1; op = 'insert'; diff = { set: p.data }; fields = p.fields;
     } else if (p.kind === 'restore') {
-      const r = firstRow<{ rev: number }>(await qr.query(`UPDATE records SET data = $3::jsonb, rev = rev + 1, deleted_at = NULL, project_id = $4, updated_by = $5, updated_at = now() WHERE collection = $1 AND id = $2 RETURNING rev`, [c.collection, c.id, JSON.stringify(p.data), pid(p.data), user.id]));
+      const r = firstRow<{ rev: number }>(await qr.query(`UPDATE records SET data = $3::jsonb, rev = rev + 1, deleted_at = NULL, project_id = $4, updated_by = $5, updated_at = now(), created_at = clock_timestamp() WHERE collection = $1 AND id = $2 RETURNING rev`, [c.collection, c.id, JSON.stringify(p.data), pid(p.data), user.id]));
       rev = r.rev; op = 'insert'; diff = { set: p.data, restored: true }; fields = p.fields;
     } else if (p.kind === 'update') {
       const r = firstRow<{ rev: number }>(await qr.query(`UPDATE records SET data = $3::jsonb, rev = rev + 1, project_id = $4, updated_by = $5, updated_at = now() WHERE collection = $1 AND id = $2 RETURNING rev`, [c.collection, c.id, JSON.stringify(p.data), pid(p.data), user.id]));
@@ -325,7 +325,12 @@ export class DataService {
       rev = r.rev; op = 'delete'; diff = {}; fields = [];
     }
     await qr.query(`INSERT INTO changes (collection, record_id, op, rev, user_id, fields, diff) VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb)`, [c.collection, c.id, op, rev, user.id, fields, JSON.stringify(diff)]);
-    return { collection: c.collection, id: c.id, rev, op, ...(p.kind === 'update' && p.overwrote.length ? { overwrote: p.overwrote } : {}) };
+    const merged = p.kind === 'update' && c.baseRev < p.row.rev; // حد تاني عدّل بعد baseRev → رجّع النسخة المدموجة
+    return {
+      collection: c.collection, id: c.id, rev, op,
+      ...(p.kind === 'update' && p.overwrote.length ? { overwrote: p.overwrote } : {}),
+      ...(merged ? { data: stripHidden(p.data, hiddenFields(user, c.collection)) } : {}),
+    };
   }
 
   /** سجل الواجهة القديمة (DATA.auditLog): إلحاق بس — المستخدم من السيرفر، والتعديل/الحذف (القص لـ 3000) بيتجاهل */
@@ -405,7 +410,8 @@ export class DataService {
     ));
     await qr.query(`INSERT INTO changes (collection, record_id, op, rev, user_id, fields, diff) VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb)`,
       [DOC_COLLECTION, d.key, p.row ? 'update' : 'insert', r.rev, user.id, p.fields, JSON.stringify({ ...p.diff, ...(p.overwrote.length ? { overwrote: p.overwrote } : {}) })]);
-    return { key: d.key, rev: r.rev, op: d.op, ...(p.overwrote.length ? { overwrote: p.overwrote } : {}) };
+    const merged = d.op === 'arrayDelta' || (p.row !== null && d.baseRev < p.row.rev);
+    return { key: d.key, rev: r.rev, op: d.op, ...(p.overwrote.length ? { overwrote: p.overwrote } : {}), ...(merged ? { data: p.value } : {}) };
   }
 
   // =============================== catch-up ===============================

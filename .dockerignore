@@ -1,0 +1,17 @@
+# سياق Docker = جذر المشروع (السيرفر + ملفات الواجهة القديمة). أي حاجة مش لازمة للصورة برّه.
+**/node_modules
+server/dist
+server/coverage
+server/test
+**/*.log
+.git
+docs
+tests-merge
+tools
+build
+src
+dist
+*.md
+.env
+**/.env
+docker/.env

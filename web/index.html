@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<!-- ⚠️ ملف مولَّد من renderer/index.html بـ tools/web/build-web.js — ماتعدّلوش بإيدك -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>النظام الموحد</title>
+<link rel="stylesheet" href="styles/style.css">
+<link rel="stylesheet" href="modules/ledger/ledger.css">
+<link rel="stylesheet" href="web/web.css">
+</head>
+<body>
+<div class="app" id="app">
+  <div style="text-align:center;padding:60px 0;color:#6B6555;">جارِ التحميل...</div>
+</div>
+<div id="printArea" style="display:none;"></div>
+
+<!-- نسخة الويب (A4): الجلسة + المزامنة + desktopApi فوق السيرفر — قبل ملفات الواجهة -->
+<script src="vendor/xlsx.full.min.js"></script>
+<script src="/api/stream/socket.io.js"></script>
+<script src="web/web-session.js"></script>
+<script src="web/sync-client.js"></script>
+<script src="web/web-api.js"></script>
+<script src="core/config.js"></script>
+<script src="core/state.js"></script>
+<script src="core/data-store.js"></script>
+<script src="core/network.js"></script>
+<script src="core/permissions.js"></script>
+<script src="core/helpers.js"></script>
+<script src="core/smart-tools.js"></script>
+<script src="modules/hr/pages-dashboard.js"></script>
+<script src="modules/hr/pages-employees.js"></script>
+<script src="modules/hr/pages-employee-detail.js"></script>
+<script src="modules/hr/pages-person-detail.js"></script>
+<script src="modules/hr/pages-workers.js"></script>
+<script src="modules/hr/pages-supervisors.js"></script>
+<script src="modules/hr/pages-equipment.js"></script>
+<script src="modules/hr/project-statement.js"></script>
+<script src="modules/hr/pages-projects.js"></script>
+<script src="modules/hr/pages-ops.js"></script>
+<script src="modules/hr/pages-departments.js"></script>
+<script src="modules/hr/pages-attendance.js"></script>
+<script src="modules/hr/pages-worker-attendance.js"></script>
+<script src="modules/hr/pages-worker-dues.js"></script>
+<script src="modules/hr/pages-leaves.js"></script>
+<script src="modules/hr/pages-costs.js"></script>
+<script src="modules/hr/pages-reports.js"></script>
+<script src="core/pages-archive.js"></script>
+<script src="core/pages-backup.js"></script>
+<script src="core/pages-users.js"></script>
+<script src="core/modals-common.js"></script>
+<script src="modules/hr/modals-employees.js"></script>
+<script src="core/excel-import.js"></script>
+<!-- دفتر الموردين (مدمج بالكامل — مولَّد بالـ codemod + glue.js) -->
+<script src="modules/ledger/state.js"></script>
+<script src="modules/ledger/data-store.js"></script>
+<script src="modules/ledger/helpers.js"></script>
+<script src="modules/ledger/pages-dashboard.js"></script>
+<script src="modules/ledger/pages-suppliers.js"></script>
+<script src="modules/ledger/pages-invoices.js"></script>
+<script src="modules/ledger/pages-categories.js"></script>
+<script src="modules/ledger/pages-payments.js"></script>
+<script src="modules/ledger/statement.js"></script>
+<script src="modules/ledger/pages-quarterly.js"></script>
+<script src="modules/ledger/pages-reports.js"></script>
+<script src="modules/ledger/pages-archive.js"></script>
+<script src="modules/ledger/modals.js"></script>
+<script src="modules/ledger/excel-import.js"></script>
+<script src="modules/ledger/exports.js"></script>
+<script src="modules/ledger/app.js"></script>
+<script src="modules/ledger/glue.js"></script>
+<script src="core/pages-general.js"></script>
+<script src="modules/clients/helpers.js"></script>
+<script src="modules/clients/attachments.js"></script>
+<script src="modules/clients/project-workflow.js"></script>
+<script src="modules/clients/project-path.js"></script>
+<script src="modules/clients/workflow-editor.js"></script>
+<script src="modules/clients/guarantees.js"></script>
+<script src="modules/clients/dashboard.js"></script>
+<script src="modules/clients/change-orders.js"></script>
+<script src="modules/clients/catalog.js"></script>
+<script src="modules/clients/comparison.js"></script>
+<script src="modules/clients/print.js"></script>
+<script src="modules/clients/pages-customers.js"></script>
+<script src="modules/clients/pages-work-surveys.js"></script>
+<script src="modules/clients/pages-boqs.js"></script>
+<script src="modules/clients/pages-contracts.js"></script>
+<script src="modules/clients/pages-invoices.js"></script>
+<script src="modules/clients/pages-crm.js"></script>
+<script src="modules/clients/pages-tasks.js"></script>
+<script src="modules/clients/pages-collections.js"></script>
+<script src="modules/clients/pages-reports.js"></script>
+<script src="modules/clients/pages-accounts.js"></script>
+<script src="modules/clients/pages-archive.js"></script>
+<script src="modules/clients/access.js"></script>
+<script src="modules/warehouses/helpers.js"></script>
+<script src="modules/warehouses/pages-home.js"></script>
+<script src="modules/warehouses/pages-reports.js"></script>
+<script src="modules/accounts/pages-reports.js"></script>
+<script src="core/modules.js"></script>
+<script src="core/boards.js"></script>
+<script src="core/alerts-center.js"></script>
+<script src="core/cost-center.js"></script>
+<script src="core/project-links.js"></script>
+<script src="core/extras.js"></script>
+<script src="core/follow-center.js"></script>
+<script src="core/app.js"></script>
+<!-- بعد كل ملفات الواجهة وقبل boot() -->
+<script src="web/web-overrides.js"></script>
+</body>
+</html>

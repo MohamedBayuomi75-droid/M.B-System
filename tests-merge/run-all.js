@@ -12,7 +12,7 @@ const files = fs.readdirSync(dir)
 const results = [];
 for (const f of files) {
   const t0 = Date.now();
-  const r = spawnSync(process.execPath, [path.join(dir, f)], { encoding: 'utf8', timeout: 180000 });
+  const r = spawnSync(process.execPath, [path.join(dir, f)], { encoding: 'utf8', timeout: Number(process.env.UI_TEST_TIMEOUT_MS || 300000) });
   const out = (r.stdout || '') + (r.stderr || '');
   const m = out.match(/(\d+) passed, (\d+) failed/);
   const okRun = r.status === 0;

@@ -52,6 +52,30 @@ describe('HTTP app (health + swagger)', () => {
     expect(Object.keys(res.body.components.schemas)).toEqual(expect.arrayContaining(['HealthDto', 'DbHealthDto', 'MigrationsHealthDto']));
   });
 
+  it('serves the legacy UI on the same origin (/legacy) with the web scripts injected', async () => {
+    expect((await request(app.getHttpServer()).get('/')).headers.location).toBe('/legacy/');
+    expect((await request(app.getHttpServer()).get('/legacy')).headers.location).toBe('/legacy/');
+    const idx = await request(app.getHttpServer()).get('/legacy/').expect(200);
+    expect(idx.text).toContain('web/web-session.js');
+    expect(idx.text).toContain('web/web-overrides.js');
+    expect(idx.text).toContain('core/app.js');
+    expect(idx.headers['cache-control']).toBe('no-cache');
+    await request(app.getHttpServer()).get('/legacy/core/app.js').expect(200);
+    await request(app.getHttpServer()).get('/legacy/web/sync-client.js').expect(200);
+    await request(app.getHttpServer()).get('/legacy/vendor/xlsx.full.min.js').expect(200);
+    await request(app.getHttpServer()).get('/favicon.ico').expect(200);
+    await request(app.getHttpServer()).get('/legacy/nope.js').expect(404);
+    // مفيش تسريب لملفات برّه renderer/web/vendor
+    await request(app.getHttpServer()).get('/legacy/../package.json').expect(404);
+    await request(app.getHttpServer()).get('/legacy/%2e%2e/server/package.json').expect(404);
+  });
+
+  it('web/index.html is up to date with renderer/index.html (npm run build:web)', () => {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { execFileSync } = require('node:child_process');
+    expect(() => execFileSync(process.execPath, [require('node:path').resolve(__dirname, '../../tools/web/build-web.js'), '--check'], { stdio: 'pipe' })).not.toThrow();
+  });
+
   it('unknown route → 404 JSON', async () => {
     const res = await request(app.getHttpServer()).get('/api/nope').expect(404);
     expect(res.body.statusCode).toBe(404);
