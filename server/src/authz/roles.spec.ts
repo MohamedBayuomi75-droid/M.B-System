@@ -41,6 +41,16 @@ describe('roles.ts parity with renderer/core/permissions.js', () => {
     for (const r of ['warehouse', 'ledgerAccountant'] as const) expect(T[r].manageUsers || T[r].deleteData).toBe(false);
   });
 
+  it('projectManager: works on project ops, never payroll/employees/ledger/users, never deletes', () => {
+    const pm = T.projectManager;
+    expect(pm.pages.workerAttendance).toEqual({ view: true, add: true, edit: true, delete: false });
+    expect(pm.pages.projects).toEqual({ view: true, add: false, edit: true, delete: false });
+    for (const k of ['payroll', 'employees', 'workerDues', 'users', 'backup', 'leaves', 'performance']) expect(pm.pages[k].view).toBe(false);
+    for (const k of PAGES.filter((x) => x.startsWith('ledger.'))) expect(pm.pages[k].view).toBe(false);
+    expect(Object.values(pm.pages).some((x) => x.delete)).toBe(false);
+    expect(pm.manageUsers || pm.deleteData).toBe(false);
+  });
+
   it('templates are fresh copies', () => {
     roleTemplates().admin.pages.dashboard.view = false;
     expect(roleTemplates().admin.pages.dashboard.view).toBe(true);

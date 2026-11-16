@@ -4,7 +4,7 @@ import { DataSource, EntityManager, QueryFailedError } from 'typeorm';
 import { AuthErrorCode, AuthUser } from '../auth/auth.types';
 import { PasswordService } from '../auth/password.service';
 import { effectivePermissions } from '../authz/effective-permissions';
-import { roleTemplates, RoleKey, isRoleKey } from '../authz/roles';
+import { roleTemplates, RoleKey, isRoleKey, ROLES_REQUIRING_PROJECT_SCOPE } from '../authz/roles';
 import { UserEntity, UserPermissionEntity } from '../entities';
 import { SessionsService } from './sessions.service';
 import { CreateUserDto, PageOverrideDto, ResetPasswordDto, UpdateUserDto, UserDto } from './users.dto';
@@ -51,6 +51,7 @@ export class UsersService {
   async create(dto: CreateUserDto, actor: AuthUser): Promise<UserDto> {
     const role = (dto.role ?? 'viewer') as RoleKey;
     this.assertCanAssign(actor, role, dto.manageUsers);
+    this.assertProjectScope(role, dto.projectScope ?? null);
     const err = this.passwords.policyError(dto.password);
     if (err) throw new BadRequestException({ statusCode: 400, code: AuthErrorCode.WEAK_PASSWORD, message: err });
     if (await this.findByUsername(dto.username)) throw new ConflictException('اسم المستخدم موجود قبل كده');
@@ -94,6 +95,7 @@ export class UsersService {
         throw new BadRequestException('مينفعش تعطّل حسابك أو تغيّر دورك بنفسك');
       }
       if (losingAdmin) await this.assertAnotherActiveAdmin(em, id);
+      this.assertProjectScope(newRole, dto.projectScope !== undefined ? dto.projectScope : u.projectScope);
 
       const changed: string[] = [];
       const set = <K extends keyof UserEntity>(k: K, v: UserEntity[K] | undefined) => {
@@ -151,6 +153,12 @@ export class UsersService {
     if (!isRoleKey(role)) throw new BadRequestException('دور غير معروف');
     const grantsAdmin = role === 'admin' || manageUsers === true || (manageUsers === undefined && roleTemplates()[role].manageUsers);
     if (grantsAdmin && actor.role !== 'admin') throw new ForbiddenException({ statusCode: 403, code: AuthErrorCode.FORBIDDEN, message: 'منح صلاحيات الأدمن أو إدارة المستخدمين للأدمن بس' });
+  }
+
+  private assertProjectScope(role: string, scope: string[] | null) {
+    if ((ROLES_REQUIRING_PROJECT_SCOPE as readonly string[]).includes(role) && !(scope && scope.length)) {
+      throw new BadRequestException('الدور ده لازم يتحدد له مشروع واحد على الأقل (projectScope)');
+    }
   }
 
   private async assertAnotherActiveAdmin(em: EntityManager, exceptId: string) {

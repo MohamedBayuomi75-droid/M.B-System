@@ -30,7 +30,7 @@ export interface Permissions {
   pages: Record<string, PagePerm>;
 }
 
-export const ROLE_KEYS = ['admin', 'hr', 'viewer', 'payroll', 'clientsSales', 'clientsAccounts', 'clientsProjects', 'warehouse', 'ledgerAccountant', 'custom'] as const;
+export const ROLE_KEYS = ['admin', 'hr', 'viewer', 'payroll', 'clientsSales', 'clientsAccounts', 'clientsProjects', 'warehouse', 'ledgerAccountant', 'projectManager', 'custom'] as const;
 export type RoleKey = (typeof ROLE_KEYS)[number];
 
 export const ROLE_LABELS: Record<RoleKey, string> = {
@@ -43,6 +43,7 @@ export const ROLE_LABELS: Record<RoleKey, string> = {
   clientsProjects: 'عملاء: مدير مشاريع',
   warehouse: 'أمين مخازن',
   ledgerAccountant: 'محاسب دفتر الموردين',
+  projectManager: 'مدير مشروع (مشاريعه بس)',
   custom: 'مخصّص',
 };
 
@@ -73,6 +74,24 @@ function unitRole(prefix: string): Permissions {
   return { editData: true, deleteData: false, manageUsers: false, pages: p };
 }
 
+/**
+ * مدير مشروع (قرار §8): بيشوف ويشغّل مشاريعه بس — النطاق الفعلي من users.project_scope (إجباري للدور ده،
+ * والفلترة على مستوى الصفوف في A3). مفيش رواتب ولا بيانات موظفين ولا دفتر موردين ولا مستخدمين ولا حذف.
+ */
+function projectManagerRole(): Permissions {
+  const p = allPages(false, false, false, false);
+  const view = ['dashboard', 'general.overview', 'tasks.my', 'projects', 'workers', 'supervisors', 'equipment', 'drivers', 'attendance', 'costs', 'reports',
+    'clients.dashboard', 'clients.contracts', 'clients.invoices', 'clients.reports', 'warehouses.home'];
+  const work = ['workerAttendance', 'transfers', 'expenses', 'clients.workSurveys', 'clients.boqs'];
+  for (const k of view) p[k] = perm(true);
+  for (const k of work) p[k] = perm(true, true, true, false);
+  p.projects = perm(true, false, true, false);
+  return { editData: true, deleteData: false, manageUsers: false, pages: p };
+}
+
+/** الأدوار اللي لازم يكون لها نطاق مشاريع (project_scope) مش فاضي */
+export const ROLES_REQUIRING_PROJECT_SCOPE: readonly RoleKey[] = ['projectManager'];
+
 function build(): Record<RoleKey, Permissions> {
   const hrPages = allPages(true, true, true, true);
   hrPages.backup = perm(true);
@@ -94,6 +113,7 @@ function build(): Record<RoleKey, Permissions> {
     clientsProjects: clientsRole(['projects', 'clients.workSurveys', 'clients.boqs', 'clients.comparison', 'clients.guarantees'], ['*']),
     warehouse: unitRole('warehouses.'),
     ledgerAccountant: unitRole('ledger.'),
+    projectManager: projectManagerRole(),
     // «مخصّص»: الأساس عرض فقط، والصلاحيات الفعلية من user_permissions
     custom: { ...viewer, pages: allPages(false, false, false, false) },
   };

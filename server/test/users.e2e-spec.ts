@@ -21,7 +21,7 @@ describe('A2 users / roles / me', () => {
   describe('permission matrix (role × endpoint) generated from roles.ts', () => {
     const T = roleTemplates();
     it.each(ROLE_KEYS.filter((r) => r !== 'admin'))('%s', async (role) => {
-      const { token } = await userToken(`matrix_${role}`, role);
+      const { token } = await userToken(`matrix_${role}`, role, role === 'projectManager' ? { projectScope: ['p1'] } : {});
       const canManage = T[role].manageUsers;
       expect((await t.http().get('/api/me').set(bearer(token))).status).toBe(200);
       expect((await t.http().get('/api/roles').set(bearer(token))).status).toBe(200);
@@ -65,6 +65,17 @@ describe('A2 users / roles / me', () => {
       const r = await createUser(t, admin, body);
       expect(r.status).toBe(400);
       if (code) expect(r.body.code).toBe(code);
+    });
+
+    it('projectManager requires a non-empty projectScope (create + update)', async () => {
+      expect((await createUser(t, admin, { username: 'pm_noscope', password: PW, role: 'projectManager' })).status).toBe(400);
+      expect((await createUser(t, admin, { username: 'pm_empty', password: PW, role: 'projectManager', projectScope: [] })).status).toBe(400);
+      const ok = await createUser(t, admin, { username: 'pm_ok', password: PW, role: 'projectManager', projectScope: ['p1'] });
+      expect(ok.status).toBe(201);
+      expect((await t.http().patch(`/api/users/${ok.body.id}`).set(bearer(admin)).send({ projectScope: [] })).status).toBe(400);
+      const v = await createUser(t, admin, { username: 'to_pm', password: PW, role: 'viewer' });
+      expect((await t.http().patch(`/api/users/${v.body.id}`).set(bearer(admin)).send({ role: 'projectManager' })).status).toBe(400);
+      expect((await t.http().patch(`/api/users/${v.body.id}`).set(bearer(admin)).send({ role: 'projectManager', projectScope: ['p2'] })).status).toBe(200);
     });
 
     it('arabic usernames are allowed', async () => {
