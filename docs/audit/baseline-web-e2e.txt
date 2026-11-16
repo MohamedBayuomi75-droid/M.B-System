@@ -1,0 +1,50 @@
+[1] login screen: wrong password, then forced first change
+  ✓ wrong password shows an Arabic error
+  ✓ no data loaded before login
+  ✓ forced password change form shown
+  ✓ weak new password rejected in the form
+  ✓ app opens after the change, currentUser from the server
+  ✓ permissions come from /api/me (hr: no user management)
+  ✓ reload keeps the session (refresh cookie)
+[2] two users: changes appear instantly on the other screen
+  ✓ B sees A's insert in 29ms
+  ✓ B screen re-rendered
+  ✓ A sees B edit
+  ✓ delete propagates
+[3] no re-render while the user is typing (re-render after)
+  ✓ data updated but no re-render while typing
+  ✓ re-rendered after typing stopped
+[4] conflicts: financial field rejected with a clear message; different fields merge
+  ✓ B change rejected, B now shows the server value
+  ✓ B sees the conflict message
+  ✓ server keeps A value (no silent overwrite)
+  ✓ different fields merged on the server
+  ✓ B got the merged record back (A notes) even while disconnected
+[5] viewer: sees data, nothing it changes reaches the server
+  ✓ viewer sees costs
+  ✓ client does not even send changes the viewer may not make
+  ✓ server unchanged
+  ✓ hand-made request from the viewer browser → 403
+[6] no payroll permission → no salaries in the browser at all; edits keep the hidden salary
+  ✓ real salary never reaches the clerk browser (got 0)
+  ✓ phone saved, hidden salary untouched on the server
+[7] project manager: only his projects in the browser
+  ✓ p1 only, wages hidden
+  ✓ UI permissions match the role
+[8] users page (legacy) → /api/users
+  ✓ apiCreateUser creates the user on the server and refreshes the list
+  ✓ user exists on the server
+  ✓ deleting in the legacy page = deactivated on the server (no hard delete)
+  ✓ admin untouched
+  ✓ users list has no password data
+[9] offline: changes queue locally and go out when the server is reachable again
+  ✓ offline message shown
+  ✓ not on the server yet
+  ✓ queued change saved after reconnect
+[10] closing the tab with an unsaved change still saves it (keepalive)
+  ✓ pending change sent on page close
+[11] desktop-only settings are hidden; logout returns to the login screen
+  ✓ network/system tabs hidden
+  ✓ logout → login screen
+  ✓ refresh cookie revoked
+✓ ALL PASSED: 38 passed, 0 failed

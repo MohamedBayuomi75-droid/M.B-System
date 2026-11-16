@@ -1,5 +1,6 @@
 # حالة مشروع الويب (WEB-STATUS)
 
+> ⚠️ **من 2026-11-16 المرجع الرئيسي بقى [`ERP_System_Master_Implementation_Plan.md`](ERP_System_Master_Implementation_Plan.md) (v2.0)**. حالة المهام في [`IMPLEMENTATION_BACKLOG.md`](IMPLEMENTATION_BACKLOG.md)، والفحص في `CURRENT_SYSTEM_AUDIT.md` / `FEATURE_INVENTORY.md` / `ARCHITECTURE_GAP_ANALYSIS.md` / `DATABASE_AUDIT.md` / `SECURITY_AUDIT.md` / `TEST_BASELINE.md`. الملف ده سجل مراحل المسار A.
 > بيتحدّث في آخر كل مرحلة. الخطة: [`UNIFIED-WEB-PLAN.md`](UNIFIED-WEB-PLAN.md) · القرارات: [`WEB-DECISIONS.md`](WEB-DECISIONS.md)
 
 | المرحلة | الحالة |
@@ -8,8 +9,9 @@
 | A1 — هيكل السيرفر والداتابيز | ✅ خلصت واتوافق عليها (2026-11-16) |
 | A2 — المصادقة والمستخدمون والأدوار | ✅ خلصت واتوافق عليها (2026-11-16) |
 | A3 — طبقة البيانات + الصلاحيات + Realtime | ✅ خلصت واتوافق عليها (2026-11-16) |
-| **A4 — غلاف الويب للواجهة القديمة** | ✅ خلصت (2026-11-16). مستنية موافقة قبل A5 |
-| A5 … A9 | ⏸️ |
+| **A4 — غلاف الويب للواجهة القديمة** | ✅ خلصت (2026-11-16). مستنية موافقة |
+| **الفحص الشامل حسب الخطة الرئيسية v2.0** | ✅ التقارير السبعة جاهزة (2026-11-16) — مستنية مراجعة وقرارات |
+| A5 … A9 | ⏸️ موقوفة لحد قرارات `ARCHITECTURE_GAP_ANALYSIS.md §4` |
 | B0 … B5 | ⏸️ |
 
 ---

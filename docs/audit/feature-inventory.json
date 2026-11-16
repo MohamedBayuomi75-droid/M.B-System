@@ -1,0 +1,5309 @@
+{
+ "generatedFrom": "renderer/ (static scan)",
+ "sections": [
+  {
+   "id": "general",
+   "label": "🧭 مركز المتابعة",
+   "pages": [
+    "dashboard"
+   ]
+  },
+  {
+   "id": "tasks",
+   "label": "مهامي",
+   "pages": [
+    "tasks.my"
+   ]
+  },
+  {
+   "id": "hr",
+   "label": "الموارد البشرية",
+   "pages": [
+    "hrHome",
+    "employees",
+    "supervisors",
+    "workers",
+    "drivers",
+    "equipment",
+    "attendance",
+    "workerAttendance",
+    "leaves",
+    "performance"
+   ]
+  },
+  {
+   "id": "clients",
+   "label": "العملاء والمشاريع",
+   "pages": [
+    "clients.customers",
+    "projects",
+    "clients.workSurveys",
+    "clients.boqs",
+    "clients.contracts",
+    "clients.invoices",
+    "clients.guarantees",
+    "clients.comparison",
+    "clients.crm"
+   ]
+  },
+  {
+   "id": "suppliers",
+   "label": "الموردون",
+   "pages": [
+    "ledger.suppliers",
+    "ledger.invoices",
+    "ledger.quarterly",
+    "ledger.returns"
+   ]
+  },
+  {
+   "id": "warehouses",
+   "label": "المخازن",
+   "pages": [
+    "warehouses.home",
+    "warehouses.reports"
+   ]
+  },
+  {
+   "id": "movements",
+   "label": "حركة الموارد",
+   "pages": [
+    "transfers"
+   ]
+  },
+  {
+   "id": "accounts",
+   "label": "الحسابات",
+   "pages": [
+    "workerDues",
+    "ledger.payments",
+    "expenses",
+    "costs",
+    "clients.collections",
+    "clients.accounts"
+   ]
+  },
+  {
+   "id": "reports",
+   "label": "التقارير",
+   "pages": [
+    "reports",
+    "clients.reports",
+    "ledger.reports",
+    "accounts.reports"
+   ]
+  },
+  {
+   "id": "archive",
+   "label": "الأرشيف",
+   "pages": [
+    "archive",
+    "ledger.archive",
+    "clients.archive"
+   ]
+  },
+  {
+   "id": "settings",
+   "label": "الإعدادات",
+   "pages": [
+    "backup",
+    "users",
+    "ledger.categories"
+   ]
+  }
+ ],
+ "pages": [
+  {
+   "key": "dashboard",
+   "label": "🧭 مركز المتابعة",
+   "section": "🧭 مركز المتابعة",
+   "inNavigation": true,
+   "inPermissionMatrix": true,
+   "renderFn": "renderDashboardPage",
+   "aliasOf": null,
+   "definedAt": "renderer/modules/hr/pages-dashboard.js:28",
+   "tests": [
+    "phase16.js",
+    "phase20.js",
+    "phase38.js"
+   ]
+  },
+  {
+   "key": "tasks.my",
+   "label": "مهامي",
+   "section": "مهامي",
+   "inNavigation": true,
+   "inPermissionMatrix": true,
+   "renderFn": "renderClientsTasksPage",
+   "aliasOf": null,
+   "definedAt": "renderer/modules/clients/pages-tasks.js:38",
+   "tests": []
+  },
+  {
+   "key": "hrHome",
+   "label": "🏠 لوحات الموارد البشرية",
+   "section": "الموارد البشرية",
+   "inNavigation": true,
+   "inPermissionMatrix": false,
+   "renderFn": "renderHrHomePage",
+   "aliasOf": null,
+   "definedAt": "renderer/core/boards.js:160",
+   "tests": [
+    "phase22.js"
+   ]
+  },
+  {
+   "key": "employees",
+   "label": "الموظفين",
+   "section": "الموارد البشرية",
+   "inNavigation": true,
+   "inPermissionMatrix": true,
+   "renderFn": "renderEmployeesPage",
+   "aliasOf": null,
+   "definedAt": "renderer/modules/hr/pages-employees.js:77",
+   "tests": [
+    "phase22.js",
+    "phase26.js",
+    "phase27.js",
+    "phase28.js",
+    "phase29.js",
+    "phase30.js",
+    "phase31.js",
+    "phase32.js",
+    "phase33.js",
+    "phase34.js",
+    "phase35.js",
+    "phase36.js",
+    "phase38.js",
+    "phase39.js",
+    "phase40.js",
+    "phase42.js",
+    "phase44.js",
+    "phase45.js",
+    "phase49.js",
+    "phase51.js",
+    "phase52.js"
+   ]
+  },
+  {
+   "key": "supervisors",
+   "label": "المشرفون",
+   "section": "الموارد البشرية",
+   "inNavigation": true,
+   "inPermissionMatrix": true,
+   "renderFn": "renderSupervisorsPage",
+   "aliasOf": null,
+   "definedAt": "renderer/modules/hr/pages-supervisors.js:12",
+   "tests": [
+    "phase27.js",
+    "phase42.js",
+    "phase43.js",
+    "phase49.js",
+    "phase50.js",
+    "phase53.js",
+    "phase54.js"
+   ]
+  },
+  {
+   "key": "workers",
+   "label": "العمال",
+   "section": "الموارد البشرية",
+   "inNavigation": true,
+   "inPermissionMatrix": true,
+   "renderFn": "renderWorkersPage",
+   "aliasOf": null,
+   "definedAt": "renderer/modules/hr/pages-workers.js:29",
+   "tests": [
+    "phase24.js",
+    "phase26.js",
+    "phase27.js",
+    "phase28.js",
+    "phase29.js",
+    "phase30.js",
+    "phase37.js",
+    "phase39.js",
+    "phase40.js",
+    "phase41.js",
+    "phase42.js",
+    "phase43.js",
+    "phase45.js",
+    "phase47.js",
+    "phase49.js",
+    "phase50.js",
+    "phase51.js",
+    "phase52.js",
+    "phase53.js"
+   ]
+  },
+  {
+   "key": "drivers",
+   "label": "السائقون",
+   "section": "الموارد البشرية",
+   "inNavigation": true,
+   "inPermissionMatrix": true,
+   "renderFn": "renderDriversPage",
+   "aliasOf": null,
+   "definedAt": "renderer/modules/hr/pages-ops.js:6",
+   "tests": [
+    "phase27.js",
+    "phase42.js",
+    "phase44.js",
+    "phase45.js",
+    "phase49.js",
+    "phase50.js",
+    "phase51.js"
+   ]
+  },
+  {
+   "key": "equipment",
+   "label": "معدات ومركبات",
+   "section": "الموارد البشرية",
+   "inNavigation": true,
+   "inPermissionMatrix": true,
+   "renderFn": "renderEquipmentPage",
+   "aliasOf": null,
+   "definedAt": "renderer/modules/hr/pages-equipment.js:32",
+   "tests": [
+    "phase23.js",
+    "phase24.js",
+    "phase25.js",
+    "phase26.js",
+    "phase27.js",
+    "phase31.js",
+    "phase32.js",
+    "phase39.js",
+    "phase40.js",
+    "phase42.js",
+    "phase44.js",
+    "phase53.js",
+    "phase54.js"
+   ]
+  },
+  {
+   "key": "attendance",
+   "label": "حضور الموظفين",
+   "section": "الموارد البشرية",
+   "inNavigation": true,
+   "inPermissionMatrix": true,
+   "renderFn": "renderAttendancePage",
+   "aliasOf": null,
+   "definedAt": "renderer/modules/hr/pages-attendance.js:19",
+   "tests": []
+  },
+  {
+   "key": "workerAttendance",
+   "label": "اليوميات",
+   "section": "الموارد البشرية",
+   "inNavigation": true,
+   "inPermissionMatrix": true,
+   "renderFn": "renderWorkerAttendancePage",
+   "aliasOf": null,
+   "definedAt": "renderer/modules/hr/pages-worker-attendance.js:195",
+   "tests": [
+    "phase24.js",
+    "phase26.js",
+    "phase27.js",
+    "phase28.js",
+    "phase39.js",
+    "phase40.js",
+    "phase41.js",
+    "phase43.js",
+    "phase49.js",
+    "phase50.js",
+    "phase51.js",
+    "phase53.js"
+   ]
+  },
+  {
+   "key": "leaves",
+   "label": "الإجازات",
+   "section": "الموارد البشرية",
+   "inNavigation": true,
+   "inPermissionMatrix": true,
+   "renderFn": "renderLeavesPage",
+   "aliasOf": null,
+   "definedAt": "renderer/modules/hr/pages-leaves.js:48",
+   "tests": [
+    "phase41.js"
+   ]
+  },
+  {
+   "key": "performance",
+   "label": "تقييم الأداء",
+   "section": "الموارد البشرية",
+   "inNavigation": true,
+   "inPermissionMatrix": true,
+   "renderFn": "renderPerformancePage",
+   "aliasOf": null,
+   "definedAt": "renderer/modules/hr/pages-ops.js:540",
+   "tests": []
+  },
+  {
+   "key": "clients.customers",
+   "label": "العملاء",
+   "section": "العملاء والمشاريع",
+   "inNavigation": true,
+   "inPermissionMatrix": true,
+   "renderFn": "renderClientsCustomersPage",
+   "aliasOf": null,
+   "definedAt": "renderer/modules/clients/pages-customers.js:14",
+   "tests": [
+    "phase2.js",
+    "phase5.js",
+    "phase7.js",
+    "phase15.js",
+    "phase19.js",
+    "phase46.js",
+    "phase48.js",
+    "phase55.js",
+    "pages-smoke.js"
+   ]
+  },
+  {
+   "key": "projects",
+   "label": "المشاريع",
+   "section": "العملاء والمشاريع",
+   "inNavigation": true,
+   "inPermissionMatrix": true,
+   "renderFn": "renderProjectsPage",
+   "aliasOf": null,
+   "definedAt": "renderer/modules/hr/pages-projects.js:60",
+   "tests": [
+    "phase2.js",
+    "phase3.js",
+    "phase4.js",
+    "phase15.js",
+    "phase17.js",
+    "phase18.js",
+    "phase19.js",
+    "phase22.js",
+    "phase56.js",
+    "phase57.js",
+    "phase58.js"
+   ]
+  },
+  {
+   "key": "clients.workSurveys",
+   "label": "أعمال الحصر",
+   "section": "العملاء والمشاريع",
+   "inNavigation": true,
+   "inPermissionMatrix": true,
+   "renderFn": "renderClientsWorkSurveysPage",
+   "aliasOf": null,
+   "definedAt": "renderer/modules/clients/pages-work-surveys.js:74",
+   "tests": [
+    "phase9.js"
+   ]
+  },
+  {
+   "key": "clients.boqs",
+   "label": "المقايسات",
+   "section": "العملاء والمشاريع",
+   "inNavigation": true,
+   "inPermissionMatrix": true,
+   "renderFn": "renderClientsBoqsPage",
+   "aliasOf": null,
+   "definedAt": "renderer/modules/clients/pages-boqs.js:45",
+   "tests": [
+    "phase2.js",
+    "phase9.js"
+   ]
+  },
+  {
+   "key": "clients.contracts",
+   "label": "العقود",
+   "section": "العملاء والمشاريع",
+   "inNavigation": true,
+   "inPermissionMatrix": true,
+   "renderFn": "renderClientsContractsPage",
+   "aliasOf": null,
+   "definedAt": "renderer/modules/clients/pages-contracts.js:28",
+   "tests": [
+    "phase5.js",
+    "phase7.js",
+    "phase12.js",
+    "phase14.js",
+    "phase15.js"
+   ]
+  },
+  {
+   "key": "clients.invoices",
+   "label": "المستخلصات",
+   "section": "العملاء والمشاريع",
+   "inNavigation": true,
+   "inPermissionMatrix": true,
+   "renderFn": "renderClientsInvoicesPage",
+   "aliasOf": null,
+   "definedAt": "renderer/modules/clients/pages-invoices.js:42",
+   "tests": [
+    "phase9.js",
+    "phase12.js"
+   ]
+  },
+  {
+   "key": "clients.guarantees",
+   "label": "الضمانات",
+   "section": "العملاء والمشاريع",
+   "inNavigation": true,
+   "inPermissionMatrix": true,
+   "renderFn": "renderClientsGuaranteesPage",
+   "aliasOf": null,
+   "definedAt": "renderer/modules/clients/guarantees.js:176",
+   "tests": [
+    "phase5.js",
+    "phase6.js"
+   ]
+  },
+  {
+   "key": "clients.comparison",
+   "label": "المقارنة",
+   "section": "العملاء والمشاريع",
+   "inNavigation": true,
+   "inPermissionMatrix": true,
+   "renderFn": "renderClientsComparisonPage",
+   "aliasOf": null,
+   "definedAt": "renderer/modules/clients/comparison.js:62",
+   "tests": [
+    "phase11.js",
+    "phase12.js",
+    "phase14.js"
+   ]
+  },
+  {
+   "key": "clients.crm",
+   "label": "CRM",
+   "section": "العملاء والمشاريع",
+   "inNavigation": true,
+   "inPermissionMatrix": true,
+   "renderFn": "renderClientsCrmPage",
+   "aliasOf": null,
+   "definedAt": "renderer/modules/clients/pages-crm.js:40",
+   "tests": []
+  },
+  {
+   "key": "ledger.suppliers",
+   "label": "الموردون",
+   "section": "الموردون",
+   "inNavigation": true,
+   "inPermissionMatrix": true,
+   "renderFn": "renderSuppliersPage",
+   "aliasOf": null,
+   "definedAt": "renderer/modules/ledger/pages-suppliers.js:3",
+   "tests": []
+  },
+  {
+   "key": "ledger.invoices",
+   "label": "الفواتير",
+   "section": "الموردون",
+   "inNavigation": true,
+   "inPermissionMatrix": true,
+   "renderFn": "renderInvoicesPage",
+   "aliasOf": null,
+   "definedAt": "renderer/modules/ledger/pages-invoices.js:35",
+   "tests": [
+    "phase16.js"
+   ]
+  },
+  {
+   "key": "ledger.quarterly",
+   "label": "إشعارات الخصم",
+   "section": "الموردون",
+   "inNavigation": true,
+   "inPermissionMatrix": true,
+   "renderFn": "renderQuarterlyPage",
+   "aliasOf": null,
+   "definedAt": "renderer/modules/ledger/pages-quarterly.js:39",
+   "tests": []
+  },
+  {
+   "key": "ledger.returns",
+   "label": "المرتجعات",
+   "section": "الموردون",
+   "inNavigation": true,
+   "inPermissionMatrix": true,
+   "renderFn": "renderInvoicesPage",
+   "aliasOf": null,
+   "definedAt": "renderer/modules/ledger/pages-invoices.js:35",
+   "tests": []
+  },
+  {
+   "key": "warehouses.home",
+   "label": "المخازن",
+   "section": "المخازن",
+   "inNavigation": true,
+   "inPermissionMatrix": true,
+   "renderFn": "renderWarehousesHomePage",
+   "aliasOf": null,
+   "definedAt": "renderer/modules/warehouses/pages-home.js:6",
+   "tests": []
+  },
+  {
+   "key": "warehouses.reports",
+   "label": "تقارير المخازن",
+   "section": "المخازن",
+   "inNavigation": true,
+   "inPermissionMatrix": true,
+   "renderFn": "renderWarehousesReportsPage",
+   "aliasOf": null,
+   "definedAt": "renderer/modules/warehouses/pages-reports.js:2",
+   "tests": []
+  },
+  {
+   "key": "transfers",
+   "label": "حركة الموارد",
+   "section": "حركة الموارد",
+   "inNavigation": true,
+   "inPermissionMatrix": true,
+   "renderFn": "renderTransfersPage",
+   "aliasOf": null,
+   "definedAt": "renderer/modules/hr/pages-ops.js:336",
+   "tests": []
+  },
+  {
+   "key": "workerDues",
+   "label": "المستحقات",
+   "section": "الحسابات",
+   "inNavigation": true,
+   "inPermissionMatrix": true,
+   "renderFn": "renderWorkerDuesPage",
+   "aliasOf": null,
+   "definedAt": "renderer/modules/hr/pages-worker-dues.js:79",
+   "tests": []
+  },
+  {
+   "key": "ledger.payments",
+   "label": "الدفعات",
+   "section": "الحسابات",
+   "inNavigation": true,
+   "inPermissionMatrix": true,
+   "renderFn": "renderPaymentsPage",
+   "aliasOf": null,
+   "definedAt": "renderer/modules/ledger/pages-payments.js:33",
+   "tests": []
+  },
+  {
+   "key": "expenses",
+   "label": "مصاريف شاملة",
+   "section": "الحسابات",
+   "inNavigation": true,
+   "inPermissionMatrix": true,
+   "renderFn": "renderExpensesPage",
+   "aliasOf": null,
+   "definedAt": "renderer/modules/hr/pages-ops.js:1244",
+   "tests": [
+    "phase17.js",
+    "phase26.js",
+    "phase53.js"
+   ]
+  },
+  {
+   "key": "costs",
+   "label": "تكاليف شاملة",
+   "section": "الحسابات",
+   "inNavigation": true,
+   "inPermissionMatrix": true,
+   "renderFn": "renderCostsPage",
+   "aliasOf": null,
+   "definedAt": "renderer/modules/hr/pages-costs.js:98",
+   "tests": [
+    "phase17.js"
+   ]
+  },
+  {
+   "key": "clients.collections",
+   "label": "الإيرادات",
+   "section": "الحسابات",
+   "inNavigation": true,
+   "inPermissionMatrix": true,
+   "renderFn": "renderClientsCollectionsPage",
+   "aliasOf": null,
+   "definedAt": "renderer/modules/clients/pages-collections.js:28",
+   "tests": [
+    "phase13.js",
+    "phase20.js"
+   ]
+  },
+  {
+   "key": "clients.accounts",
+   "label": "حسابات العملاء",
+   "section": "الحسابات",
+   "inNavigation": true,
+   "inPermissionMatrix": true,
+   "renderFn": "renderClientsAccountsPage",
+   "aliasOf": null,
+   "definedAt": "renderer/modules/clients/pages-accounts.js:73",
+   "tests": []
+  },
+  {
+   "key": "reports",
+   "label": "تقارير الموارد البشرية",
+   "section": "التقارير",
+   "inNavigation": true,
+   "inPermissionMatrix": true,
+   "renderFn": "renderReportsPage",
+   "aliasOf": null,
+   "definedAt": "renderer/modules/hr/pages-reports.js:56",
+   "tests": [
+    "phase22.js"
+   ]
+  },
+  {
+   "key": "clients.reports",
+   "label": "تقارير العملاء والمشاريع",
+   "section": "التقارير",
+   "inNavigation": true,
+   "inPermissionMatrix": true,
+   "renderFn": "renderClientsReportsPage",
+   "aliasOf": null,
+   "definedAt": "renderer/modules/clients/pages-reports.js:4",
+   "tests": []
+  },
+  {
+   "key": "ledger.reports",
+   "label": "تقارير الموردين",
+   "section": "التقارير",
+   "inNavigation": true,
+   "inPermissionMatrix": true,
+   "renderFn": "lgRenderReportsPage",
+   "aliasOf": null,
+   "definedAt": "renderer/modules/ledger/pages-reports.js:25",
+   "tests": []
+  },
+  {
+   "key": "accounts.reports",
+   "label": "تقارير الحسابات",
+   "section": "التقارير",
+   "inNavigation": true,
+   "inPermissionMatrix": true,
+   "renderFn": "renderAccountsReportsPage",
+   "aliasOf": null,
+   "definedAt": "renderer/modules/accounts/pages-reports.js:2",
+   "tests": []
+  },
+  {
+   "key": "archive",
+   "label": "أرشيف الموارد البشرية",
+   "section": "الأرشيف",
+   "inNavigation": true,
+   "inPermissionMatrix": true,
+   "renderFn": "renderArchivePage",
+   "aliasOf": null,
+   "definedAt": "renderer/core/pages-archive.js:54",
+   "tests": [
+    "phase22.js"
+   ]
+  },
+  {
+   "key": "ledger.archive",
+   "label": "أرشيف الموردين",
+   "section": "الأرشيف",
+   "inNavigation": true,
+   "inPermissionMatrix": true,
+   "renderFn": "lgRenderArchivePage",
+   "aliasOf": null,
+   "definedAt": "renderer/modules/ledger/pages-archive.js:215",
+   "tests": []
+  },
+  {
+   "key": "clients.archive",
+   "label": "أرشيف العملاء والمشاريع",
+   "section": "الأرشيف",
+   "inNavigation": true,
+   "inPermissionMatrix": true,
+   "renderFn": "renderClientsArchivePage",
+   "aliasOf": null,
+   "definedAt": "renderer/modules/clients/pages-archive.js:36",
+   "tests": [
+    "phase8.js"
+   ]
+  },
+  {
+   "key": "backup",
+   "label": "الإعدادات العامة",
+   "section": "الإعدادات",
+   "inNavigation": true,
+   "inPermissionMatrix": true,
+   "renderFn": "renderBackupPage",
+   "aliasOf": null,
+   "definedAt": "renderer/core/pages-backup.js:5",
+   "tests": [
+    "phase10.js",
+    "phase29.js",
+    "phase32.js",
+    "phase34.js",
+    "phase35.js",
+    "phase36.js",
+    "phase38.js",
+    "phase45.js"
+   ]
+  },
+  {
+   "key": "users",
+   "label": "المستخدمون",
+   "section": "الإعدادات",
+   "inNavigation": true,
+   "inPermissionMatrix": true,
+   "renderFn": "renderUsersPage",
+   "aliasOf": null,
+   "definedAt": "renderer/core/pages-users.js:16",
+   "tests": []
+  },
+  {
+   "key": "ledger.categories",
+   "label": "الاقتراحات",
+   "section": "الإعدادات",
+   "inNavigation": true,
+   "inPermissionMatrix": true,
+   "renderFn": "renderCategoriesPage",
+   "aliasOf": null,
+   "definedAt": "renderer/modules/ledger/pages-categories.js:4",
+   "tests": []
+  },
+  {
+   "key": "clients.dashboard",
+   "label": null,
+   "section": null,
+   "inNavigation": false,
+   "inPermissionMatrix": true,
+   "renderFn": "renderDashboardPage",
+   "aliasOf": "dashboard",
+   "definedAt": "renderer/modules/hr/pages-dashboard.js:28",
+   "tests": [
+    "phase20.js"
+   ]
+  },
+  {
+   "key": "fuel",
+   "label": null,
+   "section": null,
+   "inNavigation": false,
+   "inPermissionMatrix": false,
+   "renderFn": "renderEquipmentPage",
+   "aliasOf": "equipment",
+   "definedAt": "renderer/modules/hr/pages-equipment.js:32",
+   "tests": []
+  },
+  {
+   "key": "documents",
+   "label": null,
+   "section": null,
+   "inNavigation": false,
+   "inPermissionMatrix": false,
+   "renderFn": "renderArchivePage",
+   "aliasOf": "archive",
+   "definedAt": "renderer/core/pages-archive.js:54",
+   "tests": []
+  },
+  {
+   "key": "assistant",
+   "label": null,
+   "section": null,
+   "inNavigation": false,
+   "inPermissionMatrix": false,
+   "renderFn": "renderDashboardPage",
+   "aliasOf": "dashboard",
+   "definedAt": "renderer/modules/hr/pages-dashboard.js:28",
+   "tests": []
+  },
+  {
+   "key": "departments",
+   "label": null,
+   "section": null,
+   "inNavigation": false,
+   "inPermissionMatrix": true,
+   "renderFn": "renderHrHomePage",
+   "aliasOf": null,
+   "definedAt": "renderer/core/boards.js:160",
+   "tests": [
+    "phase22.js",
+    "phase39.js"
+   ]
+  },
+  {
+   "key": "payroll",
+   "label": null,
+   "section": null,
+   "inNavigation": false,
+   "inPermissionMatrix": true,
+   "renderFn": "renderWorkerDuesPage",
+   "aliasOf": "workerDues",
+   "definedAt": "renderer/modules/hr/pages-worker-dues.js:79",
+   "tests": []
+  },
+  {
+   "key": "employeeDetail",
+   "label": null,
+   "section": null,
+   "inNavigation": false,
+   "inPermissionMatrix": false,
+   "renderFn": "renderEmployeeDetailPage",
+   "aliasOf": null,
+   "definedAt": "renderer/modules/hr/pages-employee-detail.js:1",
+   "tests": []
+  },
+  {
+   "key": "personDetail",
+   "label": null,
+   "section": null,
+   "inNavigation": false,
+   "inPermissionMatrix": false,
+   "renderFn": "renderPersonDetailPage",
+   "aliasOf": null,
+   "definedAt": "renderer/modules/hr/pages-person-detail.js:238",
+   "tests": []
+  },
+  {
+   "key": "ledger.dashboard",
+   "label": null,
+   "section": null,
+   "inNavigation": false,
+   "inPermissionMatrix": true,
+   "renderFn": "renderLedgerPage",
+   "aliasOf": "dashboard",
+   "definedAt": "renderer/modules/ledger/glue.js:41",
+   "tests": []
+  },
+  {
+   "key": "general.overview",
+   "label": null,
+   "section": null,
+   "inNavigation": false,
+   "inPermissionMatrix": true,
+   "renderFn": "renderDashboardPage",
+   "aliasOf": "dashboard",
+   "definedAt": "renderer/modules/hr/pages-dashboard.js:28",
+   "tests": []
+  }
+ ],
+ "perFile": {
+  "renderer/core/alerts-center.js": {
+   "lines": 311,
+   "functions": 21,
+   "pages": [],
+   "modals": [],
+   "saves": [],
+   "calcs": [],
+   "exportsFns": [],
+   "buttons": [
+    {
+     "id": "acHiddenBtn",
+     "label": "⏰ المؤجَّلة والمنجزة (' + hiddenCount + ')"
+    }
+   ],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 3,
+    "addAudit": 0,
+    "confirmDelete": 0,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/core/app.js": {
+   "lines": 655,
+   "functions": 16,
+   "pages": [
+    "renderCurrentPage"
+   ],
+   "modals": [],
+   "saves": [],
+   "calcs": [],
+   "exportsFns": [],
+   "buttons": [
+    {
+     "id": "btnLogout",
+     "label": "خروج"
+    },
+    {
+     "id": "btnToggleReadOnly",
+     "label": "${readOnlyMode?'🔓 قراءة':'🔒 قراءة'}"
+    },
+    {
+     "id": "zoomOutBtn",
+     "label": "−"
+    },
+    {
+     "id": "zoomInBtn",
+     "label": "+"
+    },
+    {
+     "id": "validateBtn",
+     "label": "✓ فحص"
+    },
+    {
+     "id": "btnShortcutsHelp",
+     "label": "⌨️"
+    }
+   ],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 1,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 1,
+    "addAudit": 0,
+    "confirmDelete": 0,
+    "hasPagePermission": 1
+   }
+  },
+  "renderer/core/boards.js": {
+   "lines": 261,
+   "functions": 18,
+   "pages": [
+    "renderHrHomePage"
+   ],
+   "modals": [],
+   "saves": [],
+   "calcs": [],
+   "exportsFns": [],
+   "buttons": [
+    {
+     "id": "boardsBack",
+     "label": "◀ الأقسام"
+    },
+    {
+     "id": "hrBackHome",
+     "label": "◀ ' + escapeHtml(sec.label) + '"
+    }
+   ],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 0,
+    "addAudit": 0,
+    "confirmDelete": 0,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/core/config.js": {
+   "lines": 13,
+   "functions": 1,
+   "pages": [],
+   "modals": [],
+   "saves": [],
+   "calcs": [],
+   "exportsFns": [],
+   "buttons": [],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 0,
+    "addAudit": 0,
+    "confirmDelete": 0,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/core/cost-center.js": {
+   "lines": 104,
+   "functions": 5,
+   "pages": [],
+   "modals": [],
+   "saves": [],
+   "calcs": [
+    "compCostProjectNames:15",
+    "compCostCollected:26",
+    "compCostRows:32",
+    "comprehensiveCostsPageHtml:41",
+    "comprehensiveCostsBoardCard:78"
+   ],
+   "exportsFns": [],
+   "buttons": [
+    {
+     "id": "compCostsBack",
+     "label": "◀ رجوع"
+    },
+    {
+     "id": "ccClear",
+     "label": "مسح"
+    }
+   ],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 0,
+    "addAudit": 0,
+    "confirmDelete": 0,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/core/data-store.js": {
+   "lines": 787,
+   "functions": 28,
+   "pages": [],
+   "modals": [],
+   "saves": [
+    "saveData"
+   ],
+   "calcs": [],
+   "exportsFns": [],
+   "buttons": [],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 3,
+    "addAudit": 4,
+    "confirmDelete": 0,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/core/excel-import.js": {
+   "lines": 958,
+   "functions": 8,
+   "pages": [],
+   "modals": [
+    "openExcelImportModal:260"
+   ],
+   "saves": [],
+   "calcs": [],
+   "exportsFns": [],
+   "buttons": [
+    {
+     "id": "ei_run",
+     "label": "استيراد"
+    },
+    {
+     "id": "ei_do_update",
+     "label": "حدّث الموجود"
+    },
+    {
+     "id": "ei_do_add",
+     "label": "أضف الكل كجديد"
+    },
+    {
+     "id": "ei_do_skip",
+     "label": "تخطَّ المطابقين"
+    }
+   ],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 2,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 1,
+    "addAudit": 1,
+    "confirmDelete": 0,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/core/extras.js": {
+   "lines": 886,
+   "functions": 9,
+   "pages": [],
+   "modals": [],
+   "saves": [
+    "approveExpense"
+   ],
+   "calcs": [],
+   "exportsFns": [],
+   "buttons": [
+    {
+     "id": "rsgSave",
+     "label": "تسجيل الاستقالة"
+    }
+   ],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 6,
+    "addAudit": 3,
+    "confirmDelete": 0,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/core/follow-center.js": {
+   "lines": 340,
+   "functions": 21,
+   "pages": [
+    "renderFollowCenterPage"
+   ],
+   "modals": [],
+   "saves": [],
+   "calcs": [
+    "fcCostDetailHtml:202"
+   ],
+   "exportsFns": [],
+   "buttons": [
+    {
+     "id": "' + escapeHtml(String(c.id)) + '",
+     "label": ""
+    },
+    {
+     "id": "fcTaskAdd",
+     "label": "＋ مهمة جديدة"
+    },
+    {
+     "id": "fctSave",
+     "label": "حفظ"
+    },
+    {
+     "id": "fcSearch",
+     "label": "🔍 بحث شامل"
+    },
+    {
+     "id": "fcRefresh",
+     "label": "↻ تحديث"
+    }
+   ],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 3,
+    "addAudit": 1,
+    "confirmDelete": 0,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/core/helpers.js": {
+   "lines": 8556,
+   "functions": 374,
+   "pages": [],
+   "modals": [
+    "openModal:472",
+    "openSubModal:614",
+    "openPersonDetailModal:2956",
+    "openPersonAlertsModal:3259",
+    "openAlertsMoreModal:3310",
+    "openAddCategoryModal:3793",
+    "openRenameCategoryModal:3818",
+    "openDeleteCategoryModal:3857"
+   ],
+   "saves": [
+    "addAudit",
+    "deleteProjectById",
+    "addExtraFieldRow",
+    "updateBulkBar"
+   ],
+   "calcs": [
+    "employeeLeaveBalance:201",
+    "attendanceDayWage:260",
+    "workerDueAmount:343",
+    "workerWageSummary:349",
+    "extraFieldsSummary:1055",
+    "supervisorExpensesTotal:2095",
+    "supervisorWageStatement:2119",
+    "personUnpaidBonuses:4134",
+    "workerPaidTotal:4156",
+    "workerPenaltyTotal:4166",
+    "supervisorPenaltyTotal:4175",
+    "supervisorPaidTotal:4184",
+    "workerBalance:4193",
+    "employeePenaltyTotal:4200",
+    "driverDueAmount:4989",
+    "driverPaidTotal:4993",
+    "driverPenaltyTotal:5002",
+    "employeeDueAmount:5024",
+    "employeeBalance:5056",
+    "driverBalance:5071",
+    "extraCalcChecks:5081",
+    "validateCalculations:5146",
+    "paginateTotalsAtEnd:5924",
+    "statementHeaderHtml:6420",
+    "statementFooterHtml:6442",
+    "shouldBrandStatement:6459",
+    "personExpensesTotal:6469",
+    "costKindLabel:6483",
+    "costPersonName:6484",
+    "costsInRange:6498",
+    "personCostsTotal:6506",
+    "costsTableHtml:6510",
+    "costsStatementBlock:6520",
+    "personExtrasTotal:6525",
+    "duesPaidBadge:6547",
+    "expensesStatementBlock:6635",
+    "printEquipmentAccountStatement:6697",
+    "paymentsStatementBlock:6764",
+    "printWorkerStatement:7107",
+    "printDriverStatement:7157",
+    "_payTotalCard:7259",
+    "printDaysStatement:7458",
+    "printEmployeeStatement:7544",
+    "equipmentTotalHours:7801",
+    "equipmentTotalCost:7804",
+    "equipmentTotalFuel:7808",
+    "projectCostSummary:7816",
+    "projectSupplyCostLines:7894"
+   ],
+   "exportsFns": [
+    "downloadXlsx",
+    "downloadCsv",
+    "printAttachmentPdf",
+    "printHtml",
+    "exportArchiveFolder",
+    "printPersonFilePdf",
+    "printArchiveAllPdf",
+    "printExpenseRecord",
+    "exportExpenseExcel",
+    "printEquipmentAccountStatement",
+    "printWorkerStatement",
+    "printDriverStatement",
+    "printDaysStatement",
+    "printEmployeeStatement",
+    "printPayslip",
+    "printLeaveForm"
+   ],
+   "buttons": [
+    {
+     "id": "efPromptCancel",
+     "label": "إلغاء"
+    },
+    {
+     "id": "efPromptOk",
+     "label": "إضافة"
+    },
+    {
+     "id": "btnSavePersonNotes",
+     "label": "حفظ الملاحظة"
+    },
+    {
+     "id": "btnEditFromDetail",
+     "label": "تعديل البيانات"
+    },
+    {
+     "id": "btnOpenDetailFromAlert",
+     "label": "عرض التفاصيل"
+    },
+    {
+     "id": "btnGoAlertPage",
+     "label": "فتح صفحة ${escapeHtml(label||'')}"
+    },
+    {
+     "id": "btnBulkMove",
+     "label": "نقل"
+    },
+    {
+     "id": "btnSaveNewCat",
+     "label": "حفظ"
+    },
+    {
+     "id": "btnConfirmRenCat",
+     "label": "حفظ الاسم"
+    },
+    {
+     "id": "btnConfirmDelCat",
+     "label": "حذف القسم"
+    },
+    {
+     "id": "pinOk",
+     "label": "تأكيد"
+    },
+    {
+     "id": "undoToastBtn",
+     "label": "استعادة"
+    },
+    {
+     "id": "btnDupCancel",
+     "label": "إلغاء"
+    },
+    {
+     "id": "btnDupForce",
+     "label": "حفظ على أي حال"
+    },
+    {
+     "id": "btnDupX",
+     "label": "×"
+    }
+   ],
+   "calls": {
+    "exportExcel": 2,
+    "importExcel": 0,
+    "savePdf": 2,
+    "savePdfHtml": 4,
+    "saveFile": 2,
+    "exportArchive": 2,
+    "windowPrint": 2,
+    "pickAttachments": 8,
+    "openAttachment": 2,
+    "deleteAttachment": 2,
+    "saveData": 17,
+    "addAudit": 11,
+    "confirmDelete": 4,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/core/modals-common.js": {
+   "lines": 181,
+   "functions": 2,
+   "pages": [],
+   "modals": [
+    "openScanAttachModal:9"
+   ],
+   "saves": [],
+   "calcs": [],
+   "exportsFns": [],
+   "buttons": [
+    {
+     "id": "scanWiaBtn",
+     "label": "🖨 مسح من الماسح الضوئي (ويندوز)"
+    },
+    {
+     "id": "scanOpenWinAppBtn",
+     "label": "فتح تطبيق مسح ويندوز"
+    },
+    {
+     "id": "scanCaptureBtn",
+     "label": "📸 التقاط من الكاميرا"
+    },
+    {
+     "id": "scanFlipBtn",
+     "label": "تبديل كاميرا"
+    },
+    {
+     "id": "scanRetakeBtn",
+     "label": "مسح المعاينة"
+    },
+    {
+     "id": "scanCancel",
+     "label": "إلغاء"
+    },
+    {
+     "id": "scanConfirm",
+     "label": "تأكيد ورفع المرفق"
+    }
+   ],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 0,
+    "addAudit": 0,
+    "confirmDelete": 0,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/core/modules.js": {
+   "lines": 152,
+   "functions": 8,
+   "pages": [
+    "renderPlaceholderPage"
+   ],
+   "modals": [],
+   "saves": [],
+   "calcs": [],
+   "exportsFns": [],
+   "buttons": [],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 0,
+    "addAudit": 0,
+    "confirmDelete": 0,
+    "hasPagePermission": 1
+   }
+  },
+  "renderer/core/network.js": {
+   "lines": 851,
+   "functions": 52,
+   "pages": [],
+   "modals": [],
+   "saves": [
+    "saveDataNetwork"
+   ],
+   "calcs": [
+    "activateHostMode:799",
+    "activateClientMode:820",
+    "deactivateNetworkMode:841"
+   ],
+   "exportsFns": [],
+   "buttons": [
+    {
+     "id": "fpSave",
+     "label": "حفظ والمتابعة"
+    },
+    {
+     "id": "fpLogout",
+     "label": "تسجيل الخروج"
+    },
+    {
+     "id": "loginTogglePass",
+     "label": "👁"
+    },
+    {
+     "id": "loginBtn",
+     "label": "دخول إلى النظام"
+    },
+    {
+     "id": "btnNetFallbackStandalone",
+     "label": "وضع جهاز واحد"
+    },
+    {
+     "id": "btnNetRetryHost",
+     "label": "إعادة المحاولة"
+    },
+    {
+     "id": "btnNetRetryClient",
+     "label": "إعادة المحاولة"
+    }
+   ],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 3,
+    "addAudit": 2,
+    "confirmDelete": 0,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/core/pages-archive.js": {
+   "lines": 656,
+   "functions": 16,
+   "pages": [
+    "renderArchivePage"
+   ],
+   "modals": [],
+   "saves": [],
+   "calcs": [
+    "archiveTotalFilesForKind:44"
+   ],
+   "exportsFns": [],
+   "buttons": [
+    {
+     "id": "btnArchAddDoc",
+     "label": "+ إرفاق مستند"
+    },
+    {
+     "id": "btnArchOpenTrash",
+     "label": ""
+    },
+    {
+     "id": "btnArchBackKinds",
+     "label": "← كل الأرشيف"
+    },
+    {
+     "id": "btnArchAddSec",
+     "label": "إضافة قسم"
+    },
+    {
+     "id": "btnArchRenSec",
+     "label": "تعديل قسم"
+    },
+    {
+     "id": "btnArchDelSec",
+     "label": "حذف قسم"
+    },
+    {
+     "id": "btnArchBackSecs",
+     "label": "← الأقسام"
+    },
+    {
+     "id": "btnArchBackPeople",
+     "label": "← المجلدات"
+    },
+    {
+     "id": "btnArchAddFile",
+     "label": "+ إرفاق مستند"
+    },
+    {
+     "id": "btnArchPersonPdf",
+     "label": "تصدير المستندات pdf"
+    },
+    {
+     "id": "btnArchExportFolder",
+     "label": "تصدير المجلد"
+    }
+   ],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 2,
+    "openAttachment": 4,
+    "deleteAttachment": 6,
+    "saveData": 8,
+    "addAudit": 0,
+    "confirmDelete": 4,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/core/pages-backup.js": {
+   "lines": 1530,
+   "functions": 6,
+   "pages": [
+    "renderBackupPage",
+    "renderAuditTablePage"
+   ],
+   "modals": [],
+   "saves": [],
+   "calcs": [],
+   "exportsFns": [],
+   "buttons": [
+    {
+     "id": "btnSaveSettings",
+     "label": "💾 حفظ الإعدادات"
+    },
+    {
+     "id": "secChangePinBtn",
+     "label": "تغيير / ضبط الرقم السري"
+    },
+    {
+     "id": "secClearPinBtn",
+     "label": "مسح الرقم السري"
+    },
+    {
+     "id": "secToggleRoBtn",
+     "label": "${readOnlyMode?'إلغاء وضع القراءة فقط':'تفعيل وضع القراءة فقط'}"
+    },
+    {
+     "id": "btnExportBackup",
+     "label": "⬇️ تنزيل نسخة احتياطية"
+    },
+    {
+     "id": "btnImportBackup",
+     "label": "⬆️ استيراد نسخة احتياطية"
+    },
+    {
+     "id": "btnPickExtraBackup",
+     "label": "اختيار مكان النسخة الإضافية"
+    },
+    {
+     "id": "btnExtraBackupNow",
+     "label": "نسخ دلوقتي"
+    },
+    {
+     "id": "btnClearExtraBackup",
+     "label": "إلغاء النسخة الإضافية"
+    },
+    {
+     "id": "btnExcelImport",
+     "label": "📥 استيراد من إكسيل"
+    },
+    {
+     "id": "clImportOldBtn",
+     "label": "📥 استيراد بيانات العملاء القديمة (data.json)"
+    },
+    {
+     "id": "hrImportOldBtn",
+     "label": "📥 استيراد بيانات الموارد البشرية القديمة (data.json)"
+    },
+    {
+     "id": "expEmpCsv",
+     "label": "CSV"
+    },
+    {
+     "id": "expEmpXlsx",
+     "label": "إكسيل"
+    },
+    {
+     "id": "expWrkCsv",
+     "label": "CSV"
+    },
+    {
+     "id": "expWrkXlsx",
+     "label": "إكسيل"
+    },
+    {
+     "id": "expSupCsv",
+     "label": "CSV"
+    },
+    {
+     "id": "expSupXlsx",
+     "label": "إكسيل"
+    },
+    {
+     "id": "expDrvCsv",
+     "label": "CSV"
+    },
+    {
+     "id": "expDrvXlsx",
+     "label": "إكسيل"
+    },
+    {
+     "id": "expEqCsv",
+     "label": "CSV"
+    },
+    {
+     "id": "expEqXlsx",
+     "label": "إكسيل"
+    },
+    {
+     "id": "expPayCsv",
+     "label": "CSV"
+    },
+    {
+     "id": "expPayXlsx",
+     "label": "إكسيل"
+    },
+    {
+     "id": "expLeaveCsv",
+     "label": "CSV"
+    },
+    {
+     "id": "expLeaveXlsx",
+     "label": "إكسيل"
+    },
+    {
+     "id": "expWattCsv",
+     "label": "CSV"
+    },
+    {
+     "id": "expWattXlsx",
+     "label": "إكسيل"
+    },
+    {
+     "id": "expCostCsv",
+     "label": "CSV"
+    },
+    {
+     "id": "expCostXlsx",
+     "label": "إكسيل"
+    },
+    {
+     "id": "expExpenseCsv",
+     "label": "CSV"
+    },
+    {
+     "id": "expExpenseXlsx",
+     "label": "إكسيل"
+    },
+    {
+     "id": "expArchPdf",
+     "label": "PDF"
+    },
+    {
+     "id": "pickDataDirBtn",
+     "label": "📂 اختيار مجلد حفظ البيانات"
+    },
+    {
+     "id": "resetDataDirBtn",
+     "label": "إعادة المسار الافتراضي"
+    },
+    {
+     "id": "safeUpdateBtn",
+     "label": "🔄 اختيار ملف تحديث وتثبيته"
+    },
+    {
+     "id": "netStartHostBtn",
+     "label": "▶ تشغيل كمضيف"
+    },
+    {
+     "id": "netJoinBtn",
+     "label": "🔗 الاتصال كعميل"
+    },
+    {
+     "id": "netTestBtn",
+     "label": "اختبار الاتصال"
+    },
+    {
+     "id": "netStopBtn",
+     "label": "⏹ إيقاف الشبكة"
+    },
+    {
+     "id": "cfPreviewSaveBtn",
+     "label": "حفظ"
+    },
+    {
+     "id": "btnCfAdd",
+     "label": "+ إضافة خانة"
+    },
+    {
+     "id": "btnCcAdd",
+     "label": "+ إضافة كرت"
+    },
+    {
+     "id": "btnCfSave",
+     "label": "💾 حفظ التعديلات"
+    },
+    {
+     "id": "btnCfReset",
+     "label": "↺ استعادة الافتراضي"
+    },
+    {
+     "id": "btnReqDocAdd",
+     "label": "+ إضافة"
+    },
+    {
+     "id": "btnReqDocReset",
+     "label": "استعادة الافتراضي"
+    },
+    {
+     "id": "btnWipeData",
+     "label": "🗑️ مسح كل البيانات"
+    }
+   ],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 2,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 11,
+    "addAudit": 6,
+    "confirmDelete": 0,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/core/pages-general.js": {
+   "lines": 87,
+   "functions": 1,
+   "pages": [
+    "renderGeneralOverviewPage"
+   ],
+   "modals": [],
+   "saves": [],
+   "calcs": [],
+   "exportsFns": [],
+   "buttons": [],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 0,
+    "addAudit": 0,
+    "confirmDelete": 0,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/core/pages-users.js": {
+   "lines": 442,
+   "functions": 6,
+   "pages": [
+    "renderUsersPage"
+   ],
+   "modals": [
+    "openUserModal:190"
+   ],
+   "saves": [],
+   "calcs": [],
+   "exportsFns": [],
+   "buttons": [
+    {
+     "id": "btnAddUser",
+     "label": "+ مستخدم جديد"
+    },
+    {
+     "id": "btnSaveUser",
+     "label": "حفظ"
+    },
+    {
+     "id": "btnSavePass",
+     "label": "حفظ كلمة المرور"
+    }
+   ],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 3,
+    "addAudit": 4,
+    "confirmDelete": 1,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/core/permissions.js": {
+   "lines": 94,
+   "functions": 5,
+   "pages": [],
+   "modals": [],
+   "saves": [],
+   "calcs": [],
+   "exportsFns": [],
+   "buttons": [],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 0,
+    "addAudit": 0,
+    "confirmDelete": 0,
+    "hasPagePermission": 2
+   }
+  },
+  "renderer/core/project-links.js": {
+   "lines": 82,
+   "functions": 5,
+   "pages": [],
+   "modals": [],
+   "saves": [],
+   "calcs": [],
+   "exportsFns": [],
+   "buttons": [],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 0,
+    "addAudit": 0,
+    "confirmDelete": 0,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/core/smart-tools.js": {
+   "lines": 867,
+   "functions": 42,
+   "pages": [],
+   "modals": [],
+   "saves": [],
+   "calcs": [
+    "repAlertsSummaryTab:692",
+    "alertsSummaryExportData:726"
+   ],
+   "exportsFns": [],
+   "buttons": [
+    {
+     "id": "repAClear",
+     "label": "مسح الفلاتر"
+    },
+    {
+     "id": "repMClear",
+     "label": "مسح الفلاتر"
+    }
+   ],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 0,
+    "addAudit": 0,
+    "confirmDelete": 0,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/core/state.js": {
+   "lines": 221,
+   "functions": 5,
+   "pages": [],
+   "modals": [],
+   "saves": [],
+   "calcs": [],
+   "exportsFns": [],
+   "buttons": [],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 0,
+    "addAudit": 0,
+    "confirmDelete": 0,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/modules/accounts/pages-reports.js": {
+   "lines": 111,
+   "functions": 2,
+   "pages": [
+    "renderAccountsReportsPage"
+   ],
+   "modals": [],
+   "saves": [],
+   "calcs": [],
+   "exportsFns": [],
+   "buttons": [],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 0,
+    "addAudit": 0,
+    "confirmDelete": 0,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/modules/clients/access.js": {
+   "lines": 94,
+   "functions": 0,
+   "pages": [],
+   "modals": [],
+   "saves": [],
+   "calcs": [],
+   "exportsFns": [],
+   "buttons": [],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 0,
+    "addAudit": 4,
+    "confirmDelete": 0,
+    "hasPagePermission": 1
+   }
+  },
+  "renderer/modules/clients/attachments.js": {
+   "lines": 123,
+   "functions": 8,
+   "pages": [],
+   "modals": [],
+   "saves": [],
+   "calcs": [],
+   "exportsFns": [],
+   "buttons": [],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 3,
+    "openAttachment": 2,
+    "deleteAttachment": 0,
+    "saveData": 0,
+    "addAudit": 0,
+    "confirmDelete": 1,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/modules/clients/catalog.js": {
+   "lines": 99,
+   "functions": 5,
+   "pages": [],
+   "modals": [],
+   "saves": [],
+   "calcs": [],
+   "exportsFns": [],
+   "buttons": [
+    {
+     "id": "catAdd",
+     "label": "+ كود"
+    },
+    {
+     "id": "catSeed",
+     "label": "إضافة أمثلة افتراضية"
+    },
+    {
+     "id": "catSave",
+     "label": "حفظ"
+    }
+   ],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 1,
+    "addAudit": 1,
+    "confirmDelete": 0,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/modules/clients/change-orders.js": {
+   "lines": 139,
+   "functions": 8,
+   "pages": [],
+   "modals": [
+    "openChangeOrderModal:87"
+   ],
+   "saves": [],
+   "calcs": [
+    "clRecalcContractValue:12"
+   ],
+   "exportsFns": [],
+   "buttons": [
+    {
+     "id": "voAttach",
+     "label": "📎 إرفاق مستند"
+    },
+    {
+     "id": "btnSaveVo",
+     "label": "حفظ"
+    }
+   ],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 0,
+    "addAudit": 2,
+    "confirmDelete": 1,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/modules/clients/comparison.js": {
+   "lines": 121,
+   "functions": 6,
+   "pages": [
+    "renderClientsComparisonPage"
+   ],
+   "modals": [],
+   "saves": [],
+   "calcs": [],
+   "exportsFns": [],
+   "buttons": [],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 0,
+    "addAudit": 0,
+    "confirmDelete": 0,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/modules/clients/dashboard.js": {
+   "lines": 100,
+   "functions": 3,
+   "pages": [
+    "renderClientsDashboardPage"
+   ],
+   "modals": [],
+   "saves": [],
+   "calcs": [],
+   "exportsFns": [],
+   "buttons": [],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 0,
+    "addAudit": 0,
+    "confirmDelete": 0,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/modules/clients/guarantees.js": {
+   "lines": 362,
+   "functions": 20,
+   "pages": [
+    "renderClientsGuaranteesPage"
+   ],
+   "modals": [
+    "openGuaranteeModal:231",
+    "openGuaranteeActionModal:329"
+   ],
+   "saves": [],
+   "calcs": [
+    "clGuaranteeTotals:68",
+    "clGuaranteeTotalsHtml:122"
+   ],
+   "exportsFns": [],
+   "buttons": [
+    {
+     "id": "btnAddGuarantee",
+     "label": "+ ضمان"
+    },
+    {
+     "id": "garAttach",
+     "label": "📎 إرفاق مستند"
+    },
+    {
+     "id": "btnSaveGuarantee",
+     "label": "حفظ"
+    },
+    {
+     "id": "btnGaSave",
+     "label": "تأكيد"
+    }
+   ],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 0,
+    "addAudit": 3,
+    "confirmDelete": 1,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/modules/clients/helpers.js": {
+   "lines": 617,
+   "functions": 35,
+   "pages": [],
+   "modals": [],
+   "saves": [],
+   "calcs": [
+    "clReconcilePaid:590",
+    "clMigratePaidSource:600"
+   ],
+   "exportsFns": [],
+   "buttons": [
+    {
+     "id": "clSaveSettingsBtn",
+     "label": "💾 حفظ إعدادات العملاء"
+    },
+    {
+     "id": "clWorkflowEditBtn",
+     "label": "⚙️ تعديل مسار العمل"
+    },
+    {
+     "id": "clCatalogBtn",
+     "label": "📚 إدارة الكتالوج"
+    },
+    {
+     "id": "clImportFromSettingsBtn",
+     "label": "📥 استيراد data.json للعملاء"
+    }
+   ],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 3,
+    "addAudit": 3,
+    "confirmDelete": 0,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/modules/clients/pages-accounts.js": {
+   "lines": 185,
+   "functions": 3,
+   "pages": [
+    "renderClientsAccountsPage"
+   ],
+   "modals": [],
+   "saves": [],
+   "calcs": [],
+   "exportsFns": [],
+   "buttons": [
+    {
+     "id": "acApply",
+     "label": "عرض"
+    }
+   ],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 0,
+    "addAudit": 0,
+    "confirmDelete": 0,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/modules/clients/pages-archive.js": {
+   "lines": 106,
+   "functions": 3,
+   "pages": [
+    "renderClientsArchivePage"
+   ],
+   "modals": [],
+   "saves": [],
+   "calcs": [],
+   "exportsFns": [],
+   "buttons": [
+    {
+     "id": "arClear",
+     "label": "مسح"
+    }
+   ],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 0,
+    "addAudit": 0,
+    "confirmDelete": 0,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/modules/clients/pages-boqs.js": {
+   "lines": 358,
+   "functions": 9,
+   "pages": [
+    "renderClientsBoqsPage"
+   ],
+   "modals": [
+    "openBoqModal:200"
+   ],
+   "saves": [],
+   "calcs": [
+    "clCalcBoqItem:10",
+    "clBoqTotal:17"
+   ],
+   "exportsFns": [],
+   "buttons": [
+    {
+     "id": "btnAddBoq",
+     "label": "+ مقايسة"
+    },
+    {
+     "id": "boqClear",
+     "label": "مسح الفلاتر"
+    },
+    {
+     "id": "boqBack",
+     "label": "← رجوع"
+    },
+    {
+     "id": "boqPrint",
+     "label": "🖨️ طباعة / PDF"
+    },
+    {
+     "id": "boqEditFromDetail",
+     "label": "تعديل"
+    },
+    {
+     "id": "bqAddItem",
+     "label": "+ بند"
+    },
+    {
+     "id": "btnSaveBoq",
+     "label": "حفظ"
+    }
+   ],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 0,
+    "addAudit": 0,
+    "confirmDelete": 1,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/modules/clients/pages-collections.js": {
+   "lines": 238,
+   "functions": 5,
+   "pages": [
+    "renderClientsCollectionsPage"
+   ],
+   "modals": [
+    "openCollectionModal:136"
+   ],
+   "saves": [],
+   "calcs": [],
+   "exportsFns": [],
+   "buttons": [
+    {
+     "id": "btnAddColl",
+     "label": "+ تحصيل"
+    },
+    {
+     "id": "coClear",
+     "label": "مسح"
+    },
+    {
+     "id": "btnSaveColl",
+     "label": "حفظ"
+    }
+   ],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 0,
+    "addAudit": 0,
+    "confirmDelete": 1,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/modules/clients/pages-contracts.js": {
+   "lines": 328,
+   "functions": 6,
+   "pages": [
+    "renderClientsContractsPage"
+   ],
+   "modals": [
+    "openContractModal:200"
+   ],
+   "saves": [],
+   "calcs": [],
+   "exportsFns": [],
+   "buttons": [
+    {
+     "id": "btnAddContract",
+     "label": "+ عقد"
+    },
+    {
+     "id": "ctClear",
+     "label": "مسح الفلاتر"
+    },
+    {
+     "id": "ctBack",
+     "label": "← رجوع"
+    },
+    {
+     "id": "ctEditFromDetail",
+     "label": "تعديل"
+    },
+    {
+     "id": "btnSaveContract",
+     "label": "حفظ"
+    }
+   ],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 0,
+    "addAudit": 0,
+    "confirmDelete": 1,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/modules/clients/pages-crm.js": {
+   "lines": 325,
+   "functions": 8,
+   "pages": [
+    "renderClientsCrmPage"
+   ],
+   "modals": [
+    "openOppModal:230",
+    "openCommModal:289"
+   ],
+   "saves": [],
+   "calcs": [],
+   "exportsFns": [],
+   "buttons": [
+    {
+     "id": "crmTabOpps",
+     "label": "الفرص"
+    },
+    {
+     "id": "crmTabComms",
+     "label": "الأنشطة"
+    },
+    {
+     "id": "btnAddOpp",
+     "label": "+ فرصة"
+    },
+    {
+     "id": "crmClear",
+     "label": "مسح"
+    },
+    {
+     "id": "btnAddComm",
+     "label": "+ نشاط"
+    },
+    {
+     "id": "btnSaveOpp",
+     "label": "حفظ"
+    },
+    {
+     "id": "btnSaveComm",
+     "label": "حفظ"
+    }
+   ],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 0,
+    "addAudit": 0,
+    "confirmDelete": 2,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/modules/clients/pages-customers.js": {
+   "lines": 451,
+   "functions": 5,
+   "pages": [
+    "renderClientsCustomersPage"
+   ],
+   "modals": [
+    "openCustomerModal:290"
+   ],
+   "saves": [],
+   "calcs": [],
+   "exportsFns": [],
+   "buttons": [
+    {
+     "id": "btnAddCustomer",
+     "label": "+ عميل"
+    },
+    {
+     "id": "custClear",
+     "label": "مسح الفلاتر"
+    },
+    {
+     "id": "' + c.id + '",
+     "label": "🗑️"
+    },
+    {
+     "id": "custBack",
+     "label": "← رجوع للقائمة"
+    },
+    {
+     "id": "custEditFromDetail",
+     "label": "تعديل البيانات"
+    },
+    {
+     "id": "custAddProject",
+     "label": "+ مشروع"
+    },
+    {
+     "id": "' + e(p.id) + '",
+     "label": "✏️"
+    },
+    {
+     "id": "cuAddContact",
+     "label": "+ جهة اتصال"
+    },
+    {
+     "id": "btnSaveCustomer",
+     "label": "حفظ"
+    }
+   ],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 0,
+    "addAudit": 0,
+    "confirmDelete": 1,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/modules/clients/pages-invoices.js": {
+   "lines": 364,
+   "functions": 7,
+   "pages": [
+    "renderClientsInvoicesPage"
+   ],
+   "modals": [
+    "openClientInvoiceModal:220"
+   ],
+   "saves": [],
+   "calcs": [],
+   "exportsFns": [],
+   "buttons": [
+    {
+     "id": "btnAddClInv",
+     "label": "+ مستخلص"
+    },
+    {
+     "id": "ciClear",
+     "label": "مسح الفلاتر"
+    },
+    {
+     "id": "ciBack",
+     "label": "← رجوع"
+    },
+    {
+     "id": "ciPrint",
+     "label": "🖨️ طباعة / PDF"
+    },
+    {
+     "id": "ciEditFromDetail",
+     "label": "تعديل"
+    },
+    {
+     "id": "btnSaveClInv",
+     "label": "حفظ"
+    }
+   ],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 0,
+    "addAudit": 0,
+    "confirmDelete": 1,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/modules/clients/pages-reports.js": {
+   "lines": 74,
+   "functions": 2,
+   "pages": [
+    "renderClientsReportsPage"
+   ],
+   "modals": [],
+   "saves": [],
+   "calcs": [],
+   "exportsFns": [],
+   "buttons": [],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 0,
+    "addAudit": 0,
+    "confirmDelete": 0,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/modules/clients/pages-tasks.js": {
+   "lines": 117,
+   "functions": 3,
+   "pages": [
+    "renderClientsTasksPage"
+   ],
+   "modals": [],
+   "saves": [],
+   "calcs": [],
+   "exportsFns": [],
+   "buttons": [
+    {
+     "id": "tkClear",
+     "label": "مسح"
+    }
+   ],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 0,
+    "addAudit": 0,
+    "confirmDelete": 0,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/modules/clients/pages-work-surveys.js": {
+   "lines": 579,
+   "functions": 9,
+   "pages": [
+    "renderClientsWorkSurveysPage"
+   ],
+   "modals": [
+    "openWorkSurveyModal:324"
+   ],
+   "saves": [],
+   "calcs": [
+    "clCalcSurveyItem:17",
+    "clSurveyTotal:41"
+   ],
+   "exportsFns": [],
+   "buttons": [
+    {
+     "id": "btnAddSurvey",
+     "label": "+ حصر"
+    },
+    {
+     "id": "wsClear",
+     "label": "مسح الفلاتر"
+    },
+    {
+     "id": "wsBack",
+     "label": "← رجوع"
+    },
+    {
+     "id": "wsPrint",
+     "label": "🖨️ طباعة / PDF"
+    },
+    {
+     "id": "wsEditFromDetail",
+     "label": "تعديل"
+    },
+    {
+     "id": "wsAddItem",
+     "label": "+ بند"
+    },
+    {
+     "id": "btnSaveSurvey",
+     "label": "حفظ"
+    }
+   ],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 0,
+    "addAudit": 0,
+    "confirmDelete": 1,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/modules/clients/print.js": {
+   "lines": 59,
+   "functions": 7,
+   "pages": [],
+   "modals": [],
+   "saves": [],
+   "calcs": [],
+   "exportsFns": [],
+   "buttons": [],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 0,
+    "addAudit": 0,
+    "confirmDelete": 0,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/modules/clients/project-path.js": {
+   "lines": 447,
+   "functions": 13,
+   "pages": [],
+   "modals": [
+    "openReasonModal:265",
+    "openStepModal:301",
+    "openPathHistoryModal:435"
+   ],
+   "saves": [],
+   "calcs": [],
+   "exportsFns": [],
+   "buttons": [
+    {
+     "id": "pwAdvance",
+     "label": "إتمام الخطوة الحالية ◀"
+    },
+    {
+     "id": "pwHistory",
+     "label": "🕘 السجل"
+    },
+    {
+     "id": "pwReasonOk",
+     "label": "↷ تأكيد التخطي"
+    },
+    {
+     "id": "pwCmAdd",
+     "label": "➕ إضافة تعليق"
+    },
+    {
+     "id": "pwAttach",
+     "label": "📎 إرفاق مستند"
+    },
+    {
+     "id": "pwSave",
+     "label": "💾 حفظ البيانات"
+    },
+    {
+     "id": "pwAccept",
+     "label": "✓ قبول"
+    },
+    {
+     "id": "pwReject",
+     "label": "✕ رفض"
+    },
+    {
+     "id": "pwSkip",
+     "label": "↷ تخطي"
+    },
+    {
+     "id": "pwDone",
+     "label": "✓ إتمام"
+    },
+    {
+     "id": "pwReopen",
+     "label": "↶ إعادة فتح"
+    }
+   ],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 2,
+    "saveData": 5,
+    "addAudit": 0,
+    "confirmDelete": 0,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/modules/clients/project-workflow.js": {
+   "lines": 684,
+   "functions": 45,
+   "pages": [],
+   "modals": [],
+   "saves": [],
+   "calcs": [],
+   "exportsFns": [],
+   "buttons": [],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 0,
+    "addAudit": 1,
+    "confirmDelete": 0,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/modules/clients/workflow-editor.js": {
+   "lines": 151,
+   "functions": 3,
+   "pages": [],
+   "modals": [],
+   "saves": [],
+   "calcs": [],
+   "exportsFns": [],
+   "buttons": [
+    {
+     "id": "wfeAddStage",
+     "label": "+ مرحلة جديدة"
+    },
+    {
+     "id": "wfeReset",
+     "label": "↺ استعادة المسار الافتراضي"
+    },
+    {
+     "id": "wfeSave",
+     "label": "💾 حفظ مسار العمل"
+    }
+   ],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 1,
+    "addAudit": 1,
+    "confirmDelete": 2,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/modules/hr/modals-employees.js": {
+   "lines": 85,
+   "functions": 1,
+   "pages": [],
+   "modals": [
+    "openEmployeeModal:1"
+   ],
+   "saves": [],
+   "calcs": [],
+   "exportsFns": [],
+   "buttons": [
+    {
+     "id": "btnSaveEmp",
+     "label": "${isEdit?'حفظ التعديلات':'إضافة'}"
+    }
+   ],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 1,
+    "addAudit": 2,
+    "confirmDelete": 0,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/modules/hr/pages-attendance.js": {
+   "lines": 204,
+   "functions": 4,
+   "pages": [
+    "renderAttendancePage"
+   ],
+   "modals": [
+    "openAttendanceModal:121"
+   ],
+   "saves": [],
+   "calcs": [],
+   "exportsFns": [],
+   "buttons": [
+    {
+     "id": "btnAddAtt",
+     "label": "+ تسجيل حضور"
+    },
+    {
+     "id": "btnSaveAtt",
+     "label": "حفظ"
+    }
+   ],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 2,
+    "addAudit": 2,
+    "confirmDelete": 1,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/modules/hr/pages-costs.js": {
+   "lines": 635,
+   "functions": 16,
+   "pages": [
+    "renderCostsPage"
+   ],
+   "modals": [
+    "openCostModal:411"
+   ],
+   "saves": [
+    "saveCostItemSuggestion",
+    "removeCostItemSuggestion"
+   ],
+   "calcs": [
+    "ensureCostItemPool:12",
+    "costLines:21",
+    "costItemText:26",
+    "costItemSuggestions:31",
+    "saveCostItemSuggestion:40",
+    "removeCostItemSuggestion:46",
+    "renameCostItemSuggestion:51",
+    "filteredCosts:65",
+    "costPersonBalance:82",
+    "costItemsUsed:92",
+    "costSectionsFor:403",
+    "costTabIdForKind:408"
+   ],
+   "exportsFns": [],
+   "buttons": [
+    {
+     "id": "btnCostBackKinds",
+     "label": "← كل التكاليف"
+    },
+    {
+     "id": "btnCostAddSec",
+     "label": "إضافة قسم"
+    },
+    {
+     "id": "btnCostRenSec",
+     "label": "تعديل قسم"
+    },
+    {
+     "id": "btnCostDelSec",
+     "label": "حذف قسم"
+    },
+    {
+     "id": "btnAddCost",
+     "label": "+ إضافة تكلفة"
+    },
+    {
+     "id": "btnCostBackSecs",
+     "label": "← أقسام ${escapeHtml(tabDef.label)}"
+    },
+    {
+     "id": "cstApply",
+     "label": "تطبيق"
+    },
+    {
+     "id": "cstClear",
+     "label": "مسح"
+    },
+    {
+     "id": "btnDoCostSec",
+     "label": "إضافة"
+    },
+    {
+     "id": "btnDoCostRen",
+     "label": "حفظ"
+    },
+    {
+     "id": "btnDoCostDel",
+     "label": "حذف"
+    },
+    {
+     "id": "btnCstAddLine",
+     "label": "+ بند"
+    },
+    {
+     "id": "btnCstManageItems",
+     "label": "إدارة البنود"
+    },
+    {
+     "id": "btnSaveCost",
+     "label": "${existing ? 'حفظ التعديل' : 'حفظ'}"
+    },
+    {
+     "id": "btnCstNewItem",
+     "label": "+ إضافة بند"
+    }
+   ],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 8,
+    "addAudit": 3,
+    "confirmDelete": 2,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/modules/hr/pages-dashboard.js": {
+   "lines": 322,
+   "functions": 3,
+   "pages": [
+    "renderDashboardPage"
+   ],
+   "modals": [],
+   "saves": [],
+   "calcs": [],
+   "exportsFns": [],
+   "buttons": [],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 0,
+    "addAudit": 0,
+    "confirmDelete": 0,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/modules/hr/pages-departments.js": {
+   "lines": 239,
+   "functions": 4,
+   "pages": [
+    "renderDepartmentsPage"
+   ],
+   "modals": [],
+   "saves": [],
+   "calcs": [],
+   "exportsFns": [],
+   "buttons": [
+    {
+     "id": "btnDeptBack",
+     "label": "← كل الأقسام"
+    },
+    {
+     "id": "btnDoRenDept",
+     "label": "حفظ"
+    },
+    {
+     "id": "btnDoDelDept",
+     "label": "حذف"
+    },
+    {
+     "id": "btnSaveDept",
+     "label": "حفظ"
+    }
+   ],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 3,
+    "addAudit": 0,
+    "confirmDelete": 1,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/modules/hr/pages-employee-detail.js": {
+   "lines": 88,
+   "functions": 2,
+   "pages": [
+    "renderEmployeeDetailPage"
+   ],
+   "modals": [],
+   "saves": [],
+   "calcs": [],
+   "exportsFns": [],
+   "buttons": [
+    {
+     "id": "backToEmpList",
+     "label": "← رجوع للقائمة"
+    },
+    {
+     "id": "btnEditEmpDetail",
+     "label": "تعديل البيانات"
+    }
+   ],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 0,
+    "addAudit": 0,
+    "confirmDelete": 0,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/modules/hr/pages-employees.js": {
+   "lines": 216,
+   "functions": 8,
+   "pages": [
+    "renderEmployeesPage"
+   ],
+   "modals": [],
+   "saves": [],
+   "calcs": [],
+   "exportsFns": [],
+   "buttons": [
+    {
+     "id": "btnAddEmployee",
+     "label": "+ إضافة موظف"
+    }
+   ],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 0,
+    "addAudit": 1,
+    "confirmDelete": 1,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/modules/hr/pages-equipment.js": {
+   "lines": 1319,
+   "functions": 19,
+   "pages": [
+    "renderEquipmentPage"
+   ],
+   "modals": [
+    "openEquipmentModal:665",
+    "openEquipmentDailyModal:1074",
+    "openEquipLogModal:1228"
+   ],
+   "saves": [],
+   "calcs": [
+    "printEquipmentDaysStatement:250",
+    "printEquipmentDailyStatement:1024"
+   ],
+   "exportsFns": [
+    "printEquipmentDaysStatement",
+    "printEquipmentDailyStatement"
+   ],
+   "buttons": [
+    {
+     "id": "btnExportEquip",
+     "label": "CSV"
+    },
+    {
+     "id": "btnAddExtCar",
+     "label": "+ إضافة سيارة خارجية"
+    },
+    {
+     "id": "btnAddEquip",
+     "label": "+ إضافة معدة"
+    },
+    {
+     "id": "btnEqBack",
+     "label": "← رجوع للقائمة"
+    },
+    {
+     "id": "btnEqDetailEdit",
+     "label": "تعديل البطاقة"
+    },
+    {
+     "id": "btnEqSaveNote",
+     "label": "حفظ"
+    },
+    {
+     "id": "eqDetApply",
+     "label": "تطبيق"
+    },
+    {
+     "id": "btnSaveEq",
+     "label": "${isEdit?'حفظ التعديلات':'إضافة'}"
+    },
+    {
+     "id": "btnEqDailyBack",
+     "label": "← رجوع للمعدات"
+    },
+    {
+     "id": "btnEqDailyAdd",
+     "label": "+ يومية معدة"
+    },
+    {
+     "id": "btnDelEd",
+     "label": "حذف"
+    },
+    {
+     "id": "btnSaveEd",
+     "label": "${existing?'حفظ التعديل':'حفظ اليومية'}"
+    },
+    {
+     "id": "btnSaveElog",
+     "label": "حفظ"
+    }
+   ],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 12,
+    "addAudit": 6,
+    "confirmDelete": 6,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/modules/hr/pages-leaves.js": {
+   "lines": 308,
+   "functions": 7,
+   "pages": [
+    "renderLeavesPage"
+   ],
+   "modals": [
+    "openLeaveModal:172"
+   ],
+   "saves": [],
+   "calcs": [
+    "calcLeaveDays:32"
+   ],
+   "exportsFns": [],
+   "buttons": [
+    {
+     "id": "btnAddLeave",
+     "label": "+ طلب إجازة"
+    },
+    {
+     "id": "lvApply",
+     "label": "تطبيق"
+    },
+    {
+     "id": "btnSaveLv",
+     "label": "${existing?'حفظ التعديل':'إرسال الطلب'}"
+    }
+   ],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 4,
+    "addAudit": 4,
+    "confirmDelete": 1,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/modules/hr/pages-ops.js": {
+   "lines": 2286,
+   "functions": 35,
+   "pages": [
+    "renderDriversPage",
+    "renderTransfersPage",
+    "renderPerformancePage",
+    "renderExpensesPage"
+   ],
+   "modals": [
+    "openExternalDriverModal:133",
+    "openDriverModal:189",
+    "openFuelModal:274",
+    "openTransferModal:419",
+    "openPerfModal:610",
+    "openManageDocTypesModal:675",
+    "openDocModal:721",
+    "openExpenseDetailModal:1417",
+    "openExpenseModal:1464",
+    "openVehicleExpenseModal:1842"
+   ],
+   "saves": [
+    "saveExpenseItemSuggestion",
+    "removeExpenseItemSuggestion",
+    "saveVehicleExpenseItem"
+   ],
+   "calcs": [],
+   "exportsFns": [],
+   "buttons": [
+    {
+     "id": "btnAddDriver",
+     "label": "+ سائق"
+    },
+    {
+     "id": "btnAddExtDriver",
+     "label": "+ إضافة سائق خارجي"
+    },
+    {
+     "id": "btnSaveDriver",
+     "label": "${isEdit?'حفظ التعديل':'إضافة'}"
+    },
+    {
+     "id": "btnSaveFl",
+     "label": "حفظ"
+    },
+    {
+     "id": "btnAddTransfer",
+     "label": "+ أمر نقل"
+    },
+    {
+     "id": "trApply",
+     "label": "تطبيق"
+    },
+    {
+     "id": "btnSaveTr",
+     "label": "تنفيذ النقل"
+    },
+    {
+     "id": "btnAddPerf",
+     "label": "+ تقييم جديد"
+    },
+    {
+     "id": "btnSavePf",
+     "label": "حفظ"
+    },
+    {
+     "id": "btnAddDocType",
+     "label": "إضافة"
+    },
+    {
+     "id": "btnManageDocTypes",
+     "label": "إدارة الاقتراحات"
+    },
+    {
+     "id": "btnDocPickFile",
+     "label": "📁 رفع ملف من الجهاز"
+    },
+    {
+     "id": "btnDocScan",
+     "label": "📷 مسح / كاميرا"
+    },
+    {
+     "id": "btnSaveDoc",
+     "label": "حفظ في الأرشيف"
+    },
+    {
+     "id": "btnExpBackKinds",
+     "label": "← كل المصاريف"
+    },
+    {
+     "id": "btnExpAddSec",
+     "label": "إضافة قسم"
+    },
+    {
+     "id": "btnExpRenSec",
+     "label": "تعديل قسم"
+    },
+    {
+     "id": "btnExpDelSec",
+     "label": "حذف قسم"
+    },
+    {
+     "id": "btnExpFuel",
+     "label": "⛽ صرف وقود"
+    },
+    {
+     "id": "btnAddExp",
+     "label": "+ مصروف"
+    },
+    {
+     "id": "btnExpSecBack",
+     "label": "← أقسام ${escapeHtml(tabDef.label)}"
+    },
+    {
+     "id": "expApply",
+     "label": "تطبيق"
+    },
+    {
+     "id": "btnExpDetailEdit",
+     "label": "تعديل"
+    },
+    {
+     "id": "btnExAddLine",
+     "label": "+ بند"
+    },
+    {
+     "id": "btnExManageItems",
+     "label": "إدارة البنود"
+    },
+    {
+     "id": "btnSaveEx",
+     "label": "حفظ"
+    },
+    {
+     "id": "btnAddPItem",
+     "label": "إضافة"
+    },
+    {
+     "id": "btnVexpAddLine",
+     "label": "+ بند"
+    },
+    {
+     "id": "btnVexpManageItems",
+     "label": "إدارة البنود"
+    },
+    {
+     "id": "btnSaveVexp",
+     "label": "حفظ"
+    },
+    {
+     "id": "btnDoExpSec",
+     "label": "إضافة"
+    },
+    {
+     "id": "btnDoExpRen",
+     "label": "حفظ"
+    },
+    {
+     "id": "btnDoExpDel",
+     "label": "حذف"
+    }
+   ],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 2,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 24,
+    "addAudit": 11,
+    "confirmDelete": 6,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/modules/hr/pages-person-detail.js": {
+   "lines": 432,
+   "functions": 14,
+   "pages": [
+    "renderPersonDetailPage"
+   ],
+   "modals": [],
+   "saves": [],
+   "calcs": [
+    "printPersonFinanceStatement:126"
+   ],
+   "exportsFns": [
+    "printPersonFinanceStatement"
+   ],
+   "buttons": [
+    {
+     "id": "btnPfApply",
+     "label": "تطبيق"
+    },
+    {
+     "id": "btnPfPrint",
+     "label": "${(kind==='worker' && typeof isTempWorkerRec==='function' && isTempWor"
+    },
+    {
+     "id": "btnPfPay",
+     "label": "＋ تسجيل صرف / استلام"
+    },
+    {
+     "id": "btnPfPen",
+     "label": "＋ خصم / جزاء"
+    },
+    {
+     "id": "btnPersonDetDoc2",
+     "label": "＋ إرفاق"
+    },
+    {
+     "id": "btnPersonDetBack",
+     "label": "← رجوع للقائمة"
+    },
+    {
+     "id": "btnPersonDetEdit",
+     "label": "تعديل البيانات"
+    },
+    {
+     "id": "btnPersonDetSaveNote",
+     "label": "حفظ"
+    }
+   ],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 4,
+    "addAudit": 0,
+    "confirmDelete": 0,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/modules/hr/pages-projects.js": {
+   "lines": 606,
+   "functions": 7,
+   "pages": [
+    "renderProjectsPage"
+   ],
+   "modals": [
+    "openProjectModal:334",
+    "openPlanModal:508"
+   ],
+   "saves": [],
+   "calcs": [],
+   "exportsFns": [],
+   "buttons": [
+    {
+     "id": "btnAddProject",
+     "label": "+ مشروع"
+    },
+    {
+     "id": "projClear",
+     "label": "مسح الفلاتر"
+    },
+    {
+     "id": "' + p.id + '",
+     "label": "🗑️"
+    },
+    {
+     "id": "btnSavePr",
+     "label": "حفظ"
+    },
+    {
+     "id": "pdAutoFill",
+     "label": "تعبئة تلقائية من الحضور والمعدات"
+    },
+    {
+     "id": "btnSavePd",
+     "label": "حفظ"
+    }
+   ],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 3,
+    "addAudit": 0,
+    "confirmDelete": 1,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/modules/hr/pages-reports.js": {
+   "lines": 1998,
+   "functions": 26,
+   "pages": [
+    "renderReportsPage"
+   ],
+   "modals": [],
+   "saves": [],
+   "calcs": [
+    "repDuesFull:365"
+   ],
+   "exportsFns": [
+    "exportCurrentReportCsv",
+    "exportCurrentReportXlsx",
+    "printCurrentReport"
+   ],
+   "buttons": [
+    {
+     "id": "btnRepXlsx",
+     "label": "إكسيل"
+    },
+    {
+     "id": "btnRepCsv",
+     "label": "CSV"
+    },
+    {
+     "id": "btnRepPrint",
+     "label": "طباعة"
+    },
+    {
+     "id": "btnRepApply",
+     "label": "تطبيق"
+    },
+    {
+     "id": "btnRepClearDates",
+     "label": "مسح التواريخ"
+    },
+    {
+     "id": "repFClear",
+     "label": "مسح الفلاتر"
+    },
+    {
+     "id": "repFOpClear",
+     "label": "مسح الفلاتر"
+    },
+    {
+     "id": "btnPrintMonthlyOverview",
+     "label": "🖨️ طباعة التقرير الشهري"
+    }
+   ],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 2,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 0,
+    "addAudit": 0,
+    "confirmDelete": 0,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/modules/hr/pages-supervisors.js": {
+   "lines": 416,
+   "functions": 7,
+   "pages": [
+    "renderSupervisorsPage",
+    "renderSupervisorStatementPage"
+   ],
+   "modals": [
+    "openSupervisorModal:323"
+   ],
+   "saves": [],
+   "calcs": [
+    "supervisorStatementSectionsHtml:99",
+    "supervisorStatementCardsHtml:149"
+   ],
+   "exportsFns": [],
+   "buttons": [
+    {
+     "id": "btnAddSup",
+     "label": "+ إضافة مشرف"
+    },
+    {
+     "id": "btnBackSup",
+     "label": "← رجوع للمشرفين"
+    },
+    {
+     "id": "btnPrintSupDays",
+     "label": "طباعة كشف أيام"
+    },
+    {
+     "id": "btnPrintSupStmt",
+     "label": "طباعة كشف الحساب"
+    },
+    {
+     "id": "supStmtApply",
+     "label": "تطبيق"
+    },
+    {
+     "id": "btnSaveSup",
+     "label": "${isEdit?'حفظ التعديلات':'إضافة'}"
+    }
+   ],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 4,
+    "addAudit": 3,
+    "confirmDelete": 2,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/modules/hr/pages-worker-attendance.js": {
+   "lines": 879,
+   "functions": 17,
+   "pages": [
+    "renderWorkerAttendancePage"
+   ],
+   "modals": [
+    "openWattDaySitesModal:541",
+    "openWorkerAttModal:577"
+   ],
+   "saves": [],
+   "calcs": [],
+   "exportsFns": [],
+   "buttons": [
+    {
+     "id": "btnDailiesBackKinds",
+     "label": "← كل اليوميات"
+    },
+    {
+     "id": "btnDailiesBackDepts",
+     "label": "← الأقسام"
+    },
+    {
+     "id": "btnAddWatt",
+     "label": "+ تسجيل يومية"
+    },
+    {
+     "id": "wattClearFilters",
+     "label": "مسح الفلاتر"
+    },
+    {
+     "id": "btnWsiteAdd",
+     "label": "+ موقع آخر لنفس اليوم"
+    },
+    {
+     "id": "btnDelWattModal",
+     "label": "حذف"
+    },
+    {
+     "id": "btnSaveWattMore",
+     "label": "حفظ + موقع آخر لنفس اليوم"
+    },
+    {
+     "id": "btnSaveWatt",
+     "label": "${existing?'حفظ التعديل':'تسجيل'}"
+    }
+   ],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 4,
+    "addAudit": 2,
+    "confirmDelete": 3,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/modules/hr/pages-worker-dues.js": {
+   "lines": 1582,
+   "functions": 14,
+   "pages": [
+    "renderWorkerDuesPage"
+   ],
+   "modals": [
+    "openUnifiedPayModal:741",
+    "openPayItemsManageModal:1454"
+   ],
+   "saves": [],
+   "calcs": [
+    "duesEntityKind:12",
+    "duesListForKind:17"
+   ],
+   "exportsFns": [],
+   "buttons": [
+    {
+     "id": "btnDuesBackKinds",
+     "label": "← كل المستحقات"
+    },
+    {
+     "id": "btnDuesBackDepts",
+     "label": "← أقسام ${escapeHtml(label)}"
+    },
+    {
+     "id": "btnAddWPay",
+     "label": "💵 دفع مستحق"
+    },
+    {
+     "id": "btnAddWExtras",
+     "label": "بدلات ومكافآت"
+    },
+    {
+     "id": "btnAddWPen",
+     "label": "⚠️ خصم / جزاء"
+    },
+    {
+     "id": "duesApply",
+     "label": "تطبيق"
+    },
+    {
+     "id": "btnUpAddLine",
+     "label": "+ بند"
+    },
+    {
+     "id": "btnUpManageItems",
+     "label": "إدارة البنود"
+    },
+    {
+     "id": "btnUpAddLineDaily",
+     "label": "+ بند"
+    },
+    {
+     "id": "btnUpManageItemsDaily",
+     "label": "إدارة البنود"
+    },
+    {
+     "id": "btnSaveUp",
+     "label": "حفظ"
+    },
+    {
+     "id": "btnXClosePItems",
+     "label": "×"
+    },
+    {
+     "id": "btnAddPItem",
+     "label": "إضافة"
+    },
+    {
+     "id": "btnClosePItems",
+     "label": "إغلاق"
+    },
+    {
+     "id": "btnSavePItems",
+     "label": "حفظ"
+    }
+   ],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 5,
+    "addAudit": 6,
+    "confirmDelete": 1,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/modules/hr/pages-workers.js": {
+   "lines": 514,
+   "functions": 5,
+   "pages": [
+    "renderWorkersPage"
+   ],
+   "modals": [
+    "openWorkerModal:216"
+   ],
+   "saves": [],
+   "calcs": [],
+   "exportsFns": [],
+   "buttons": [
+    {
+     "id": "btnExportWorkers",
+     "label": "CSV"
+    },
+    {
+     "id": "btnAddTempWorker",
+     "label": "+ إضافة عامل مؤقت"
+    },
+    {
+     "id": "btnAddWorker",
+     "label": "+ إضافة عامل"
+    },
+    {
+     "id": "btnSaveWrk",
+     "label": "${isEdit ? 'حفظ التعديلات' : 'إضافة'}"
+    }
+   ],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 1,
+    "addAudit": 3,
+    "confirmDelete": 1,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/modules/hr/project-statement.js": {
+   "lines": 360,
+   "functions": 9,
+   "pages": [
+    "renderProjectStatementPage"
+   ],
+   "modals": [],
+   "saves": [],
+   "calcs": [
+    "projectStatement:48",
+    "projectStatementSectionsHtml:177"
+   ],
+   "exportsFns": [],
+   "buttons": [
+    {
+     "id": "btnBackProj",
+     "label": "← رجوع للمشاريع"
+    },
+    {
+     "id": "btnPrintProjStmt",
+     "label": "🖨️ طباعة الكشف"
+    },
+    {
+     "id": "btnEditProjDetail",
+     "label": "✏️ تعديل المشروع"
+    },
+    {
+     "id": "pstApply",
+     "label": "تطبيق"
+    },
+    {
+     "id": "pstClear",
+     "label": "مسح الفلاتر"
+    }
+   ],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 0,
+    "addAudit": 0,
+    "confirmDelete": 0,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/modules/ledger/app.js": {
+   "lines": 972,
+   "functions": 13,
+   "pages": [],
+   "modals": [
+    "openGlobalValidationModal:567"
+   ],
+   "saves": [],
+   "calcs": [
+    "refreshOpenStatements:773"
+   ],
+   "exportsFns": [],
+   "buttons": [
+    {
+     "id": "fix_cancel",
+     "label": "إلغاء"
+    },
+    {
+     "id": "fix_ok",
+     "label": "موافق — إصلاح ${list.length} فاتورة"
+    },
+    {
+     "id": "gval_close",
+     "label": "إغلاق"
+    },
+    {
+     "id": "gval_fix",
+     "label": "إصلاح حسابات الفواتير"
+    },
+    {
+     "id": "sc_close",
+     "label": "حسناً"
+    }
+   ],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 1,
+    "deleteAttachment": 1,
+    "saveData": 11,
+    "addAudit": 0,
+    "confirmDelete": 0,
+    "hasPagePermission": 2
+   }
+  },
+  "renderer/modules/ledger/data-store.js": {
+   "lines": 121,
+   "functions": 4,
+   "pages": [],
+   "modals": [],
+   "saves": [],
+   "calcs": [],
+   "exportsFns": [],
+   "buttons": [],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 0,
+    "addAudit": 0,
+    "confirmDelete": 0,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/modules/ledger/excel-import.js": {
+   "lines": 617,
+   "functions": 19,
+   "pages": [],
+   "modals": [],
+   "saves": [],
+   "calcs": [
+    "normalizeTaxId:240"
+   ],
+   "exportsFns": [],
+   "buttons": [
+    {
+     "id": "ei_cancel",
+     "label": "إلغاء"
+    },
+    {
+     "id": "ei_import",
+     "label": "استيراد ${dataRows.length} صف"
+    },
+    {
+     "id": "imp_cancel",
+     "label": "إلغاء"
+    },
+    {
+     "id": "imp_new_only",
+     "label": "إضافة الجديد فقط (بدون تحديث)"
+    },
+    {
+     "id": "imp_selected",
+     "label": "تحديث المحدد + إضافة الجديد"
+    },
+    {
+     "id": "imp_all",
+     "label": "تأكيد الإضافة"
+    }
+   ],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 1,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 2,
+    "addAudit": 0,
+    "confirmDelete": 0,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/modules/ledger/exports.js": {
+   "lines": 153,
+   "functions": 11,
+   "pages": [],
+   "modals": [],
+   "saves": [],
+   "calcs": [],
+   "exportsFns": [
+    "exportCategoriesExcel",
+    "exportSuppliersCsv",
+    "exportAllInvoicesCsv",
+    "exportAllPaymentsCsv",
+    "exportSupplierCsv",
+    "exportVisibleQuarterNoticesPdf",
+    "exportSupplierDiscountNoticesPdf",
+    "exportQuarterNoticesPdf"
+   ],
+   "buttons": [],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 0,
+    "addAudit": 0,
+    "confirmDelete": 0,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/modules/ledger/glue.js": {
+   "lines": 283,
+   "functions": 17,
+   "pages": [
+    "renderLedgerPage"
+   ],
+   "modals": [],
+   "saves": [],
+   "calcs": [],
+   "exportsFns": [],
+   "buttons": [
+    {
+     "id": "lgImportOldBtn",
+     "label": "📥 استيراد بيانات دفتر الموردين القديمة (data.json)"
+    },
+    {
+     "id": "lgExcelImportBtn",
+     "label": "استيراد من إكسيل"
+    },
+    {
+     "id": "lgExportSuppliersBtn",
+     "label": "تصدير الموردين"
+    },
+    {
+     "id": "lgExportInvoicesBtn",
+     "label": "تصدير كل الفواتير"
+    },
+    {
+     "id": "lgExportPaymentsBtn",
+     "label": "تصدير كل الدفعات"
+    },
+    {
+     "id": "lgValidateBtn",
+     "label": "✓ فحص البيانات الآن"
+    },
+    {
+     "id": "lgFixCalcBtn",
+     "label": "إصلاح حسابات الفواتير (الإجمالي والصافي)"
+    },
+    {
+     "id": "lgResetBtn",
+     "label": "🗑️ مسح بيانات الموردين والفواتير"
+    }
+   ],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 5,
+    "addAudit": 2,
+    "confirmDelete": 0,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/modules/ledger/helpers.js": {
+   "lines": 2348,
+   "functions": 143,
+   "pages": [],
+   "modals": [],
+   "saves": [
+    "addDaysToIsoDate",
+    "saveCustomLinkedItem",
+    "deleteCustomLinkedItem"
+   ],
+   "calcs": [
+    "previewInvoiceCalculationFixes:143",
+    "fixInvoiceCalculations:169",
+    "lgExtraFieldsSummary:492",
+    "supplierBalance:576",
+    "invoiceRemaining:590",
+    "getInvoiceDueDate:720",
+    "getOverdueInvoices:734",
+    "recalcLinkedOriginal:1927",
+    "maybeShowOverdueAlert:2031",
+    "pfSummaryHtml:2265"
+   ],
+   "exportsFns": [
+    "downloadFile",
+    "exportExcelFile",
+    "printHtmlContent"
+   ],
+   "buttons": [
+    {
+     "id": "efPromptCancel",
+     "label": "إلغاء"
+    },
+    {
+     "id": "efPromptOk",
+     "label": "إضافة"
+    },
+    {
+     "id": "appDlgCancel",
+     "label": "${lgEscapeHtml(cancelText)}"
+    },
+    {
+     "id": "appDlgOk",
+     "label": "${lgEscapeHtml(okText)}"
+    },
+    {
+     "id": "pinEye2",
+     "label": "👁"
+    },
+    {
+     "id": "pinEye1",
+     "label": "👁"
+    },
+    {
+     "id": "pinCancel",
+     "label": "إلغاء"
+    },
+    {
+     "id": "pinOk",
+     "label": "تأكيد"
+    },
+    {
+     "id": "undoToastBtn",
+     "label": "استعادة"
+    },
+    {
+     "id": "overdueAlertClose",
+     "label": "لاحقاً"
+    },
+    {
+     "id": "overdueAlertGo",
+     "label": "عرض الفواتير المتأخرة"
+    }
+   ],
+   "calls": {
+    "exportExcel": 1,
+    "importExcel": 0,
+    "savePdf": 1,
+    "savePdfHtml": 0,
+    "saveFile": 1,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 6,
+    "addAudit": 0,
+    "confirmDelete": 0,
+    "hasPagePermission": 4
+   }
+  },
+  "renderer/modules/ledger/modals.js": {
+   "lines": 1675,
+   "functions": 15,
+   "pages": [],
+   "modals": [
+    "openAddSupplierModal:9",
+    "openDeleteSupplierModal:136",
+    "openPaymentModal:192",
+    "openAddEditInvoiceModal:660",
+    "openDiscountNoticeModal:1410",
+    "openViewInvoiceModal:1452",
+    "openViewPaymentModal:1633"
+   ],
+   "saves": [
+    "saveInvoiceData"
+   ],
+   "calcs": [
+    "printSupplierStatementTab:1439",
+    "printSupplierStatement:1446"
+   ],
+   "exportsFns": [
+    "printSupplierStatementTab",
+    "printSupplierStatement"
+   ],
+   "buttons": [
+    {
+     "id": "m_addCustomFieldBtn",
+     "label": "+ إضافة خانة مخصصة أخرى"
+    },
+    {
+     "id": "m_showExtraFields",
+     "label": "+ إضافة خانة (هاتف / إيميل / عنوان / حساب بنكي / IBAN)"
+    },
+    {
+     "id": "m_sup_scanAtt",
+     "label": "📷 مسح ضوئي / كاميرا"
+    },
+    {
+     "id": "m_cancel",
+     "label": "إلغاء"
+    },
+    {
+     "id": "m_save",
+     "label": "${editing?'حفظ التعديل':'إضافة الفاتورة'}"
+    },
+    {
+     "id": "m_confirm",
+     "label": "تحديث الفاتورة الموجودة"
+    },
+    {
+     "id": "m_pay_addFieldBtn",
+     "label": "+ إضافة خانة أخرى"
+    },
+    {
+     "id": "m_pay_scanAtt",
+     "label": "📷 مسح ضوئي / كاميرا"
+    },
+    {
+     "id": "m_pay_cancel",
+     "label": "إلغاء"
+    },
+    {
+     "id": "m_pay_save",
+     "label": "'+(editing?'حفظ التعديل':'إضافة الدفعة')+'"
+    },
+    {
+     "id": "scanWiaBtn",
+     "label": "🖨 مسح من الماسح الضوئي (ويندوز)"
+    },
+    {
+     "id": "scanOpenWinAppBtn",
+     "label": "فتح تطبيق مسح ويندوز"
+    },
+    {
+     "id": "scanCaptureBtn",
+     "label": "📸 التقاط من الكاميرا"
+    },
+    {
+     "id": "scanFlipBtn",
+     "label": "تبديل كاميرا"
+    },
+    {
+     "id": "scanRetakeBtn",
+     "label": "مسح المعاينة"
+    },
+    {
+     "id": "scanCancel",
+     "label": "إلغاء"
+    },
+    {
+     "id": "scanConfirm",
+     "label": "تأكيد ورفع المرفق"
+    },
+    {
+     "id": "inv_addItemBtn",
+     "label": "+ إضافة صنف"
+    },
+    {
+     "id": "inv_openLinkBtn",
+     "label": "🔗 فتح"
+    },
+    {
+     "id": "invFormScanAtt",
+     "label": "📷 مسح ضوئي / كاميرا"
+    },
+    {
+     "id": "m_close",
+     "label": "إغلاق"
+    },
+    {
+     "id": "m_print",
+     "label": "حفظ PDF (يفتح تلقائياً)"
+    },
+    {
+     "id": "m_open_inv_link",
+     "label": "🔗 فتح الفاتورة الأصلية"
+    },
+    {
+     "id": "m_open_linked_orig",
+     "label": "فتح الفاتورة الأصلية"
+    },
+    {
+     "id": "m_close_view",
+     "label": "إغلاق"
+    },
+    {
+     "id": "m_scan_att",
+     "label": "📷 مسح / كاميرا"
+    },
+    {
+     "id": "m_copy_inv",
+     "label": "نسخ كفاتورة جديدة"
+    },
+    {
+     "id": "m_view_notice",
+     "label": "${inv.postReturnWht?'إشعار خصم بعد مرتجع':'إشعار خصم'}"
+    },
+    {
+     "id": "m_view_edit",
+     "label": "تعديل"
+    },
+    {
+     "id": "m_close_pay_view",
+     "label": "إغلاق"
+    },
+    {
+     "id": "m_pay_edit",
+     "label": "تعديل الدفعة"
+    },
+    {
+     "id": "m_pay_view_inv",
+     "label": "عرض الفاتورة المرتبطة"
+    }
+   ],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 5,
+    "deleteAttachment": 4,
+    "saveData": 9,
+    "addAudit": 0,
+    "confirmDelete": 0,
+    "hasPagePermission": 5
+   }
+  },
+  "renderer/modules/ledger/pages-archive.js": {
+   "lines": 1309,
+   "functions": 49,
+   "pages": [],
+   "modals": [
+    "openAddSupplierDocumentModal:774"
+   ],
+   "saves": [],
+   "calcs": [
+    "archSummary:138"
+   ],
+   "exportsFns": [],
+   "buttons": [
+    {
+     "id": "btnArchResetFilters",
+     "label": "✕ مسح الفلاتر (${n})"
+    },
+    {
+     "id": "btnArchBackList",
+     "label": "← كل الموردين"
+    },
+    {
+     "id": "btnArchOpenTrash",
+     "label": "🗑️ سلة المهملات (${(DATA.ledger.archiveTrash||[]).length})"
+    },
+    {
+     "id": "btnArchAddDoc",
+     "label": "+ إرفاق مستند"
+    },
+    {
+     "id": "btnArchExportSup",
+     "label": "💾 حفظ المجلد على الجهاز"
+    },
+    {
+     "id": "btnArchBackSup",
+     "label": "← مجلد ${lgEscapeHtml(s.name||'')}"
+    },
+    {
+     "id": "btnArchPrintAllNotices",
+     "label": "🖨 طباعة ${n>0?'الإشعارات الظاهرة':'كل الإشعارات'} (${invs.length})"
+    },
+    {
+     "id": "btnAddDocType",
+     "label": "إضافة"
+    },
+    {
+     "id": "btnCloseManageDocTypes",
+     "label": "إغلاق"
+    },
+    {
+     "id": "btnManageDocTypes",
+     "label": "إدارة الاقتراحات"
+    },
+    {
+     "id": "btnDocPickFile",
+     "label": "📁 رفع ملف من الجهاز"
+    },
+    {
+     "id": "btnDocScan",
+     "label": "📷 مسح / كاميرا"
+    },
+    {
+     "id": "docCancel",
+     "label": "إلغاء"
+    },
+    {
+     "id": "btnSaveDoc",
+     "label": "حفظ في أوراق المورد"
+    }
+   ],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 4,
+    "windowPrint": 0,
+    "pickAttachments": 6,
+    "openAttachment": 5,
+    "deleteAttachment": 8,
+    "saveData": 8,
+    "addAudit": 0,
+    "confirmDelete": 0,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/modules/ledger/pages-categories.js": {
+   "lines": 336,
+   "functions": 6,
+   "pages": [
+    "renderCategoriesPage"
+   ],
+   "modals": [
+    "openLinkedItemModal:231"
+   ],
+   "saves": [],
+   "calcs": [],
+   "exportsFns": [],
+   "buttons": [
+    {
+     "id": "addCategoryBtn",
+     "label": "+ إضافة تصنيف"
+    },
+    {
+     "id": "exportCategoriesExcelBtn",
+     "label": "تصدير Excel (الظاهر)"
+    },
+    {
+     "id": "addProjectBtn",
+     "label": "+ إضافة مشروع"
+    },
+    {
+     "id": "addLinkedItemBtn",
+     "label": "＋ إضافة صنف / أكواد للمورد"
+    },
+    {
+     "id": "li_cancel",
+     "label": "إلغاء"
+    },
+    {
+     "id": "li_save",
+     "label": "حفظ"
+    },
+    {
+     "id": "applySupplierStatementBtn",
+     "label": "تحديث الكشف"
+    },
+    {
+     "id": "printSupplierStatementTabBtn",
+     "label": "حفظ PDF"
+    },
+    {
+     "id": "clearSupplierStatementDatesBtn",
+     "label": "كل الفترة"
+    }
+   ],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 1,
+    "addAudit": 0,
+    "confirmDelete": 0,
+    "hasPagePermission": 3
+   }
+  },
+  "renderer/modules/ledger/pages-dashboard.js": {
+   "lines": 240,
+   "functions": 3,
+   "pages": [],
+   "modals": [],
+   "saves": [],
+   "calcs": [],
+   "exportsFns": [],
+   "buttons": [
+    {
+     "id": "dashAddSupplier",
+     "label": "+ مورد جديد"
+    },
+    {
+     "id": "dashAddInvoice",
+     "label": "+ فاتورة جديدة"
+    },
+    {
+     "id": "dashAddPayment",
+     "label": "+ إضافة دفعة"
+    }
+   ],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 0,
+    "addAudit": 0,
+    "confirmDelete": 0,
+    "hasPagePermission": 2
+   }
+  },
+  "renderer/modules/ledger/pages-invoices.js": {
+   "lines": 128,
+   "functions": 3,
+   "pages": [
+    "renderInvoicesPage"
+   ],
+   "modals": [],
+   "saves": [],
+   "calcs": [],
+   "exportsFns": [],
+   "buttons": [
+    {
+     "id": "invClearDates",
+     "label": "مسح فلتر التاريخ"
+    },
+    {
+     "id": "invFilterOverdue",
+     "label": "${invoiceFilters.overdueOnly?'إلغاء فلتر المتأخرة':'فواتير متأخرة فقط'"
+    },
+    {
+     "id": "openAddInvoiceModalBtnGlobal",
+     "label": "+ إضافة فاتورة"
+    },
+    {
+     "id": "openAddReturnModalBtn",
+     "label": "+ إضافة مرتجع"
+    },
+    {
+     "id": "exportAllInvoicesCsv",
+     "label": "تصدير Excel (النتائج الظاهرة)"
+    }
+   ],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 0,
+    "addAudit": 0,
+    "confirmDelete": 0,
+    "hasPagePermission": 2
+   }
+  },
+  "renderer/modules/ledger/pages-payments.js": {
+   "lines": 96,
+   "functions": 3,
+   "pages": [
+    "renderPaymentsPage"
+   ],
+   "modals": [],
+   "saves": [],
+   "calcs": [],
+   "exportsFns": [],
+   "buttons": [
+    {
+     "id": "paymentsClearDates",
+     "label": "مسح فلتر التاريخ"
+    },
+    {
+     "id": "openAddPaymentPageBtn",
+     "label": "+ إضافة دفعة"
+    },
+    {
+     "id": "exportAllPaymentsPageBtn",
+     "label": "تصدير Excel (النتائج الظاهرة)"
+    }
+   ],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 0,
+    "addAudit": 0,
+    "confirmDelete": 0,
+    "hasPagePermission": 2
+   }
+  },
+  "renderer/modules/ledger/pages-quarterly.js": {
+   "lines": 100,
+   "functions": 4,
+   "pages": [
+    "renderQuarterlyPage"
+   ],
+   "modals": [],
+   "saves": [],
+   "calcs": [],
+   "exportsFns": [],
+   "buttons": [
+    {
+     "id": "quarterlyClearDates",
+     "label": "مسح فلتر التاريخ"
+    },
+    {
+     "id": "exportQuarterNoticesPdf",
+     "label": "تصدير إشعارات PDF"
+    }
+   ],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 0,
+    "addAudit": 0,
+    "confirmDelete": 0,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/modules/ledger/pages-reports.js": {
+   "lines": 100,
+   "functions": 6,
+   "pages": [],
+   "modals": [],
+   "saves": [],
+   "calcs": [],
+   "exportsFns": [
+    "exportPeriodicReportCsv"
+   ],
+   "buttons": [
+    {
+     "id": "reportsClearDates",
+     "label": "مسح فلتر التاريخ"
+    },
+    {
+     "id": "exportPeriodicReportCsvBtn",
+     "label": "تصدير Excel (النتائج الظاهرة)"
+    }
+   ],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 0,
+    "addAudit": 0,
+    "confirmDelete": 0,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/modules/ledger/pages-suppliers.js": {
+   "lines": 306,
+   "functions": 10,
+   "pages": [
+    "renderSuppliersPage"
+   ],
+   "modals": [],
+   "saves": [],
+   "calcs": [],
+   "exportsFns": [],
+   "buttons": [
+    {
+     "id": "addSupplierBtn",
+     "label": "+ إضافة مورد جديد"
+    },
+    {
+     "id": "exportSuppliersListBtn",
+     "label": "تصدير الموردين (الظاهرين) Excel"
+    },
+    {
+     "id": "printStatementBtn",
+     "label": "حفظ PDF لكشف الحساب"
+    },
+    {
+     "id": "exportSupplierCsvBtn",
+     "label": "تصدير Excel"
+    },
+    {
+     "id": "exportSupplierNoticesPdfBtn",
+     "label": "تصدير إشعارات الخصم PDF"
+    },
+    {
+     "id": "deleteSupplierBtn",
+     "label": "حذف المورد"
+    },
+    {
+     "id": "f_sup_scanAtt",
+     "label": "📷 مسح ضوئي / كاميرا"
+    },
+    {
+     "id": "f_addCustomFieldBtn",
+     "label": "+ إضافة خانة مخصصة أخرى"
+    },
+    {
+     "id": "saveInfoBtn",
+     "label": "حفظ البيانات"
+    },
+    {
+     "id": "openAddInvoiceModalBtn",
+     "label": "+ إضافة فاتورة"
+    },
+    {
+     "id": "openAddReturnModalBtnSupplier",
+     "label": "+ إضافة مرتجع"
+    },
+    {
+     "id": "openAddPaymentModalSupplierBtn",
+     "label": "+ إضافة دفعة"
+    },
+    {
+     "id": "pay_addFieldBtn",
+     "label": "+ إضافة خانة أخرى"
+    },
+    {
+     "id": "addPaymentBtn",
+     "label": "إضافة الدفعة"
+    }
+   ],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 0,
+    "addAudit": 0,
+    "confirmDelete": 0,
+    "hasPagePermission": 6
+   }
+  },
+  "renderer/modules/ledger/state.js": {
+   "lines": 68,
+   "functions": 5,
+   "pages": [],
+   "modals": [],
+   "saves": [],
+   "calcs": [],
+   "exportsFns": [],
+   "buttons": [],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 0,
+    "addAudit": 0,
+    "confirmDelete": 0,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/modules/ledger/statement.js": {
+   "lines": 145,
+   "functions": 5,
+   "pages": [
+    "renderStatementPage"
+   ],
+   "modals": [],
+   "saves": [],
+   "calcs": [
+    "statementRows:3",
+    "buildAccountStatementHtml:61",
+    "printBankStatement:140"
+   ],
+   "exportsFns": [
+    "printBankStatement"
+   ],
+   "buttons": [
+    {
+     "id": "generateStatementBtn",
+     "label": "عرض الكشف"
+    },
+    {
+     "id": "printStatementPageBtn",
+     "label": "حفظ PDF (يفتح تلقائياً)"
+    }
+   ],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 0,
+    "addAudit": 0,
+    "confirmDelete": 0,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/modules/warehouses/helpers.js": {
+   "lines": 138,
+   "functions": 21,
+   "pages": [],
+   "modals": [],
+   "saves": [],
+   "calcs": [],
+   "exportsFns": [],
+   "buttons": [
+    {
+     "id": "whSaveSettingsBtn",
+     "label": "💾 حفظ إعدادات المخازن"
+    }
+   ],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 2,
+    "addAudit": 1,
+    "confirmDelete": 0,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/modules/warehouses/pages-home.js": {
+   "lines": 354,
+   "functions": 10,
+   "pages": [
+    "renderWarehousesHomePage"
+   ],
+   "modals": [
+    "openWhItemModal:203",
+    "openWhLocationModal:237",
+    "openWhMovementModal:260"
+   ],
+   "saves": [],
+   "calcs": [],
+   "exportsFns": [],
+   "buttons": [
+    {
+     "id": "btnWhIn",
+     "label": "+ استلام"
+    },
+    {
+     "id": "btnWhOut",
+     "label": "+ صرف"
+    },
+    {
+     "id": "btnWhTransfer",
+     "label": "+ تحويل"
+    },
+    {
+     "id": "btnWhAddItem",
+     "label": "+ صنف"
+    },
+    {
+     "id": "btnWhAddLoc",
+     "label": "+ مخزن"
+    },
+    {
+     "id": "' + it.id + '",
+     "label": "🗑️"
+    },
+    {
+     "id": "' + L.id + '",
+     "label": "✏️"
+    },
+    {
+     "id": "btnSaveWhItem",
+     "label": "حفظ"
+    },
+    {
+     "id": "btnSaveWhLoc",
+     "label": "حفظ"
+    },
+    {
+     "id": "btnSaveWhMove",
+     "label": "حفظ"
+    }
+   ],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 0,
+    "addAudit": 0,
+    "confirmDelete": 1,
+    "hasPagePermission": 0
+   }
+  },
+  "renderer/modules/warehouses/pages-reports.js": {
+   "lines": 68,
+   "functions": 2,
+   "pages": [
+    "renderWarehousesReportsPage"
+   ],
+   "modals": [],
+   "saves": [],
+   "calcs": [],
+   "exportsFns": [],
+   "buttons": [],
+   "calls": {
+    "exportExcel": 0,
+    "importExcel": 0,
+    "savePdf": 0,
+    "savePdfHtml": 0,
+    "saveFile": 0,
+    "exportArchive": 0,
+    "windowPrint": 0,
+    "pickAttachments": 0,
+    "openAttachment": 0,
+    "deleteAttachment": 0,
+    "saveData": 0,
+    "addAudit": 0,
+    "confirmDelete": 0,
+    "hasPagePermission": 0
+   }
+  }
+ },
+ "totals": {
+  "files": 83,
+  "lines": 46312,
+  "functions": 1411,
+  "modals": 63,
+  "buttonsWithId": 449,
+  "calcFns": 110,
+  "pages": 54,
+  "navPages": 44,
+  "testFiles": 58
+ }
+}
