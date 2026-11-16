@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { randomUUID } from 'node:crypto';
 import { LoggerModule } from 'nestjs-pino';
+import { AuditModule } from './audit/audit.module';
 import { AuthModule } from './auth/auth.module';
 import { validateEnv } from './config/env.validation';
 import { buildDataSourceOptions } from './database/typeorm-options';
@@ -33,6 +34,7 @@ import { HealthModule } from './health/health.module';
         retryDelay: 2000,
       }),
     }),
+    AuditModule,
     AuthModule,
     HealthModule,
   ],

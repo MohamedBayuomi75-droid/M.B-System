@@ -35,6 +35,14 @@ services:
       JWT_SECRET: ${JWT_SECRET:?JWT_SECRET is required in docker/.env (min 32 chars)}
       LOG_LEVEL: ${LOG_LEVEL:-info}
       SWAGGER_ENABLED: ${SWAGGER_ENABLED:-false}
+      # A2 — المصادقة
+      ADMIN_INITIAL_PASSWORD: ${ADMIN_INITIAL_PASSWORD:-}
+      COOKIE_SECURE: ${COOKIE_SECURE:-true}
+      JWT_ACCESS_TTL_SEC: ${JWT_ACCESS_TTL_SEC:-900}
+      REFRESH_TTL_DAYS: ${REFRESH_TTL_DAYS:-14}
+      LOGIN_RATE_LIMIT_PER_MIN: ${LOGIN_RATE_LIMIT_PER_MIN:-5}
+      LOGIN_MAX_FAILURES: ${LOGIN_MAX_FAILURES:-10}
+      LOGIN_LOCK_MINUTES: ${LOGIN_LOCK_MINUTES:-15}
     depends_on:
       db: { condition: service_healthy }
     restart: "no"

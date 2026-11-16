@@ -160,6 +160,18 @@ function sizes(file) {
     if (!map[p]) { const ty = sniff(p); map[p] = { kind: classify(p, ty, false), source: 'static' + (ty ? '' : ' (no init found)') }; }
     map[p].refs = (map[p].refs || 0) + o.refs; map[p].files = [...new Set([...(map[p].files || []), ...o.files])].sort();
   }
+  // مفاتيح موجودة في data.json الحقيقي ومش في الكود/التهيئة
+  if (process.env.DATA_JSON) {
+    const real = JSON.parse(fs.readFileSync(process.env.DATA_JSON, 'utf8'));
+    const t = v => Array.isArray(v) ? 'array' : v && typeof v === 'object' ? 'object' : 'scalar';
+    for (const [k, v] of Object.entries(real)) {
+      const sub = ['ledger', 'clients', 'warehouses'].includes(k) && v && typeof v === 'object' ? Object.entries(v).map(([k2, v2]) => [k + '.' + k2, v2]) : [[k, v]];
+      for (const [p, val] of sub) {
+        if (!map[p]) map[p] = { kind: classify(p, t(val), true), source: 'data.json' };
+        else if (map[p].kind === 'legacy-ref') { map[p].kind = classify(p, t(val), true); map[p].source += ' + data.json'; }
+      }
+    }
+  }
   // مسارات مولّدة لـ collection/doc
   const ordered = Object.keys(map).sort();
   const by = k => ordered.filter(x => map[x].kind === k);
@@ -171,7 +183,7 @@ function sizes(file) {
   cm += `| النوع | العدد | التخزين المقترح |\n|---|---|---|\n` + Object.entries(STORAGE).map(([k, v]) => `| **${k}** | ${by(k).length} | ${v} |`).join('\n') + '\n\n';
   cm += `قواعد التصنيف: مصفوفة في المستوى الأعلى أو داخل قسم (\`ledger/clients/warehouses\`) = collection، إلا لو اسمها قائمة مرجعية (Categories/Types/Pool/Hidden/custom*...) = lookup. كائن = doc. قيمة بسيطة = meta-flag. **التصنيف مقترح ويتراجع في A3** (مثلًا lookup فيه سجلات بـ id ممكن يترقّى لـ collection).\n\n`;
   const leg = by('legacy-ref');
-  if (leg.length) cm += `⚠️ **legacy-ref** — مقروءة في الكود ومفيش كود بيهيّأها fallback لمفاتيح قديمة أو بيانات مستوردة — تتأكد من data.json الحقيقي في A7): ${leg.map(k => '`' + k + '`').join('، ')}\n\n`;
+  if (leg.length) cm += `⚠️ **legacy-ref** — مقروءة في الكود ومفيش كود بيهيّأها${process.env.DATA_JSON ? '، ومش موجودة في data.json الحقيقي (fallback لمفاتيح قديمة — تتشال أو تتوثّق في A7' : ' (تتأكد من data.json الحقيقي'})): ${leg.map(k => '`' + k + '`').join('، ')}\n\n`;
   cm += `| المسار | النوع | الوحدة | مراجع \`DATA.\` | المصدر | ملفات |\n|---|---|---|---|---|---|\n`;
   for (const k of ordered) { const e = map[k]; cm += `| \`${k}\` | ${e.kind} | ${unit(k)} | ${e.refs || 0} | ${e.source} | ${(e.files || []).slice(0, 3).join(', ')}${(e.files || []).length > 3 ? ` +${e.files.length - 3}` : ''} |\n`; }
   cm += `\n> المراجع بتتعد على مستوى المفتاح الأعلى (أو \`قسم.مفتاح\`). المصفوفات الأعمق (مثل \`clients.customers[].projects\`) جزء من سجلها الأب في المسار A، وتتفك لجداول في Promotion (المسار B).\n`;

@@ -1,5 +1,6 @@
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import cookieParser from 'cookie-parser';
 import { SERVER_VERSION } from './version';
 
 /** إعدادات مشتركة بين main.ts والاختبارات (عشان الاختبار يختبر نفس السلوك بالظبط). */
@@ -8,6 +9,7 @@ export function setupApp(app: INestApplication): void {
   // التحقق من المدخلات على السيرفر دايمًا: أي حقل مش في الـ DTO = 400
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true, transform: true }));
   app.enableShutdownHooks();
+  app.use(cookieParser());
   const http = app.getHttpAdapter().getInstance();
   http.disable?.('x-powered-by');
   http.set?.('trust proxy', 'loopback, uniquelocal'); // خلف Caddy

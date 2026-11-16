@@ -1,6 +1,6 @@
 # سيرفر النظام الموحد (NestJS + PostgreSQL)
 
-المرحلة الحالية: **A1** (هيكل + داتابيز + health). الخطة: [`../docs/UNIFIED-WEB-PLAN.md`](../docs/UNIFIED-WEB-PLAN.md).
+المرحلة الحالية: **A2** (هيكل + داتابيز + health + مصادقة + مستخدمين + أدوار). الخطة: [`../docs/UNIFIED-WEB-PLAN.md`](../docs/UNIFIED-WEB-PLAN.md).
 
 ## التشغيل بـ Docker (كل حاجة)
 ```bash
@@ -9,6 +9,19 @@ docker compose -f docker/docker-compose.yml up -d --build
 curl localhost:3000/api/health          # Swagger: http://localhost:3000/api/docs (لو SWAGGER_ENABLED=true)
 ```
 الترتيب: `db` (healthy) ← `migrate` (يطبّق الـ migrations ويخرج 0) ← `server`.
+
+## المصادقة (A2) — بسرعة
+```bash
+# أول تشغيل بداتابيز فاضية: admin بكلمة مؤقتة (ADMIN_INITIAL_PASSWORD أو عشوائية في السجل)
+docker compose -f docker/docker-compose.yml logs server | grep admin
+curl -c jar -H 'content-type: application/json' -d '{"username":"admin","password":"..."}' localhost:3000/api/auth/login
+#  → { accessToken, expiresIn: 900, user: {..., mustChangePassword: true} } + cookie rt (HttpOnly)
+curl -H "authorization: Bearer $TOKEN" -H 'content-type: application/json' -d '{"newPassword":"..."}' localhost:3000/api/auth/change-password
+curl -b jar -c jar -X POST localhost:3000/api/auth/refresh        # access token جديد (والكوكي بتتدوّر)
+curl -H "authorization: Bearer $TOKEN" localhost:3000/api/me      # المستخدم + صلاحياته الفعلية
+```
+- الأدوار والصفحات: `src/authz/roles.ts` (المصدر الوحيد). endpoint عام = `@Public()`، وصلاحية = `@RequirePerms({ flag: 'manageUsers' })` أو `@RequirePerms({ page: 'payroll', action: 'edit' })`.
+- أكواد الأخطاء الثابتة: `src/auth/auth.types.ts` (`AuthErrorCode`).
 
 ## التطوير المحلي
 ```bash
@@ -41,6 +54,9 @@ src/
   database/                  typeorm-options.ts (مصدر واحد) + data-source.ts (للـ CLI)
   entities/                  جداول الطبقة 1
   migrations/                مرقّمة
-  auth/                      PasswordService (argon2id + توافق scrypt القديم)
+  auth/                      login/refresh/logout، strategies (local + jwt)، PasswordService (argon2id + scrypt القديم)، أول admin
+  authz/                     roles.ts (المصدر الوحيد)، effective-permissions، guards عامة، decorators
+  users/                     /api/users (manageUsers)، /api/me، جلسات الـ refresh
+  audit/                     AuditService (audit_log)
   health/                    GET /api/health
 ```

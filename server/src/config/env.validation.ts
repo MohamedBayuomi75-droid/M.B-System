@@ -29,12 +29,40 @@ export class EnvironmentVariables {
   @IsOptional() @IsIn(['true', 'false'])
   DB_MIGRATIONS_RUN?: 'true' | 'false';
 
-  /** يستخدم في A2 لتوقيع JWT — مطلوب في الإنتاج */
+  /** توقيع JWT — مطلوب في الإنتاج. في التطوير/الاختبار لو مش موجود بيتولّد عشوائي لكل تشغيل */
   @IsOptional() @IsString() @MinLength(32)
   JWT_SECRET?: string;
+
+  /** عمر access token بالثواني (الخطة: 15 دقيقة) */
+  @Type(() => Number) @IsInt() @Min(60) @Max(3600)
+  JWT_ACCESS_TTL_SEC = 900;
+
+  /** عمر refresh token بالأيام */
+  @Type(() => Number) @IsInt() @Min(1) @Max(90)
+  REFRESH_TTL_DAYS = 14;
+
+  /** cookie Secure (لازم true ورا HTTPS — false بس للتجربة على http غير localhost) */
+  @IsOptional() @IsIn(['true', 'false'])
+  COOKIE_SECURE?: 'true' | 'false';
+
+  /** حد محاولات الدخول لكل (IP + اسم مستخدم) في الدقيقة */
+  @Type(() => Number) @IsInt() @Min(1) @Max(1000)
+  LOGIN_RATE_LIMIT_PER_MIN = 5;
+
+  /** عدد المحاولات الفاشلة المتتالية قبل قفل الحساب مؤقتًا، ومدة القفل */
+  @Type(() => Number) @IsInt() @Min(3) @Max(100)
+  LOGIN_MAX_FAILURES = 10;
+  @Type(() => Number) @IsInt() @Min(1) @Max(1440)
+  LOGIN_LOCK_MINUTES = 15;
+
+  /** كلمة مرور أول أدمن (لو الداتابيز فاضية). لو مش محددة بتتولّد عشوائي وتتكتب في السجل مرة واحدة. تغييرها إجباري أول دخول */
+  @IsOptional() @IsString() @MinLength(10)
+  ADMIN_INITIAL_PASSWORD?: string;
 }
 
 export function validateEnv(config: Record<string, unknown>): EnvironmentVariables {
+  // متغير فاضي (VAR= في .env أو ${VAR:-} في Compose) = مش محدد
+  config = Object.fromEntries(Object.entries(config).filter(([, v]) => v !== ''));
   const env = plainToInstance(EnvironmentVariables, config, { enableImplicitConversion: true, exposeDefaultValues: true });
   const errors = validateSync(env, { skipMissingProperties: false, whitelist: false });
   if (env.NODE_ENV === 'production') {

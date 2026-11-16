@@ -1,6 +1,7 @@
 import { Controller, Get, HttpStatus, Res } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiServiceUnavailableResponse, ApiTags } from '@nestjs/swagger';
 import type { Response } from 'express';
+import { Public } from '../authz/decorators';
 import { HealthDto } from './health.dto';
 import { HealthService } from './health.service';
 
@@ -10,6 +11,7 @@ export class HealthController {
   constructor(private readonly health: HealthService) {}
 
   @Get()
+  @Public()
   @ApiOperation({ summary: 'فحص صحة السيرفر', description: 'عام (بدون تسجيل دخول) — للـ uptime monitor و Docker healthcheck. ok/degraded = 200، error = 503.' })
   @ApiOkResponse({ type: HealthDto })
   @ApiServiceUnavailableResponse({ type: HealthDto, description: 'الداتابيز مش متاحة' })

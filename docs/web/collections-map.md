@@ -6,14 +6,14 @@
 |---|---|---|
 | **collection** | 53 | records (صف لكل سجل) |
 | **lookup** | 27 | docs (قائمة مرجعية كاملة) |
-| **doc** | 24 | docs (كائن كامل) |
-| **meta-flag** | 4 | docs: meta (أعلام ترحيل/حالة) |
+| **doc** | 25 | docs (كائن كامل) |
+| **meta-flag** | 5 | docs: meta (أعلام ترحيل/حالة) |
 | **system-table** | 2 | جدول مخصص (users / audit_log) |
-| **legacy-ref** | 4 | — يتراجع (مقروء بس، مفيش تهيئة/كتابة في الكود) |
+| **legacy-ref** | 3 | — يتراجع (مقروء بس، مفيش تهيئة/كتابة في الكود) |
 
 قواعد التصنيف: مصفوفة في المستوى الأعلى أو داخل قسم (`ledger/clients/warehouses`) = collection، إلا لو اسمها قائمة مرجعية (Categories/Types/Pool/Hidden/custom*...) = lookup. كائن = doc. قيمة بسيطة = meta-flag. **التصنيف مقترح ويتراجع في A3** (مثلًا lookup فيه سجلات بـ id ممكن يترقّى لـ collection).
 
-⚠️ **legacy-ref** — مقروءة في الكود ومفيش كود بيهيّأها (fallback لمفاتيح قديمة أو بيانات مستوردة — تتأكد من data.json الحقيقي في A7): `archiveAttachments`، `driverPayments`، `network`، `tableLayouts`
+⚠️ **legacy-ref** — مقروءة في الكود ومفيش كود بيهيّأها، ومش موجودة في data.json الحقيقي (fallback لمفاتيح قديمة — تتشال أو تتوثّق في A7)): `archiveAttachments`، `driverPayments`، `network`
 
 | المسار | النوع | الوحدة | مراجع `DATA.` | المصدر | ملفات |
 |---|---|---|---|---|---|
@@ -100,6 +100,7 @@
 | `payments` | collection | hr | 5 | runtime | core/data-store.js, core/excel-import.js |
 | `payroll` | collection | hr | 20 | runtime | core/data-store.js, core/helpers.js, core/pages-backup.js +3 |
 | `penaltyItemPool` | lookup | hr | 2 | runtime | core/data-store.js |
+| `penaltyItemPoolSeeded` | meta-flag | hr | 0 | data.json |  |
 | `performanceReviews` | collection | hr | 13 | runtime | core/data-store.js, core/helpers.js, modules/hr/pages-dashboard.js +2 |
 | `personDocuments` | collection | hr | 49 | runtime | core/data-store.js, core/helpers.js, core/pages-archive.js +4 |
 | `personExpenseItems` | doc | hr | 5 | runtime | core/data-store.js, modules/hr/pages-ops.js |
@@ -117,7 +118,7 @@
 | `supervisorExpenses` | collection | hr | 23 | runtime | core/data-store.js, core/excel-import.js, core/helpers.js +3 |
 | `supervisorPayments` | collection | hr | 1 | static | modules/hr/pages-reports.js |
 | `supervisors` | collection | hr | 78 | runtime | core/data-store.js, core/excel-import.js, core/follow-center.js +14 |
-| `tableLayouts` | legacy-ref | config | 1 | static (no init found) | core/extras.js |
+| `tableLayouts` | doc | config | 1 | static (no init found) + data.json | core/extras.js |
 | `transfers` | collection | hr | 1 | static | modules/hr/pages-reports.js |
 | `users` | system-table | system | 39 | runtime | core/data-store.js, core/follow-center.js, core/network.js +2 |
 | `vehicleExpenseItems` | doc | hr | 3 | runtime | core/data-store.js |

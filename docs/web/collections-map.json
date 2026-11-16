@@ -1004,6 +1004,12 @@
       "unit": "hr",
       "storage": "docs (قائمة مرجعية كاملة)"
     },
+    "penaltyItemPoolSeeded": {
+      "kind": "meta-flag",
+      "source": "data.json",
+      "unit": "hr",
+      "storage": "docs: meta (أعلام ترحيل/حالة)"
+    },
     "performanceReviews": {
       "kind": "collection",
       "source": "runtime",
@@ -1260,14 +1266,14 @@
       "storage": "records (صف لكل سجل)"
     },
     "tableLayouts": {
-      "kind": "legacy-ref",
-      "source": "static (no init found)",
+      "kind": "doc",
+      "source": "static (no init found) + data.json",
       "refs": 1,
       "files": [
         "core/extras.js"
       ],
       "unit": "config",
-      "storage": "— يتراجع (مقروء بس، مفيش تهيئة/كتابة في الكود)"
+      "storage": "docs (كائن كامل)"
     },
     "transfers": {
       "kind": "collection",

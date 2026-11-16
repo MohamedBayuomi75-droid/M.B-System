@@ -1,4 +1,5 @@
-import { Check, Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Check, Column, CreateDateColumn, Entity, Index, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { RoleEntity } from './role.entity';
 
 /** المستخدمين — بديل DATA.users و users.json (D-006). */
 @Entity({ name: 'users' })
@@ -16,6 +17,9 @@ export class UserEntity {
   @Column({ type: 'text', default: '' }) name: string;
   /** مفتاح قالب الدور (admin, hr, viewer, ...) — المرجع roles.key */
   @Column({ type: 'text', default: 'viewer' }) role: string;
+  @ManyToOne(() => RoleEntity, { onUpdate: 'CASCADE', onDelete: 'NO ACTION' })
+  @JoinColumn({ name: 'role', referencedColumnName: 'key', foreignKeyConstraintName: 'fk_users_role' })
+  roleRef?: RoleEntity;
   @Column({ type: 'boolean', default: true }) active: boolean;
 
   @Column({ name: 'password_algo', type: 'text' }) passwordAlgo: 'argon2id' | 'scrypt';

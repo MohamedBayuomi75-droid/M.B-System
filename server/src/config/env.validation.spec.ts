@@ -24,4 +24,17 @@ describe('validateEnv', () => {
     expect(() => validateEnv({ NODE_ENV: 'production', JWT_SECRET: 'x'.repeat(32) })).toThrow(/DB_PASSWORD/);
     expect(validateEnv({ NODE_ENV: 'production', JWT_SECRET: 'x'.repeat(32), DB_PASSWORD: 'p' }).NODE_ENV).toBe('production');
   });
+
+  it('empty values count as unset (Compose ${VAR:-})', () => {
+    const env = validateEnv({ ADMIN_INITIAL_PASSWORD: '', JWT_SECRET: '', PORT: '' });
+    expect(env.ADMIN_INITIAL_PASSWORD).toBeUndefined();
+    expect(env.PORT).toBe(3000);
+    expect(() => validateEnv({ ADMIN_INITIAL_PASSWORD: 'short' })).toThrow(/ADMIN_INITIAL_PASSWORD/);
+  });
+
+  it('auth settings have safe defaults and bounds', () => {
+    expect(validateEnv({})).toMatchObject({ JWT_ACCESS_TTL_SEC: 900, REFRESH_TTL_DAYS: 14, LOGIN_RATE_LIMIT_PER_MIN: 5, LOGIN_MAX_FAILURES: 10, LOGIN_LOCK_MINUTES: 15 });
+    expect(() => validateEnv({ JWT_ACCESS_TTL_SEC: '86400' })).toThrow(/JWT_ACCESS_TTL_SEC/);
+    expect(() => validateEnv({ LOGIN_MAX_FAILURES: '1' })).toThrow(/LOGIN_MAX_FAILURES/);
+  });
 });

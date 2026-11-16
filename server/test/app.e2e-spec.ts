@@ -3,6 +3,7 @@ import { Test } from '@nestjs/testing';
 import { getDataSourceToken } from '@nestjs/typeorm';
 import request from 'supertest';
 import { DataSource } from 'typeorm';
+import { MIGRATIONS } from '../src/migrations';
 import { createTempDb } from './db';
 
 describe('HTTP app (health + swagger)', () => {
@@ -32,7 +33,7 @@ describe('HTTP app (health + swagger)', () => {
       version: expect.any(String),
       legacySchemaVersion: 9,
       db: { up: true, latencyMs: expect.any(Number), version: expect.stringMatching(/^16\./) },
-      migrations: { applied: 1, pending: 0, latest: 'InitLayer11763200000000' },
+      migrations: { applied: MIGRATIONS.length, pending: 0, latest: MIGRATIONS.at(-1)!.name },
     });
     expect(res.headers['x-request-id']).toBeDefined();
     expect(res.headers['x-powered-by']).toBeUndefined();
