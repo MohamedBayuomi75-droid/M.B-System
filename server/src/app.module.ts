@@ -10,6 +10,7 @@ import { AuthModule } from './auth/auth.module';
 import { validateEnv } from './config/env.validation';
 import { buildDataSourceOptions } from './database/typeorm-options';
 import { HealthModule } from './health/health.module';
+import { FilesModule } from './files/files.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { HealthModule } from './health/health.module';
     DataModule,
     AuthModule,
     HealthModule,
+    FilesModule,
   ],
 })
 export class AppModule {}
