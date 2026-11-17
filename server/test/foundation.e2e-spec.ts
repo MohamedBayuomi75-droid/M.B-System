@@ -1,6 +1,7 @@
 import { adminToken, bearer, createTestApp, newUser, sync, TestApp } from './app';
 import { pdf, png } from '../src/files/file-fixtures.spec-helper';
 import { NumberingService } from '../src/numbering/numbering.service';
+import { ApprovalsService } from '../src/approvals/approvals.service';
 
 /**
  * المرحلة 5 — الأساس المشترك. كل التعريفات هنا (أنواع مستندات/مسارات/مستويات/معتمدين) **بيانات اختبار بس**:
@@ -66,8 +67,12 @@ describe('phase 5 foundation', () => {
       expect((await t.http().post('/api/v1/approvals/config/document-types').set(bearer(admin)).send({ code: 'test-invoice', name: 'x', module: 'no.such.page' })).status).toBe(400);
       for (const [code, name] of [['test-invoice', 'فاتورة اختبار'], ['test-po', 'أمر شراء اختبار']])
         expect((await t.http().post('/api/v1/approvals/config/document-types').set(bearer(admin)).send({ code, name, module: 'ledger.invoices' })).status).toBe(201);
-      const noFlags = await t.http().post('/api/v1/approvals/config/workflows').set(bearer(admin)).send({ documentType: 'test-invoice', levels: [{ mode: 'ANY', approvers: [{ type: 'USER', ref: u.a1.id }] }] });
-      expect(noFlags.status).toBe(400);
+      // B-04: الاستثناء من فصل المهام محتاج مرجع اعتماد الإدارة
+      const noRef = await t.http().post('/api/v1/approvals/config/workflows').set(bearer(admin)).send({ documentType: 'test-invoice', allowSelfApproval: true, levels: [{ mode: 'ANY', approvers: [{ type: 'USER', ref: u.a1.id }] }] });
+      expect([noRef.status, noRef.body.code]).toEqual([400, 'SOD_EXCEPTION_REF_REQUIRED']);
+      await expect(t.ds.query(`INSERT INTO approval_workflows (document_type, version, allow_same_approver_across_levels) VALUES ('test-invoice', 99, true)`)).rejects.toThrow(/sod_exception/);
+      const [{ n }] = await t.ds.query(`SELECT count(*)::int AS n FROM approval_workflows`);
+      expect(n).toBe(0);
       const badRole = await t.http().post('/api/v1/approvals/config/workflows').set(bearer(admin)).send({ documentType: 'test-invoice', allowSelfApproval: false, allowSameApproverAcrossLevels: false, levels: [{ mode: 'ANY', approvers: [{ type: 'ROLE', ref: 'ceo' }] }] });
       expect(badRole.status).toBe(400);
     });
@@ -79,10 +84,12 @@ describe('phase 5 foundation', () => {
 
     it('ANY then ALL(role): snapshot, idempotency, notifications, final approval', async () => {
       const wf = await t.http().post('/api/v1/approvals/config/workflows').set(bearer(admin)).send({
-        documentType: 'test-invoice', amountFrom: '0.0000', amountTo: '1000.0000', allowSelfApproval: false, allowSameApproverAcrossLevels: false,
+        documentType: 'test-invoice', amountFrom: '0.0000', amountTo: '1000.0000',
         levels: [{ mode: 'ANY', approvers: [{ type: 'USER', ref: u.a1.id }, { type: 'USER', ref: u.a2.id }] }, { mode: 'ALL', approvers: [{ type: 'ROLE', ref: 'payroll' }] }],
       });
       expect(wf.status).toBe(201);
+      // B-04: من غير ما يتحدد → ممنوع افتراضيًا
+      expect(wf.body).toMatchObject({ allow_self_approval: false, allow_same_approver_across_levels: false, sod_exception_ref: null });
 
       expect((await post(u.sub.token, '/api/v1/approvals/requests', { documentType: 'test-invoice', documentId: 'inv-1', amount: '500' }, null)).body.code).toBe('IDEMPOTENCY_KEY_REQUIRED');
       const k1 = key();
@@ -100,7 +107,7 @@ describe('phase 5 foundation', () => {
       expect(n).toBe(1);
 
       // لقطة: مسار جديد بعد الإرسال مايأثرش على الطلب
-      await t.http().post('/api/v1/approvals/config/workflows').set(bearer(admin)).send({ documentType: 'test-invoice', amountFrom: '0.0000', amountTo: '1000.0000', allowSelfApproval: true, allowSameApproverAcrossLevels: true, levels: [{ mode: 'ANY', approvers: [{ type: 'USER', ref: u.a3.id }] }] }).expect(201);
+      await t.http().post('/api/v1/approvals/config/workflows').set(bearer(admin)).send({ documentType: 'test-invoice', amountFrom: '0.0000', amountTo: '1000.0000', allowSelfApproval: true, allowSameApproverAcrossLevels: true, sodExceptionRef: 'قرار إدارة اختباري رقم 1', levels: [{ mode: 'ANY', approvers: [{ type: 'USER', ref: u.a3.id }] }] }).expect(201);
       expect((await t.http().get('/api/v1/approvals/inbox').set(bearer(u.a3.token))).body).toHaveLength(0);
 
       const n1 = await t.http().get('/api/v1/notifications?unread=true').set(bearer(u.a1.token)).expect(200);
@@ -169,6 +176,27 @@ describe('phase 5 foundation', () => {
       const s3 = await post(u.sub.token, '/api/v1/approvals/requests', { documentType: 'test-po', documentId: 'po-2' });
       expect((await post(u.sub.token, `/api/v1/approvals/requests/${s3.body.id}/cancel`, {})).body.code).toBe('REASON_REQUIRED');
       expect((await post(admin, `/api/v1/approvals/requests/${s3.body.id}/cancel`, { comment: 'اختبار' })).body.status).toBe('Cancelled');
+    });
+
+    it('B-07: changing material fields during approval cancels prior approvals and needs a fresh submission', async () => {
+      const s = await post(u.sub.token, '/api/v1/approvals/requests', { documentType: 'test-po', documentId: 'po-m', materialHash: 'h1' });
+      await post(u.a1.token, `/api/v1/approvals/requests/${s.body.id}/approve`, {}).expect(200);
+      const svc = t.app.get(ApprovalsService);
+      const subUser = { id: u.sub.id, username: 'f5_sub' } as never;
+      expect(await t.ds.transaction((em) => svc.materialChanged('test-po', 'po-m', 'h1', subUser, em))).toBe(false);
+      expect(await t.ds.transaction((em) => svc.materialChanged('test-po', 'po-m', 'h2', subUser, em))).toBe(true);
+      const r = await t.http().get(`/api/v1/approvals/requests/${s.body.id}`).set(bearer(admin)).expect(200);
+      expect(r.body.status).toBe('Returned');
+      expect(r.body.log.at(-1)).toMatchObject({ command: 'material_change', to_status: 'Returned' });
+      expect((await t.http().get('/api/v1/notifications').set(bearer(u.a1.token))).body.items[0].kind).toBe('approval.invalidated');
+      const again = await post(u.sub.token, '/api/v1/approvals/requests', { documentType: 'test-po', documentId: 'po-m', materialHash: 'h2' });
+      expect(again.body).toMatchObject({ status: 'Submitted', currentLevel: 1, cycle: 2 });
+      expect(again.body.steps.every((st: { decisions: unknown[] }) => st.decisions.length === 0)).toBe(true);
+    });
+
+    it('B-05: being an approver does not grant posting', async () => {
+      const me = await t.http().get('/api/me').set(bearer(u.a1.token)).expect(200);
+      expect(me.body.docActions).toMatchObject({ approve: false, post: false });
     });
 
     it('a viewer without edit permission on the module cannot submit', async () => {

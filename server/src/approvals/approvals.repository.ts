@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource, EntityManager } from 'typeorm';
 
-export interface WorkflowRow { id: string; document_type: string; version: number; amount_from: string | null; amount_to: string | null; allow_self_approval: boolean; allow_same_approver_across_levels: boolean; active: boolean }
+export interface WorkflowRow { id: string; document_type: string; version: number; amount_from: string | null; amount_to: string | null; allow_self_approval: boolean; allow_same_approver_across_levels: boolean; sod_exception_ref: string | null; active: boolean }
 export interface RequestRow { id: string; document_type: string; document_id: string; cycle: number; workflow_id: string; workflow_version: number; allow_self_approval: boolean; allow_same_approver_across_levels: boolean; amount: string | null; status: string; current_sequence: number | null; submitted_by: string; submitted_at: Date; row_version: number }
 export interface StepRow { id: string; request_id: string; sequence: number; mode: 'ALL' | 'ANY' | 'N_OF_M'; required_count: number | null; approvers: { type: string; ref: string; users: string[] }[]; status: string }
 
@@ -31,9 +31,9 @@ export class ApprovalsRepository {
       AND coalesce($2::numeric, '-Infinity'::numeric) <= coalesce(amount_to, 'Infinity'::numeric)`, [docType, from, to]);
   }
   deactivate(ids: string[], em: EntityManager) { return em.query(`UPDATE approval_workflows SET active = false WHERE id = ANY($1::uuid[])`, [ids]); }
-  async insertWorkflow(w: { documentType: string; version: number; from: string | null; to: string | null; self: boolean; cross: boolean; by: string }, em: EntityManager): Promise<string> {
-    const [r] = await em.query(`INSERT INTO approval_workflows (document_type, version, amount_from, amount_to, allow_self_approval, allow_same_approver_across_levels, created_by)
-      VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`, [w.documentType, w.version, w.from, w.to, w.self, w.cross, w.by]);
+  async insertWorkflow(w: { documentType: string; version: number; from: string | null; to: string | null; self: boolean; cross: boolean; ref: string | null; by: string }, em: EntityManager): Promise<string> {
+    const [r] = await em.query(`INSERT INTO approval_workflows (document_type, version, amount_from, amount_to, allow_self_approval, allow_same_approver_across_levels, sod_exception_ref, created_by)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id`, [w.documentType, w.version, w.from, w.to, w.self, w.cross, w.ref, w.by]);
     return r.id;
   }
   async insertLevel(workflowId: string, seq: number, mode: string, requiredCount: number | null, em: EntityManager): Promise<string> {
@@ -68,10 +68,10 @@ export class ApprovalsRepository {
     const [r] = await em.query(`SELECT coalesce(max(cycle), 0) + 1 AS c FROM approval_requests WHERE document_type = $1 AND document_id = $2`, [docType, docId]);
     return Number(r.c);
   }
-  async insertRequest(r: Omit<RequestRow, 'id' | 'submitted_at' | 'row_version'>, em: EntityManager): Promise<string> {
-    const [x] = await em.query(`INSERT INTO approval_requests (document_type, document_id, cycle, workflow_id, workflow_version, allow_self_approval, allow_same_approver_across_levels, amount, status, current_sequence, submitted_by)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING id`,
-      [r.document_type, r.document_id, r.cycle, r.workflow_id, r.workflow_version, r.allow_self_approval, r.allow_same_approver_across_levels, r.amount, r.status, r.current_sequence, r.submitted_by]);
+  async insertRequest(r: Omit<RequestRow, 'id' | 'submitted_at' | 'row_version'> & { material_hash: string | null }, em: EntityManager): Promise<string> {
+    const [x] = await em.query(`INSERT INTO approval_requests (document_type, document_id, cycle, workflow_id, workflow_version, allow_self_approval, allow_same_approver_across_levels, amount, status, current_sequence, submitted_by, material_hash)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING id`,
+      [r.document_type, r.document_id, r.cycle, r.workflow_id, r.workflow_version, r.allow_self_approval, r.allow_same_approver_across_levels, r.amount, r.status, r.current_sequence, r.submitted_by, r.material_hash]);
     return x.id;
   }
   insertStep(requestId: string, seq: number, mode: string, requiredCount: number | null, approvers: unknown, em: EntityManager) {
@@ -79,6 +79,9 @@ export class ApprovalsRepository {
   }
   async lockRequest(id: string, em: EntityManager): Promise<RequestRow | null> {
     return (await em.query(`SELECT * FROM approval_requests WHERE id = $1 FOR UPDATE`, [id]))[0] ?? null;
+  }
+  async lockOpenFor(docType: string, docId: string, em: EntityManager): Promise<(RequestRow & { material_hash: string | null }) | null> {
+    return (await em.query(`SELECT * FROM approval_requests WHERE document_type = $1 AND document_id = $2 AND status IN ('Submitted','Under Review') FOR UPDATE`, [docType, docId]))[0] ?? null;
   }
   async request(id: string, em?: EntityManager): Promise<RequestRow | null> { return (await this.m(em).query(`SELECT * FROM approval_requests WHERE id::text = $1`, [id]))[0] ?? null; }
   steps(requestId: string, em?: EntityManager): Promise<StepRow[]> { return this.m(em).query(`SELECT * FROM approval_request_steps WHERE request_id = $1 ORDER BY sequence`, [requestId]); }

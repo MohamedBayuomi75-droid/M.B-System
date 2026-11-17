@@ -53,11 +53,14 @@ export class ApprovalsService {
       if (a.type === 'ROLE' && (!isRoleKey(a.ref) || a.ref === 'custom')) throw new BadRequestException({ statusCode: 400, code: 'UNKNOWN_ROLE', message: `الدور «${a.ref}» مش موجود (مفيش أدوار جديدة من هنا)` });
       if (a.type === 'USER' && !(await this.repo.activeUser(a.ref))) throw new BadRequestException({ statusCode: 400, code: 'UNKNOWN_USER', message: 'مستخدم معتمد غير موجود أو متعطل' });
     }
+    const self = dto.allowSelfApproval ?? false, cross = dto.allowSameApproverAcrossLevels ?? false;
+    const ref = dto.sodExceptionRef?.trim() || null;
+    if ((self || cross) && !ref) throw new BadRequestException({ statusCode: 400, code: 'SOD_EXCEPTION_REF_REQUIRED', message: 'الاستثناء من فصل المهام محتاج مرجع اعتماد الإدارة (B-04)' });
     const id = await this.tx.run(async (em) => {
       const overlap = await this.repo.overlappingActive(dto.documentType, from, to, em);
       if (overlap.length) await this.repo.deactivate(overlap.map((w) => w.id), em);
       const version = await this.repo.nextWorkflowVersion(dto.documentType, em);
-      const wid = await this.repo.insertWorkflow({ documentType: dto.documentType, version, from, to, self: dto.allowSelfApproval, cross: dto.allowSameApproverAcrossLevels, by: actor.id }, em);
+      const wid = await this.repo.insertWorkflow({ documentType: dto.documentType, version, from, to, self, cross, ref: (self || cross) ? ref : null, by: actor.id }, em);
       for (const [i, l] of dto.levels.entries()) {
         const lid = await this.repo.insertLevel(wid, i + 1, l.mode, l.requiredCount ?? null, em);
         for (const a of l.approvers) await this.repo.insertApprover(lid, a.type, a.ref, em);
@@ -92,7 +95,7 @@ export class ApprovalsService {
       const cycle = await this.repo.nextCycle(dto.documentType, dto.documentId, em);
       let id: string;
       try {
-        id = await this.repo.insertRequest({ document_type: dto.documentType, document_id: dto.documentId, cycle, workflow_id: wf.id, workflow_version: wf.version, allow_self_approval: wf.allow_self_approval, allow_same_approver_across_levels: wf.allow_same_approver_across_levels, amount, status: 'Submitted', current_sequence: 1, submitted_by: actor.id }, em);
+        id = await this.repo.insertRequest({ document_type: dto.documentType, document_id: dto.documentId, cycle, workflow_id: wf.id, workflow_version: wf.version, allow_self_approval: wf.allow_self_approval, allow_same_approver_across_levels: wf.allow_same_approver_across_levels, amount, status: 'Submitted', current_sequence: 1, submitted_by: actor.id, material_hash: dto.materialHash ?? null }, em);
       } catch (e) {
         if ((e as { code?: string }).code === '23505') throw new ConflictException({ statusCode: 409, code: 'ALREADY_PENDING', message: 'المستند ده عليه طلب اعتماد مفتوح' });
         throw e;
@@ -171,6 +174,23 @@ export class ApprovalsService {
     });
     await this.audit.record({ action: `approvals.${cmd}`, userId: actor.id, username: actor.username, entity: out.document_type, entityId: out.document_id, details: { requestId: id, reason: reason ?? null }, req });
     return this.get(id, actor);
+  }
+
+  /**
+   * B-07: الموديول المالك بيستدعيها جوه معاملة تعديل المستند. لو الحقول الجوهرية اتغيّرت والمستند عليه طلب مفتوح →
+   * الطلب بيرجع «Returned» (القرارات السابقة بتفضل في السجل لكن مابقاش ليها أثر) ولازم إرسال جديد يبدأ من المستوى الأول.
+   * بيرجّع true لو اتلغى طلب.
+   */
+  async materialChanged(documentType: string, documentId: string, newHash: string, actor: AuthUser, em: Parameters<ApprovalsRepository['lockOpenFor']>[2]): Promise<boolean> {
+    const r = await this.repo.lockOpenFor(documentType, documentId, em);
+    if (!r || r.material_hash === newHash) return false;
+    const reason = 'تعديل حقول جوهرية أثناء الاعتماد — الاعتمادات السابقة اتلغت (B-07)';
+    await this.repo.setRequestStatus(r.id, 'Returned', null, em);
+    await this.repo.logState(r.id, r.status, 'Returned', 'material_change', actor.id, reason, em);
+    const steps = await this.repo.steps(r.id, em);
+    const users = [...new Set([r.submitted_by, ...steps.flatMap((s) => s.approvers.flatMap((a) => a.users))])];
+    await this.notifications.notify(users.map((u) => ({ userId: u, kind: 'approval.invalidated', title: 'طلب اعتماد محتاج إعادة تقييم', body: `${documentType} ${documentId} — ${reason}`, entity: 'approval_requests', entityId: r.id })), em);
+    return true;
   }
 
   inbox(actor: AuthUser) {

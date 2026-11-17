@@ -25,8 +25,9 @@ export class CreateWorkflowDto {
   @ApiProperty() @IsString() @Length(1, 62) documentType: string;
   @ApiPropertyOptional({ example: '0.0000', description: 'بداية نطاق القيمة (نص عشري) — من غير = مفتوح' }) @IsOptional() @IsMoneyString() amountFrom?: string;
   @ApiPropertyOptional({ example: '50000.0000' }) @IsOptional() @IsMoneyString() amountTo?: string;
-  @ApiProperty({ description: 'هل مقدّم الطلب يقدر يعتمد مستنده؟ (B-04) — إلزامي، مفيش افتراض' }) @IsBoolean() allowSelfApproval: boolean;
-  @ApiProperty({ description: 'هل نفس الشخص يعتمد في أكتر من مستوى؟ (B-04) — إلزامي، مفيش افتراض' }) @IsBoolean() allowSameApproverAcrossLevels: boolean;
+  @ApiPropertyOptional({ default: false, description: 'استثناء: مقدّم الطلب يعتمد مستنده (B-04: ممنوع افتراضيًا)' }) @IsOptional() @IsBoolean() allowSelfApproval?: boolean;
+  @ApiPropertyOptional({ default: false, description: 'استثناء: نفس الشخص يعتمد في أكتر من مستوى (B-04: ممنوع افتراضيًا)' }) @IsOptional() @IsBoolean() allowSameApproverAcrossLevels?: boolean;
+  @ApiPropertyOptional({ description: 'مرجع اعتماد الإدارة للاستثناء — إلزامي لو أي استثناء من فصل المهام متفعّل (B-04)' }) @IsOptional() @IsString() @Length(3, 300) sodExceptionRef?: string;
   @ApiProperty({ type: [LevelDto], description: 'المستويات بالترتيب (B-03) — مفيش عدد افتراضي' }) @ValidateNested({ each: true }) @Type(() => LevelDto) @ArrayMinSize(1) @ArrayMaxSize(10) levels: LevelDto[];
 }
 
