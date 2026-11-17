@@ -1,0 +1,410 @@
+{
+  "_readme": "مكتبة معادلات B-20 الأولية (من مواصفات المستخدم 2026-11-17). **مقترحة — مش معتمدة**: بتتدخل كمسودات بس (npm run formulas:drafts) وبتتعتمد من مستخدم غير المنشئ بعد قرار المدير المالي. النسب في المدخلات كسور عشرية (0.05 = 5%) زي صيغ المواصفات (× Rate). الضرائب (VAT/WHT/الدمغة) مدخلات جاية من محرك B-21 المعتمد — مفيش حساب ضريبي هنا. التقريب: money = 4 خانات HALF_UP، qty = 5 خانات (B-26)، check = شرط.",
+  "formulas": [
+    {
+      "code": "DOC-TOTALS", "name": "إجماليات المستند (البنود والخصومات والصافي)", "module": "common", "specRef": "2.1–2.4",
+      "description": "إجمالي البنود ← خصم البند (نسبة ثم قيمة) ← خصم المستند ← الصافي ← الإجمالي ← صافي المستحق. مفيش خصم يتجاوز أساسه.",
+      "variables": { "lines": "list", "DocumentDiscount": "money", "AddedTaxes": "money", "AddedFees": "money", "WithholdingTaxes": "money", "ContractualDeductions": "money", "AdvancesApplied": "money", "PreviousPayments": "money" },
+      "lists": { "lines": ["Quantity", "UnitPrice", "DiscountRate", "LineDiscountAmount"] },
+      "steps": [
+        { "name": "GrossSubtotal", "expr": "SUM(lines, ROUND(Quantity * UnitPrice, 4))" },
+        { "name": "LineDiscountsWithinBase", "kind": "check", "expr": "REQUIRE(SUM(lines, IF(ROUND(ROUND(Quantity * UnitPrice, 4) * DiscountRate, 4) + LineDiscountAmount > ROUND(Quantity * UnitPrice, 4), 1, 0)) = 0, 'LINE_DISCOUNT_EXCEEDS_LINE')" },
+        { "name": "TotalLineDiscount", "expr": "SUM(lines, ROUND(ROUND(Quantity * UnitPrice, 4) * DiscountRate, 4) + LineDiscountAmount)" },
+        { "name": "DocumentDiscountWithinBase", "kind": "check", "expr": "REQUIRE(DocumentDiscount <= GrossSubtotal - TotalLineDiscount, 'DOCUMENT_DISCOUNT_EXCEEDS_BASE')" },
+        { "name": "TotalDiscount", "expr": "TotalLineDiscount + DocumentDiscount" },
+        { "name": "NetSubtotal", "expr": "GrossSubtotal - TotalDiscount" },
+        { "name": "DocumentTotal", "expr": "NetSubtotal + AddedTaxes + AddedFees" },
+        { "name": "NetPayable", "expr": "DocumentTotal - WithholdingTaxes - ContractualDeductions - AdvancesApplied - PreviousPayments" }
+      ],
+      "testCases": [
+        { "name": "عادي: خصم بند بنسبة + خصم بند بقيمة + خصم مستند", "inputs": { "lines": [{ "Quantity": "10", "UnitPrice": "100", "DiscountRate": "0.05", "LineDiscountAmount": "0" }, { "Quantity": "2", "UnitPrice": "50", "DiscountRate": "0", "LineDiscountAmount": "10" }], "DocumentDiscount": "40", "AddedTaxes": "140", "AddedFees": "0", "WithholdingTaxes": "10", "ContractualDeductions": "0", "AdvancesApplied": "100", "PreviousPayments": "30" },
+          "expected": { "GrossSubtotal": "1100.0000", "TotalLineDiscount": "60.0000", "TotalDiscount": "100.0000", "NetSubtotal": "1000.0000", "DocumentTotal": "1140.0000", "NetPayable": "1000.0000" } },
+        { "name": "تقريب HALF_UP على مستوى السطر", "inputs": { "lines": [{ "Quantity": "3", "UnitPrice": "0.33335", "DiscountRate": "0", "LineDiscountAmount": "0" }], "DocumentDiscount": "0", "AddedTaxes": "0", "AddedFees": "0", "WithholdingTaxes": "0", "ContractualDeductions": "0", "AdvancesApplied": "0", "PreviousPayments": "0" },
+          "expected": { "GrossSubtotal": "1.0001", "NetPayable": "1.0001" } },
+        { "name": "كمية صفر", "inputs": { "lines": [{ "Quantity": "0", "UnitPrice": "100", "DiscountRate": "0", "LineDiscountAmount": "0" }], "DocumentDiscount": "0", "AddedTaxes": "0", "AddedFees": "0", "WithholdingTaxes": "0", "ContractualDeductions": "0", "AdvancesApplied": "0", "PreviousPayments": "0" },
+          "expected": { "GrossSubtotal": "0.0000", "DocumentTotal": "0.0000" } },
+        { "name": "خصم المستند أكبر من الأساس ← مرفوض", "inputs": { "lines": [{ "Quantity": "1", "UnitPrice": "100", "DiscountRate": "0", "LineDiscountAmount": "0" }], "DocumentDiscount": "100.0001", "AddedTaxes": "0", "AddedFees": "0", "WithholdingTaxes": "0", "ContractualDeductions": "0", "AdvancesApplied": "0", "PreviousPayments": "0" },
+          "expectError": "DOCUMENT_DISCOUNT_EXCEEDS_BASE" },
+        { "name": "خصم السطر أكبر من السطر ← مرفوض", "inputs": { "lines": [{ "Quantity": "1", "UnitPrice": "100", "DiscountRate": "0.5", "LineDiscountAmount": "60" }], "DocumentDiscount": "0", "AddedTaxes": "0", "AddedFees": "0", "WithholdingTaxes": "0", "ContractualDeductions": "0", "AdvancesApplied": "0", "PreviousPayments": "0" },
+          "expectError": "LINE_DISCOUNT_EXCEEDS_LINE" }
+      ],
+      "openDecisions": ["ترتيب تطبيق الخصومات المتعددة (المقترح: نسبة البند ← قيمة البند ← خصم المستند)", "التقريب على مستوى السطر (المقترح) ولا المستند"]
+    },
+    {
+      "code": "SUP-INVOICE", "name": "فاتورة مورد", "module": "suppliers", "specRef": "3.1",
+      "description": "الضرائب (InputVAT/WithholdingAmount) جاية من محرك B-21 — الخصم تحت الحساب مش خصم تجاري.",
+      "variables": { "lines": "list", "CommercialDiscounts": "money", "InputVAT": "money", "OtherAddedTaxes": "money", "Fees": "money", "WithholdingAmount": "money", "AdvancesApplied": "money", "OtherApprovedDeductions": "money" },
+      "lists": { "lines": ["Quantity", "UnitPrice"] },
+      "steps": [
+        { "name": "GrossInvoice", "expr": "SUM(lines, ROUND(Quantity * UnitPrice, 4))" },
+        { "name": "DiscountWithinBase", "kind": "check", "expr": "REQUIRE(CommercialDiscounts <= GrossInvoice, 'DISCOUNT_EXCEEDS_BASE')" },
+        { "name": "NetItems", "expr": "GrossInvoice - CommercialDiscounts" },
+        { "name": "InvoiceTotal", "expr": "NetItems + InputVAT + OtherAddedTaxes + Fees" },
+        { "name": "NetSupplierPayable", "expr": "InvoiceTotal - WithholdingAmount - AdvancesApplied - OtherApprovedDeductions" }
+      ],
+      "testCases": [
+        { "name": "مثال المواصفات 12.2: 100,000 + ق.م 14,000 − خصم 1,000", "inputs": { "lines": [{ "Quantity": "1", "UnitPrice": "100000" }], "CommercialDiscounts": "0", "InputVAT": "14000", "OtherAddedTaxes": "0", "Fees": "0", "WithholdingAmount": "1000", "AdvancesApplied": "0", "OtherApprovedDeductions": "0" },
+          "expected": { "GrossInvoice": "100000.0000", "NetItems": "100000.0000", "InvoiceTotal": "114000.0000", "NetSupplierPayable": "113000.0000" } },
+        { "name": "سطور بكسور + خصم تجاري (مثال المراجعة F-01)", "inputs": { "lines": [{ "Quantity": "10", "UnitPrice": "125.5" }, { "Quantity": "3.5", "UnitPrice": "40.12345" }], "CommercialDiscounts": "27.9086", "InputVAT": "191.4533", "OtherAddedTaxes": "0", "Fees": "0", "WithholdingAmount": "13.6752", "AdvancesApplied": "0", "OtherApprovedDeductions": "0" },
+          "expected": { "GrossInvoice": "1395.4321", "NetItems": "1367.5235", "InvoiceTotal": "1558.9768", "NetSupplierPayable": "1545.3016" } },
+        { "name": "دفعة مقدمة مطبّقة", "inputs": { "lines": [{ "Quantity": "2", "UnitPrice": "500" }], "CommercialDiscounts": "0", "InputVAT": "140", "OtherAddedTaxes": "0", "Fees": "0", "WithholdingAmount": "10", "AdvancesApplied": "300", "OtherApprovedDeductions": "0" },
+          "expected": { "NetSupplierPayable": "830.0000" } }
+      ],
+      "openDecisions": ["الخصم تحت الحساب عند الفاتورة ولا عند الدفع", "قابلية خصم ق.م لكل فئة مشتريات"]
+    },
+    {
+      "code": "SUP-RETURN", "name": "مرتجع مشتريات", "module": "suppliers", "specRef": "3.2",
+      "description": "بسعر الوحدة الأصلي، والضريبة من قواعد B-21 المطبّقة على المعاملة الأصلية (ReturnVAT مدخل). الكمية المرتجعة ماتتعداش الأصلية.",
+      "variables": { "lines": "list", "RelatedDiscounts": "money", "ReturnVAT": "money", "OtherApplicableTaxes": "money" },
+      "lists": { "lines": ["ReturnQuantity", "OriginalQuantity", "OriginalUnitPrice"] },
+      "steps": [
+        { "name": "ReturnWithinOriginal", "kind": "check", "expr": "REQUIRE(SUM(lines, IF(ReturnQuantity > OriginalQuantity, 1, 0)) = 0, 'RETURN_QTY_EXCEEDS_ORIGINAL')" },
+        { "name": "ReturnGross", "expr": "SUM(lines, ROUND(ReturnQuantity * OriginalUnitPrice, 4))" },
+        { "name": "ReturnNet", "expr": "ReturnGross - RelatedDiscounts" },
+        { "name": "ReturnTotal", "expr": "ReturnNet + ReturnVAT + OtherApplicableTaxes" }
+      ],
+      "testCases": [
+        { "name": "مرتجع جزئي", "inputs": { "lines": [{ "ReturnQuantity": "2", "OriginalQuantity": "10", "OriginalUnitPrice": "100" }], "RelatedDiscounts": "10", "ReturnVAT": "26.6", "OtherApplicableTaxes": "0" },
+          "expected": { "ReturnGross": "200.0000", "ReturnNet": "190.0000", "ReturnTotal": "216.6000" } },
+        { "name": "مرتجع أكبر من الأصل ← مرفوض", "inputs": { "lines": [{ "ReturnQuantity": "11", "OriginalQuantity": "10", "OriginalUnitPrice": "100" }], "RelatedDiscounts": "0", "ReturnVAT": "0", "OtherApplicableTaxes": "0" },
+          "expectError": "RETURN_QTY_EXCEEDS_ORIGINAL" }
+      ],
+      "openDecisions": ["الأثر الضريبي للمرتجع (TR-03: مفيش أثر لحد سياسة الضرائب)"]
+    },
+    {
+      "code": "SUP-BALANCE", "name": "رصيد المورد", "module": "suppliers", "specRef": "3.3",
+      "description": "الموجب = علينا للمورد. تحصيلات من المورد (collect — TR-05) بتزوّد. الدفعات غير المصنّفة مابتدخلش (B-53).",
+      "variables": { "OpeningBalance": "money", "PostedInvoices": "money", "PostedReturns": "money", "PostedPayments": "money", "PostedCollections": "money", "PostedCreditAdjustments": "money", "PostedDebitAdjustments": "money" },
+      "lists": {},
+      "steps": [
+        { "name": "SupplierBalance", "expr": "OpeningBalance + PostedInvoices - PostedReturns - PostedPayments + PostedCollections - PostedCreditAdjustments + PostedDebitAdjustments" }
+      ],
+      "testCases": [
+        { "name": "مثال المراجعة F-05", "inputs": { "OpeningBalance": "1000", "PostedInvoices": "1130", "PostedReturns": "113", "PostedPayments": "500", "PostedCollections": "100", "PostedCreditAdjustments": "0", "PostedDebitAdjustments": "0" }, "expected": { "SupplierBalance": "1617.0000" } },
+        { "name": "دفع زيادة ← رصيد مدين (سالب)", "inputs": { "OpeningBalance": "0", "PostedInvoices": "100", "PostedReturns": "0", "PostedPayments": "150", "PostedCollections": "0", "PostedCreditAdjustments": "0", "PostedDebitAdjustments": "0" }, "expected": { "SupplierBalance": "-50.0000" } }
+      ],
+      "openDecisions": ["اتجاه التسويات: المواصفات (− دائنة + مدينة) عكس طبيعة حساب المورد الدائن — محتاج تأكيد المعنى", "إضافة التحصيلات من المورد (TR-05) — مش موجودة في صيغة المواصفات"]
+    },
+    {
+      "code": "CUS-INVOICE", "name": "فاتورة عميل", "module": "customers", "specRef": "4.1",
+      "variables": { "lines": "list", "Discounts": "money", "OutputVAT": "money", "OtherAddedTaxes": "money", "Fees": "money", "PostedReceipts": "money", "CreditNotes": "money", "ApprovedAdjustments": "money" },
+      "lists": { "lines": ["Quantity", "UnitPrice"] },
+      "steps": [
+        { "name": "GrossSales", "expr": "SUM(lines, ROUND(Quantity * UnitPrice, 4))" },
+        { "name": "DiscountWithinBase", "kind": "check", "expr": "REQUIRE(Discounts <= GrossSales, 'DISCOUNT_EXCEEDS_BASE')" },
+        { "name": "NetSales", "expr": "GrossSales - Discounts" },
+        { "name": "InvoiceTotal", "expr": "NetSales + OutputVAT + OtherAddedTaxes + Fees" },
+        { "name": "CustomerOutstanding", "expr": "InvoiceTotal - PostedReceipts - CreditNotes - ApprovedAdjustments" }
+      ],
+      "testCases": [
+        { "name": "فاتورة + تحصيل جزئي", "inputs": { "lines": [{ "Quantity": "4", "UnitPrice": "250" }], "Discounts": "0", "OutputVAT": "140", "OtherAddedTaxes": "0", "Fees": "0", "PostedReceipts": "500", "CreditNotes": "0", "ApprovedAdjustments": "0" },
+          "expected": { "GrossSales": "1000.0000", "InvoiceTotal": "1140.0000", "CustomerOutstanding": "640.0000" } }
+      ],
+      "openDecisions": ["هل فيه فواتير مبيعات غير المستخلصات؟"]
+    },
+    {
+      "code": "CUS-RETURN", "name": "مرتجع مبيعات", "module": "customers", "specRef": "4.2",
+      "variables": { "lines": "list", "RelatedDiscounts": "money", "ReturnVAT": "money", "OtherApplicableTaxes": "money" },
+      "lists": { "lines": ["ReturnQuantity", "OriginalQuantity", "OriginalUnitPrice"] },
+      "steps": [
+        { "name": "ReturnWithinOriginal", "kind": "check", "expr": "REQUIRE(SUM(lines, IF(ReturnQuantity > OriginalQuantity, 1, 0)) = 0, 'RETURN_QTY_EXCEEDS_ORIGINAL')" },
+        { "name": "SalesReturn", "expr": "SUM(lines, ROUND(ReturnQuantity * OriginalUnitPrice, 4))" },
+        { "name": "ReturnCredit", "expr": "SalesReturn - RelatedDiscounts + ReturnVAT + OtherApplicableTaxes" }
+      ],
+      "testCases": [
+        { "name": "مرتجع مبيعات", "inputs": { "lines": [{ "ReturnQuantity": "3", "OriginalQuantity": "4", "OriginalUnitPrice": "100" }], "RelatedDiscounts": "15", "ReturnVAT": "39.9", "OtherApplicableTaxes": "0" }, "expected": { "SalesReturn": "300.0000", "ReturnCredit": "324.9000" } }
+      ],
+      "openDecisions": []
+    },
+    {
+      "code": "CUS-BALANCE", "name": "رصيد العميل", "module": "customers", "specRef": "4.3",
+      "description": "الموجب = لينا عند العميل.",
+      "variables": { "OpeningBalance": "money", "PostedInvoices": "money", "PostedCreditNotes": "money", "PostedReceipts": "money", "PostedDebitAdjustments": "money", "PostedCreditAdjustments": "money" },
+      "lists": {},
+      "steps": [{ "name": "CustomerBalance", "expr": "OpeningBalance + PostedInvoices - PostedCreditNotes - PostedReceipts + PostedDebitAdjustments - PostedCreditAdjustments" }],
+      "testCases": [
+        { "name": "رصيد بعد تحصيل جزئي", "inputs": { "OpeningBalance": "0", "PostedInvoices": "52270", "PostedCreditNotes": "0", "PostedReceipts": "50000", "PostedDebitAdjustments": "0", "PostedCreditAdjustments": "0" }, "expected": { "CustomerBalance": "2270.0000" } },
+        { "name": "تحصيل زيادة ← رصيد دائن للعميل", "inputs": { "OpeningBalance": "100", "PostedInvoices": "0", "PostedCreditNotes": "0", "PostedReceipts": "300", "PostedDebitAdjustments": "0", "PostedCreditAdjustments": "0" }, "expected": { "CustomerBalance": "-200.0000" } }
+      ],
+      "openDecisions": ["الخصم تحت الحساب اللي العميل بيخصمه: بيتسجّل كتحصيل ولا تسوية؟", "المحتجز داخل الرصيد ولا حساب منفصل"]
+    },
+    {
+      "code": "CUS-CERT", "name": "مستخلص عميل", "module": "contracts", "specRef": "5.1",
+      "description": "كل أساس (الاحتجاز، استرداد المقدم) مدخل مستقل من بنود العقد المعتمدة. الضرائب المضافة من B-21.",
+      "variables": { "lines": "list", "AdditionalWorkValue": "money", "RetentionBase": "money", "ContractRetentionRate": "rate", "AdvanceRecoveryBase": "money", "ContractRecoveryRate": "rate", "Penalties": "money", "ContractualDeductions": "money", "OtherApprovedDeductions": "money", "AddedTaxes": "money" },
+      "lists": { "lines": ["ExecutedQuantity", "ContractUnitPrice"] },
+      "steps": [
+        { "name": "ExecutedWorkValue", "expr": "SUM(lines, ROUND(ExecutedQuantity * ContractUnitPrice, 4))" },
+        { "name": "GrossWorkValue", "expr": "ExecutedWorkValue + AdditionalWorkValue" },
+        { "name": "RetentionAmount", "expr": "RetentionBase * ContractRetentionRate" },
+        { "name": "AdvanceRecovery", "expr": "AdvanceRecoveryBase * ContractRecoveryRate" },
+        { "name": "NetCertificate", "expr": "GrossWorkValue + AddedTaxes - RetentionAmount - AdvanceRecovery - Penalties - ContractualDeductions - OtherApprovedDeductions" }
+      ],
+      "testCases": [
+        { "name": "مستخلص باحتجاز واسترداد مقدم وغرامة", "inputs": { "lines": [{ "ExecutedQuantity": "1000", "ContractUnitPrice": "50" }], "AdditionalWorkValue": "5000", "RetentionBase": "55000", "ContractRetentionRate": "0.05", "AdvanceRecoveryBase": "55000", "ContractRecoveryRate": "0.10", "Penalties": "500", "ContractualDeductions": "0", "OtherApprovedDeductions": "0", "AddedTaxes": "7700" },
+          "expected": { "ExecutedWorkValue": "50000.0000", "GrossWorkValue": "55000.0000", "RetentionAmount": "2750.0000", "AdvanceRecovery": "5500.0000", "NetCertificate": "53950.0000" } }
+      ],
+      "openDecisions": ["المواصفات بتحسب المستخلص كفترة، وTR-11 المعتمد تراكمي — CERT-CUMULATIVE بيكمّلها؛ محتاج تأكيد الطريقة الرسمية", "أساس الاحتجاز وأساس ق.م (إجمالي الأعمال؟ قبل ولا بعد الإضافات؟)", "معنى taxPct في البيانات الحالية"]
+    },
+    {
+      "code": "CERT-CUMULATIVE", "name": "المستخلصات التراكمية والمتبقي من العقد", "module": "contracts", "specRef": "5.2",
+      "variables": { "ContractValue": "money", "ApprovedVariations": "money", "PreviousApprovedGross": "money", "CurrentCertificateGross": "money", "CurrentCertificateDeductions": "money" },
+      "lists": {},
+      "steps": [
+        { "name": "CumulativeApprovedGrossCertificates", "expr": "PreviousApprovedGross + CurrentCertificateGross" },
+        { "name": "WithinContract", "kind": "check", "expr": "REQUIRE(CumulativeApprovedGrossCertificates <= ContractValue + ApprovedVariations, 'CERTIFICATES_EXCEED_CONTRACT')" },
+        { "name": "RemainingContractValue", "expr": "ContractValue + ApprovedVariations - CumulativeApprovedGrossCertificates" },
+        { "name": "CurrentNetCertificate", "expr": "CurrentCertificateGross - CurrentCertificateDeductions" }
+      ],
+      "testCases": [
+        { "name": "داخل قيمة العقد + أوامر تغيير معتمدة", "inputs": { "ContractValue": "1000000", "ApprovedVariations": "50000", "PreviousApprovedGross": "600000", "CurrentCertificateGross": "300000", "CurrentCertificateDeductions": "30000" },
+          "expected": { "CumulativeApprovedGrossCertificates": "900000.0000", "RemainingContractValue": "150000.0000", "CurrentNetCertificate": "270000.0000" } },
+        { "name": "تجاوز قيمة العقد ← مرفوض", "inputs": { "ContractValue": "1000000", "ApprovedVariations": "50000", "PreviousApprovedGross": "600000", "CurrentCertificateGross": "450000.0001", "CurrentCertificateDeductions": "0" }, "expectError": "CERTIFICATES_EXCEED_CONTRACT" }
+      ],
+      "openDecisions": []
+    },
+    {
+      "code": "SUB-CERT", "name": "مستخلص مقاول باطن", "module": "contracts", "specRef": "5.3",
+      "variables": { "lines": "list", "RetentionBase": "money", "ContractRetentionRate": "rate", "AdvanceRecoveryBase": "money", "ContractRecoveryRate": "rate", "Penalties": "money", "AddedTaxes": "money", "ContractualDeductions": "money", "WithholdingTaxes": "money", "PreviousPayments": "money" },
+      "lists": { "lines": ["ApprovedExecutedQuantity", "SubcontractUnitPrice"] },
+      "steps": [
+        { "name": "SubcontractGrossWork", "expr": "SUM(lines, ROUND(ApprovedExecutedQuantity * SubcontractUnitPrice, 4))" },
+        { "name": "SubcontractRetention", "expr": "RetentionBase * ContractRetentionRate" },
+        { "name": "SubcontractAdvanceRecovery", "expr": "AdvanceRecoveryBase * ContractRecoveryRate" },
+        { "name": "SubcontractNetPayable", "expr": "SubcontractGrossWork + AddedTaxes - SubcontractRetention - SubcontractAdvanceRecovery - Penalties - ContractualDeductions - WithholdingTaxes - PreviousPayments" }
+      ],
+      "testCases": [
+        { "name": "مستخلص باطن باحتجاز وخصم تحت الحساب ومدفوع سابق", "inputs": { "lines": [{ "ApprovedExecutedQuantity": "600", "SubcontractUnitPrice": "100" }], "RetentionBase": "60000", "ContractRetentionRate": "0.10", "AdvanceRecoveryBase": "0", "ContractRecoveryRate": "0", "Penalties": "0", "AddedTaxes": "0", "ContractualDeductions": "0", "WithholdingTaxes": "540", "PreviousPayments": "30000" },
+          "expected": { "SubcontractGrossWork": "60000.0000", "SubcontractRetention": "6000.0000", "SubcontractNetPayable": "23460.0000" } }
+      ],
+      "openDecisions": ["مستخلص الباطن مستند منفصل ولا فاتورة مورد بنوع «مقاول»"]
+    },
+    {
+      "code": "VOUCHER-ALLOC", "name": "سند قبض/صرف وتوزيعه", "module": "treasury", "specRef": "6.1–6.3",
+      "description": "التوزيع على المستندات ماينفعش يتعدّى متبقي كل مستند ولا قيمة السند. الزيادة = دفعة مقدمة غير مخصّصة (لو مسموحة).",
+      "variables": { "allocations": "list", "VoucherAmount": "money", "PreviousPartyBalance": "money" },
+      "lists": { "allocations": ["Amount", "DocumentRemaining"] },
+      "steps": [
+        { "name": "AllocationsValid", "kind": "check", "expr": "REQUIRE(SUM(allocations, IF(Amount <= 0 OR Amount > DocumentRemaining, 1, 0)) = 0, 'ALLOCATION_EXCEEDS_REMAINING')" },
+        { "name": "AllocatedTotal", "expr": "SUM(allocations, Amount)" },
+        { "name": "WithinVoucher", "kind": "check", "expr": "REQUIRE(AllocatedTotal <= VoucherAmount, 'ALLOCATIONS_EXCEED_VOUCHER')" },
+        { "name": "UnallocatedAdvance", "expr": "VoucherAmount - AllocatedTotal" },
+        { "name": "PartyRemainingBalance", "expr": "PreviousPartyBalance - VoucherAmount" }
+      ],
+      "testCases": [
+        { "name": "قبض موزّع على فاتورتين + مقدم", "inputs": { "allocations": [{ "Amount": "600", "DocumentRemaining": "700" }, { "Amount": "300", "DocumentRemaining": "300" }], "VoucherAmount": "1000", "PreviousPartyBalance": "2000" },
+          "expected": { "AllocatedTotal": "900.0000", "UnallocatedAdvance": "100.0000", "PartyRemainingBalance": "1000.0000" } },
+        { "name": "تخصيص أكبر من متبقي المستند ← مرفوض", "inputs": { "allocations": [{ "Amount": "800", "DocumentRemaining": "700" }], "VoucherAmount": "1000", "PreviousPartyBalance": "2000" }, "expectError": "ALLOCATION_EXCEEDS_REMAINING" },
+        { "name": "التخصيص أكبر من السند ← مرفوض", "inputs": { "allocations": [{ "Amount": "700", "DocumentRemaining": "700" }, { "Amount": "400", "DocumentRemaining": "500" }], "VoucherAmount": "1000", "PreviousPartyBalance": "0" }, "expectError": "ALLOCATIONS_EXCEED_VOUCHER" }
+      ],
+      "openDecisions": ["المواصفات بتطرح مجموع التخصيصات من الرصيد؛ المقترح يطرح قيمة السند كلها (الجزء غير المخصّص = مقدم بيقلّل الرصيد برضه) — محتاج تأكيد", "السماح بالمقدم غير المخصّص لكل نوع سند"]
+    },
+    {
+      "code": "PAYROLL", "name": "راتب موظف", "module": "hr", "specRef": "7.1",
+      "description": "الضريبة والتأمينات مدخلات من أكواد B-21 المعتمدة بسريانها — مفيش نسب هنا.",
+      "variables": { "BasicSalary": "money", "Allowances": "money", "Overtime": "money", "Bonuses": "money", "IncomeTax": "money", "EmployeeInsurance": "money", "Loans": "money", "Advances": "money", "ApprovedDeductions": "money" },
+      "lists": {},
+      "steps": [
+        { "name": "GrossSalary", "expr": "BasicSalary + Allowances + Overtime + Bonuses" },
+        { "name": "NetSalary", "expr": "GrossSalary - IncomeTax - EmployeeInsurance - Loans - Advances - ApprovedDeductions" }
+      ],
+      "testCases": [
+        { "name": "راتب بضريبة وتأمينات وسلفة", "inputs": { "BasicSalary": "8000", "Allowances": "1500", "Overtime": "0", "Bonuses": "500", "IncomeTax": "600", "EmployeeInsurance": "1045", "Loans": "0", "Advances": "1000", "ApprovedDeductions": "0" }, "expected": { "GrossSalary": "10000.0000", "NetSalary": "7355.0000" } }
+      ],
+      "openDecisions": ["B-46/B-73/B-74 (سياسات الأجور والإجازات والراتب الجزئي) — مانعة للتفعيل"]
+    },
+    {
+      "code": "DAILY-LABOR", "name": "مستحقات عامل يومية", "module": "labor", "specRef": "7.2",
+      "description": "WorkedDays من الحضور بمعاملات الحالات المعتمدة (TR-07 / B-76) والمكرر معزول (TR-08).",
+      "variables": { "WorkedDays": "qty", "DailyRate": "money", "OvertimeHours": "qty", "ApprovedHourlyRate": "money", "Bonuses": "money", "Advances": "money", "Deductions": "money" },
+      "lists": {},
+      "steps": [
+        { "name": "DailyLaborGross", "expr": "WorkedDays * DailyRate" },
+        { "name": "OvertimeAmount", "expr": "OvertimeHours * ApprovedHourlyRate" },
+        { "name": "DailyLaborNet", "expr": "DailyLaborGross + OvertimeAmount + Bonuses - Advances - Deductions" }
+      ],
+      "testCases": [
+        { "name": "أيام بكسور + إضافي (HALF_UP 4 خانات)", "inputs": { "WorkedDays": "22.5", "DailyRate": "333.33", "OvertimeHours": "10", "ApprovedHourlyRate": "50", "Bonuses": "100", "Advances": "1000", "Deductions": "50" },
+          "expected": { "DailyLaborGross": "7499.9250", "OvertimeAmount": "500.0000", "DailyLaborNet": "7049.9250" } },
+        { "name": "1.5 يوم × 333.33 (الحالي بيقرّب لـ 500)", "inputs": { "WorkedDays": "1.5", "DailyRate": "333.33", "OvertimeHours": "0", "ApprovedHourlyRate": "0", "Bonuses": "0", "Advances": "0", "Deductions": "0" }, "expected": { "DailyLaborGross": "499.9950" } }
+      ],
+      "openDecisions": ["B-47 (الصرف فوق المستحق)", "حد أدنى صفر لليوم (TR-07) بيتطبّق قبل الجمع"]
+    },
+    {
+      "code": "REMAINING-DUE", "name": "المتبقي للعامل أو الموظف", "module": "labor", "specRef": "7.3",
+      "variables": { "TotalApprovedEntitlements": "money", "PreviousPayments": "money" },
+      "lists": {},
+      "steps": [
+        { "name": "RemainingDue", "expr": "TotalApprovedEntitlements - PreviousPayments" },
+        { "name": "OverPaid", "kind": "check", "expr": "RemainingDue < 0" }
+      ],
+      "testCases": [
+        { "name": "متبقي عادي", "inputs": { "TotalApprovedEntitlements": "5000", "PreviousPayments": "3000" }, "expected": { "RemainingDue": "2000.0000", "OverPaid": false } },
+        { "name": "مدفوع زيادة ← بيتعلّم", "inputs": { "TotalApprovedEntitlements": "1000", "PreviousPayments": "1200" }, "expected": { "RemainingDue": "-200.0000", "OverPaid": true } }
+      ],
+      "openDecisions": ["B-47: هل المدفوع الزيادة مسموح (سلفة) ولا مرفوض؟"]
+    },
+    {
+      "code": "STOCK-QTY", "name": "الرصيد المخزني والمتاح", "module": "warehouses", "specRef": "8.1",
+      "description": "للعرض والتحقق المسبق. **المنع الفعلي (B-50) في قاعدة البيانات** جوه المعاملة بقفل — المعادلة دي مابتستبدلوش.",
+      "variables": { "OpeningQty": "qty", "PostedReceipts": "qty", "PostedReturnsIn": "qty", "PostedTransfersIn": "qty", "PostedIssues": "qty", "PostedReturnsOut": "qty", "PostedTransfersOut": "qty", "ReservedQty": "qty", "BlockedQty": "qty", "IssueQuantity": "qty" },
+      "lists": {},
+      "steps": [
+        { "name": "OnHandQty", "kind": "qty", "expr": "OpeningQty + PostedReceipts + PostedReturnsIn + PostedTransfersIn - PostedIssues - PostedReturnsOut - PostedTransfersOut" },
+        { "name": "AvailableQty", "kind": "qty", "expr": "OnHandQty - ReservedQty - BlockedQty" },
+        { "name": "IssueAllowed", "kind": "check", "expr": "AvailableQty >= IssueQuantity" }
+      ],
+      "testCases": [
+        { "name": "صرف بالظبط المتاح مسموح", "inputs": { "OpeningQty": "100", "PostedReceipts": "50", "PostedReturnsIn": "5", "PostedTransfersIn": "10", "PostedIssues": "40", "PostedReturnsOut": "2", "PostedTransfersOut": "20", "ReservedQty": "10", "BlockedQty": "3", "IssueQuantity": "90" },
+          "expected": { "OnHandQty": "103.00000", "AvailableQty": "90.00000", "IssueAllowed": true } },
+        { "name": "صرف أكبر من المتاح بـ 0.00001 ← غير مسموح", "inputs": { "OpeningQty": "100", "PostedReceipts": "50", "PostedReturnsIn": "5", "PostedTransfersIn": "10", "PostedIssues": "40", "PostedReturnsOut": "2", "PostedTransfersOut": "20", "ReservedQty": "10", "BlockedQty": "3", "IssueQuantity": "90.00001" },
+          "expected": { "IssueAllowed": false } }
+      ],
+      "openDecisions": ["الكمية «المحظورة» (BlockedQty) مفهوم جديد — مش موجود في قاعدة البيانات (المحجوز موجود)"]
+    },
+    {
+      "code": "MOVING-AVG", "name": "متوسط التكلفة المرجّح المتحرك وتكلفة الصرف", "module": "warehouses", "specRef": "8.2",
+      "description": "سعر الوحدة 5 خانات (B-26)، والقيمة 4. لو الكمية الكلية صفر = غير قابل للحساب (NULL). تكلفة الصرف بتتثبّت على الحركة (TR-13).",
+      "variables": { "PreviousStockQty": "qty", "PreviousStockValue": "money", "NewReceiptQty": "qty", "NewReceiptValue": "money", "IssueQty": "qty" },
+      "lists": {},
+      "steps": [
+        { "name": "NewAverageCost", "kind": "qty", "expr": "IF(PreviousStockQty + NewReceiptQty = 0, NULL, (PreviousStockValue + NewReceiptValue) / (PreviousStockQty + NewReceiptQty))" },
+        { "name": "IssueCost", "expr": "IF(NewAverageCost = NULL, NULL, IssueQty * NewAverageCost)" }
+      ],
+      "testCases": [
+        { "name": "مثال المراجعة F-09/F-10", "inputs": { "PreviousStockQty": "7", "PreviousStockValue": "86.41969", "NewReceiptQty": "3", "NewReceiptValue": "45.3", "IssueQty": "4" }, "expected": { "NewAverageCost": "13.17197", "IssueCost": "52.6879" } },
+        { "name": "قسمة على صفر ← غير قابل للحساب", "inputs": { "PreviousStockQty": "0", "PreviousStockValue": "0", "NewReceiptQty": "0", "NewReceiptValue": "0", "IssueQty": "0" }, "expected": { "NewAverageCost": null, "IssueCost": null } }
+      ],
+      "openDecisions": ["المتوسط لكل صنف ولا صنف × مخزن", "FIFO / التمييز المحدد: مش مطبّقين — محتاجين سياسة تقييم لكل صنف (وتغييرها لصنف عليه حركات = إجراء محاسبي)"]
+    },
+    {
+      "code": "LANDED-COST", "name": "تكلفة استلام المخزون وقيمته", "module": "warehouses", "specRef": "8.3",
+      "description": "الضرائب القابلة للاسترداد مابتدخلش التكلفة. غير القابلة للاسترداد مدخل منفصل (EAS 2).",
+      "variables": { "PurchaseCost": "money", "DirectFreight": "money", "DirectAcquisitionCosts": "money", "NonRecoverableTaxes": "money", "ReceivedQty": "qty", "OnHandQty": "qty", "ApplicableUnitCost": "qty" },
+      "lists": {},
+      "steps": [
+        { "name": "LandedCost", "expr": "PurchaseCost + DirectFreight + DirectAcquisitionCosts + NonRecoverableTaxes" },
+        { "name": "UnitLandedCost", "kind": "qty", "expr": "IF(ReceivedQty = 0, NULL, LandedCost / ReceivedQty)" },
+        { "name": "InventoryValue", "expr": "OnHandQty * ApplicableUnitCost" }
+      ],
+      "testCases": [
+        { "name": "تكلفة استلام بنقل وتحميل", "inputs": { "PurchaseCost": "1000", "DirectFreight": "50", "DirectAcquisitionCosts": "25", "NonRecoverableTaxes": "0", "ReceivedQty": "100", "OnHandQty": "40", "ApplicableUnitCost": "10.75" }, "expected": { "LandedCost": "1075.0000", "UnitLandedCost": "10.75000", "InventoryValue": "430.0000" } }
+      ],
+      "openDecisions": ["مكوّنات التكلفة المباشرة المعتمدة"]
+    },
+    {
+      "code": "PROJECT-MATERIAL", "name": "تكلفة مواد المشروع", "module": "projects", "specRef": "8.4",
+      "variables": { "issues": "list" },
+      "lists": { "issues": ["IssueCost"] },
+      "steps": [{ "name": "ProjectMaterialCost", "expr": "SUM(issues, IssueCost)" }],
+      "testCases": [{ "name": "مجموع أذون الصرف المرحّلة للمشروع", "inputs": { "issues": [{ "IssueCost": "52.6879" }, { "IssueCost": "1000" }] }, "expected": { "ProjectMaterialCost": "1052.6879" } }],
+      "openDecisions": []
+    },
+    {
+      "code": "EQUIPMENT-COST", "name": "تكلفة تشغيل المعدات وتحميلها", "module": "equipment", "specRef": "9.1–9.4",
+      "description": "التحميل على المشروع بنسبة ساعاته من ساعات التشغيل (أساس توزيع مقترح). الإهلاك مدخل (B-43).",
+      "variables": { "FuelCost": "money", "MaintenanceCost": "money", "OperatorCost": "money", "OtherDirectOperatingCosts": "money", "ActualOperatingHours": "qty", "ActualOperatingDays": "qty", "ProjectHours": "qty", "AllocatedDepreciation": "money" },
+      "lists": {},
+      "steps": [
+        { "name": "EquipmentOperatingCost", "expr": "FuelCost + MaintenanceCost + OperatorCost + OtherDirectOperatingCosts" },
+        { "name": "HourlyOperatingCost", "expr": "IF(ActualOperatingHours = 0, NULL, EquipmentOperatingCost / ActualOperatingHours)" },
+        { "name": "DailyOperatingCost", "expr": "IF(ActualOperatingDays = 0, NULL, EquipmentOperatingCost / ActualOperatingDays)" },
+        { "name": "ProjectEquipmentCost", "expr": "IF(ActualOperatingHours = 0, NULL, ROUND(EquipmentOperatingCost * ProjectHours / ActualOperatingHours, 4) + AllocatedDepreciation)" }
+      ],
+      "testCases": [
+        { "name": "تشغيل + تحميل 40% + إهلاك", "inputs": { "FuelCost": "5000", "MaintenanceCost": "2000", "OperatorCost": "3000", "OtherDirectOperatingCosts": "0", "ActualOperatingHours": "200", "ActualOperatingDays": "25", "ProjectHours": "80", "AllocatedDepreciation": "1500" },
+          "expected": { "EquipmentOperatingCost": "10000.0000", "HourlyOperatingCost": "50.0000", "DailyOperatingCost": "400.0000", "ProjectEquipmentCost": "5500.0000" } },
+        { "name": "صفر ساعات ← غير قابل للحساب", "inputs": { "FuelCost": "100", "MaintenanceCost": "0", "OperatorCost": "0", "OtherDirectOperatingCosts": "0", "ActualOperatingHours": "0", "ActualOperatingDays": "0", "ProjectHours": "0", "AllocatedDepreciation": "0" },
+          "expected": { "HourlyOperatingCost": null, "DailyOperatingCost": null, "ProjectEquipmentCost": null } }
+      ],
+      "openDecisions": ["B-42 (أساس التحميل: ساعات؟ أيام؟)", "B-43 (المعدات كأصول والإهلاك)"]
+    },
+    {
+      "code": "PROJECT-COST", "name": "التكلفة الفعلية للمشروع والانحراف", "module": "projects", "specRef": "10.1–10.2",
+      "variables": { "MaterialCost": "money", "LaborCost": "money", "EquipmentCost": "money", "SubcontractorCost": "money", "DirectExpenses": "money", "AllocatedIndirectCosts": "money", "BudgetedCost": "money" },
+      "lists": {},
+      "steps": [
+        { "name": "ActualProjectCost", "expr": "MaterialCost + LaborCost + EquipmentCost + SubcontractorCost + DirectExpenses + AllocatedIndirectCosts" },
+        { "name": "CostVariance", "expr": "ActualProjectCost - BudgetedCost" },
+        { "name": "VariancePercentage", "expr": "IF(BudgetedCost = 0, NULL, CostVariance / BudgetedCost * 100)" }
+      ],
+      "testCases": [
+        { "name": "تجاوز الميزانية", "inputs": { "MaterialCost": "8000", "LaborCost": "40000", "EquipmentCost": "12500", "SubcontractorCost": "0", "DirectExpenses": "2000", "AllocatedIndirectCosts": "0", "BudgetedCost": "60000" },
+          "expected": { "ActualProjectCost": "62500.0000", "CostVariance": "2500.0000", "VariancePercentage": "4.1667" } },
+        { "name": "ميزانية صفر ← غير قابل للحساب", "inputs": { "MaterialCost": "1", "LaborCost": "0", "EquipmentCost": "0", "SubcontractorCost": "0", "DirectExpenses": "0", "AllocatedIndirectCosts": "0", "BudgetedCost": "0" }, "expected": { "VariancePercentage": null } }
+      ],
+      "openDecisions": ["B-33 (التكاليف غير المباشرة)", "ق.م غير القابلة للخصم كتكلفة (TR-10)"]
+    },
+    {
+      "code": "PROJECT-PROFIT", "name": "ربحية المشروع", "module": "projects", "specRef": "10.3",
+      "description": "الإيراد المعترف به مش التحصيلات النقدية.",
+      "variables": { "RecognizedRevenue": "money", "RecognizedProjectCost": "money" },
+      "lists": {},
+      "steps": [
+        { "name": "GrossProfit", "expr": "RecognizedRevenue - RecognizedProjectCost" },
+        { "name": "ProfitMargin", "expr": "IF(RecognizedRevenue = 0, NULL, GrossProfit / RecognizedRevenue * 100)" }
+      ],
+      "testCases": [
+        { "name": "مثال المراجعة F-13", "inputs": { "RecognizedRevenue": "153000", "RecognizedProjectCost": "118430.25" }, "expected": { "GrossProfit": "34569.7500", "ProfitMargin": "22.5946" } },
+        { "name": "إيراد صفر", "inputs": { "RecognizedRevenue": "0", "RecognizedProjectCost": "10" }, "expected": { "GrossProfit": "-10.0000", "ProfitMargin": null } }
+      ],
+      "openDecisions": ["أساس الاعتراف بالإيراد (EAS 48: المستخلصات المعتمدة؟ نسبة الإنجاز؟)"]
+    },
+    {
+      "code": "PROJECT-EAC", "name": "التكلفة المتوقعة عند الإكمال", "module": "projects", "specRef": "10.4",
+      "variables": { "ActualCostToDate": "money", "EstimatedCostToComplete": "money", "ApprovedBudget": "money" },
+      "lists": {},
+      "steps": [
+        { "name": "EstimateAtCompletion", "expr": "ActualCostToDate + EstimatedCostToComplete" },
+        { "name": "EstimatedCostVariance", "expr": "EstimateAtCompletion - ApprovedBudget" }
+      ],
+      "testCases": [{ "name": "توقع تجاوز", "inputs": { "ActualCostToDate": "62500", "EstimatedCostToComplete": "30000", "ApprovedBudget": "90000" }, "expected": { "EstimateAtCompletion": "92500.0000", "EstimatedCostVariance": "2500.0000" } }],
+      "openDecisions": ["أساس التكلفة المتوقعة للإكمال ومين بيعتمدها"]
+    },
+    {
+      "code": "CASH-BANK-BALANCE", "name": "رصيد الخزينة أو البنك الدفتري", "module": "treasury", "specRef": "11.1–11.3",
+      "description": "التحويلات بين حسابات الشركة: خروج من المصدر ودخول للمستلم — مش إيراد ولا مصروف. بعد المحاسبة: من سطور القيود (B-52).",
+      "variables": { "OpeningBalance": "money", "PostedReceipts": "money", "PostedPayments": "money", "TransfersIn": "money", "TransfersOut": "money" },
+      "lists": {},
+      "steps": [{ "name": "ClosingBalance", "expr": "OpeningBalance + PostedReceipts - PostedPayments + TransfersIn - TransfersOut" }],
+      "testCases": [{ "name": "مثال المراجعة F-14", "inputs": { "OpeningBalance": "50000", "PostedReceipts": "1130", "PostedPayments": "23760", "TransfersIn": "0", "TransfersOut": "10000" }, "expected": { "ClosingBalance": "17370.0000" } }],
+      "openDecisions": ["B-52a…f"]
+    },
+    {
+      "code": "BANK-RECON", "name": "المطابقة البنكية", "module": "treasury", "specRef": "11.4",
+      "description": "الرصيد الدفتري مابيتعدّلش مباشرة — الفروق بتتفسّر بالبنود المعلّقة، والتسويات بقيود معتمدة.",
+      "variables": { "StatementBalance": "money", "BookBalance": "money", "UnrecordedBankCredits": "money", "UnrecordedBankCharges": "money", "OutstandingCheques": "money", "DepositsInTransit": "money" },
+      "lists": {},
+      "steps": [
+        { "name": "AdjustedBookBalance", "expr": "BookBalance + UnrecordedBankCredits - UnrecordedBankCharges + OutstandingCheques - DepositsInTransit" },
+        { "name": "BankReconciliationDifference", "expr": "StatementBalance - AdjustedBookBalance" },
+        { "name": "Reconciled", "kind": "check", "expr": "BankReconciliationDifference = 0" }
+      ],
+      "testCases": [
+        { "name": "مطابقة متزنة", "inputs": { "StatementBalance": "19270", "BookBalance": "17370", "UnrecordedBankCredits": "50", "UnrecordedBankCharges": "20", "OutstandingCheques": "3000", "DepositsInTransit": "1130" }, "expected": { "AdjustedBookBalance": "19270.0000", "BankReconciliationDifference": "0.0000", "Reconciled": true } },
+        { "name": "فرق غير مفسّر", "inputs": { "StatementBalance": "19300", "BookBalance": "17370", "UnrecordedBankCredits": "50", "UnrecordedBankCharges": "20", "OutstandingCheques": "3000", "DepositsInTransit": "1130" }, "expected": { "BankReconciliationDifference": "30.0000", "Reconciled": false } }
+      ],
+      "openDecisions": ["B-52f (شكل كشف البنك وقواعد المطابقة)"]
+    },
+    {
+      "code": "JOURNAL-BALANCE", "name": "توازن القيد", "module": "accounting", "specRef": "12.1–12.2",
+      "description": "شرط الترحيل: المدين = الدائن بالظبط. وكل سطر طرف واحد بقيمة موجبة.",
+      "variables": { "lines": "list" },
+      "lists": { "lines": ["Debit", "Credit"] },
+      "steps": [
+        { "name": "LinesValid", "kind": "check", "expr": "REQUIRE(SUM(lines, IF(Debit < 0 OR Credit < 0 OR (Debit > 0 AND Credit > 0) OR (Debit = 0 AND Credit = 0), 1, 0)) = 0, 'INVALID_JOURNAL_LINE')" },
+        { "name": "TotalDebit", "expr": "SUM(lines, Debit)" },
+        { "name": "TotalCredit", "expr": "SUM(lines, Credit)" },
+        { "name": "JournalDifference", "expr": "TotalDebit - TotalCredit" },
+        { "name": "CanPost", "kind": "check", "expr": "JournalDifference = 0" }
+      ],
+      "testCases": [
+        { "name": "مثال المواصفات 12.2: 114,000 = 114,000", "inputs": { "lines": [{ "Debit": "100000", "Credit": "0" }, { "Debit": "14000", "Credit": "0" }, { "Debit": "0", "Credit": "113000" }, { "Debit": "0", "Credit": "1000" }] },
+          "expected": { "TotalDebit": "114000.0000", "TotalCredit": "114000.0000", "JournalDifference": "0.0000", "CanPost": true } },
+        { "name": "قيد غير متوازن بـ 0.0001 ← مايترحّلش", "inputs": { "lines": [{ "Debit": "100", "Credit": "0" }, { "Debit": "0", "Credit": "99.9999" }] }, "expected": { "JournalDifference": "0.0001", "CanPost": false } },
+        { "name": "سطر فيه مدين ودائن ← مرفوض", "inputs": { "lines": [{ "Debit": "10", "Credit": "10" }] }, "expectError": "INVALID_JOURNAL_LINE" }
+      ],
+      "openDecisions": ["دليل الحسابات والفترات المالية (B-13…B-19)"]
+    }
+  ]
+}

@@ -17,6 +17,7 @@ export const routes: Routes = [
       { path: 'suppliers', canActivate: [pageGuard], data: { page: 'ledger.suppliers' }, loadComponent: () => import('./features/suppliers.page').then((m) => m.SuppliersPage), title: 'الموردين' },
       { path: 'customers', canActivate: [pageGuard], data: { page: 'clients.customers' }, loadComponent: () => import('./features/customers.page').then((m) => m.CustomersPage), title: 'العملاء' },
       { path: 'warehouses', canActivate: [pageGuard], data: { page: 'warehouses.home' }, loadComponent: () => import('./features/warehouses.page').then((m) => m.WarehousesPage), title: 'المخازن' },
+      { path: 'formulas', canActivate: [financeRulesGuard], loadComponent: () => import('./features/formulas.page').then((m) => m.FormulasPage), title: 'إدارة القواعد المالية' },
       { path: 'taxes', canActivate: [financeRulesGuard], loadComponent: () => import('./features/taxes.page').then((m) => m.TaxesPage), title: 'الضرائب والاستقطاعات' },
       { path: 'approvals', loadComponent: () => import('./features/approvals.page').then((m) => m.ApprovalsPage), title: 'بانتظار اعتمادي' },
       { path: 'forbidden', component: ForbiddenPage },

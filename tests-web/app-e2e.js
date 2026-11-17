@@ -309,6 +309,37 @@ async function login(page, username, password) {
     eq((await api('GET', '/api/v1/warehouses', null, adminTok)).body.items.find((x) => x.id === it.id).total, '6.5', 'balance includes the posted adjustment only after posting');
   }
 
+  console.log('[6f] B-20: Financial Rules Management — draft with passing tests, preview, submit, approval by a different user (test data)');
+  {
+    const lib = JSON.parse(require('fs').readFileSync(require('path').join(__dirname, '../server/finance-formulas/B20_LIBRARY.json'), 'utf8')).formulas;
+    const f = lib.find((x) => x.code === 'PROJECT-PROFIT');
+    eq((await api('POST', '/api/v1/finance/formulas', { code: f.code, name: f.name, module: f.module }, adminTok)).status, 201, 'formula created');
+    const v = await api('POST', `/api/v1/finance/formulas/${f.code}/versions`, { changeKind: 'new', effectiveFrom: '2026-01-01', changeReason: 'اختبار الواجهة', definition: { variables: f.variables, lists: f.lists, steps: f.steps }, testCases: f.testCases }, adminTok);
+    eq([v.status, v.body.tests_passed], [201, true], 'draft version with passing tests');
+    await A.page.goto(srv.base + '/app/formulas');
+    await A.page.waitForSelector(`#frmTable tr[data-version="${v.body.id}"][data-status="draft"]`);
+    await A.page.click(`#frmTable tr[data-version="${v.body.id}"] td:first-child`);
+    await A.page.waitForSelector('#frmTests tr[data-test-status="PASS"]');
+    ok((await A.page.textContent('#frmSteps')).includes('GrossProfit'), 'formula steps shown');
+    await A.page.click('#frmPreviewBtn');
+    await A.page.waitForSelector('#frmPreviewOut');
+    ok((await A.page.textContent('#frmPreviewOut')).includes('34569.7500'), 'preview result');
+    ok(!(await A.page.$('#frmDetail [data-act="approve"]')), 'creator sees no approve button');
+    await A.page.click('#frmDetail [data-act="submit"]');
+    await A.page.waitForSelector(`#frmTable tr[data-version="${v.body.id}"][data-status="pending"]`);
+    const T = await newContext('formula-approver');
+    await login(T.page, 'app_tax_approver', PW);
+    await T.page.waitForSelector('#navFormulas');
+    await T.page.click('#navFormulas');
+    await T.page.click(`#frmTable tr[data-version="${v.body.id}"] td:first-child`);
+    await T.page.click('#frmDetail [data-act="approve"]');
+    await T.page.waitForSelector(`#frmTable tr[data-version="${v.body.id}"][data-status="approved"]`);
+    ok(true, 'approved by a different user from the screen');
+    await T.ctx.close();
+    const e = await api('POST', `/api/v1/finance/formulas/${f.code}/evaluate`, { date: '2026-06-01', inputs: { RecognizedRevenue: '200', RecognizedProjectCost: '150' } }, adminTok);
+    eq(e.body.outputs, { GrossProfit: '50.0000', ProfitMargin: '25.0000' }, 'evaluation uses the approved version');
+  }
+
   console.log('[7] logout ends the shared session; PWA service worker registers; no CSP violations');
   {
     const reg = await A.page.waitForFunction(() => navigator.serviceWorker.getRegistration('/app/').then((r) => !!r), null, { timeout: 45000 }).then(() => true).catch(() => false);
