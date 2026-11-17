@@ -27,5 +27,5 @@ export class ProjectDto {
 export class ProjectListDto {
   @ApiProperty({ type: [ProjectDto] }) items: ProjectDto[];
   @ApiProperty() total: number;
-  @ApiProperty({ description: 'مصدر البيانات الحالي — الطبقة الانتقالية لحد نقل موديول المشروعات (المرحلة 5)', example: 'legacy-records' }) source: 'legacy-records';
+  @ApiProperty({ description: 'مصدر البيانات: legacy-records (الافتراضي) أو relational (بعد ترحيل معتمد)', example: 'legacy-records' }) source: 'legacy-records' | 'relational';
 }

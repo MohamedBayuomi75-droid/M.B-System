@@ -20,14 +20,21 @@ export class AttachmentsController {
   @ApiOperation({ summary: 'رفع مرفق لسجل', description: 'PDF/JPG/PNG/DOCX/XLSX حتى 25MB. النوع من محتوى الملف، والمحتوى بيتفحص. الصلاحية = تعديل السجل المالك.' })
   @ApiOkResponse({ type: AttachmentDto })
   upload(@CurrentUser() user: AuthUser, @Query() q: AttachmentOwnerQueryDto, @UploadedFile() file: { buffer: Buffer; originalname: string } | undefined, @Req() req: Request): Promise<AttachmentDto> {
-    return this.svc.upload(user, q.collection, q.recordId, file, req);
+    return this.svc.upload(user, q.collection, q.recordId, file, req, q.replaces);
   }
 
   @Get()
-  @ApiOperation({ summary: 'مرفقات سجل' })
+  @ApiOperation({ summary: 'مرفقات سجل (آخر إصدار من كل مستند)' })
   @ApiOkResponse({ type: [AttachmentDto] })
   list(@CurrentUser() user: AuthUser, @Query() q: AttachmentOwnerQueryDto): Promise<AttachmentDto[]> {
     return this.svc.list(user, q.collection, q.recordId);
+  }
+
+  @Get('versions')
+  @ApiOperation({ summary: 'كل إصدارات مرفقات سجل (المرحلة 5)' })
+  @ApiOkResponse({ type: [AttachmentDto] })
+  versions(@CurrentUser() user: AuthUser, @Query() q: AttachmentOwnerQueryDto): Promise<AttachmentDto[]> {
+    return this.svc.list(user, q.collection, q.recordId, true);
   }
 
   @Get(':id/content')

@@ -4,6 +4,7 @@ import { DataSource, EntityManager, QueryFailedError } from 'typeorm';
 import { AuthErrorCode, AuthUser } from '../auth/auth.types';
 import { PasswordService } from '../auth/password.service';
 import { effectivePermissions } from '../authz/effective-permissions';
+import { DOC_ACTIONS, DocAction, effectiveDocActions, visibleModules } from '../authz/doc-actions';
 import { roleTemplates, RoleKey, isRoleKey, ROLES_REQUIRING_PROJECT_SCOPE } from '../authz/roles';
 import { UserEntity, UserPermissionEntity } from '../entities';
 import { DomainEvents } from '../events/domain-events';
@@ -31,10 +32,14 @@ export class UsersService {
     const u = await this.users.findOneBy({ id });
     if (!u || !u.active) return null;
     const ov = await this.overrides.findBy({ userId: id });
+    const acts: { action: string; scope: string; allowed: boolean }[] = await this.ds.query(`SELECT action, scope, allowed FROM user_action_permissions WHERE user_id = $1`, [id]);
+    const permissions = effectivePermissions(u, ov);
     return {
       id: u.id, username: u.username, name: u.name, role: u.role,
       mustChangePassword: u.mustChangePassword, tokenVersion: u.tokenVersion, projectScope: u.projectScope,
-      permissions: effectivePermissions(u, ov),
+      permissions,
+      docActions: effectiveDocActions(u.role, acts),
+      modules: visibleModules(permissions),
       twoFactorEnabled: u.totpEnabled,
       twoFactorSetupRequired: !u.totpEnabled && requires2fa(u.role),
     };
@@ -188,6 +193,31 @@ export class UsersService {
       lockedUntil: u.lockedUntil && u.lockedUntil.getTime() > Date.now() ? u.lockedUntil : null,
       lastLoginAt: u.lastLoginAt, createdAt: u.createdAt,
     };
+  }
+
+  /** المرحلة 5: أفعال المستندات لمستخدم (المنح بقرار المدير — مفيش أي منح افتراضي) */
+  async getDocActions(id: string) {
+    const u = await this.users.findOneBy({ id });
+    if (!u) throw new NotFoundException('المستخدم مش موجود');
+    const acts: { action: string; scope: string; allowed: boolean }[] = await this.ds.query(`SELECT action, scope, allowed FROM user_action_permissions WHERE user_id = $1 ORDER BY action`, [id]);
+    return { role: u.role, effective: effectiveDocActions(u.role, acts), grants: acts };
+  }
+
+  async setDocActions(id: string, grants: Partial<Record<DocAction, boolean | null>>, actor: AuthUser) {
+    const u = await this.users.findOneBy({ id });
+    if (!u) throw new NotFoundException('المستخدم مش موجود');
+    if (u.role === 'admin') throw new BadRequestException({ statusCode: 400, code: 'ADMIN_HAS_ALL', message: 'مدير النظام عنده كل الأفعال' });
+    await this.ds.transaction(async (em) => {
+      for (const a of DOC_ACTIONS) {
+        if (!(a in grants)) continue;
+        const v = grants[a];
+        if (v === null || v === undefined) await em.query(`DELETE FROM user_action_permissions WHERE user_id = $1 AND action = $2 AND scope = '*'`, [id, a]);
+        else await em.query(`INSERT INTO user_action_permissions (user_id, action, scope, allowed, granted_by) VALUES ($1, $2, '*', $3, $4)
+          ON CONFLICT (user_id, action, scope) DO UPDATE SET allowed = EXCLUDED.allowed, granted_by = EXCLUDED.granted_by, granted_at = now()`, [id, a, v, actor.id]);
+      }
+    });
+    this.events.emit('user.changed', id);
+    return this.getDocActions(id);
   }
 }
 

@@ -10,6 +10,9 @@ export interface AuthUser {
   tokenVersion: number;
   projectScope: string[] | null;
   permissions: Permissions;
+  /** المرحلة 5: أفعال المستندات (اعتماد/رفض/طباعة/تصدير/صرف/إلغاء/ترحيل) والموديولات الظاهرة */
+  docActions: import('../authz/doc-actions').DocActions;
+  modules: string[];
   /** 2FA مفعّل للمستخدم */
   twoFactorEnabled: boolean;
   /** دوره ضمن REQUIRE_2FA_ROLES ولسه مافعّلش 2FA → ممنوع من كل حاجة غير التفعيل */

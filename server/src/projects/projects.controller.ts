@@ -1,7 +1,7 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import type { AuthUser } from '../auth/auth.types';
-import { CurrentUser } from '../authz/decorators';
+import { CurrentUser, RequirePerms } from '../authz/decorators';
 import { ListProjectsQuery, ProjectDto, ProjectListDto } from './projects.dto';
 import { ProjectsService } from './projects.service';
 
@@ -18,6 +18,11 @@ export class ProjectsController {
   list(@CurrentUser() user: AuthUser, @Query() q: ListProjectsQuery): Promise<ProjectListDto> {
     return this.svc.list(user, q);
   }
+
+  @Get('migration-plan')
+  @RequirePerms({ flag: 'manageUsers' })
+  @ApiOperation({ summary: 'خطة ترحيل المشروعات للجدول العلائقي — قراءة بس (dry-run)', description: 'مفيش أي كتابة. التنفيذ في المرحلة 6 بموافقة منفصلة ونسخة احتياطية مختبرة.' })
+  migrationPlan() { return this.svc.migrationPlan(); }
 
   @Get(':id')
   @ApiOkResponse({ type: ProjectDto })

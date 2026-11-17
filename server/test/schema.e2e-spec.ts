@@ -2,7 +2,10 @@ import { DataSource } from 'typeorm';
 import { MIGRATIONS } from '../src/migrations';
 import { createTempDb, dataSourceFor } from './db';
 
-const LAYER1_TABLES = ['attachments', 'audit_log', 'changes', 'docs', 'records', 'roles', 'schema_meta', 'sessions', 'user_permissions', 'users'];
+const LAYER1_TABLES = ['attachments', 'audit_log', 'changes', 'docs', 'records', 'roles', 'schema_meta', 'sessions', 'user_permissions', 'users',
+  // المرحلة 5 (migration 0007) — فاضية: مفيش بيانات بتتزرع
+  'approval_decisions', 'approval_document_types', 'approval_level_approvers', 'approval_request_steps', 'approval_requests', 'approval_state_log', 'approval_workflow_levels', 'approval_workflows',
+  'document_counters', 'document_numbers', 'idempotency_keys', 'notifications', 'projects', 'user_action_permissions'].sort();
 
 async function tables(ds: DataSource): Promise<string[]> {
   const rows: { table_name: string }[] = await ds.query(

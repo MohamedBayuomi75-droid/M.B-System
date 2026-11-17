@@ -1,10 +1,10 @@
-import { Body, Controller, Get, HttpCode, Param, ParseUUIDPipe, Patch, Post, Req } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Param, ParseUUIDPipe, Patch, Post, Put, Req } from '@nestjs/common';
 import { ApiBearerAuth, ApiConflictResponse, ApiCreatedResponse, ApiForbiddenResponse, ApiNoContentResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import type { Request } from 'express';
 import { AuditService } from '../audit/audit.service';
 import type { AuthUser } from '../auth/auth.types';
 import { CurrentUser, RequirePerms } from '../authz/decorators';
-import { CreateUserDto, ResetPasswordDto, UpdateUserDto, UserDto } from './users.dto';
+import { CreateUserDto, DocActionsDto, ResetPasswordDto, UpdateUserDto, UserDto } from './users.dto';
 import { UsersService } from './users.service';
 
 /** إدارة المستخدمين — محتاجة صلاحية manageUsers (على السيرفر، مش في الواجهة بس). */
@@ -58,5 +58,19 @@ export class UsersController {
   async resetPassword(@Param('id', ParseUUIDPipe) id: string, @Body() dto: ResetPasswordDto, @CurrentUser() actor: AuthUser, @Req() req: Request): Promise<void> {
     await this.users.resetPassword(id, dto, actor);
     await this.audit.record({ action: 'users.reset_password', userId: actor.id, username: actor.username, entity: 'users', entityId: id, req });
+  }
+
+  @Get(':id/doc-actions')
+  @ApiOperation({ summary: 'أفعال المستندات لمستخدم (المرحلة 5)' })
+  getDocActions(@Param('id', ParseUUIDPipe) id: string) {
+    return this.users.getDocActions(id);
+  }
+
+  @Put(':id/doc-actions')
+  @ApiOperation({ summary: 'منح/منع أفعال المستندات لمستخدم', description: 'مفيش أي منح افتراضي لأي دور غير مدير النظام. التغيير بيتسجل في التدقيق.' })
+  async setDocActions(@Param('id', ParseUUIDPipe) id: string, @Body() dto: DocActionsDto, @CurrentUser() actor: AuthUser, @Req() req: Request) {
+    const r = await this.users.setDocActions(id, dto as Record<string, boolean | null>, actor);
+    await this.audit.record({ action: 'users.doc_actions', userId: actor.id, username: actor.username, entity: 'users', entityId: id, details: { grants: dto as Record<string, unknown> }, req });
+    return r;
   }
 }

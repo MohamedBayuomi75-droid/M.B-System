@@ -99,7 +99,7 @@ export function toMe(u: AuthUser): MeDto {
   return {
     id: u.id, username: u.username, name: u.name, role: u.role,
     roleLabel: isRoleKey(u.role) ? ROLE_LABELS[u.role] : u.role,
-    mustChangePassword: u.mustChangePassword, twoFactorEnabled: u.twoFactorEnabled, twoFactorSetupRequired: u.twoFactorSetupRequired,
+    mustChangePassword: u.mustChangePassword, docActions: u.docActions, modules: u.modules, twoFactorEnabled: u.twoFactorEnabled, twoFactorSetupRequired: u.twoFactorSetupRequired,
     projectScope: u.projectScope, permissions: u.permissions, pages: [...PAGES],
   };
 }

@@ -13,6 +13,10 @@ import { HealthModule } from './health/health.module';
 import { FilesModule } from './files/files.module';
 import { CommonModule } from './common/common.module';
 import { ProjectsModule } from './projects/projects.module';
+import { NumberingModule } from './numbering/numbering.module';
+import { NotificationsModule } from './notifications/notifications.module';
+import { ApprovalsModule } from './approvals/approvals.module';
+import { HistoryModule } from './history/history.module';
 
 @Module({
   imports: [
@@ -49,6 +53,10 @@ import { ProjectsModule } from './projects/projects.module';
     HealthModule,
     FilesModule,
     ProjectsModule,
+    NumberingModule,
+    NotificationsModule,
+    ApprovalsModule,
+    HistoryModule,
   ],
 })
 export class AppModule {}
