@@ -12,6 +12,8 @@ class Dec {
   static of(x) {
     if (x instanceof Dec) return x;
     if (typeof x === 'bigint') return new Dec(x * F);
+    // نص عشري صريح: يتقري زي ما هو (من غير المرور بـ JS Number اللي بيفقد الدقة بعد ~15 رقم)
+    if (typeof x === 'string' && /^\s*[+-]?(\d+(\.\d*)?|\.\d+)\s*$/.test(x)) return Dec.parse(x.trim());
     let n = typeof x === 'number' ? x : Number(x);
     if (!Number.isFinite(n)) return Dec.zero();
     return Dec.parse(String(n));

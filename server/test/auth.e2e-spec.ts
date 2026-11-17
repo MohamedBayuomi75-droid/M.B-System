@@ -102,7 +102,9 @@ describe('A2 auth', () => {
       const b = await login(t, 'nobody-here', 'wrong-password', '10.2.0.2');
       expect(a.res.status).toBe(401);
       expect(b.res.status).toBe(401);
-      expect(a.res.body).toEqual(b.res.body);
+      const { requestId: ra, ...bodyA } = a.res.body; const { requestId: rb, ...bodyB } = b.res.body; // رقم الطلب فريد لكل طلب (المرحلة 4)
+      expect(bodyA).toEqual(bodyB);
+      expect(ra).toBeTruthy(); expect(ra).not.toBe(rb);
       expect(a.res.body.code).toBe('INVALID_CREDENTIALS');
     });
 

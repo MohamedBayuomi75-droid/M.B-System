@@ -7,7 +7,7 @@ const { Dec, D, sum } = require('./decimal');
 
 /** TR-01/TR-12: كل المبالغ NUMERIC بأربع خانات، والتقريب HALF_UP للموجب والسالب (النص بعيد عن الصفر) */
 const q4 = (x) => D(x).round(4, 'halfAwayFromZero');
-const num = (x) => { if (x == null || x === '') return Dec.zero(); const n = Number(String(x).replace(/,/g, '')); return Number.isFinite(n) ? q4(D(n)) : Dec.zero(); };
+const num = (x) => { if (x == null || x === '') return Dec.zero(); if (typeof x === 'string' && /^\s*[+-]?(\d+(\.\d*)?|\.\d+)\s*$/.test(x.replace(/,/g, ''))) return q4(D(x.replace(/,/g, '').trim())); const n = Number(String(x).replace(/,/g, '')); return Number.isFinite(n) ? q4(D(n)) : Dec.zero(); };
 
 class PolicyRequired extends Error { constructor(what) { super('POLICY_REQUIRED: ' + what); this.code = 'POLICY_REQUIRED'; this.what = what; } }
 
