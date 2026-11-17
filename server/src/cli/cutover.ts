@@ -2,11 +2,12 @@
 import 'reflect-metadata';
 import { readFileSync } from 'node:fs';
 import ds from '../database/data-source';
-import { partiesCutover, partiesRollback } from '../cutover/parties-cutover';
+import { cutoverModule, rollbackModule } from '../cutover/module-cutover';
+import { MODULES } from '../cutover/parties-cutover';
 
 /**
  * أمر تشغيل نقل الموديول (MODULE_MIGRATION_PLAN §2 الخطوة 7 و§5). مش بيشتغل تلقائيًا مع الـ migrations.
- *   npm run cutover -- parties dry-run
+ *   npm run cutover -- <parties|warehouses> dry-run
  *   npm run cutover -- parties execute  --by <اسم المنفّذ> --backup-log <BACKUP_DIR/backup-log.jsonl> --confirm-backup <وقت آخر نسخة كاملة>
  *   npm run cutover -- parties rollback --by <اسم المنفّذ> --backup-log ... --confirm-backup ...
  * execute/rollback: لازم آخر نسخة كاملة ناجحة + اختبار استعادة ناجح بعدها في سجل النسخ، والمنفّذ يأكّد وقت النسخة بنفسه.
@@ -27,12 +28,13 @@ function backupGate(): void {
 
 async function main() {
   const [mod, action] = process.argv.slice(2).filter((a) => !a.startsWith('--') && !process.argv[process.argv.indexOf(a) - 1]?.startsWith('--'));
-  if (mod !== 'parties' || !['dry-run', 'execute', 'rollback'].includes(action)) throw new Error('الاستخدام: cutover parties dry-run|execute|rollback');
+  const spec = MODULES[mod];
+  if (!spec || !['dry-run', 'execute', 'rollback'].includes(action)) throw new Error(`الاستخدام: cutover <${Object.keys(MODULES).join('|')}> dry-run|execute|rollback`);
   const by = arg('by') ?? 'cli';
   if (action !== 'dry-run') backupGate();
   await ds.initialize();
   try {
-    const r = action === 'rollback' ? await partiesRollback(ds, by) : await partiesCutover(ds, by, action as 'dry-run' | 'execute');
+    const r = action === 'rollback' ? await rollbackModule(ds, spec, by) : await cutoverModule(ds, spec, by, action as 'dry-run' | 'execute');
     console.log(JSON.stringify(r, null, 2));
     console.log(action === 'dry-run' ? '✓ dry-run: كل السجلات اتنقلت واتطابقت — ومفيش أي حاجة اتحفظت (ROLLBACK)' : `✓ ${action} تم`);
   } finally { await ds.destroy(); }

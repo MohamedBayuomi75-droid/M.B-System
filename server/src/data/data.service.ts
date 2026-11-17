@@ -24,10 +24,20 @@ const AUDIT_BOOTSTRAP_LIMIT = 3000;
 const RELATIONAL_WRITERS: Record<string, { fn: string; table: string }> = {
   'ledger.suppliers': { fn: 'legacy_write_supplier', table: 'suppliers' },
   'clients.customers': { fn: 'legacy_write_customer', table: 'customers' },
+  'warehouses.locations': { fn: 'legacy_write_wh_location', table: 'wh_locations' },
+  'warehouses.items': { fn: 'legacy_write_wh_item', table: 'wh_items' },
+  'warehouses.movements': { fn: 'legacy_write_wh_movement', table: 'wh_movements' },
 };
 /** أكواد PostgreSQL لرفض قيد (تفرّد/CHECK/قيمة) ← تعارض صريح بدل 500 */
 /** مجموعات عليها قيود قاعدة بيانات بتتفحص بعد الكتابة (B-50: الرصيد السالب) — الرفض بيرجع تعارض صريح ومابيوقفش باقي الدفعة */
-const GUARDED_COLLECTIONS = new Set(['warehouses.movements']);
+const GUARDED_COLLECTIONS = new Set(['warehouses.movements', 'warehouses.items']);
+/** رسالة رفض القيد ← بادئة ثابتة للواجهة (web/sync-client.js) + إجراء التدقيق للمخازن */
+function constraintTag(collection: string, msg: string, code: string): { tag: string; audit: string | null } {
+  if (msg.startsWith('NEGATIVE_STOCK')) return { tag: 'negative_stock', audit: 'stock.issue_rejected' };
+  if (msg.startsWith('ITEM_HAS_MOVEMENTS')) return { tag: 'item_has_movements', audit: 'stock.item_delete_rejected' };
+  if (collection === 'warehouses.movements') return { tag: 'invalid_movement', audit: 'stock.movement_rejected' };
+  return { tag: code === '23505' ? 'duplicate' : 'invalid', audit: null };
+}
 const CONSTRAINT_CODES = new Set(['23505', '23514', '23502', '22023', '22P02', '22007', '22008', '22003']);
 
 interface RecordRow { collection: string; id: string; data: Json; rev: number; deleted_at: Date | null }
@@ -260,7 +270,7 @@ export class DataService {
   }
 
   /** الكتابة على الجدول العلائقي للمجموعة المنقولة. رفض قيد ← null (التعارض بيترجع للعميل) والمعاملة بتكمل */
-  private async writeRelational(qr: QueryRunner, p: RecordPlan & { kind: 'insert' | 'restore' | 'update' | 'delete' }): Promise<number | { error: string }> {
+  private async writeRelational(qr: QueryRunner, p: RecordPlan & { kind: 'insert' | 'restore' | 'update' | 'delete' }): Promise<number | { error: string; raw: string }> {
     const w = RELATIONAL_WRITERS[p.c.collection];
     await qr.query(`SAVEPOINT rel_write`);
     try {
@@ -273,9 +283,18 @@ export class DataService {
       const code = (e as { code?: string }).code ?? '';
       if (!CONSTRAINT_CODES.has(code)) throw e;
       await qr.query(`ROLLBACK TO SAVEPOINT rel_write`);
-      const msg = String((e as { constraint?: string }).constraint ?? (e as Error).message);
-      return { error: code === '23505' ? `duplicate:${msg}` : `invalid:${msg}` };
+      const raw = (e as Error).message;
+      const msg = String((e as { constraint?: string }).constraint && !/^(NEGATIVE_STOCK|ITEM_HAS_MOVEMENTS)/.test(raw) ? (e as { constraint?: string }).constraint : raw);
+      return { error: `${constraintTag(p.c.collection, raw, code).tag}:${msg}`, raw };
     }
+  }
+
+  /** B-50 §6: المحاولة المرفوضة على المخازن بتتسجّل في التدقيق (في نفس المعاملة اللي بتكمل) */
+  private async auditRejected(qr: QueryRunner, user: AuthUser, c: RecordChangeDto, p: RecordPlan, msg: string, code: string) {
+    const action = constraintTag(c.collection, msg, code).audit;
+    if (!action) return;
+    await qr.query(`INSERT INTO audit_log (user_id, username, action, entity, entity_id, details) VALUES ($1, $2, $3, $4, $5, $6::jsonb)`,
+      [user.id, user.username, action, c.collection, c.id, JSON.stringify({ op: c.op, reason: msg, attempted: c.op === 'delete' ? null : (p as { data?: Json }).data ?? null })]);
   }
 
   /** الحقول اللي اتغيّرت في السجل بعد baseRev (من changes) */
@@ -358,6 +377,7 @@ export class DataService {
     if (moved) {
       const r = await this.writeRelational(qr, p);
       if (typeof r !== 'number') {
+        await this.auditRejected(qr, user, c, p, r.raw, '23514');
         const row = 'row' in p ? p.row : null;
         const current = row && !row.deleted_at ? { rev: row.rev, data: stripHidden(row.data, hiddenFields(user, c.collection)) } : null;
         return { collection: c.collection, id: c.id, reason: 'constraint', fields: [r.error], current };
@@ -390,13 +410,10 @@ export class DataService {
         if (!guarded || code !== '23514') throw e;
         await qr.query(`ROLLBACK TO SAVEPOINT guarded_write`);
         const msg = (e as Error).message;
-        // B-50 §6: المحاولة المرفوضة بتتسجّل في التدقيق (في نفس المعاملة اللي بتكمل)
-        await qr.query(`INSERT INTO audit_log (user_id, username, action, entity, entity_id, details) VALUES ($1, $2, $3, $4, $5, $6::jsonb)`,
-          [user.id, user.username, msg.startsWith('NEGATIVE_STOCK') ? 'stock.issue_rejected' : 'stock.movement_rejected', c.collection, c.id,
-           JSON.stringify({ op: c.op, reason: msg, attempted: c.op === 'delete' ? null : (p as { data?: Json }).data ?? null })]);
+        await this.auditRejected(qr, user, c, p, msg, code);
         const row = 'row' in p ? (p as { row: RecordRow }).row : null;
         const current = row && !row.deleted_at ? { rev: row.rev, data: stripHidden(row.data, hiddenFields(user, c.collection)) } : null;
-        return { collection: c.collection, id: c.id, reason: 'constraint', fields: [`${msg.startsWith('NEGATIVE_STOCK') ? 'negative_stock' : 'invalid_movement'}:${msg}`], current };
+        return { collection: c.collection, id: c.id, reason: 'constraint', fields: [`${constraintTag(c.collection, msg, code).tag}:${msg}`], current };
       }
     }
     await qr.query(`INSERT INTO changes (collection, record_id, op, rev, user_id, fields, diff) VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb)`, [c.collection, c.id, op, rev, user.id, fields, JSON.stringify(diff)]);

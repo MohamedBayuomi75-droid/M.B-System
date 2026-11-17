@@ -269,6 +269,46 @@ async function login(page, username, password) {
     await T.ctx.close();
   }
 
+  console.log('[6e] 6.2-B: warehouses screen — items/balances, transfer blocked above availability, adjustment → approval → auto-post (test data)');
+  {
+    A.page.on('dialog', (d) => d.accept('سبب اختباري'));
+    await A.page.goto(srv.base + '/app/warehouses');
+    await A.page.waitForSelector('#whItems');
+    const loc = async (name) => (await api('POST', '/api/v1/warehouses/locations', { name }, adminTok)).body.id;
+    const L1 = await loc('مخزن واجهة 1'), L2 = await loc('مخزن واجهة 2');
+    await A.page.click('text=الأصناف');
+    await A.page.fill('#whItemForm input[name="iname"]', 'صنف واجهة');
+    await A.page.click('#whItemSave');
+    await A.page.waitForFunction(() => [...document.querySelectorAll('#whItems tr')].some((r) => r.textContent.includes('صنف واجهة')));
+    const ov = await api('GET', '/api/v1/warehouses', null, adminTok);
+    const it = ov.body.items.find((x) => x.name === 'صنف واجهة');
+    ok(/^ITM-\d{4}$/.test(it.code), 'item created from the new screen (server code)');
+    await api('POST', '/api/sync', { changes: [{ collection: 'warehouses.movements', id: 'ui-rcv', op: 'upsert', baseRev: 0, set: { id: 'ui-rcv', type: 'in', itemId: it.id, qty: 5, locationId: L1 } }] }, adminTok);
+    const tr = await api('POST', '/api/v1/warehouses/transfers', { itemId: it.id, fromLocationId: L1, toLocationId: L2, qty: '6' }, adminTok);
+    eq([tr.status, tr.body.code], [409, 'NEGATIVE_STOCK'], 'transfer above availability refused by the server (B-50)');
+    eq((await api('POST', '/api/v1/warehouses/transfers', { itemId: it.id, fromLocationId: L1, toLocationId: L2, qty: '2' }, adminTok)).status, 201, 'valid transfer');
+    await A.page.reload(); await A.page.waitForSelector(`#whItems tr[data-id="${it.id}"]`);
+    eq(await A.page.getAttribute(`#whItems tr[data-id="${it.id}"] td[data-total]`, 'data-total'), '5', 'total unchanged by a transfer');
+    // التسوية: مسار اختبار بمعتمد واحد (مستخدم تاني)
+    eq((await api('POST', '/api/v1/approvals/config/document-types', { code: 'stock-adjustment', name: 'تسوية مخزنية', module: 'warehouses.home' }, adminTok)).status, 201, 'test doc type');
+    const apr = await api('POST', '/api/users', { username: 'app_adj_approver', password: PW, role: 'viewer' }, adminTok);
+    eq((await api('POST', '/api/v1/approvals/config/workflows', { documentType: 'stock-adjustment', levels: [{ mode: 'ANY', approvers: [{ type: 'USER', ref: apr.body.id }] }] }, adminTok)).status, 201, 'test workflow');
+    const adj = await api('POST', '/api/v1/stock/adjustments', { kind: 'increase', itemId: it.id, locationId: L1, qty: '1.5', reason: 'تسوية من اختبار الواجهة' }, adminTok);
+    await A.page.reload(); await A.page.click('text=التسويات');
+    await A.page.waitForSelector(`#whAdjs tr[data-id="${adj.body.id}"][data-status="draft"]`);
+    await A.page.click(`#whAdjs tr[data-id="${adj.body.id}"] [data-act="submit"]`);
+    await A.page.waitForSelector(`#whAdjs tr[data-id="${adj.body.id}"][data-status="submitted"]`);
+    ok(true, 'submitted for approval from the screen');
+    const t2 = (await api('POST', '/api/auth/login', { username: 'app_adj_approver', password: PW })).body.accessToken;
+    const reqId = (await api('GET', `/api/v1/stock/adjustments/${adj.body.id}`, null, adminTok)).body.approvalRequestId;
+    const r = await fetch(srv.base + `/api/v1/approvals/requests/${reqId}/approve`, { method: 'POST', headers: { 'content-type': 'application/json', authorization: 'Bearer ' + t2, 'idempotency-key': 'app-e2e-adj-' + Date.now() }, body: '{}' });
+    eq(r.status, 200, 'approved by a different user');
+    await A.page.reload(); await A.page.click('text=التسويات');
+    await A.page.waitForSelector(`#whAdjs tr[data-id="${adj.body.id}"][data-status="posted"]`);
+    ok(true, 'auto-posted after the last approval');
+    eq((await api('GET', '/api/v1/warehouses', null, adminTok)).body.items.find((x) => x.id === it.id).total, '6.5', 'balance includes the posted adjustment only after posting');
+  }
+
   console.log('[7] logout ends the shared session; PWA service worker registers; no CSP violations');
   {
     const reg = await A.page.waitForFunction(() => navigator.serviceWorker.getRegistration('/app/').then((r) => !!r), null, { timeout: 45000 }).then(() => true).catch(() => false);
