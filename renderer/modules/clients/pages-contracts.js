@@ -238,7 +238,7 @@ function openContractModal(editKey){
         <label>تاريخ البداية<input class="input" id="ctStart" type="date" value="${escapeHtml(existing && existing.start || today)}"></label>
         <label>تاريخ النهاية<input class="input" id="ctEnd" type="date" value="${escapeHtml(existing && existing.end || '')}"></label>
         <label>تاريخ العقد<input class="input" id="ctDate" type="date" value="${escapeHtml(existing && existing.contractDate || today)}"></label>
-        <label>نسبة الاحتجاز %<input class="input" id="ctRet" type="number" step="0.1" value="${existing && existing.retentionPct != null ? existing.retentionPct : 5}"></label>
+        <label>نسبة الاحتجاز %<input class="input" id="ctRet" type="number" step="0.1" value="${escapeHtml(existing && existing.retentionPct != null ? existing.retentionPct : 5)}"></label>
         <label>المقايسة المرتبطة<select class="input" id="ctBoq"><option value="">—</option>${boqOpts(initialCid)}</select></label>
         <label>شروط الدفع<input class="input" id="ctPay" value="${escapeHtml(existing && existing.paymentTerms || 'حسب المستخلصات المعتمدة')}"></label>
         <label style="grid-column:1/-1;">أعمال حصر

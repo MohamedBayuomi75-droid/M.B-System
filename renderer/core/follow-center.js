@@ -172,7 +172,7 @@ function fcOpenDeptModal(kind){
   document.querySelectorAll('.fc-dept-sq').forEach(function(b){
     b.addEventListener('click', function(){
       const id = b.getAttribute('data-dept-id');
-      const fr = (typeof window !== 'undefined' && window[k.f]) || (function(){ try{ return eval(k.f); }catch(e){ return null; } })();
+      const fr = (typeof window !== 'undefined' && window[k.f]) || (typeof __hrFilters === 'function' ? __hrFilters(k.f) : null);
       if(fr){ enterEntityDeptBoard(fr, id); }
       closeModal();
       goToPage(k.page);

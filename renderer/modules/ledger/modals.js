@@ -698,8 +698,8 @@ function openAddEditInvoiceModal(editId, prefillSupplierId, asReturn){
           <div class="field"><label>رقم التسجيل الضريبي</label><input id="inv_taxid_display" value="${lgEscapeHtml(selectedSupplier?selectedSupplier.taxId||'':'')}" disabled style="opacity:.7;" /></div>
           <div class="field"><label>السجل التجاري</label><input id="inv_commreg_display" value="${lgEscapeHtml(selectedSupplier?selectedSupplier.commercialReg||'':'')}" disabled style="opacity:.7;" /></div>
           <div class="field"><label>رقم الفاتورة *</label><input id="inv_number" value="${lgEscapeHtml(editing?editing.invoiceNo:'')}" /></div>
-          <div class="field"><label>تاريخ التعامل</label><input type="date" id="inv_date" value="${editing?editing.date||'':''}" /></div>
-          <div class="field" id="inv_dueDateWrap" style="${isReturn?'display:none':''}"><label>تاريخ الاستحقاق</label><input type="date" id="inv_dueDate" value="${editing&&!isReturn?(editing.dueDate||''):''}" title="لو فاضي هيتحسب تلقائي = تاريخ الفاتورة + 30 يوم" /></div>
+          <div class="field"><label>تاريخ التعامل</label><input type="date" id="inv_date" value="${escapeHtml(editing?editing.date||'':'')}" /></div>
+          <div class="field" id="inv_dueDateWrap" style="${isReturn?'display:none':''}"><label>تاريخ الاستحقاق</label><input type="date" id="inv_dueDate" value="${escapeHtml(editing&&!isReturn?(editing.dueDate||''):'')}" title="لو فاضي هيتحسب تلقائي = تاريخ الفاتورة + 30 يوم" /></div>
         </div>
 
         <div class="form-grid cols5" style="margin-top:10px;">
@@ -723,7 +723,7 @@ function openAddEditInvoiceModal(editId, prefillSupplierId, asReturn){
           <div class="field"><label>القيمة الإجمالية للتعامل *</label><input type="text" inputmode="decimal" data-money="pos" dir="ltr" autocomplete="off" style="text-align:right;" id="inv_baseValue" value="${fmtInput(v.baseValue)}" placeholder="٠.٠٠" /></div>
           <div class="field"><label>ضريبة القيمة المضافة</label><input type="text" inputmode="decimal" data-money="pos" dir="ltr" autocomplete="off" style="text-align:right;" id="inv_vat" value="${fmtInput(v.vat)}" placeholder="٠.٠٠" /></div>
           <div class="field"><label>الدمغات</label><input type="text" inputmode="decimal" data-money="pos" dir="ltr" autocomplete="off" style="text-align:right;" id="inv_stampDuty" value="${fmtInput(v.stampDuty||'')}" placeholder="٠.٠٠" /></div>
-          <div class="field"><label>نسبة الخصم %</label><input type="number" step="any" id="inv_discountRate" value="${editing?editing.discountRate||'':''}" placeholder="اختياري" /></div>
+          <div class="field"><label>نسبة الخصم %</label><input type="number" step="any" id="inv_discountRate" value="${escapeHtml(editing?editing.discountRate||'':'')}" placeholder="اختياري" /></div>
           <div class="field"><label>المبلغ المخصوم</label><input type="text" inputmode="decimal" data-money="pos" dir="ltr" autocomplete="off" style="text-align:right;" id="inv_withheld" value="${fmtInput(v.withheld)}" placeholder="٠.٠٠" /></div>
         </div>
 

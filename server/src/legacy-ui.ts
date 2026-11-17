@@ -9,7 +9,7 @@ import * as path from 'node:path';
  *   /legacy/web/*         → web/ (web-session.js، sync-client.js، web-api.js، web-overrides.js)
  *   /legacy/vendor/*      → vendor/ (xlsx)
  *   /legacy/*             → renderer/ (نفس الملفات بالظبط — مفيش إعادة كتابة للواجهة)
- * المصدر: LEGACY_UI_ROOT (جذر المشروع). في Caddy (A9) ممكن يتخدم مباشرة من غير Node.
+ * المصدر: LEGACY_UI_ROOT (جذر المشروع). Nginx (المرحلة 2) بيوجّه كل الطلبات للسيرفر.
  */
 export function mountLegacyUi(app: INestApplication): string | null {
   const root = process.env.LEGACY_UI_ROOT || path.resolve(__dirname, '../..');

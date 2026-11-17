@@ -702,7 +702,7 @@ function migrateLegacyFields(){
   });
   DATA.projects = Array.from(projNames).sort((a,b)=>a.localeCompare(b,'ar')).map(name=>{
     const existing = (DATA.projects||[]).find(p=>p.name===name);
-    return existing || { id: 'proj_'+name.replace(/\s+/g,'_').slice(0,40)+'_'+Math.random().toString(36).slice(2,6), name };
+    return existing || { id: 'proj_'+name.replace(/[\s<>"'`&\\]+/g,'_').slice(0,40)+'_'+Math.random().toString(36).slice(2,6), name };
   });
   DATA.equipment.forEach(eq=>{
     if(!eq.status) eq.status = 'available';

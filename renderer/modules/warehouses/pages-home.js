@@ -209,8 +209,8 @@ function openWhItemModal(editId){
       <label>الاسم *<input class="input" id="whIName" value="${escapeHtml(it && it.name || '')}"></label>
       <label>الوحدة<input class="input" id="whIUnit" value="${escapeHtml(it && it.unit || 'قطعة')}"></label>
       <label>التصنيف<input class="input" id="whICat" value="${escapeHtml(it && it.category || '')}"></label>
-      <label>حد الطلب<input class="input" id="whIMin" type="number" step="0.001" value="${it && it.minQty != null ? it.minQty : ''}"></label>
-      <label>تكلفة<input class="input" id="whICost" type="number" step="0.01" value="${it ? (it.avgCost || it.lastCost || '') : ''}"></label>
+      <label>حد الطلب<input class="input" id="whIMin" type="number" step="0.001" value="${escapeHtml(it && it.minQty != null ? it.minQty : '')}"></label>
+      <label>تكلفة<input class="input" id="whICost" type="number" step="0.01" value="${escapeHtml(it ? (it.avgCost || it.lastCost || '') : '')}"></label>
       <label style="grid-column:1/-1;">ملاحظات<textarea class="input" id="whINotes" rows="2">${escapeHtml(it && it.notes || '')}</textarea></label>
     </div></div>
     <div class="modal-footer"><button class="btn btn-outline" onclick="closeModal()">إلغاء</button><button class="btn btn-primary" id="btnSaveWhItem">حفظ</button></div>

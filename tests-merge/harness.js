@@ -135,7 +135,7 @@ async function openWebApp(seed) {
     const unknown = await page.evaluate(() => WebSync.unknownKeys(DATA));
     if (unknown.length) errors.push('unknown DATA keys (not synced): ' + unknown.join(', '));
     const pending = await page.evaluate(() => WebSync._buildPlan(DATA).changes.length);
-    if (pending) { const sample = await page.evaluate(() => { const p = WebSync._buildPlan(DATA); return JSON.stringify(p.changes.slice(0, 4)).slice(0, 1500); }); throw new Error('seed upload incomplete: ' + pending + ' pending changes ' + sample + ' errors=' + JSON.stringify(errors.slice(0, 3))); }
+    if (pending) { const sample = await page.evaluate(() => { const p = WebSync._buildPlan(DATA); const by = {}; p.changes.forEach((c) => { by[c.collection] = (by[c.collection] || 0) + 1; }); const bad = p.changes.filter((c) => /[\s<>"'`&\\]/.test(c.id)).map((c) => c.collection + ' ' + String(c.id).slice(0, 60)); return JSON.stringify({ byCollection: by, badIds: bad.slice(0, 10) }) + ' ' + JSON.stringify(p.changes.slice(0, 2)).slice(0, 600); }); throw new Error('seed upload incomplete: ' + pending + ' pending changes ' + sample + ' errors=' + JSON.stringify(errors.slice(0, 3))); }
     await page.reload();
     await ready();
   }

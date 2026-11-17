@@ -255,7 +255,7 @@ function openClientInvoiceModal(editKey){
         <label>مستبعد<input class="input" id="ciExcl" type="number" step="0.01" value="${existing ? toInt(existing.excluded) : 0}"></label>
         <label>استقطاعات<input class="input" id="ciDed" type="number" step="0.01" value="${existing ? toInt(existing.deductions) : 0}"></label>
         <label>خصم دفعة مقدمة<input class="input" id="ciAdv" type="number" step="0.01" value="${existing ? toInt(existing.advanceDeduct) : 0}"></label>
-        <label>احتجاز %<input class="input" id="ciRet" type="number" step="0.1" value="${existing && existing.retentionPct != null ? existing.retentionPct : 5}"></label>
+        <label>احتجاز %<input class="input" id="ciRet" type="number" step="0.1" value="${escapeHtml(existing && existing.retentionPct != null ? existing.retentionPct : 5)}"></label>
         <label>ضريبة %<input class="input" id="ciTax" type="number" step="0.1" value="${existing ? toInt(existing.taxPct) : 0}"></label>
         <label>سداد مباشر (بدون تحصيل مسجّل)<input class="input" id="ciPaid" type="number" step="0.01" value="${existing ? (existing.paidManual != null && existing.paidManual !== '' ? existing.paidManual : Math.max(0, (Number(existing.paid) || 0) - clInvLinkedCollected(clCustomerById(existing.customerId) || {}, existing))) : 0}"><small style="color:var(--ink-soft);">${existing ? 'تحصيلات مربوطة: ' + fmtMoney(clInvLinkedCollected(clCustomerById(existing.customerId) || {}, existing)) + ' (تتحسب تلقائيًا)' : 'التحصيلات من صفحة الإيرادات بتتضاف تلقائيًا'}</small></label>
         <label>الحالة<select class="input" id="ciSt">${statuses.map(function(s){

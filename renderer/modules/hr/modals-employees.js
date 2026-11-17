@@ -19,7 +19,7 @@ function openEmployeeModal(editId){
         <label>نوع التوظيف<select class="input" id="empType">${(e?'':'<option value="" selected>— اختر —</option>')+selectOptions(EMPLOYMENT_TYPES, e?(e.employmentType||'full'):'__none__')}</select></label>
         ${typeof personHrFieldsHtml==='function'?personHrFieldsHtml('emp', e, { showSalary:true, showWage:false, showLicense:true }):''}
         <label>البريد الإلكتروني<input class="input" id="empEmail" type="email" value="${escapeHtml(e&&e.email||'')}"></label>
-        <label>رصيد الإجازة السنوية<input class="input" id="empLeaveBal" type="number" min="0" value="${e&&e.leaveBalance!=null?e.leaveBalance:(DATA.settings.defaultLeaveDays||21)}"></label>
+        <label>رصيد الإجازة السنوية<input class="input" id="empLeaveBal" type="number" min="0" value="${escapeHtml(e&&e.leaveBalance!=null?e.leaveBalance:(DATA.settings.defaultLeaveDays||21))}"></label>
         
       ${customFieldsFormHtml('employees', e)}
       <label>العنوان<input class="input" id="empAddress" value="${escapeHtml(e&&e.address||'')}"></label>

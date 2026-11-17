@@ -128,8 +128,8 @@ function renderStatementPage(){
           <input type="hidden" id="statementSupplier" value="${lgEscapeHtml(statementFilters.supplierId||'')}" />
         </div>
       </div>
-      <div class="field"><label>من تاريخ</label><input type="date" id="statementFrom" value="${statementFilters.from}"></div>
-      <div class="field"><label>إلى تاريخ</label><input type="date" id="statementTo" value="${statementFilters.to}"></div>
+      <div class="field"><label>من تاريخ</label><input type="date" id="statementFrom" value="${escapeHtml(statementFilters.from)}"></div>
+      <div class="field"><label>إلى تاريخ</label><input type="date" id="statementTo" value="${escapeHtml(statementFilters.to)}"></div>
       <button class="btn btn-gold" id="generateStatementBtn">عرض الكشف</button>
       ${s?'<button class="btn btn-outline" id="printStatementPageBtn">حفظ PDF (يفتح تلقائياً)</button>':''}
     </div>

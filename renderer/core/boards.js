@@ -156,7 +156,19 @@ const HR_HOME_BOARDS = [
   { page: 'leaves', icon: '🏖️', label: 'الإجازات', arr: 'leaves', unit: 'إجازة' },
   { page: 'performance', icon: '⭐', label: 'تقييم الأداء', arr: 'performanceReviews', unit: 'تقييم' }
 ];
-function __hrFilters(name){ try{ return eval(name); }catch(e){ return null; } }
+/* S-2 (المرحلة 2): بدل eval(name) — CSP بتمنع eval. كائنات الفلاتر متعرّفة بـ let على المستوى العام (مش على window) فلازم أسماء صريحة */
+function __hrFilters(name){
+  try{
+    switch(name){
+      case 'employeeFilters':   return typeof employeeFilters   !== 'undefined' ? employeeFilters   : null;
+      case 'supervisorFilters': return typeof supervisorFilters !== 'undefined' ? supervisorFilters : null;
+      case 'workerFilters':     return typeof workerFilters     !== 'undefined' ? workerFilters     : null;
+      case 'driverFilters':     return typeof driverFilters     !== 'undefined' ? driverFilters     : null;
+      case 'equipmentFilters':  return typeof equipmentFilters  !== 'undefined' ? equipmentFilters  : null;
+      default: return (typeof window !== 'undefined' && window[name]) || null;
+    }
+  }catch(e){ return null; }
+}
 function renderHrHomePage(){
   const cards = HR_HOME_BOARDS.map(function(b){
     const list = DATA[b.arr] || [];

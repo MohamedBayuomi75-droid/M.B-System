@@ -1,0 +1,1289 @@
+{
+ "employees": {
+  "id": {
+   "type": "string"
+  },
+  "name": {
+   "type": "string"
+  },
+  "code": {
+   "type": "string"
+  },
+  "salary": {
+   "type": "number"
+  },
+  "email": {
+   "type": "string"
+  },
+  "status": {
+   "type": "string",
+   "enums": [
+    "resigned",
+    "active",
+    "on_leave",
+    "terminated"
+   ]
+  },
+  "employmentType": {
+   "type": "string"
+  },
+  "leaveBalance": {
+   "type": "number"
+  },
+  "attachments": {
+   "type": "array"
+  },
+  "notes": {
+   "type": "string"
+  },
+  "nationalId": {
+   "type": "string"
+  },
+  "idCardExpiry": {
+   "type": "string"
+  },
+  "idCardStatus": {
+   "type": "string"
+  },
+  "licenseExpiry": {
+   "type": "string"
+  },
+  "licenseStatus": {
+   "type": "string"
+  },
+  "licenseGrade": {
+   "type": "string"
+  },
+  "hireDate": {
+   "type": "string"
+  },
+  "contractType": {
+   "type": "string"
+  },
+  "insuranceStatus": {
+   "type": "string"
+  },
+  "insuranceNumber": {
+   "type": "string"
+  },
+  "phone": {
+   "type": "string"
+  },
+  "departmentId": {
+   "type": "string"
+  },
+  "position": {
+   "type": "string"
+  },
+  "address": {
+   "type": "string"
+  },
+  "contractStatus": {
+   "type": "string"
+  },
+  "project": {
+   "type": "string"
+  },
+  "categoryId": {
+   "type": "string"
+  },
+  "custom": {
+   "type": "object"
+  },
+  "extraFields": {
+   "type": "array"
+  },
+  "legacyDepartmentId": {
+   "type": "string"
+  },
+  "leaveAuto": {
+   "type": "boolean"
+  },
+  "resignedAt": {
+   "type": "string"
+  },
+  "archiveGroup": {
+   "type": "string"
+  },
+  "previousDepartmentId": {
+   "type": "string"
+  }
+ },
+ "workers": {
+  "id": {
+   "type": "string"
+  },
+  "name": {
+   "type": "string"
+  },
+  "code": {
+   "type": "string"
+  },
+  "skill": {
+   "type": "string"
+  },
+  "dailyWage": {
+   "type": "number"
+  },
+  "status": {
+   "type": "string",
+   "enums": [
+    "active",
+    "resigned"
+   ]
+  },
+  "type": {
+   "type": "string",
+   "enums": [
+    "temporary",
+    "daily",
+    "company"
+   ]
+  },
+  "attachments": {
+   "type": "array"
+  },
+  "notes": {
+   "type": "string"
+  },
+  "nationalId": {
+   "type": "string"
+  },
+  "idCardExpiry": {
+   "type": "string"
+  },
+  "idCardStatus": {
+   "type": "string"
+  },
+  "licenseExpiry": {
+   "type": "string"
+  },
+  "licenseStatus": {
+   "type": "string"
+  },
+  "licenseGrade": {
+   "type": "string"
+  },
+  "hireDate": {
+   "type": "string"
+  },
+  "contractType": {
+   "type": "string"
+  },
+  "insuranceStatus": {
+   "type": "string"
+  },
+  "insuranceNumber": {
+   "type": "string"
+  },
+  "phone": {
+   "type": "string"
+  },
+  "departmentId": {
+   "type": "string"
+  },
+  "position": {
+   "type": "string"
+  },
+  "address": {
+   "type": "string"
+  },
+  "contractStatus": {
+   "type": "string"
+  },
+  "project": {
+   "type": "string"
+  },
+  "categoryId": {
+   "type": "string"
+  },
+  "supervisorId": {
+   "type": "string"
+  },
+  "custom": {
+   "type": "object"
+  },
+  "legacyDepartmentId": {
+   "type": "string"
+  },
+  "extraFields": {
+   "type": "array"
+  },
+  "workerType": {
+   "type": "string"
+  },
+  "salary": {
+   "type": "number"
+  },
+  "basicSalary": {
+   "type": "number"
+  },
+  "dismissedNotes": {
+   "type": "array"
+  },
+  "resignedAt": {
+   "type": "string"
+  },
+  "projectSince": {
+   "type": "string"
+  },
+  "archiveGroup": {
+   "type": "string"
+  },
+  "previousDepartmentId": {
+   "type": "string"
+  }
+ },
+ "supervisors": {
+  "code": {
+   "type": "string"
+  },
+  "name": {
+   "type": "string"
+  },
+  "departmentId": {
+   "type": "string"
+  },
+  "categoryId": {
+   "type": "string"
+  },
+  "status": {
+   "type": "string",
+   "enums": [
+    "active"
+   ]
+  },
+  "address": {
+   "type": "string"
+  },
+  "notes": {
+   "type": "string"
+  },
+  "extraFields": {
+   "type": "array"
+  },
+  "attachments": {
+   "type": "array"
+  },
+  "nationalId": {
+   "type": "string"
+  },
+  "idCardExpiry": {
+   "type": "string"
+  },
+  "licenseExpiry": {
+   "type": "string"
+  },
+  "hireDate": {
+   "type": "string"
+  },
+  "contractType": {
+   "type": "string"
+  },
+  "contractStatus": {
+   "type": "string"
+  },
+  "insuranceNumber": {
+   "type": "string"
+  },
+  "insuranceStatus": {
+   "type": "string"
+  },
+  "phone": {
+   "type": "string"
+  },
+  "idCardStatus": {
+   "type": "string"
+  },
+  "licenseStatus": {
+   "type": "string"
+  },
+  "position": {
+   "type": "string"
+  },
+  "skill": {
+   "type": "string"
+  },
+  "id": {
+   "type": "string"
+  },
+  "dailyWage": {
+   "type": "number"
+  },
+  "custom": {
+   "type": "object"
+  },
+  "legacyDepartmentId": {
+   "type": "string"
+  },
+  "resignedAt": {
+   "type": "string"
+  },
+  "projectSince": {
+   "type": "string"
+  }
+ },
+ "equipment": {
+  "id": {
+   "type": "string"
+  },
+  "name": {
+   "type": "string"
+  },
+  "code": {
+   "type": "string"
+  },
+  "typeLabel": {
+   "type": "string"
+  },
+  "type": {
+   "type": "string",
+   "enums": [
+    "other"
+   ]
+  },
+  "status": {
+   "type": "string",
+   "enums": [
+    "working"
+   ]
+  },
+  "vehicleNumber": {
+   "type": "string"
+  },
+  "plate": {
+   "type": "string"
+  },
+  "color": {
+   "type": "string"
+  },
+  "motorNumber": {
+   "type": "string"
+  },
+  "serial": {
+   "type": "string"
+  },
+  "chassisNumber": {
+   "type": "string"
+  },
+  "insuranceNumber": {
+   "type": "string"
+  },
+  "insuranceStatus": {
+   "type": "string"
+  },
+  "model": {
+   "type": "string"
+  },
+  "brand": {
+   "type": "string"
+  },
+  "inspectionDate": {
+   "type": "string"
+  },
+  "licenseIssueDate": {
+   "type": "string"
+  },
+  "vehicleLicenseExpiry": {
+   "type": "string"
+  },
+  "vehicleLicenseStatus": {
+   "type": "string"
+  },
+  "licenseCategory": {
+   "type": "string"
+  },
+  "ownership": {
+   "type": "string"
+  },
+  "driverName": {
+   "type": "string"
+  },
+  "driverLicenseExpiry": {
+   "type": "string"
+  },
+  "driverLicenseStatus": {
+   "type": "string"
+  },
+  "project": {
+   "type": "string"
+  },
+  "notes": {
+   "type": "string"
+  },
+  "categoryId": {
+   "type": "string"
+  },
+  "departmentId": {
+   "type": "string"
+  },
+  "attachments": {
+   "type": "array"
+  },
+  "dailyCost": {
+   "type": "number"
+  },
+  "hourlyCost": {
+   "type": "number"
+  },
+  "custom": {
+   "type": "object"
+  },
+  "fuelPrice": {
+   "type": "number"
+  },
+  "totalHours": {
+   "type": "number"
+  },
+  "supervisorId": {
+   "type": "string"
+  },
+  "location": {
+   "type": "string"
+  },
+  "rentalDaily": {
+   "type": "number"
+  },
+  "purchaseDate": {
+   "type": "string"
+  },
+  "purchasePrice": {
+   "type": "number"
+  },
+  "lastMaintenance": {
+   "type": "string"
+  },
+  "nextMaintenance": {
+   "type": "string"
+  },
+  "extraFields": {
+   "type": "array"
+  },
+  "legacyDepartmentId": {
+   "type": "string"
+  },
+  "licenseExpiry": {
+   "type": "string"
+  },
+  "licenseStatus": {
+   "type": "string"
+  },
+  "projectSince": {
+   "type": "string"
+  }
+ },
+ "departments": {
+  "id": {
+   "type": "string"
+  },
+  "name": {
+   "type": "string"
+  },
+  "kind": {
+   "type": "string",
+   "enums": [
+    "workers",
+    "equipment",
+    "employees",
+    "drivers"
+   ]
+  },
+  "manager": {
+   "type": "string"
+  },
+  "notes": {
+   "type": "string"
+  },
+  "custom": {
+   "type": "object"
+  },
+  "system": {
+   "type": "boolean"
+  },
+  "locked": {
+   "type": "boolean"
+  },
+  "core": {
+   "type": "boolean"
+  },
+  "dailiesName": {
+   "type": "string"
+  }
+ },
+ "projects": {
+  "code": {
+   "type": "string"
+  },
+  "name": {
+   "type": "string"
+  },
+  "budget": {
+   "type": "number"
+  },
+  "status": {
+   "type": "string",
+   "enums": [
+    "active"
+   ]
+  },
+  "supervisorId": {
+   "type": "string"
+  },
+  "notes": {
+   "type": "string"
+  },
+  "extraFields": {
+   "type": "array"
+  },
+  "id": {
+   "type": "string"
+  },
+  "stepMeta": {
+   "type": "object"
+  },
+  "completedSteps": {
+   "type": "array"
+  },
+  "stepFiles": {
+   "type": "object"
+  },
+  "pathHistory": {
+   "type": "array"
+  },
+  "workflowSnapshot": {
+   "type": "object"
+  },
+  "stageKey": {
+   "type": "string"
+  },
+  "stepKey": {
+   "type": "string"
+  },
+  "tenderStance": {
+   "type": "string"
+  },
+  "rejectReason": {
+   "type": "string"
+  },
+  "statusBeforeReject": {
+   "type": "string"
+  }
+ },
+ "equipmentTypes": {
+  "id": {
+   "type": "string"
+  },
+  "name": {
+   "type": "string"
+  }
+ },
+ "workerAttendance": {
+  "personType": {
+   "type": "string",
+   "enums": [
+    "worker",
+    "supervisor"
+   ]
+  },
+  "personId": {
+   "type": "string"
+  },
+  "date": {
+   "type": "string"
+  },
+  "status": {
+   "type": "string",
+   "enums": [
+    "present"
+   ]
+  },
+  "days": {
+   "type": "number"
+  },
+  "dayWage": {
+   "type": "number"
+  },
+  "deduction": {
+   "type": "number"
+  },
+  "project": {
+   "type": "string"
+  },
+  "notes": {
+   "type": "string"
+  },
+  "workerId": {
+   "type": "string"
+  },
+  "supervisorId": {
+   "type": "string"
+  },
+  "id": {
+   "type": "string"
+  },
+  "personKind": {
+   "type": "string",
+   "enums": [
+    "worker",
+    "supervisor"
+   ]
+  },
+  "projectId": {
+   "type": "string"
+  },
+  "site": {
+   "type": "string"
+  }
+ },
+ "leaves": {
+  "id": {
+   "type": "string"
+  },
+  "personKind": {
+   "type": "string",
+   "enums": [
+    "employee"
+   ]
+  },
+  "personId": {
+   "type": "string"
+  },
+  "employeeId": {
+   "type": "string"
+  },
+  "type": {
+   "type": "string",
+   "enums": [
+    "annual"
+   ]
+  },
+  "from": {
+   "type": "string"
+  },
+  "to": {
+   "type": "string"
+  },
+  "days": {
+   "type": "number"
+  },
+  "reason": {
+   "type": "string"
+  },
+  "status": {
+   "type": "string",
+   "enums": [
+    "approved"
+   ]
+  }
+ },
+ "equipmentDaily": {
+  "equipmentId": {
+   "type": "string"
+  },
+  "date": {
+   "type": "string"
+  },
+  "project": {
+   "type": "string"
+  },
+  "kind": {
+   "type": "string",
+   "enums": [
+    "work"
+   ]
+  },
+  "days": {
+   "type": "number"
+  },
+  "dailyCost": {
+   "type": "number"
+  },
+  "hours": {
+   "type": "number"
+  },
+  "fuelLiters": {
+   "type": "number"
+  },
+  "hourlyCost": {
+   "type": "number"
+  },
+  "fuelPrice": {
+   "type": "number"
+  },
+  "extraCost": {
+   "type": "number"
+  },
+  "productivity": {
+   "type": "string"
+  },
+  "notes": {
+   "type": "string"
+  },
+  "id": {
+   "type": "string"
+  }
+ },
+ "drivers": {
+  "id": {
+   "type": "string"
+  },
+  "name": {
+   "type": "string"
+  },
+  "code": {
+   "type": "string"
+  },
+  "dailyWage": {
+   "type": "number"
+  },
+  "status": {
+   "type": "string",
+   "enums": [
+    "active",
+    "resigned",
+    "left"
+   ]
+  },
+  "attachments": {
+   "type": "array"
+  },
+  "notes": {
+   "type": "string"
+  },
+  "nationalId": {
+   "type": "string"
+  },
+  "idCardExpiry": {
+   "type": "string"
+  },
+  "idCardStatus": {
+   "type": "string"
+  },
+  "licenseExpiry": {
+   "type": "string"
+  },
+  "licenseStatus": {
+   "type": "string"
+  },
+  "licenseGrade": {
+   "type": "string"
+  },
+  "hireDate": {
+   "type": "string"
+  },
+  "contractType": {
+   "type": "string"
+  },
+  "insuranceStatus": {
+   "type": "string"
+  },
+  "insuranceNumber": {
+   "type": "string"
+  },
+  "phone": {
+   "type": "string"
+  },
+  "departmentId": {
+   "type": "string"
+  },
+  "position": {
+   "type": "string"
+  },
+  "address": {
+   "type": "string"
+  },
+  "contractStatus": {
+   "type": "string"
+  },
+  "project": {
+   "type": "string"
+  },
+  "categoryId": {
+   "type": "string"
+  },
+  "extraFields": {
+   "type": "array"
+  },
+  "legacyDepartmentId": {
+   "type": "string"
+  },
+  "resignedAt": {
+   "type": "string"
+  },
+  "birthDate": {
+   "type": "string"
+  },
+  "salary": {
+   "type": "number"
+  },
+  "previousDepartmentId": {
+   "type": "string"
+  },
+  "archiveGroup": {
+   "type": "string"
+  }
+ },
+ "costs": {
+  "id": {
+   "type": "string"
+  },
+  "personKind": {
+   "type": "string",
+   "enums": [
+    "supervisor"
+   ]
+  },
+  "personId": {
+   "type": "string"
+  },
+  "date": {
+   "type": "string"
+  },
+  "amount": {
+   "type": "number"
+  },
+  "lines": {
+   "type": "array"
+  },
+  "item": {
+   "type": "string"
+  },
+  "project": {
+   "type": "string"
+  },
+  "departmentId": {
+   "type": "string"
+  },
+  "section": {
+   "type": "string"
+  },
+  "notes": {
+   "type": "string"
+  },
+  "createdAt": {
+   "type": "string"
+  },
+  "updatedAt": {
+   "type": "string"
+  },
+  "extraFields": {
+   "type": "array"
+  },
+  "projectId": {
+   "type": "string"
+  }
+ },
+ "ledger.suppliers": {
+  "id": {
+   "type": "string"
+  },
+  "name": {
+   "type": "string"
+  },
+  "taxId": {
+   "type": "string"
+  },
+  "businessNature": {
+   "type": "string"
+  },
+  "phone": {
+   "type": "string"
+  },
+  "email": {
+   "type": "string"
+  },
+  "address": {
+   "type": "string"
+  },
+  "bankAccount": {
+   "type": "string"
+  },
+  "iban": {
+   "type": "string"
+  },
+  "notes": {
+   "type": "string"
+  },
+  "openingBalance": {
+   "type": "number"
+  },
+  "openingBalanceDate": {
+   "type": "string"
+  },
+  "commercialReg": {
+   "type": "string"
+  },
+  "attachments": {
+   "type": "array"
+  },
+  "_lastEditRole": {
+   "type": "string"
+  },
+  "_lastEditBy": {
+   "type": "object"
+  },
+  "extraFields": {
+   "type": "array"
+  },
+  "__justCreated": {
+   "type": "boolean"
+  }
+ },
+ "ledger.invoices": {
+  "id": {
+   "type": "string"
+  },
+  "supplierId": {
+   "type": "string"
+  },
+  "invoiceNo": {
+   "type": "string"
+  },
+  "date": {
+   "type": "string"
+  },
+  "category": {
+   "type": "string"
+  },
+  "project": {
+   "type": "string"
+  },
+  "description": {
+   "type": "string"
+  },
+  "internalCode": {
+   "type": "string"
+  },
+  "supplierItemCode": {
+   "type": "string"
+  },
+  "baseValue": {
+   "type": "number"
+  },
+  "vat": {
+   "type": "number"
+  },
+  "stampDuty": {
+   "type": "number"
+  },
+  "discountRate": {
+   "type": "string"
+  },
+  "withheld": {
+   "type": "number"
+  },
+  "totalInvoice": {
+   "type": "number"
+  },
+  "netInvoice": {
+   "type": "number"
+  },
+  "nature": {
+   "type": "string"
+  },
+  "discountType": {
+   "type": "string"
+  },
+  "isReturn": {
+   "type": "boolean"
+  },
+  "attachments": {
+   "type": "array"
+  },
+  "unitPrice": {
+   "type": "string"
+  },
+  "_lastEditRole": {
+   "type": "string"
+  },
+  "_lastEditBy": {
+   "type": "object"
+  },
+  "dueDate": {
+   "type": "string"
+  },
+  "invoiceLink": {
+   "type": "string"
+  },
+  "notes": {
+   "type": "string"
+  },
+  "itemDescription": {
+   "type": "string"
+  },
+  "quantity": {
+   "type": "string"
+  },
+  "withheldStatus": {
+   "type": "string"
+  },
+  "linkedInvoiceId": {
+   "type": "string"
+  },
+  "cancelled": {
+   "type": "boolean"
+  },
+  "postReturnWht": {
+   "type": "boolean"
+  },
+  "linkedReturnIds": {
+   "type": "array"
+  }
+ },
+ "ledger.payments": {
+  "id": {
+   "type": "string"
+  },
+  "paymentNo": {
+   "type": "number"
+  },
+  "supplierId": {
+   "type": "string"
+  },
+  "date": {
+   "type": "string"
+  },
+  "amount": {
+   "type": "number"
+  },
+  "method": {
+   "type": "string"
+  },
+  "invoiceId": {
+   "type": "string"
+  },
+  "transferRef": {
+   "type": "string"
+  },
+  "notes": {
+   "type": "string"
+  },
+  "extraFields": {
+   "type": "object"
+  },
+  "attachments": {
+   "type": "array"
+  },
+  "_lastEditRole": {
+   "type": "string"
+  },
+  "_lastEditBy": {
+   "type": "object"
+  },
+  "direction": {
+   "type": "string",
+   "enums": [
+    "pay"
+   ]
+  },
+  "batchId": {
+   "type": "string"
+  }
+ },
+ "ledger.customLinkedItems": {
+  "id": {
+   "type": "string"
+  },
+  "desc": {
+   "type": "string"
+  },
+  "supplierCode": {
+   "type": "string"
+  },
+  "internalCode": {
+   "type": "string"
+  },
+  "itemDescription": {
+   "type": "string"
+  },
+  "unitPrice": {
+   "type": "string"
+  },
+  "supplierId": {
+   "type": "string"
+  }
+ },
+ "clients.customers": {
+  "id": {
+   "type": "string"
+  },
+  "name": {
+   "type": "string"
+  },
+  "code": {
+   "type": "string"
+  },
+  "phone": {
+   "type": "string"
+  },
+  "email": {
+   "type": "string"
+  },
+  "address": {
+   "type": "string"
+  },
+  "city": {
+   "type": "string"
+  },
+  "department": {
+   "type": "string"
+  },
+  "taxId": {
+   "type": "string"
+  },
+  "category": {
+   "type": "string"
+  },
+  "status": {
+   "type": "string",
+   "enums": [
+    "active"
+   ]
+  },
+  "openingBalance": {
+   "type": "number"
+  },
+  "notes": {
+   "type": "string"
+  },
+  "contacts": {
+   "type": "array"
+  },
+  "projects": {
+   "type": "array"
+  },
+  "contracts": {
+   "type": "array"
+  },
+  "invoices": {
+   "type": "array"
+  },
+  "collections": {
+   "type": "array"
+  },
+  "workSurveys": {
+   "type": "array"
+  },
+  "boqs": {
+   "type": "array"
+  },
+  "guarantees": {
+   "type": "array"
+  },
+  "ledger": {
+   "type": "array"
+  },
+  "comms": {
+   "type": "array"
+  },
+  "opportunities": {
+   "type": "array"
+  },
+  "docs": {
+   "type": "array"
+  },
+  "extraFields": {
+   "type": "array"
+  },
+  "createdAt": {
+   "type": "string"
+  },
+  "updatedAt": {
+   "type": "string"
+  }
+ },
+ "warehouses.locations": {
+  "id": {
+   "type": "string"
+  },
+  "name": {
+   "type": "string"
+  },
+  "notes": {
+   "type": "string"
+  }
+ },
+ "archiveTrash": {
+  "id": {
+   "type": "string"
+  },
+  "kind": {
+   "type": "string",
+   "enums": [
+    "worker",
+    "employee",
+    "driver"
+   ]
+  },
+  "personId": {
+   "type": "string"
+  },
+  "name": {
+   "type": "string"
+  },
+  "code": {
+   "type": "string"
+  },
+  "sectionName": {
+   "type": "string"
+  },
+  "attachments": {
+   "type": "array"
+  },
+  "entity": {
+   "type": "object"
+  },
+  "personDocuments": {
+   "type": "array"
+  },
+  "deletedAt": {
+   "type": "string"
+  },
+  "entityDeleted": {
+   "type": "boolean"
+  }
+ },
+ "resignedArchive": {
+  "id": {
+   "type": "string"
+  },
+  "kind": {
+   "type": "string",
+   "enums": [
+    "employee",
+    "driver",
+    "worker"
+   ]
+  },
+  "personId": {
+   "type": "string"
+  },
+  "name": {
+   "type": "string"
+  },
+  "code": {
+   "type": "string"
+  },
+  "sectionName": {
+   "type": "string"
+  },
+  "archiveGroup": {
+   "type": "string"
+  },
+  "attachments": {
+   "type": "array"
+  },
+  "entity": {
+   "type": "object"
+  },
+  "previousDepartmentId": {
+   "type": "string"
+  },
+  "resignedAt": {
+   "type": "string"
+  },
+  "movedAt": {
+   "type": "string"
+  }
+ }
+}

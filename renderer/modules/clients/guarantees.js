@@ -255,7 +255,7 @@ function openGuaranteeModal(editKey, preset){
         <label>رقم الخطاب<input class="input" id="garLetter" value="${escapeHtml(existing && existing.letterNo || '')}"></label>
         <label>البنك / الجهة المصدرة<input class="input" id="garIssuer" value="${escapeHtml(existing && existing.issuer || '')}"></label>
         <label>المبلغ (ج.م) *<input class="input" id="garAmount" type="number" step="0.01" value="${existing ? Number(existing.amount) || '' : ''}"></label>
-        <label>النسبة من العقد %<input class="input" id="garPct" type="number" step="0.1" value="${existing && existing.pct != null ? existing.pct : ''}"></label>
+        <label>النسبة من العقد %<input class="input" id="garPct" type="number" step="0.1" value="${escapeHtml(existing && existing.pct != null ? existing.pct : '')}"></label>
         <label>تاريخ الإصدار<input class="input" id="garIssue" type="date" value="${escapeHtml(existing && existing.issueDate || today)}"></label>
         <label>تاريخ الانتهاء<input class="input" id="garExpiry" type="date" value="${escapeHtml(existing && existing.expiryDate || '')}"></label>
         <label style="grid-column:1/-1;">ملاحظات<textarea class="input" id="garNotes" rows="2">${escapeHtml(existing && existing.notes || '')}</textarea></label>

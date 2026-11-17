@@ -565,12 +565,12 @@ function renderPerformancePage(){
           ${rows.length? rows.map(r=>`<tr>
             <td>${fmtDate(r.date)}</td>
             <td><strong>${escapeHtml(personLabel(r))}</strong></td>
-            <td>${r.commitment||0}</td>
-            <td>${r.attendanceScore||0}</td>
-            <td>${r.productivity||0}</td>
-            <td>${r.quality||0}</td>
-            <td>${r.managerScore||0}</td>
-            <td style="color:var(--debt)">${r.violations||0}</td>
+            <td>${escapeHtml(r.commitment||0)}</td>
+            <td>${escapeHtml(r.attendanceScore||0)}</td>
+            <td>${escapeHtml(r.productivity||0)}</td>
+            <td>${escapeHtml(r.quality||0)}</td>
+            <td>${escapeHtml(r.managerScore||0)}</td>
+            <td style="color:var(--debt)">${escapeHtml(r.violations||0)}</td>
             <td><strong>${score(r)}</strong></td>
             <td><button class="btn btn-outline btn-sm btn-del-perf" data-id="${r.id}" ${readOnlyMode?'disabled':''}>حذف</button></td>
           </tr>`).join('') : '<tr><td colspan="10" style="text-align:center;color:var(--ink-soft);padding:16px;">لا تقييمات في هذا القسم</td></tr>'}

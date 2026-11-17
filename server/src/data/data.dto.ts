@@ -3,9 +3,13 @@ import { Type } from 'class-transformer';
 import { ArrayMaxSize, IsArray, IsIn, IsInt, IsObject, IsOptional, IsString, Length, Matches, Max, Min, ValidateNested } from 'class-validator';
 import { MeDto } from '../users/users.dto';
 
-/** معرّف سجل: أي نص بدون مسافات/محارف تحكم (معرّفات الديسكتوب زي «emp_lx2k9a» أو «CON-0001») */
-const ID_RE = /^[^\s\u0000-\u001f]{1,200}$/;
-const FIELD_RE = /^(?!__proto__$|constructor$|prototype$)[^\u0000-\u001f]{1,200}$/;
+/**
+ * معرّف سجل: أي نص بدون مسافات/محارف تحكم (معرّفات الديسكتوب زي «emp_lx2k9a» أو «CON-0001» أو بحروف عربية).
+ * S-1 (المرحلة 2): ممنوع كمان محارف HTML/JS الخاصة (< > " ' ` & \) — الواجهة القديمة بتطبع المعرّف جوه
+ * data-id="..." وonclick من غير ترميز، فده خط الدفاع على السيرفر. البيانات الحقيقية مافيهاش أي معرّف بالمحارف دي.
+ */
+export const ID_RE = /^[^\s\u0000-\u001f<>"'`&\\]{1,200}$/;
+export const FIELD_RE = /^(?!__proto__$|constructor$|prototype$)[^\u0000-\u001f<>"'`&\\]{1,200}$/;
 
 export class RecordChangeDto {
   @ApiProperty({ example: 'employees', description: 'مسار الـ collection زي ما هو في DATA (employees، ledger.invoices، ...)' })

@@ -88,7 +88,7 @@ function parseLocalDate(d){
 /** عرض تاريخ بالتوقيت المحلي: 25/9/2026 */
 function fmtDate(d){
   const dt = parseLocalDate(d);
-  if(!dt) return d ? String(d) : '—';
+  if(!dt) return d ? escapeHtml(String(d)) : '—'; // تاريخ غير صالح بيتطبع جوه HTML — يترمّز (S-1)
   return dt.getDate() + '/' + (dt.getMonth() + 1) + '/' + dt.getFullYear();
 }
 /** تاريخ+وقت بتوقيت القاهرة: 25/9/2026 14:30 */
@@ -96,7 +96,7 @@ function fmtDateTime(d){
   if(d == null || d === '') return '—';
   try{
     const dt = (d instanceof Date) ? d : new Date(d);
-    if(isNaN(dt.getTime())) return String(d);
+    if(isNaN(dt.getTime())) return escapeHtml(String(d));
     const parts = new Intl.DateTimeFormat('en-GB', {
       timeZone: 'Africa/Cairo',
       year: 'numeric', month: 'numeric', day: 'numeric',
@@ -106,7 +106,7 @@ function fmtDateTime(d){
     return Number(g('day')) + '/' + Number(g('month')) + '/' + g('year') + ' ' + g('hour') + ':' + g('minute');
   }catch(_e){
     const dt = (d instanceof Date) ? d : new Date(d);
-    if(isNaN(dt.getTime())) return String(d);
+    if(isNaN(dt.getTime())) return escapeHtml(String(d));
     const datePart = dt.getDate() + '/' + (dt.getMonth() + 1) + '/' + dt.getFullYear();
     const hh = String(dt.getHours()).padStart(2,'0');
     const mm = String(dt.getMinutes()).padStart(2,'0');
@@ -531,7 +531,7 @@ function registerFormEntity(def){
 }
 (function(){
   const R = (group,key,label,open,detect)=>registerFormEntity({group,key,label,open,detect});
-  const call = n=>function(){ return typeof window[n]==='function' ? window[n].apply(null, arguments) : (typeof eval('typeof '+n)==='string' && eval('typeof '+n)==='function' ? eval(n).apply(null, arguments) : null); };
+  const call = n=>function(){ return typeof window[n]==='function' ? window[n].apply(null, arguments) : null; }; // S-2: من غير eval — كل دوال open* متعرّفة بـ function (موجودة على window)
   R('hr','employees','موظف',call('openEmployeeModal')); R('hr','workers','عامل',call('openWorkerModal')); R('hr','workersTemp','عامل مؤقت',()=>call('openWorkerModal')(null,{defaultType:'temporary'}),'#wrkWorkerType[value="temporary"]'); R('hr','supervisors','مشرف',call('openSupervisorModal')); R('hr','drivers','سائق',call('openDriverModal'));
   R('hr','leaves','إجازة',call('openLeaveModal')); R('hr','performance','تقييم',call('openPerfModal'));
   R('att','attendance','حضور موظف',call('openAttendanceModal')); R('att','workerAttendance','تسجيل يومية',call('openWorkerAttModal')); R('att','equipmentDaily','يومية معدة',call('openEquipmentDailyModal'));

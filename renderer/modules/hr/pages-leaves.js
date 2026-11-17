@@ -116,7 +116,7 @@ function renderLeavesPage(){
               <td>${escapeHtml((typeof labelOf==='function'?labelOf(LEAVE_TYPES,l.type):l.type)||l.type||'')}</td>
               <td>${fmtDate(l.from)}</td>
               <td>${fmtDate(l.to)}</td>
-              <td>${l.days||'—'}</td>
+              <td>${escapeHtml(l.days||'—')}</td>
               <td><span style="color:${stColor};font-weight:700;">${escapeHtml(stLab)}</span></td>
               <td>${escapeHtml(l.reason||'')}</td>
               <td style="white-space:nowrap;">
@@ -195,7 +195,7 @@ function openLeaveModal(editId){
           <select class="input" id="lvType">${selectOptions(LEAVE_TYPES, existing&&existing.type||'annual')}</select>
         </label>
         <label>عدد الأيام
-          <input class="input" id="lvDays" type="number" min="0.5" step="0.5" value="${existing&&existing.days||1}">
+          <input class="input" id="lvDays" type="number" min="0.5" step="0.5" value="${escapeHtml(existing&&existing.days||1)}">
         </label>
         <label>من تاريخ
           <input class="input" id="lvFromD" type="date" value="${escapeHtml(existing&&existing.from||todayISO())}">

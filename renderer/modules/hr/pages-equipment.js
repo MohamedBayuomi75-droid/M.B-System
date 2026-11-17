@@ -185,8 +185,8 @@ function renderRecentDailyTable(limit){
           <td>${fmtDate(d.date)}</td>
           <td>${escapeHtml(eq?eq.name:d.equipmentId)}</td>
           <td>${escapeHtml(d.project||'—')}</td>
-          <td>${d.hours||0}</td>
-          <td>${d.fuelLiters||0}</td>
+          <td>${escapeHtml(d.hours||0)}</td>
+          <td>${escapeHtml(d.fuelLiters||0)}</td>
           <td>${escapeHtml(d.productivity||'—')}</td>
           <td><strong>${fmtMoney(cost)}</strong></td>
           <td><button class="btn btn-outline btn-sm btn-del-daily" data-id="${d.id}" ${readOnlyMode?'disabled':''}>حذف</button></td>

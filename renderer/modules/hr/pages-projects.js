@@ -388,7 +388,7 @@ function openProjectModal(editId, presetCustomerId){
           <input class="input" id="prEnd" type="date" value="${escapeHtml(p && p.end || '')}">
         </label>
         <label>نسبة الإنجاز %
-          <input class="input" id="prProgress" type="number" min="0" max="100" step="1" value="${p && p.progress != null ? p.progress : ''}">
+          <input class="input" id="prProgress" type="number" min="0" max="100" step="1" value="${escapeHtml(p && p.progress != null ? p.progress : '')}">
         </label>
         <label>المرحلة / الحالة
           <select class="input" id="prStatus">${stageOptions}</select>

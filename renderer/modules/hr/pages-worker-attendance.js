@@ -292,8 +292,8 @@ function renderWorkerAttendancePage(){
           {ico:'⚑',label:'أيام في أكثر من مشروع',value:fmtDays(Math.round(multi*100)/100),tone:multi?'warn':''}]);
       })()}
       <div class="dly-filters">
-        <label class="dly-f"><span>من</span><input type="date" id="wattFrom" class="input" value="${from}"></label>
-        <label class="dly-f"><span>إلى</span><input type="date" id="wattTo" class="input" value="${to}"></label>
+        <label class="dly-f"><span>من</span><input type="date" id="wattFrom" class="input" value="${escapeHtml(from)}"></label>
+        <label class="dly-f"><span>إلى</span><input type="date" id="wattTo" class="input" value="${escapeHtml(to)}"></label>
         ${tab==='workers' ? `<label class="dly-f"><span>المشرف</span>${typeof entityComboHtml==='function'?entityComboHtml('wattFilterSup','supervisor',workerAttFilters.supervisorId||'','كل المشرفين...'):`<select id="wattFilterSup" class="input">${supervisorOptions(workerAttFilters.supervisorId||'','— كل المشرفين —')}</select>`}</label>` : '<input type="hidden" id="wattFilterSup" value="">'}
         <label class="dly-f"><span>المشروع</span>
           <select id="wattFilterProject" class="input"><option value="">كل المشاريع</option>${(typeof wattProjectOptionsHtml==='function'?wattProjectOptionsHtml(workerAttFilters.project||''):'')}</select>

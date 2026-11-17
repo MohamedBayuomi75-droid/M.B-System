@@ -242,14 +242,14 @@ function lgFmtDate(value){
     if(m) return `${Number(m[3])}/${Number(m[2])}/${m[1]}`;
     d = new Date(s);
   }
-  if(isNaN(d)) return String(value);
+  if(isNaN(d)) return escapeHtml(String(value)); // S-1: قيمة غير صالحة بتتطبع جوه HTML
   return `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}`;
 }
 /** تاريخ ووقت موحّد للعرض (لسجل التعديلات ونحوه): يوم/شهر/سنة، ساعة:دقيقة */
 function lgFmtDateTime(value){
   if(!value) return '';
   const d = value instanceof Date ? value : new Date(value);
-  if(isNaN(d)) return String(value);
+  if(isNaN(d)) return escapeHtml(String(value));
   const hh = String(d.getHours()).padStart(2,'0');
   const mm = String(d.getMinutes()).padStart(2,'0');
   return `${lgFmtDate(d)}، ${hh}:${mm}`;

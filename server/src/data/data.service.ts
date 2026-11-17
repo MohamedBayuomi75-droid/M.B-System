@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { isDeepStrictEqual } from 'node:util';
@@ -8,7 +9,7 @@ import { SERVER_OWNED_DOCS } from './collection-pages';
 import { COLLECTIONS_MAP, LEGACY_SCHEMA_VERSION } from './collections-map.generated';
 import {
   AppliedDocDto, AppliedRecordDto, BootstrapDto, ChangeEventDto, ConflictDocDto, ConflictRecordDto,
-  DocChangeDto, RecordChangeDto, SyncRequestDto, SyncResponseDto, WriteAccessDto,
+  DocChangeDto, FIELD_RE, RecordChangeDto, SyncRequestDto, SyncResponseDto, WriteAccessDto,
 } from './data.dto';
 import { isFinancialField } from './financial-fields';
 import { canRead, canWrite, hiddenFields, inProjectScope, isAnyEditor, projectIdsOf, stripHidden, WriteAction } from './policy';
@@ -193,7 +194,7 @@ export class DataService {
       else if (kind !== 'collection' && c.collection !== 'auditLog') errors.push(`${c.collection}: collection غير معروفة (UNKNOWN_COLLECTION)`);
       if (c.op === 'upsert' && !c.set && !c.unset?.length) errors.push(`${c.collection}/${c.id}: upsert من غير set/unset`);
       if (c.set && 'id' in c.set && String(c.set.id) !== c.id) errors.push(`${c.collection}/${c.id}: set.id مختلف عن id`);
-      for (const k of Object.keys(c.set ?? {})) if (['__proto__', 'constructor', 'prototype'].includes(k)) errors.push(`${c.collection}/${c.id}: اسم حقل ممنوع`);
+      for (const k of Object.keys(c.set ?? {})) if (!FIELD_RE.test(k)) errors.push(`${c.collection}/${c.id}: اسم حقل ممنوع`);
       const key = `${c.collection}\u0000${c.id}`;
       if (seen.has(key)) errors.push(`${c.collection}/${c.id}: مكرر في نفس الطلب`);
       seen.add(key);
@@ -319,10 +320,10 @@ export class DataService {
     } else if (p.kind === 'update') {
       const r = firstRow<{ rev: number }>(await qr.query(`UPDATE records SET data = $3::jsonb, rev = rev + 1, project_id = $4, updated_by = $5, updated_at = now() WHERE collection = $1 AND id = $2 RETURNING rev`, [c.collection, c.id, JSON.stringify(p.data), pid(p.data), user.id]));
       rev = r.rev; op = 'update'; fields = p.fields;
-      diff = { set: p.set, ...(p.unset.length ? { unset: p.unset } : {}), ...(p.overwrote.length ? { overwrote: p.overwrote } : {}) };
+      diff = { set: p.set, ...(p.unset.length ? { unset: p.unset } : {}), ...(p.overwrote.length ? { overwrote: p.overwrote } : {}), before: pickBefore(p.row.data, p.fields) };
     } else {
       const r = firstRow<{ rev: number }>(await qr.query(`UPDATE records SET deleted_at = now(), rev = rev + 1, updated_by = $3, updated_at = now() WHERE collection = $1 AND id = $2 RETURNING rev`, [c.collection, c.id, user.id]));
-      rev = r.rev; op = 'delete'; diff = {}; fields = [];
+      rev = r.rev; op = 'delete'; diff = { before: capBefore((p as { row: RecordRow }).row.data) }; fields = [];
     }
     await qr.query(`INSERT INTO changes (collection, record_id, op, rev, user_id, fields, diff) VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb)`, [c.collection, c.id, op, rev, user.id, fields, JSON.stringify(diff)]);
     const merged = p.kind === 'update' && c.baseRev < p.row.rev; // حد تاني عدّل بعد baseRev → رجّع النسخة المدموجة
@@ -409,7 +410,7 @@ export class DataService {
        RETURNING rev`, [d.key, JSON.stringify(p.value), user.id],
     ));
     await qr.query(`INSERT INTO changes (collection, record_id, op, rev, user_id, fields, diff) VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb)`,
-      [DOC_COLLECTION, d.key, p.row ? 'update' : 'insert', r.rev, user.id, p.fields, JSON.stringify({ ...p.diff, ...(p.overwrote.length ? { overwrote: p.overwrote } : {}) })]);
+      [DOC_COLLECTION, d.key, p.row ? 'update' : 'insert', r.rev, user.id, p.fields, JSON.stringify({ ...p.diff, ...(p.overwrote.length ? { overwrote: p.overwrote } : {}), ...docBefore(d, p.row, p.fields) })]);
     const merged = d.op === 'arrayDelta' || (p.row !== null && d.baseRev < p.row.rev);
     return { key: d.key, rev: r.rev, op: d.op, ...(p.overwrote.length ? { overwrote: p.overwrote } : {}), ...(merged ? { data: p.value } : {}) };
   }
@@ -464,3 +465,25 @@ type DocPlan =
   | { kind: 'noop'; d: DocChangeDto; rev: number }
   | { kind: 'conflict'; d: DocChangeDto; reason: string; fields?: string[]; row: DocRow | null }
   | { kind: 'write'; d: DocChangeDto; row: DocRow | null; value: unknown; fields: string[]; diff: Json; overwrote: string[] };
+
+/**
+ * سجل التدقيق (المرحلة 2 — S-6): القيمة السابقة لكل تعديل/حذف بتتحفظ في changes.diff.before
+ * (الجدول إلحاق فقط على مستوى القاعدة — migration AuditProtection). القيم الكبيرة جدًا بتتسجل كبصمة بس.
+ */
+const BEFORE_MAX_BYTES = 256 * 1024;
+function capBefore(v: unknown): unknown {
+  const txt = JSON.stringify(v ?? null);
+  if (txt.length <= BEFORE_MAX_BYTES) return v ?? null;
+  return { truncated: true, bytes: txt.length, sha256: createHash('sha256').update(txt).digest('hex') };
+}
+function pickBefore(data: Json, fields: string[]): unknown {
+  const out: Json = {};
+  for (const f of fields) out[f] = f in data ? data[f] : null;
+  return capBefore(out);
+}
+function docBefore(d: DocChangeDto, row: DocRow | null, fields: string[]): Json {
+  if (!row) return {};
+  if (d.op === 'patch') return { before: pickBefore((row.data ?? {}) as Json, fields) };
+  if (d.op === 'set') return { before: capBefore(row.data) };
+  return {}; // arrayDelta: add/remove نفسها قابلة للعكس
+}

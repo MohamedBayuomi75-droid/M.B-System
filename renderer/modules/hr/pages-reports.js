@@ -322,7 +322,7 @@ function repPersonDetail(r){
     attSection = section('🚜 يوميات المعدة ('+eqLogs.length+')', `
       <div class="table-wrap"><table class="data-table"><thead><tr><th>التاريخ</th><th>أيام</th><th>ساعات</th><th>مشروع</th><th>تكلفة</th></tr></thead>
       <tbody>${eqLogs.map(l=>`<tr>
-        <td>${fd(l.date)}</td><td>${l.days||1}</td><td>${l.hours||'—'}</td>
+        <td>${fd(l.date)}</td><td>${escapeHtml(l.days||1)}</td><td>${escapeHtml(l.hours||'—')}</td>
         <td>${escapeHtml(l.project||'')}</td><td>${fmtMoney(l.cost||l.dayCost)}</td>
       </tr>`).join('')}</tbody></table></div>`);
   } else if(attRows.length){
@@ -1479,7 +1479,7 @@ function renderReportTab(tab, r){
     }).join('')}${eqLogs.map(l=>{
       const eq = (DATA.equipment||[]).find(x=>x.id===l.equipmentId);
       return `<tr><td>${fmtDate(l.date)}</td><td>معدة</td><td>${escapeHtml(eq?(eq.code||'')+' '+(eq.typeLabel||eq.name||''):'')}</td>
-        <td>—</td><td>${l.days||1}</td><td>${escapeHtml(l.project||'')}</td></tr>`;
+        <td>—</td><td>${escapeHtml(l.days||1)}</td><td>${escapeHtml(l.project||'')}</td></tr>`;
     }).join('')||(list.length?'':'<tr><td colspan="6">لا يوميات في الفترة</td></tr>')}</tbody></table></div>`;
   }
   if(tab==='performance'){
