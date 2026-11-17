@@ -7,7 +7,7 @@ import { DataSource } from 'typeorm';
 export class HistoryRepository {
   constructor(@InjectDataSource() private readonly ds: DataSource) {}
   async record(collection: string, id: string): Promise<{ data: Record<string, unknown>; deleted_at: Date | null } | null> {
-    return (await this.ds.query(`SELECT data, deleted_at FROM records WHERE collection = $1 AND id = $2`, [collection, id]))[0] ?? null;
+    return (await this.ds.query(`SELECT data, deleted_at FROM legacy_records WHERE collection = $1 AND id = $2`, [collection, id]))[0] ?? null;
   }
   changes(collection: string, id: string, limit: number): Promise<{ seq: string; op: string; rev: number; user_id: string | null; username: string | null; fields: string[]; diff: Record<string, unknown> | null; at: Date }[]> {
     return this.ds.query(`SELECT c.seq, c.op, c.rev, c.user_id, u.username, c.fields, c.diff, c.at FROM changes c LEFT JOIN users u ON u.id = c.user_id

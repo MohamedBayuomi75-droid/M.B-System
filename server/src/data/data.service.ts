@@ -20,6 +20,13 @@ export const WRITE_LOCK_KEY = 727_001;
 export const DOC_COLLECTION = '$doc';
 const MAX_RECORD_BYTES = 2 * 1024 * 1024;
 const AUDIT_BOOTSTRAP_LIMIT = 3000;
+/** المجموعات اللي ممكن تتنقل لجداول علائقية (المرحلة 6) ← دالة الكتابة وجدولها */
+const RELATIONAL_WRITERS: Record<string, { fn: string; table: string }> = {
+  'ledger.suppliers': { fn: 'legacy_write_supplier', table: 'suppliers' },
+  'clients.customers': { fn: 'legacy_write_customer', table: 'customers' },
+};
+/** أكواد PostgreSQL لرفض قيد (تفرّد/CHECK/قيمة) ← تعارض صريح بدل 500 */
+const CONSTRAINT_CODES = new Set(['23505', '23514', '23502', '22023', '22P02', '22007', '22008', '22003']);
 
 interface RecordRow { collection: string; id: string; data: Json; rev: number; deleted_at: Date | null }
 interface DocRow { key: string; data: unknown; rev: number }
@@ -53,7 +60,7 @@ export class DataService {
     try {
       const [{ seq }] = await qr.query(`SELECT COALESCE(MAX(seq), 0)::bigint AS seq FROM changes`);
       const records: { collection: string; id: string; data: Json; rev: number }[] = await qr.query(
-        `SELECT collection, id, data, rev FROM records WHERE deleted_at IS NULL ORDER BY collection, created_at, id`,
+        `SELECT collection, id, data, rev FROM legacy_records WHERE deleted_at IS NULL ORDER BY collection, created_at, id`,
       );
       const docs: DocRow[] = await qr.query(`SELECT key, data, rev FROM docs`);
       const audit = this.canSeeAudit(user)
@@ -224,15 +231,45 @@ export class DataService {
   private async lockRecords(qr: QueryRunner, changes: RecordChangeDto[]): Promise<Map<string, RecordRow>> {
     const map = new Map<string, RecordRow>();
     if (!changes.length) return map;
-    const cols = changes.map((c) => c.collection);
-    const ids = changes.map((c) => c.id);
-    const rows: RecordRow[] = await qr.query(
+    const moved = await this.cutoverSet(qr);
+    const legacy = changes.filter((c) => !moved.has(c.collection));
+    const rel = changes.filter((c) => moved.has(c.collection));
+    const rows: RecordRow[] = legacy.length ? await qr.query(
       `SELECT r.collection, r.id, r.data, r.rev, r.deleted_at FROM records r
        JOIN unnest($1::text[], $2::text[]) AS k(collection, id) ON r.collection = k.collection AND r.id = k.id
-       ORDER BY r.collection, r.id FOR UPDATE OF r`, [cols, ids],
-    );
+       ORDER BY r.collection, r.id FOR UPDATE OF r`, [legacy.map((c) => c.collection), legacy.map((c) => c.id)],
+    ) : [];
+    // المجموعات المنقولة: قفل صفوف الجدول نفسه، والقراءة بالشكل القديم من الـ view
+    for (const c of rel) await qr.query(`SELECT 1 FROM ${RELATIONAL_WRITERS[c.collection].table} WHERE id = $1 FOR UPDATE`, [c.id]);
+    if (rel.length) rows.push(...await qr.query(
+      `SELECT r.collection, r.id, r.data, r.rev, r.deleted_at FROM legacy_records r
+       JOIN unnest($1::text[], $2::text[]) AS k(collection, id) ON r.collection = k.collection AND r.id = k.id`, [rel.map((c) => c.collection), rel.map((c) => c.id)]));
     for (const r of rows) map.set(`${r.collection}\u0000${r.id}`, r);
     return map;
+  }
+
+  /** المجموعات اللي اتنقلت للجداول العلائقية (module_cutover) — بتتقرا جوه نفس المعاملة */
+  private async cutoverSet(qr: QueryRunner): Promise<Set<string>> {
+    return new Set((await qr.query(`SELECT collection FROM module_cutover`)).map((r: { collection: string }) => r.collection));
+  }
+
+  /** الكتابة على الجدول العلائقي للمجموعة المنقولة. رفض قيد ← null (التعارض بيترجع للعميل) والمعاملة بتكمل */
+  private async writeRelational(qr: QueryRunner, p: RecordPlan & { kind: 'insert' | 'restore' | 'update' | 'delete' }): Promise<number | { error: string }> {
+    const w = RELATIONAL_WRITERS[p.c.collection];
+    await qr.query(`SAVEPOINT rel_write`);
+    try {
+      const rev = p.kind === 'delete'
+        ? firstRow<{ row_version: number }>(await qr.query(`UPDATE ${w.table} SET deleted_at = now(), row_version = row_version + 1, updated_at = now() WHERE id = $1 RETURNING row_version`, [p.c.id])).row_version
+        : (await qr.query(`SELECT ${w.fn}($1, $2::jsonb) AS v`, [p.c.id, JSON.stringify(p.data)]))[0].v;
+      await qr.query(`RELEASE SAVEPOINT rel_write`);
+      return Number(rev);
+    } catch (e) {
+      const code = (e as { code?: string }).code ?? '';
+      if (!CONSTRAINT_CODES.has(code)) throw e;
+      await qr.query(`ROLLBACK TO SAVEPOINT rel_write`);
+      const msg = String((e as { constraint?: string }).constraint ?? (e as Error).message);
+      return { error: code === '23505' ? `duplicate:${msg}` : `invalid:${msg}` };
+    }
   }
 
   /** الحقول اللي اتغيّرت في السجل بعد baseRev (من changes) */
@@ -311,7 +348,19 @@ export class DataService {
     let op: 'insert' | 'update' | 'delete';
     let diff: Json;
     let fields: string[];
-    if (p.kind === 'insert') {
+    const moved = RELATIONAL_WRITERS[c.collection] && (await this.cutoverSet(qr)).has(c.collection);
+    if (moved) {
+      const r = await this.writeRelational(qr, p);
+      if (typeof r !== 'number') {
+        const row = 'row' in p ? p.row : null;
+        const current = row && !row.deleted_at ? { rev: row.rev, data: stripHidden(row.data, hiddenFields(user, c.collection)) } : null;
+        return { collection: c.collection, id: c.id, reason: 'constraint', fields: [r.error], current };
+      }
+      rev = r;
+      if (p.kind === 'insert' || p.kind === 'restore') { op = 'insert'; diff = p.kind === 'restore' ? { set: p.data, restored: true } : { set: p.data }; fields = p.fields; }
+      else if (p.kind === 'update') { op = 'update'; fields = p.fields; diff = { set: p.set, ...(p.unset.length ? { unset: p.unset } : {}), ...(p.overwrote.length ? { overwrote: p.overwrote } : {}), before: pickBefore(p.row.data, p.fields) }; }
+      else { op = 'delete'; diff = { before: capBefore((p as { row: RecordRow }).row.data) }; fields = []; }
+    } else if (p.kind === 'insert') {
       await qr.query(`INSERT INTO records (collection, id, data, rev, project_id, created_by, updated_by, created_at) VALUES ($1, $2, $3::jsonb, 1, $4, $5, $5, clock_timestamp())`, [c.collection, c.id, JSON.stringify(p.data), pid(p.data), user.id]);
       rev = 1; op = 'insert'; diff = { set: p.data }; fields = p.fields;
     } else if (p.kind === 'restore') {
@@ -429,7 +478,7 @@ export class DataService {
     return this.ds.query(
       `SELECT c.seq, c.collection, c.record_id, c.op, r.data AS r_data, r.rev AS r_rev, r.deleted_at AS r_deleted, d.data AS d_data, d.rev AS d_rev
        FROM changes c
-       LEFT JOIN records r ON c.collection <> '${DOC_COLLECTION}' AND r.collection = c.collection AND r.id = c.record_id
+       LEFT JOIN legacy_records r ON c.collection <> '${DOC_COLLECTION}' AND r.collection = c.collection AND r.id = c.record_id
        LEFT JOIN docs d ON c.collection = '${DOC_COLLECTION}' AND d.key = c.record_id
        WHERE ${where}`, params,
     );

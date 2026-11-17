@@ -71,6 +71,13 @@ describe('phase 6.1 suppliers & customers', () => {
       expect(h.body.changes[0].fields).toEqual(expect.arrayContaining(['notes', 'iban']));
     });
 
+    it('legacy data kept as-is: placeholder tax id "_" (edit path never validated it) — editing other fields works, changing it is validated', async () => {
+      expect((await sync(t, admin, { changes: [up('ledger.suppliers', 'sup_us', { id: 'sup_us', name: 'مورد قديم', taxId: '_' })] })).status).toBe(200);
+      const g = await t.http().get('/api/v1/suppliers/sup_us').set(bearer(admin));
+      expect((await t.http().patch('/api/v1/suppliers/sup_us').set(bearer(admin)).send({ rev: g.body.rev, taxId: '_', phone: '1' })).status).toBe(200);
+      expect((await t.http().patch('/api/v1/suppliers/sup_us').set(bearer(admin)).send({ rev: g.body.rev + 1, taxId: '12' })).body.code).toBe('TAX_ID_TOO_SHORT');
+    });
+
     it('stale rev on a guarded field → 409 CONFLICT, nothing saved', async () => {
       const g = await t.http().get(`/api/v1/suppliers/${id}`).set(bearer(admin)).expect(200);
       expect((await sync(t, admin, { changes: [up('ledger.suppliers', id, { openingBalanceDate: '2026-02-01' }, g.body.rev)] })).status).toBe(200);
@@ -102,8 +109,21 @@ describe('phase 6.1 suppliers & customers', () => {
       expect(r2.body.code).toBe('CUS-0009');
     });
 
+    it('decisions 2026-11-17: customer code unique (case/space-insensitive), customer email validated', async () => {
+      const d = await t.http().post('/api/v1/customers').set(bearer(admin)).send({ name: 'مكرر', code: ' cus-0007 ' });
+      expect([d.status, d.body.code]).toEqual([409, 'DUPLICATE_CODE']);
+      const e = await t.http().post('/api/v1/customers').set(bearer(admin)).send({ name: 'بريد', email: 'bad@' });
+      expect([e.status, e.body.code]).toEqual([400, 'INVALID_EMAIL']);
+      const c = await t.http().get('/api/v1/customers/cus_legacy1').set(bearer(admin));
+      expect((await t.http().patch('/api/v1/customers/cus_legacy1').set(bearer(admin)).send({ rev: c.body.rev, code: 'CUS-0007', city: 'x' })).status).toBe(200);
+    });
+
     it('opening balance limited to 2 decimals (legacy toInt → round2 compatibility)', async () => {
-      expect((await t.http().post('/api/v1/customers').set(bearer(admin)).send({ name: 'س', openingBalance: '10.125' })).status).toBe(400);
+      const r = await t.http().post('/api/v1/customers').set(bearer(admin)).send({ name: 'س', openingBalance: '10.125' });
+      expect([r.status, r.body.code]).toEqual([400, 'SCALE_LIMIT']);
+      // القيمة الراجعة من الـ API (4 خانات) تترجع زي ما هي من غير خطأ
+      const ok = await t.http().post('/api/v1/customers').set(bearer(admin)).send({ name: 'س', openingBalance: '10.1200' });
+      expect([ok.status, ok.body.openingBalance]).toEqual([201, '10.1200']);
     });
 
     it('guarded opening balance: hidden from users without account pages and not writable by them', async () => {
@@ -126,9 +146,11 @@ describe('phase 6.1 suppliers & customers', () => {
       expect((await sync(t, admin, { changes: [up('ledger.suppliers', 'sup_dup', { id: 'sup_dup', name: 'احمد للتوريدات ' })] })).status).toBe(200);
       expect((await t.http().get('/api/v1/suppliers/migration-plan').set(bearer(ledger))).status).toBe(403);
       const p = await t.http().get('/api/v1/suppliers/migration-plan').set(bearer(admin)).expect(200);
-      expect(p.body).toMatchObject({ dryRun: true, executed: false, relationalRowsNow: { suppliers: 0, customers: 0 }, ready: false });
+      expect(p.body).toMatchObject({ dryRun: true, executed: false, relationalRowsNow: { suppliers: 0, customers: 0 }, ready: true });
       expect(p.body.counts).toMatchObject({ supplierInvoices: 2, supplierPayments: 1 });
-      expect(p.body.blockers.supplierDuplicateNames).toEqual([['sup_legacy1', 'sup_dup']]);
+      // قرار 2026-11-17: اسم المورد مش فريد → تنبيه بس، مش معوّق
+      expect(p.body.warnings.supplierDuplicateNames).toEqual([['sup_legacy1', 'sup_dup']]);
+      expect(p.body.blockers.supplierDuplicateNames).toBeUndefined();
       expect(p.body.warnings.roundingChanges).toEqual([{ id: 'sup_legacy1', original: '2000.12345', migrated: '2000.1235', changed: true }]);
       const [{ n }] = await t.ds.query(`SELECT (SELECT count(*) FROM suppliers) + (SELECT count(*) FROM customers) AS n`);
       expect(Number(n)).toBe(0);

@@ -80,6 +80,12 @@ async function startWebServer() {
     if (proc.exitCode !== null) throw new Error('server exited: ' + stderr.slice(-500));
     await new Promise((r) => setTimeout(r, 100));
   }
+  // MA-6 (المرحلة 6): WEB_CUTOVER=parties → الموردين/العملاء بيتنقلوا للجداول قبل الاختبار، فالواجهة القديمة كلها بتشتغل فوق الجداول
+  if (process.env.WEB_CUTOVER === 'parties') {
+    const { DataSource } = require(path.join(ROOT, 'server/node_modules/typeorm'));
+    const ds = new DataSource({ type: 'postgres', url: u.toString() }); await ds.initialize();
+    try { await require(path.join(ROOT, 'server/dist/cutover/parties-cutover')).partiesCutover(ds, 'harness', 'execute'); } finally { await ds.destroy(); }
+  }
   const stop = async () => {
     proc.kill('SIGTERM');
     await new Promise((r) => (proc.exitCode !== null ? r() : proc.once('exit', r)));

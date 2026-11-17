@@ -62,7 +62,7 @@ export class AppliedRecordDto {
 export class ConflictRecordDto {
   @ApiProperty() collection: string;
   @ApiProperty() id: string;
-  @ApiProperty({ enum: ['field_conflict', 'deleted', 'changed_since', 'bad_rev'], description: 'field_conflict = حقل مالي/مركّب اتعدّل من حد تاني · deleted = السجل اتمسح · changed_since = حذف سجل اتعدّل بعد ما شفته' })
+  @ApiProperty({ enum: ['field_conflict', 'deleted', 'changed_since', 'bad_rev', 'constraint'], description: 'field_conflict = حقل مالي/مركّب اتعدّل من حد تاني · deleted = السجل اتمسح · changed_since = حذف سجل اتعدّل بعد ما شفته · constraint = قيد في قاعدة البيانات رفض القيمة (مثلًا كود عميل مكرر) — fields فيها السبب' })
   reason: string;
   @ApiPropertyOptional({ type: [String] }) fields?: string[];
   @ApiProperty({ type: CurrentVersionDto, nullable: true, description: 'النسخة الحالية على السيرفر (بعد إخفاء الحقول المحمية)' }) current: CurrentVersionDto | null;

@@ -45,7 +45,7 @@ class CustomerFields {
   @ApiPropertyOptional() @IsOptional() @IsString() @MaxLength(100) category?: string;
   @ApiPropertyOptional() @IsOptional() @IsString() @MaxLength(50) taxId?: string;
   @ApiPropertyOptional() @IsOptional() @IsString() @MaxLength(100) department?: string;
-  @ApiPropertyOptional({ description: 'مؤقتًا خانتين بس — توافق مع الواجهة الحالية (toInt → round2)' }) @IsOptional() @IsMoneyString({ allowNegative: true, maxScale: 2 }) openingBalance?: string;
+  @ApiPropertyOptional({ description: 'مؤقتًا خانتين بس — توافق مع الواجهة الحالية (toInt → round2)' }) @IsOptional() @IsMoneyString({ allowNegative: true }) openingBalance?: string;
   @ApiPropertyOptional() @IsOptional() @IsString() @MaxLength(500) address?: string;
   @ApiPropertyOptional() @IsOptional() @IsString() @MaxLength(5000) notes?: string;
   @ApiPropertyOptional({ type: [ContactDto] }) @IsOptional() @IsArray() @ArrayMaxSize(50) @ValidateNested({ each: true }) @Type(() => ContactDto) contacts?: ContactDto[];

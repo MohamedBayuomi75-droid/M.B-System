@@ -106,17 +106,23 @@ export class PartiesService {
   private async write(user: AuthUser, collection: string, id: string, baseRev: number, set: Json) {
     const res = await this.data.sync(user, { changes: [{ collection, id, op: 'upsert', baseRev, set }] });
     const c = res.conflicts[0];
+    if (c?.reason === 'constraint') {
+      const dup = String(c.fields?.[0] ?? '').startsWith('duplicate');
+      throw new ConflictException({ statusCode: 409, code: dup ? 'DUPLICATE_CODE' : 'INVALID_VALUE', message: dup ? 'كود العميل مستخدم لعميل تاني' : 'قيمة مرفوضة من قاعدة البيانات' });
+    }
     if (c) throw new ConflictException({ statusCode: 409, code: 'CONFLICT', message: c.reason === 'deleted' ? 'السجل اتمسح من مستخدم تاني' : 'السجل اتعدّل من مستخدم تاني — حدّث الصفحة', reason: c.reason, fields: c.fields });
   }
   private static newId(prefix: string) { return `${prefix}_${Date.now().toString(36)}${randomBytes(4).toString('hex')}`; }
 
   /** validateSupplierFields — renderer/modules/ledger/helpers.js:54 */
-  static validateSupplier(f: { name?: string; taxId?: string; email?: string }, creating: boolean) {
+  static validateSupplier(f: { name?: string; taxId?: string; email?: string }, creating: boolean, current?: Json) {
+    // التعديل: الواجهة الحالية مابتتحققش من الرقم الضريبي/البريد عند التعديل — بنتحقق بس لو القيمة اتغيّرت فعلًا
+    const changed = (k: 'taxId' | 'email') => creating || (f[k] !== undefined && str(f[k]).trim() !== str(current?.[k]).trim());
     if ((creating || f.name !== undefined) && !str(f.name).trim()) throw new BadRequestException({ statusCode: 400, code: 'NAME_REQUIRED', message: 'اسم المورد مطلوب' });
     const tax = str(f.taxId).trim();
-    if (tax.length > 0 && tax.length < 5) throw new BadRequestException({ statusCode: 400, code: 'TAX_ID_TOO_SHORT', message: 'الرقم الضريبي قصير جداً (أقل من 5 أرقام)' });
+    if (changed('taxId') && tax.length > 0 && tax.length < 5) throw new BadRequestException({ statusCode: 400, code: 'TAX_ID_TOO_SHORT', message: 'الرقم الضريبي قصير جداً (أقل من 5 أرقام)' });
     const em = str(f.email).trim();
-    if (em && !EMAIL_RE.test(em)) throw new BadRequestException({ statusCode: 400, code: 'INVALID_EMAIL', message: 'صيغة البريد الإلكتروني غير صحيحة' });
+    if (changed('email') && em && !EMAIL_RE.test(em)) throw new BadRequestException({ statusCode: 400, code: 'INVALID_EMAIL', message: 'صيغة البريد الإلكتروني غير صحيحة' });
   }
   private static supplierSet(dto: Partial<CreateSupplierDto>): Json {
     const set: Json = {};
@@ -137,8 +143,9 @@ export class PartiesService {
   }
   async updateSupplier(user: AuthUser, id: string, dto: UpdateSupplierDto) {
     this.assertPage(user, SUPPLIERS, 'edit');
-    if (!(await this.repo.one(SUPPLIERS, id))) throw new NotFoundException({ statusCode: 404, code: 'NOT_FOUND', message: 'المورد غير موجود' });
-    PartiesService.validateSupplier(dto, false);
+    const cur = await this.repo.one(SUPPLIERS, id);
+    if (!cur) throw new NotFoundException({ statusCode: 404, code: 'NOT_FOUND', message: 'المورد غير موجود' });
+    PartiesService.validateSupplier(dto, false, cur.data);
     const set = PartiesService.supplierSet(dto);
     if (Object.keys(set).length) await this.write(user, SUPPLIERS, id, dto.rev, set);
     return this.getSupplier(user, id);
@@ -162,9 +169,21 @@ export class PartiesService {
     if (dto.extraFields !== undefined) set.extraFields = dto.extraFields.map((f) => ({ label: f.label.trim(), value: f.value }));
     return set;
   }
+  /** قرارات 2026-11-17: كود العميل فريد (من غير حالة الأحرف والمسافات)، وصيغة بريد العميل بيتحقق منها */
+  private async validateCustomer(f: { name?: string; email?: string; code?: string; openingBalance?: string }, creating: boolean, selfId?: string) {
+    // توافق مؤقت مع الواجهة الحالية (toInt → round2): خانتين بس — الأصفار الزيادة (0.0000) مقبولة
+    if (f.openingBalance !== undefined && !Money.of(f.openingBalance).round(2).eq(f.openingBalance))
+      throw new BadRequestException({ statusCode: 400, code: 'SCALE_LIMIT', message: 'رصيد العميل الافتتاحي حتى خانتين عشريتين بس (توافق مع الشاشة الكاملة)' });
+    if ((creating || f.name !== undefined) && !str(f.name).trim()) throw new BadRequestException({ statusCode: 400, code: 'NAME_REQUIRED', message: 'اسم العميل مطلوب' });
+    const em = str(f.email).trim();
+    if (em && !EMAIL_RE.test(em)) throw new BadRequestException({ statusCode: 400, code: 'INVALID_EMAIL', message: 'صيغة البريد الإلكتروني غير صحيحة' });
+    const code = str(f.code).trim().toLowerCase();
+    if (code && (await this.repo.all(CUSTOMERS)).some((r) => r.id !== selfId && str(r.data.code).trim().toLowerCase() === code))
+      throw new ConflictException({ statusCode: 409, code: 'DUPLICATE_CODE', message: 'كود العميل مستخدم لعميل تاني' });
+  }
   async createCustomer(user: AuthUser, dto: CreateCustomerDto) {
     this.assertPage(user, CUSTOMERS, 'add');
-    if (!dto.name.trim()) throw new BadRequestException({ statusCode: 400, code: 'NAME_REQUIRED', message: 'اسم العميل مطلوب' });
+    await this.validateCustomer(dto, true);
     const id = PartiesService.newId('cus');
     const now = new Date().toISOString();
     const set: Json = {
@@ -181,7 +200,7 @@ export class PartiesService {
   async updateCustomer(user: AuthUser, id: string, dto: UpdateCustomerDto) {
     this.assertPage(user, CUSTOMERS, 'edit');
     if (!(await this.repo.one(CUSTOMERS, id))) throw new NotFoundException({ statusCode: 404, code: 'NOT_FOUND', message: 'العميل غير موجود' });
-    if (dto.name !== undefined && !dto.name.trim()) throw new BadRequestException({ statusCode: 400, code: 'NAME_REQUIRED', message: 'اسم العميل مطلوب' });
+    await this.validateCustomer(dto, false, id);
     const set = PartiesService.customerSet(dto);
     if (set.code === '') set.code = await this.nextCustomerCode();
     if (Object.keys(set).length) await this.write(user, CUSTOMERS, id, dto.rev, { ...set, updatedAt: new Date().toISOString() });
@@ -206,21 +225,26 @@ export class PartiesService {
     const blockers = {
       suppliersEmptyName: sup.filter((r) => !str(r.data.name).trim()).map((r) => r.id),
       customersEmptyName: cus.filter((r) => !str(r.data.name).trim()).map((r) => r.id),
-      supplierDuplicateNames: dups(sup, 'name'),
       customerDuplicateNames: dups(cus, 'name'),
       customerDuplicateCodes: dups(cus, 'code'),
       invalidOpeningBalance: [...supBal, ...cusBal].filter((b) => b.migrated == null).map((b) => b.id),
       orphanSupplierRefs: [...counts.keys()].filter((sid) => !supplierIds.has(sid)),
+      // قيود الجداول (= قواعد الواجهة + قرارات 2026-11-17) — أي مخالفة بتوقف النقل كله
+      customerInvalidEmail: cus.filter((r) => str(r.data.email).trim() && !EMAIL_RE.test(str(r.data.email).trim())).map((r) => r.id),
+      invalidOpeningBalanceDate: sup.filter((r) => { const d = str(r.data.openingBalanceDate); return d !== '' && !/^\d{4}-\d{2}-\d{2}$/.test(d); }).map((r) => r.id),
     };
     const warnings = {
+      roundingChanges: [...supBal, ...cusBal].filter((b) => b.changed),
+      // قاعدة إضافة بس في الواجهة الحالية — البيانات القديمة بتتنقل زي ما هي (أي تصحيح = معالجة بموافقة منفصلة)
       supplierInvalidEmail: sup.filter((r) => str(r.data.email).trim() && !EMAIL_RE.test(str(r.data.email).trim())).map((r) => r.id),
       supplierShortTaxId: sup.filter((r) => { const t = str(r.data.taxId).trim(); return t.length > 0 && t.length < 5; }).map((r) => r.id),
-      roundingChanges: [...supBal, ...cusBal].filter((b) => b.changed),
+      supplierDuplicateNamesAllowed: 'اسم المورد مش فريد (قرار 2026-11-17) — التكرار للعلم بس',
     };
+    const executed = await this.repo.cutoverDone();
     return {
-      dryRun: true, executed: false, relationalRowsNow: rel,
+      dryRun: true, executed, relationalRowsNow: rel,
       counts: { suppliers: sup.length, customers: cus.length, supplierInvoices: [...counts.values()].reduce((a, b) => a + b.invoices, 0), supplierPayments: [...counts.values()].reduce((a, b) => a + b.payments, 0) },
-      blockers, warnings, ready: Object.values(blockers).every((v) => v.length === 0),
+      blockers, warnings: { ...warnings, supplierDuplicateNames: dups(sup, 'name') }, ready: Object.values(blockers).every((v) => v.length === 0),
     };
   }
 }

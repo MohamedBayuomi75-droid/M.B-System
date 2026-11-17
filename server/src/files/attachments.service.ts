@@ -28,7 +28,7 @@ export class AttachmentsService {
     if (COLLECTIONS_MAP[collection] !== 'collection') throw new BadRequestException({ statusCode: 400, code: 'BAD_OWNER', message: 'مجموعة غير صالحة للمرفقات' });
     if (!canRead(user, collection)) throw new ForbiddenException({ statusCode: 403, code: 'FORBIDDEN', message: 'ليس لديك صلاحية على هذه البيانات' });
     if (mode === 'write' && !canWrite(user, collection, 'edit')) throw new ForbiddenException({ statusCode: 403, code: 'FORBIDDEN', message: 'ليس لديك صلاحية تعديل هذه البيانات' });
-    const [rec] = await this.ds.query(`SELECT data FROM records WHERE collection = $1 AND id = $2 AND deleted_at IS NULL`, [collection, recordId]);
+    const [rec] = await this.ds.query(`SELECT data FROM legacy_records WHERE collection = $1 AND id = $2 AND deleted_at IS NULL`, [collection, recordId]);
     if (!rec) throw new NotFoundException({ statusCode: 404, code: 'NOT_FOUND', message: 'السجل غير موجود' });
     if (!inProjectScope(user, collection, rec.data)) throw new ForbiddenException({ statusCode: 403, code: 'OUT_OF_PROJECT_SCOPE', message: 'السجل خارج نطاق مشروعاتك' });
   }

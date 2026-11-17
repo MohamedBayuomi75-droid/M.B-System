@@ -18,7 +18,8 @@
     "lint": "tsc -p tsconfig.json --noEmit",
     "test": "jest --config jest.config.js --runInBand",
     "test:unit": "jest --config jest.config.js --selectProjects unit",
-    "test:e2e": "jest --config jest.config.js --runInBand --selectProjects e2e"
+    "test:e2e": "jest --config jest.config.js --runInBand --selectProjects e2e",
+    "cutover": "node dist/cli/cutover.js"
   },
   "dependencies": {
     "@nestjs/common": "^11.2.10",

@@ -13,12 +13,12 @@ import { errorMessage, SessionService } from '../core/session.service';
 export interface Supplier { id: string; name: string; taxId: string; commercialReg: string; businessNature: string; openingBalance: string; openingBalanceDate: string; phone: string; email: string; address: string; bankAccount: string; iban: string; notes: string; invoicesCount: number; paymentsCount: number; attachmentsCount: number; rev: number }
 const FIELDS: [keyof Supplier, string][] = [['name', 'اسم المورد *'], ['taxId', 'الرقم الضريبي'], ['commercialReg', 'السجل التجاري'], ['businessNature', 'طبيعة النشاط'], ['openingBalance', 'الرصيد الافتتاحي'], ['openingBalanceDate', 'تاريخ الرصيد الافتتاحي'], ['phone', 'الهاتف'], ['email', 'البريد'], ['address', 'العنوان'], ['bankAccount', 'الحساب البنكي'], ['iban', 'IBAN'], ['notes', 'ملاحظات']];
 
-/** المرحلة 6.1 (تجريبي): بيانات الموردين الأساسية — الأرصدة والفواتير والحذف في الشاشة الحالية */
+/** المرحلة 6.1 (تجريبي): بيانات الموردين الأساسية — الأرصدة والفواتير وكشف الحساب والحذف في الشاشة الكاملة */
 @Component({
   selector: 'app-suppliers',
   imports: [FormsModule, MatButtonModule, MatFormFieldModule, MatInputModule, MatProgressBarModule],
   template: `
-    <h1>الموردين <small class="muted">(تجريبي — البيانات الأساسية)</small></h1>
+    <h1>الموردين <small class="muted"></small></h1>
     <mat-form-field appearance="outline" class="search"><mat-label>بحث: اسم، رقم ضريبي، سجل، هاتف، بريد</mat-label>
       <input matInput id="supSearch" [(ngModel)]="q" (ngModelChange)="load()" /></mat-form-field>
     @if (canAdd) { <button mat-flat-button id="supNew" (click)="startNew()">+ مورد جديد</button> }
@@ -36,7 +36,7 @@ const FIELDS: [keyof Supplier, string][] = [['name', 'اسم المورد *'], [
             <mat-form-field appearance="outline"><mat-label>{{ fd[1] }}</mat-label>
               <input matInput [name]="fd[0]" [attr.data-field]="fd[0]" [(ngModel)]="$any(f)[fd[0]]" [readonly]="!canSave()" [type]="fd[0] === 'openingBalanceDate' ? 'date' : 'text'" [attr.dir]="fd[0] === 'openingBalance' ? 'ltr' : null" /></mat-form-field>
           }
-          @if (f.id) { <p class="muted">الرصيد الافتتاحي: <span class="num" id="supOpening">{{ money(f.openingBalance) }}</span> · <a [href]="legacy('ledger.suppliers')">الأرصدة والفواتير والحذف في الشاشة الحالية</a></p> }
+          @if (f.id) { <p class="muted">الرصيد الافتتاحي: <span class="num" id="supOpening">{{ money(f.openingBalance) }}</span> · <a [href]="legacy('ledger.suppliers')">الأرصدة والفواتير وكشف الحساب والحذف في الشاشة الكاملة</a></p> }
           @if (canSave()) { <button mat-flat-button type="submit" id="supSave" [disabled]="busy()">حفظ</button> }
         </form>
       }

@@ -108,9 +108,9 @@
 الترتيب يُعتمد في تقرير ما قبل المرحلة 6 (`MODULE_MIGRATION_PLAN.md §6`).
 | # | الموديول | قرارات مانعة | الحالة |
 |---|---|---|---|
-| 6.1 | Suppliers + Customers (بيانات أساسية) | — | **Tested (اختبار بس)** — الخطوات 1–6 و8 و9 (`docs/modules/PARTIES_MODULE.md`). الترحيل (7) وقلب التوجيه (11) بموافقة منفصلة |
-| 6.2 | Warehouses | B-26, B-49, B-50 | Blocked |
-| 6.3 | Supplier Invoices & Returns | B-20, B-31, B-26 | Blocked |
+| 6.1 | Suppliers + Customers (بيانات أساسية) | — | **Done (جاهز للتشغيل)** — الخطوات 1–11: الجداول + Adapter + أمر النقل المشروط بالنسخة الاحتياطية + قلب التوجيه في `/app/`. اتجرّب على نسخة من البيانات الحقيقية. التنفيذ على الخادم الفعلي بأمر التشغيل (`PARTIES_MODULE.md §7`) |
+| 6.2 | Warehouses | B-26 ✅، B-49 ✅، B-50 ✅ (منع الرصيد السالب على الخادم وقاعدة البيانات) | **Ready** — مفيش قرار مانع |
+| 6.3 | Supplier Invoices & Returns | B-20 (اعتماد المدير المالي للمعادلات بعد المراجعة)، B-31 ✅ (11 رقم مكرر محتاج مراجعة/معالجة بموافقة) | Blocked — على اعتماد المعادلات |
 | 6.4 | Payments & Collections | B-69, B-29, B-53, B-52 | Blocked |
 | 6.5 | Contracts, BOQ, Certificates | B-20, B-23 | Blocked |
 | 6.6 | Procurement (جديد) | B-36…B-38 | Blocked |
