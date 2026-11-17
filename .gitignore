@@ -7,3 +7,10 @@ data.json
 !.env.example
 server/dist/
 server/coverage/
+
+# المرحلة 2: مخرجات تشغيل محلية (شهادات/مفاتيح/نسخ) — ممنوع ترفع
+docker/backup-data/
+docker/offsite-data/
+docker/backup.key
+docker/certs/
+*.key

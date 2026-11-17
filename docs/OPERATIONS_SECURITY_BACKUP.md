@@ -1,0 +1,113 @@
+# دليل التشغيل: الأمان والنسخ الاحتياطي
+
+- **التاريخ:** 2026-11-17 · **المرحلة:** 2 (تأمين النظام)
+- **القرارات:** B-54 (مواصفات الخادم) · B-57 (Internal CA) · B-59 (المرفقات) · B-63…B-66 (النسخ). **B-67 لسه مفتوح** (مين يحتفظ بمفتاح التشفير ومين مسؤول عن اختبار الاستعادة الدوري).
+- **الملفات:** `docker/docker-compose.yml` · `docker/nginx/` · `docker/backup/` · `docker/db-init/` · `tools/ops/internal-ca.sh` · `docker/.env.example`
+
+---
+
+## 1. الصورة العامة
+
+```
+أجهزة الشركة ──HTTPS 443──▶ nginx ──▶ server (NestJS، دور unified_app) ──▶ db (PostgreSQL 16)
+                 (80 ← تحويل)                                                │  WAL كل ≤15 دقيقة
+                                                                             ▼
+                                                     BACKUP_DIR (جهاز تخزين منفصل) ◀── backup (نسخة كاملة يومية)
+                                                                             │  تشفير AES-256-GCM
+                                                                             ▼
+                                                     OFFSITE_DIR (NAS/جهاز تاني — نسخة مشفّرة خارج السيرفر)
+```
+
+- المنشور على الشبكة: **Nginx فقط** (443، و80 للتحويل). السيرفر والقاعدة جوه شبكة Docker.
+- السيرفر بيتصل بالقاعدة بدور **unified_app**: مش مالك أي جدول، ومايقدرش يعدّل أو يمسح سجل التدقيق (`audit_log`، `changes`)، ولا يغيّر الهيكل. الـ migrations والنسخ بيشتغلوا بدور المالك.
+
+## 2. التجهيز لأول مرة (على السيرفر)
+
+1. **المواصفات (B-54):** 8 أنوية، 32GB RAM، NVMe 1TB، UPS، ومساحة منفصلة للنسخ. نظام التشغيل لم يُحدَّد — أي Linux بيدعم Docker Engine + Compose v2.
+2. **الإعدادات:** `cp docker/.env.example docker/.env` وغيّر كل القيم اللي فيها `change-me`. ولّد الأسرار بـ `openssl rand -base64 48` (JWT_SECRET) و`openssl rand -hex 32` (TOTP_ENC_KEY).
+3. **الشهادة (B-57):**
+   ```bash
+   tools/ops/internal-ca.sh /srv/erp/certs erp.company.local erp 192.168.1.20
+   ```
+   - `ca/ca.crt` = الشهادة الجذرية → تتثبت على أجهزة الشركة (القسم 3).
+   - `ca/ca.key` = مفتاح السلطة → **انقله لمكان آمن أوفلاين** (فلاشة في خزنة مثلًا). مالوش لازمة على السيرفر إلا عند التجديد.
+   - شهادة السيرفر صالحة 825 يوم. التجديد بنفس الأمر قبل الانتهاء (بيستخدم نفس الـ CA، فمفيش داعي تعيد تثبيت الجذرية).
+4. **النسخ (B-66):** اركب جهاز التخزين المنفصل على `BACKUP_DIR` والـ NAS على `OFFSITE_DIR`، وولّد مفتاح التشفير:
+   ```bash
+   node docker/backup/crypt.mjs keygen /srv/erp/backup.key
+   ```
+   **احتفظ بنسخة من المفتاح بعيد عن السيرفر** — النسخة المشفّرة من غير المفتاح مالهاش أي قيمة (B-67).
+5. **التشغيل:** `docker compose -f docker/docker-compose.yml up -d --build`
+6. **أول دخول:** المدير بيدخل بـ `ADMIN_INITIAL_PASSWORD`، يغيّرها، وبعدها **يفعّل التحقق بخطوتين** (إجباري لدور admin افتراضيًا — `REQUIRE_2FA_ROLES`).
+
+> قاعدة موجودة قبل المرحلة 2 (volume قديم): سكربت `docker/db-init` مابيشتغلش تاني. نفّذ يدويًا مرة واحدة:
+> `CREATE ROLE unified_app LOGIN PASSWORD '...';` ثم سطر replication في `pg_hba.conf`، ثم شغّل خدمة migrate (migration 0004 بتدي الصلاحيات).
+
+## 3. تثبيت الشهادة الجذرية على أجهزة الشركة
+
+- **Windows (جهاز واحد):** افتح `ca.crt` ← Install Certificate ← Local Machine ← Place all certificates in: **Trusted Root Certification Authorities** ← Finish. أو من PowerShell كمسؤول:
+  `Import-Certificate -FilePath .\ca.crt -CertStoreLocation Cert:\LocalMachine\Root`
+- **Windows (كل الأجهزة على الدومين):** Group Policy ← Computer Configuration ← Policies ← Windows Settings ← Security Settings ← Public Key Policies ← Trusted Root Certification Authorities ← Import.
+- **Chrome وEdge** بيستخدموا مخزن Windows. **Firefox:** Settings ← Certificates ← Import (أو `security.enterprise_roots.enabled = true`).
+- **Android/iOS** (لو هيستخدموا على شبكة الشركة — B-56): إعدادات الأمان ← تثبيت شهادة CA.
+
+## 4. النسخ الاحتياطي
+
+| البند | القيمة | المصدر |
+|---|---|---|
+| نسخة كاملة | يوميًا 01:30 (`BACKUP_FULL_CRON`): `pg_basebackup` (مع التحقق `pg_verifybackup`) + `pg_dump` | B-63 |
+| تغييرات القاعدة (WAL) | تتأرشف مضغوطة على `BACKUP_DIR` فور امتلاء الملف، **وبحد أقصى كل 15 دقيقة** (`archive_timeout=900`) | B-63, B-64 |
+| أقصى فقد بيانات (RPO) | 15 دقيقة | B-64 |
+| النسخة الخارجية | مشفّرة AES-256-GCM على `OFFSITE_DIR`: النسخة الكاملة يوميًا + ملفات WAL كل 15 دقيقة | B-66 |
+| الاحتفاظ | كل النسخ آخر 30 يوم · آخر نسخة من كل أسبوع لـ 12 أسبوع · آخر نسخة من كل شهر لـ 12 شهر | B-65 |
+| الاستعادة لنقطة زمنية | أي لحظة في آخر 30 يوم. الأقدم: لوقت النسخة الأسبوعية/الشهرية نفسها | B-65 |
+| السجل | `BACKUP_DIR/backup-log.jsonl` (الوقت، النوع، الحالة، الحجم، SHA-256) | — |
+| الفحص | كل ساعة `check.sh` ← `BACKUP_DIR/status.json` + سطر `BACKUP ALERT` في لوج الحاوية | — |
+
+**أوامر يدوية:**
+```bash
+docker compose -f docker/docker-compose.yml exec backup /opt/backup/backup-full.sh     # نسخة كاملة الآن
+docker compose -f docker/docker-compose.yml exec backup /opt/backup/check.sh           # الحالة
+docker compose -f docker/docker-compose.yml exec backup /opt/backup/restore-test.sh    # اختبار استعادة (محلي)
+docker compose -f docker/docker-compose.yml exec -e RESTORE_FROM=offsite backup /opt/backup/restore-test.sh   # من النسخة المشفّرة
+```
+
+> **التنبيه:** حاليًا التنبيه = سطر في لوج الحاوية + `status.json`. وسيلة الإرسال (بريد/رسالة) تتحدد في مرحلة النشر (المرحلة 12).
+
+## 5. الاستعادة
+
+### 5.1 اختبار دوري (من غير ما يلمس النظام الشغال)
+`restore-test.sh` بيستعيد آخر نسخة في مجلد مؤقت، ويشغّل PostgreSQL منفصل عليه (من غير شبكة)، ويطبع أعداد السجلات، ويسجّل المدة في السجل، ويمسح المجلد المؤقت.
+قارن الأعداد بالنظام الشغال (`records`، `docs`، `users`، `audit_log`، `attachments`، آخر `changes.seq`).
+**المسؤول عن الاختبار الدوري وتوقيع نتيجته: B-67 (مفتوح).** المقترح: شهريًا.
+
+### 5.2 استعادة فعلية بعد عطل (الهدف: 4 ساعات — B-64)
+1. أوقف السيرفر: `docker compose stop server nginx`.
+2. استعِد في مجلد جديد (لنقطة زمنية اختيارية):
+   ```bash
+   docker compose exec backup /opt/backup/restore.sh latest /backup/restore/pgdata "2026-11-17 10:15:00+02"
+   # أو من النسخة المشفّرة: -e RESTORE_FROM=offsite
+   ```
+3. أوقف db، وانقل محتوى المجلد المستعاد مكان بيانات القاعدة (volume `pgdata`)، وشغّل db — هيطبّق WAL لحد الوقت المحدد ويفتح القاعدة.
+4. شغّل السيرفر وNginx، وادخل وراجع آخر العمليات المسجّلة.
+5. خد نسخة كاملة جديدة فورًا (`backup-full.sh`).
+
+> **أي استعادة على بيانات حقيقية = قرار من المستخدم** (ممنوع تنفيذ تغييرات خطرة على البيانات دون موافقة).
+
+## 6. نتائج التحقق في المرحلة 2 (بيئة اختبار معزولة، 2026-11-17)
+
+| الاختبار | النتيجة |
+|---|---|
+| HTTP → HTTPS (301) | ✅ |
+| الشهادة مقبولة بالـ CA الداخلية فقط (من غيرها: «self-signed certificate in chain») | ✅ |
+| TLS 1.2 و1.3 فقط (الإعداد) | ✅ |
+| السيرفر (3000) والقاعدة غير منشورين | ✅ |
+| Swagger مقفول (404) | ✅ |
+| الدخول + WebSocket (`wss`) + المزامنة عبر Nginx في المتصفح | ✅ |
+| نسخة كاملة + dump + نسخة خارجية مشفّرة | ✅ |
+| أرشفة WAL (و`check.sh` كشف خطأ صلاحيات حقيقي اتصلّح) | ✅ |
+| **استعادة لنقطة زمنية**: الدفعة قبل الوقت رجعت (3)، والدفعة بعده مش موجودة (0) | ✅ |
+| استعادة كاملة محلية ومن النسخة المشفّرة: الأعداد مطابقة للنظام الشغال، المدة 3 ثواني (قاعدة اختبار صغيرة) | ✅ |
+| ملف مشفّر متعدّل أو مفتاح غلط ← فك التشفير بيفشل ومفيش ناتج | ✅ |
+| سياسة الاحتفاظ على 400 يوم: اتحفظ 55 = 31 يومي + 12 أسبوعي + 12 شهري | ✅ |
+| دور التطبيق: UPDATE على audit_log مرفوض، تعطيل الـ Trigger مرفوض، والمالك نفسه مايقدرش يمسح | ✅ |

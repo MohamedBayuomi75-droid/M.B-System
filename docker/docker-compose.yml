@@ -1,6 +1,10 @@
-# التشغيل:  cp docker/.env.example docker/.env  (وغيّر الأسرار)  ثم  docker compose -f docker/docker-compose.yml up -d --build
-# الترتيب: db (صحية) → migrate (يطبّق كل الـ migrations من الصفر ويخرج) → server
-# Caddy (HTTPS) بيتضاف في A9، و MinIO في A5.
+# التشغيل (الدليل الكامل: docs/OPERATIONS_SECURITY_BACKUP.md):
+#   1) cp docker/.env.example docker/.env  وغيّر كل الأسرار
+#   2) tools/ops/internal-ca.sh "$CERT_DIR" <اسم-السيرفر> [عناوين إضافية]   (شهادة HTTPS من سلطة داخلية — B-57)
+#   3) node docker/backup/crypt.mjs keygen "$BACKUP_KEY_FILE"                (مفتاح تشفير النسخة الخارجية — B-66/B-67)
+#   4) docker compose -f docker/docker-compose.yml up -d --build
+# الترتيب: db (صحية) → migrate (بالمالك، بيخرج) → server (بدور التطبيق unified_app) → nginx (443 فقط للشبكة)، و backup جنبهم.
+# المنشور للشبكة: nginx بس (80 → تحويل لـ 443). السيرفر والقاعدة جوه شبكة Compose.
 name: unified
 
 services:
@@ -11,14 +15,32 @@ services:
       POSTGRES_USER: ${DB_USER:-unified}
       POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD is required in docker/.env}
       POSTGRES_DB: ${DB_NAME:-unified}
+      DB_APP_PASSWORD: ${DB_APP_PASSWORD:?DB_APP_PASSWORD is required in docker/.env}
+    # النسخ (B-63/B-64): أرشفة WAL مضغوطة على جهاز النسخ؛ archive_timeout=900 → أقصى فقد 15 دقيقة
+    command:
+      - postgres
+      - -c
+      - wal_level=replica
+      - -c
+      - archive_mode=on
+      - -c
+      - archive_timeout=900
+      - -c
+      - archive_command=test ! -f /backup/wal/%f.gz && gzip -c %p > /backup/wal/%f.gz.tmp && mv /backup/wal/%f.gz.tmp /backup/wal/%f.gz
+      - -c
+      - max_wal_senders=4
+      - -c
+      - password_encryption=scram-sha-256
     volumes:
       - pgdata:/var/lib/postgresql/data
+      - ./db-init:/docker-entrypoint-initdb.d:ro
+      - ${BACKUP_DIR:-./backup-data}:/backup
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       interval: 5s
       timeout: 3s
       retries: 20
-    # مفيش ports: الداتابيز مش مكشوفة برّه شبكة Compose
+    # مفيش ports: القاعدة مش مكشوفة برّه شبكة Compose
 
   migrate:
     build: { context: .., dockerfile: docker/server.Dockerfile }
@@ -35,7 +57,7 @@ services:
       JWT_SECRET: ${JWT_SECRET:?JWT_SECRET is required in docker/.env (min 32 chars)}
       LOG_LEVEL: ${LOG_LEVEL:-info}
       SWAGGER_ENABLED: ${SWAGGER_ENABLED:-false}
-      # A2 — المصادقة
+      # المصادقة
       ADMIN_INITIAL_PASSWORD: ${ADMIN_INITIAL_PASSWORD:-}
       COOKIE_SECURE: ${COOKIE_SECURE:-true}
       JWT_ACCESS_TTL_SEC: ${JWT_ACCESS_TTL_SEC:-900}
@@ -43,6 +65,11 @@ services:
       LOGIN_RATE_LIMIT_PER_MIN: ${LOGIN_RATE_LIMIT_PER_MIN:-5}
       LOGIN_MAX_FAILURES: ${LOGIN_MAX_FAILURES:-10}
       LOGIN_LOCK_MINUTES: ${LOGIN_LOCK_MINUTES:-15}
+      # المرحلة 2
+      REQUIRE_2FA_ROLES: ${REQUIRE_2FA_ROLES:-admin}
+      TOTP_ENC_KEY: ${TOTP_ENC_KEY:-}
+      ATTACH_MAX_MB: ${ATTACH_MAX_MB:-25}
+      TRUST_PROXY: ${TRUST_PROXY:-loopback, uniquelocal}
     depends_on:
       db: { condition: service_healthy }
     restart: "no"
@@ -53,11 +80,51 @@ services:
     restart: unless-stopped
     environment:
       <<: *server-env
+      # أقل صلاحية: السيرفر مش مالك الجداول (مايقدرش يعدّل/يمسح سجل التدقيق ولا يغيّر الهيكل)
+      DB_USER: unified_app
+      DB_PASSWORD: ${DB_APP_PASSWORD}
       PORT: 3000
-    ports:
-      - "${SERVER_PORT:-3000}:3000"
+    expose:
+      - "3000"
     depends_on:
       migrate: { condition: service_completed_successfully }
+
+  nginx:
+    image: nginx:1.27-alpine
+    restart: unless-stopped
+    environment:
+      SERVER_NAME: ${SERVER_NAME:?SERVER_NAME is required (e.g. erp.company.local)}
+      NGINX_ENVSUBST_FILTER: ^SERVER_NAME$
+    volumes:
+      - ./nginx/default.conf.template:/etc/nginx/templates/default.conf.template:ro
+      - ${CERT_DIR:?CERT_DIR is required (tools/ops/internal-ca.sh)}/fullchain.crt:/etc/nginx/certs/fullchain.crt:ro
+      - ${CERT_DIR}/server.key:/etc/nginx/certs/server.key:ro
+    ports:
+      - "${HTTPS_PORT:-443}:443"
+      - "${HTTP_PORT:-80}:80"
+    depends_on:
+      server: { condition: service_started }
+
+  backup:
+    build: { context: .., dockerfile: docker/backup.Dockerfile }
+    image: unified-backup:local
+    restart: unless-stopped
+    environment:
+      DB_USER: ${DB_USER:-unified}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME:-unified}
+      PGHOST: db
+      BACKUP_FULL_CRON: ${BACKUP_FULL_CRON:-30 1 * * *}
+      KEEP_DAILY_DAYS: ${KEEP_DAILY_DAYS:-30}
+      KEEP_WEEKLY: ${KEEP_WEEKLY:-12}
+      KEEP_MONTHLY: ${KEEP_MONTHLY:-12}
+      TZ: ${TZ:-Africa/Cairo}
+    volumes:
+      - ${BACKUP_DIR:-./backup-data}:/backup
+      - ${OFFSITE_DIR:-./offsite-data}:/offsite
+      - ${BACKUP_KEY_FILE:-./backup.key}:/run/secrets/backup_key:ro
+    depends_on:
+      db: { condition: service_healthy }
 
 volumes:
   pgdata:
