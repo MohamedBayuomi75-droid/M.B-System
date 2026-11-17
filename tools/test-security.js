@@ -31,11 +31,14 @@ function T(name, cond, detail) { if (cond) { pass++; console.log('PASS ' + name)
 
 /* ---- electron stub ---- */
 const handlers = {};
+const electronDialogNext = { open: { canceled: true }, save: { canceled: true } };
 const noop = () => {};
 const electronStub = new Proxy({
   app: new Proxy({ getPath: () => TMP, getVersion: () => '0.0.0', getName: () => 'unified-system', isPackaged: false, on: noop, whenReady: () => Promise.resolve(), setPath: noop },
                  { get: (t, k) => (k in t ? t[k] : noop) }),
   ipcMain: { handle: (ch, fn) => { handlers[ch] = fn; }, on: noop },
+  // حوارات فتح/حفظ الملفات قابلة للتحكم من الاختبار (اختبارات الإكسيل)
+  dialog: { next: {}, showOpenDialog: async () => electronDialogNext.open, showSaveDialog: async () => electronDialogNext.save, showMessageBox: async () => ({ response: 0 }) },
 }, { get: (t, k) => (k in t ? t[k] : new Proxy({}, { get: () => noop })) });
 const origLoad = Module._load;
 Module._load = function (req, parent, isMain) { if (req === 'electron') return electronStub; return origLoad.apply(this, arguments); };
@@ -143,6 +146,59 @@ Module._load = function (req, parent, isMain) { if (req === 'electron') return e
   T('ledger section survives round trip', bd.ledger && bd.ledger.suppliers && bd.ledger.suppliers[0].name === 'Supplier A' && bd.ledger.settings.currency === 'EGP', bd.ledger);
   T('clients section survives round trip', bd.clients && bd.clients.customers && bd.clients.customers[0].name === 'Client A', bd.clients);
   T('HR keys still intact next to the sections', bd.employees && bd.employees[0] && bd.employees[0].name === 'Ahmed');
+
+
+  /* ===== المرحلة 3: مكتبة الإكسيل (xlsx) — النسخة المحلية الرسمية بس + استيراد/تصدير ===== */
+  {
+    const VENDOR = PROJ + '/vendor/xlsx.full.min.js';
+    // البصمة والإصدار الموثّقين في docs/VENDOR_LIBRARIES.md (من cdn.sheetjs.com)
+    const EXPECTED_SHA256 = 'cc015130aa8521e7f088f88898eba949ccdcbfb38df0bd129b44b7273c3a6f41';
+    T('xlsx: vendor file matches the documented official SHA-256', crypto.createHash('sha256').update(fs.readFileSync(VENDOR)).digest('hex') === EXPECTED_SHA256);
+    const pkg = JSON.parse(fs.readFileSync(PROJ + '/package.json', 'utf8'));
+    T('xlsx: no npm dependency (npm only has the vulnerable 0.18.5)', !(pkg.dependencies || {}).xlsx && !(pkg.devDependencies || {}).xlsx);
+    T('xlsx: web build loads the local vendor copy, not a CDN', /<script src="vendor\/xlsx\.full\.min\.js"><\/script>/.test(fs.readFileSync(PROJ + '/web/index.html', 'utf8')) && !/cdn\.sheetjs|unpkg|jsdelivr/.test(fs.readFileSync(PROJ + '/web/index.html', 'utf8')));
+    const excel = require(PROJ + '/src/main/excel.js');
+    const v = excel.xlsxVersion();
+    const ge = (a, b) => { const x = a.split('.').map(Number), y = b.split('.').map(Number); for (let i = 0; i < 3; i++) { if (x[i] !== y[i]) return x[i] > y[i]; } return true; };
+    T('xlsx: desktop main process loads the patched version (>= 0.20.2)', !!v && ge(v, '0.20.2'), v);
+    // تصدير ملف حقيقي ثم استيراده تاني بنفس كود البرنامج
+    const out = path.join(TMP, 'export-test.xlsx');
+    electronDialogNext.save = { canceled: false, filePath: out.replace(/\.xlsx$/, '') }; // من غير امتداد: البرنامج بيضيفه
+    const headers = ['الاسم', 'المبلغ', 'التاريخ', 'ملاحظات'];
+    const rows = [['مورد «أ» & شركاه', 1234.5678, '2026-03-15', '=HYPERLINK("x")'], ['عامل ٢', -0.005, '', 'سطر\nتاني'], ['', 0, '2026-12-31', 'نص طويل '.repeat(10)]];
+    const ex = await handlers['excel:export']({}, { filename: 'export-test.xlsx', sheetName: 'كشف: مارس/2026', headers, rows });
+    T('excel export: writes a real .xlsx file', ex && ex.ok === true && ex.filePath === out && fs.existsSync(out) && fs.readFileSync(out).slice(0, 2).toString() === 'PK', ex);
+    electronDialogNext.open = { canceled: false, filePaths: [out] };
+    const im = await handlers['excel:import']({});
+    const sheet = im && im.ok ? im.sheets[im.sheetNames[0]] : [];
+    T('excel import: sheet name sanitised (: and / replaced)', im && im.sheetNames && im.sheetNames[0] === 'كشف- مارس-2026', im && im.sheetNames);
+    T('excel import: Arabic headers round-trip', JSON.stringify(sheet[0]) === JSON.stringify(headers), sheet[0]);
+    T('excel import: text with special characters unchanged', sheet[1][0] === 'مورد «أ» & شركاه' && sheet[2][3] === 'سطر\nتاني', [sheet[1][0], sheet[2][3]]);
+    T('excel import: numbers keep full precision (as the desktop always did)', String(sheet[1][1]) === '1234.5678' && String(sheet[2][1]) === '-0.005', [sheet[1][1], sheet[2][1]]);
+    T('excel import: formula-looking text stays text (no formula injected by export)', sheet[1][3] === '=HYPERLINK("x")');
+    // CSV
+    const csv = path.join(TMP, 'in.csv');
+    fs.writeFileSync(csv, '﻿كود,القيمة\nA-1,10.25\nب-2,"1,500"\n');
+    electronDialogNext.open = { canceled: false, filePaths: [csv] };
+    const ic = await handlers['excel:import']({});
+    const cs = ic && ic.ok ? ic.sheets[ic.sheetNames[0]] : [];
+    T('excel import: CSV with BOM + Arabic + quoted thousands', JSON.stringify(cs) === JSON.stringify([['كود', 'القيمة'], ['A-1', '10.25'], ['ب-2', '1,500']]), cs);
+    // ملف تالف → رسالة خطأ مش crash
+    const bad = path.join(TMP, 'bad.xlsx'); fs.writeFileSync(bad, Buffer.from('PK\u0003\u0004 not really a zip'));
+    electronDialogNext.open = { canceled: false, filePaths: [bad] };
+    const ib = await handlers['excel:import']({});
+    T('excel import: corrupt file → ok:false with an error, no crash', ib && ib.ok === false && !!ib.error);
+    // الثغرة CVE-2023-30533 (Prototype Pollution): ملف فيه اسم شيت/خلايا __proto__ مايلوّثش Object.prototype
+    const XL = require(VENDOR);
+    const wb = XL.utils.book_new(); XL.utils.book_append_sheet(wb, XL.utils.aoa_to_sheet([['__proto__', 'constructor'], ['{"polluted":1}', 'x']]), '__proto__');
+    const pp = path.join(TMP, 'proto.xlsx'); fs.writeFileSync(pp, XL.write(wb, { type: 'buffer', bookType: 'xlsx' }));
+    electronDialogNext.open = { canceled: false, filePaths: [pp] };
+    await handlers['excel:import']({});
+    T('excel import: crafted __proto__ workbook does not pollute Object.prototype', ({}).polluted === undefined && Object.prototype.polluted === undefined);
+    electronDialogNext.save = { canceled: true };
+    const cx = await handlers['excel:export']({}, { filename: 'x.xlsx', headers: ['a'], rows: [] });
+    T('excel export: cancel → canceled, nothing written', cx && cx.canceled === true);
+  }
 
   await handlers['server:stop']({});
   console.log('\nNODE TESTS: ' + pass + ' passed, ' + fail + ' failed');

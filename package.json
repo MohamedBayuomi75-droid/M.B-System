@@ -24,9 +24,7 @@
     "test:ui:web": "npm --prefix server run build && WEB_MODE=1 node tests-merge/run-all.js",
     "test:web": "npm --prefix server run build && node tests-web/web-e2e.js"
   },
-  "dependencies": {
-    "xlsx": "^0.18.5"
-  },
+  "dependencies": {},
   "devDependencies": {
     "electron": "^31.0.0",
     "electron-builder": "^24.13.3"

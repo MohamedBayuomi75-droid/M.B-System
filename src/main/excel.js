@@ -1,5 +1,7 @@
-// تحميل مكتبة xlsx (من node_modules أو من نسخة vendor المرفقة مع البرنامج
-// بدون npm install) واستيراد/تصدير ملفات إكسيل (xlsx/xls/csv).
+// تحميل مكتبة xlsx من النسخة المحلية المرفقة مع البرنامج (vendor/xlsx.full.min.js) فقط، واستيراد/تصدير ملفات إكسيل.
+// المرحلة 3: نسخة npm (0.18.5) فيها ثغرات معروفة (CVE-2023-30533 / CVE-2024-22363) ومش متاح غيرها على npm —
+// فاتشالت من package.json ومابقيناش نجرّب node_modules خالص (عشان نسخة قديمة متبقية على جهاز ماتتحمّلش بالغلط).
+// المصدر الرسمي والإصدار والبصمة: docs/VENDOR_LIBRARIES.md
 const path = require('path');
 const fs = require('fs');
 const { ipcMain, dialog } = require('electron');
@@ -7,27 +9,17 @@ const { APP_ROOT, getMainWindow } = require('./window-state');
 
 let XLSX = null;
 (function loadXlsx() {
-  // 1) من node_modules لو موجودة
-  try { XLSX = require('xlsx'); if (XLSX) return; } catch (e) {}
-  // 2) نسخة مدمجة مع البرنامج (vendor) — بدون npm install
+  const vendorPath = path.join(APP_ROOT, 'vendor', 'xlsx.full.min.js');
   try {
-    const vendorPath = path.join(APP_ROOT, 'vendor', 'xlsx.full.min.js');
     if (fs.existsSync(vendorPath)) {
       // المكتبة تضع XLSX على global أو module.exports حسب البيئة
       const g = global;
       const prev = g.XLSX;
-      require(vendorPath);
-      XLSX = g.XLSX || prev || require(vendorPath);
-      if (XLSX && !XLSX.utils && g.XLSX) XLSX = g.XLSX;
+      const mod = require(vendorPath);
+      XLSX = (mod && mod.utils) ? mod : (g.XLSX || prev || null);
     }
-  } catch (e2) {
-    console.error('xlsx vendor load failed', e2);
-  }
-  // 3) محاولة أخيرة عبر مسار مطلق
-  if (!XLSX) {
-    try {
-      XLSX = require(path.join(APP_ROOT, 'vendor', 'xlsx.full.min.js'));
-    } catch (e3) {}
+  } catch (e) {
+    console.error('xlsx vendor load failed', e);
   }
 })();
 
@@ -105,4 +97,5 @@ ipcMain.handle('excel:export', async (event, { filename, sheetName, headers, row
   }
 });
 
-module.exports = {};
+// للاختبارات: إصدار المكتبة المحمّلة فعلًا
+module.exports = { xlsxVersion: () => (XLSX && XLSX.version) || null };
