@@ -95,12 +95,23 @@
   document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'hidden') flushOnLeave(); });
   window.addEventListener('online', function () { window.WebSync.save(DATA); });
 
+  // ---- المرحلة 4: رابط مباشر لصفحة (من الواجهة الجديدة /app/): /legacy/#ledger.suppliers — لو المستخدم ليه صلاحية العرض
+  function openHashPage() {
+    var key = decodeURIComponent(String(location.hash || '').replace(/^#/, ''));
+    if (!key || !/^[A-Za-z][\w.]*$/.test(key)) return;
+    try {
+      if (typeof HR_PAGES !== 'undefined' && HR_PAGES.indexOf(key) < 0) return;
+      if (typeof hasPagePermission === 'function' && !hasPagePermission(key, 'view')) return;
+      goToPage(key);
+    } catch (e) { /* صفحة مش موجودة: نفضل في الرئيسية */ }
+  }
+
   // ---- بعد ما الواجهة ترسم أول مرة: الاتصال اللحظي
   document.addEventListener('DOMContentLoaded', function () {
     window.WebSession.ready().then(function () {
       var tries = 0;
       (function waitBoot() {
-        if (document.querySelector('#app .sidebar, #app nav, #app .layout') || tries++ > 100) window.WebSync.connect();
+        if (document.querySelector('#app .sidebar, #app nav, #app .layout') || tries++ > 100) { window.WebSync.connect(); openHashPage(); }
         else setTimeout(waitBoot, 100);
       })();
     });

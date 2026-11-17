@@ -3,6 +3,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import cookieParser from 'cookie-parser';
 import express from 'express';
 import { mountLegacyUi } from './legacy-ui';
+import { mountAngularApp } from './app-ui';
 import { CSP_REPORT_PATH, securityHeaders } from './security/security-headers';
 import { originCheck } from './security/origin-check';
 import { cspReportHandler } from './security/csp-report';
@@ -29,6 +30,7 @@ export function setupApp(app: INestApplication): void {
   http.post?.(CSP_REPORT_PATH, express.json({ type: ['application/csp-report', 'application/reports+json', 'application/json'], limit: '32kb' }), cspReportHandler);
 
   if (process.env.LEGACY_UI !== 'false') mountLegacyUi(app);
+  if (process.env.ANGULAR_UI !== 'false') mountAngularApp(app);
 
   const swaggerOn = process.env.SWAGGER_ENABLED ? process.env.SWAGGER_ENABLED === 'true' : process.env.NODE_ENV !== 'production';
   if (swaggerOn) {

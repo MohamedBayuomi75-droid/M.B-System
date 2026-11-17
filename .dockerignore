@@ -15,3 +15,5 @@ dist
 .env
 **/.env
 docker/.env
+frontend/dist
+frontend/.angular

@@ -29,6 +29,8 @@ const base = [
   "frame-ancestors 'none'",
 ];
 export const CSP_ENFORCED = [...base, "script-src 'self' 'unsafe-inline'", "script-src-attr 'unsafe-inline'"].join('; ');
+/** الواجهة الجديدة (/app/ — Angular AOT): سكربت من نفس الأصل بس، من غير أي inline ولا eval. الـ style inline لأن Angular بيحقن أنماط المكونات. */
+export const CSP_APP = [...base, "script-src 'self'", "script-src-attr 'none'", "manifest-src 'self'"].join('; ');
 export const CSP_STRICT_REPORT_ONLY = [...base, "script-src 'self'", "script-src-attr 'none'", `report-uri ${CSP_REPORT_PATH}`].join('; ');
 
 export function securityHeaders(env: NodeJS.ProcessEnv = process.env) {
@@ -42,8 +44,9 @@ export function securityHeaders(env: NodeJS.ProcessEnv = process.env) {
     res.setHeader('Cross-Origin-Resource-Policy', 'same-origin');
     res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()');
     res.setHeader('X-Permitted-Cross-Domain-Policies', 'none');
-    if (enforce) res.setHeader('Content-Security-Policy', CSP_ENFORCED);
-    if (reportOnly) res.setHeader('Content-Security-Policy-Report-Only', CSP_STRICT_REPORT_ONLY);
+    const isApp = req.path === '/app' || req.path.startsWith('/app/');
+    if (enforce) res.setHeader('Content-Security-Policy', isApp ? CSP_APP : CSP_ENFORCED);
+    if (reportOnly && !isApp) res.setHeader('Content-Security-Policy-Report-Only', CSP_STRICT_REPORT_ONLY);
     // HSTS بس على HTTPS (خلف Nginx: X-Forwarded-Proto + trust proxy). Nginx بيحطها كمان.
     if (req.secure) res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
     // ردود الـ API مش بتتخزن في كاش المتصفح/الوسطاء (فيها بيانات مالية وشخصية)

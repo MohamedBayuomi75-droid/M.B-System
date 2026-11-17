@@ -22,7 +22,9 @@
     "gen:collections": "node tools/web/gen-server-collections.js",
     "build:web": "node tools/web/build-web.js",
     "test:ui:web": "npm --prefix server run build && WEB_MODE=1 node tests-merge/run-all.js",
-    "test:web": "npm --prefix server run build && node tests-web/web-e2e.js"
+    "test:web": "npm --prefix server run build && node tests-web/web-e2e.js",
+    "build:app": "npm --prefix frontend run build",
+    "test:app": "npm --prefix server run build && npm --prefix frontend run build && node tests-web/app-e2e.js"
   },
   "dependencies": {},
   "devDependencies": {

@@ -12,6 +12,18 @@ COPY server/tsconfig.json server/tsconfig.build.json ./
 COPY server/src ./src
 RUN npm run build && npm prune --omit=dev
 
+# الواجهة الجديدة (Angular — المرحلة 4): بتتبني هنا وبتتخدم على /app/ من نفس السيرفر
+FROM node:22-alpine AS frontend
+WORKDIR /fe
+COPY frontend/package.json frontend/package-lock.json ./
+RUN --mount=type=secret,id=npm_ca,required=false \
+    if [ -f /run/secrets/npm_ca ]; then export NODE_EXTRA_CA_CERTS=/run/secrets/npm_ca; npm config set cafile /run/secrets/npm_ca; fi; \
+    npm ci --no-audit --no-fund
+COPY frontend/angular.json frontend/tsconfig.json frontend/tsconfig.app.json frontend/ngsw-config.json ./
+COPY frontend/src ./src
+COPY frontend/public ./public
+RUN npx ng build
+
 FROM node:22-alpine AS runtime
 ENV NODE_ENV=production
 WORKDIR /app
@@ -24,6 +36,8 @@ COPY --chown=node:node web ./legacy/web
 COPY --chown=node:node vendor ./legacy/vendor
 COPY --chown=node:node icon.ico ./legacy/icon.ico
 ENV LEGACY_UI_ROOT=/app/legacy
+COPY --from=frontend --chown=node:node /fe/dist/frontend/browser ./frontend
+ENV FRONTEND_DIST=/app/frontend
 USER node
 EXPOSE 3000
 HEALTHCHECK --interval=15s --timeout=3s --start-period=20s --retries=3 \
