@@ -32,6 +32,9 @@ function expected(role: (typeof ROLE_KEYS)[number], coll: string) {
   };
 }
 
+/** حركات المخزن ليها شكل إلزامي على مستوى القاعدة (B-50) — الاختبار ده عن الصلاحيات، فبيستخدم حركة استلام سليمة */
+const VALID_SHAPE: Record<string, Record<string, unknown>> = { 'warehouses.movements': { type: 'in', itemId: 'mx-item', qty: 1, locationId: 'mx-loc' } };
+
 describe('A3 permission matrix: role × collection × action (over HTTP)', () => {
   let t: TestApp;
   let admin: string;
@@ -48,7 +51,7 @@ describe('A3 permission matrix: role × collection × action (over HTTP)', () =>
     // سجل للتعديل وسجل للحذف لكل (collection × دور) — مربوطين بـ p1 عشان نطاق مدير المشروع
     const changes = [];
     for (const c of COLLS) for (const role of ROLE_KEYS) {
-      for (const suffix of ['edit', 'del']) changes.push({ collection: c, id: `${role}-${suffix}`, op: 'upsert', baseRev: 0, set: { title: 'seed', projectId: 'p1', fromProjectId: 'p1' } });
+      for (const suffix of ['edit', 'del']) changes.push({ collection: c, id: `${role}-${suffix}`, op: 'upsert', baseRev: 0, set: { title: 'seed', projectId: 'p1', fromProjectId: 'p1', ...VALID_SHAPE[c] } });
     }
     const r = await sync(t, admin, { changes: [...changes, { collection: 'projects', id: 'p1', op: 'upsert', baseRev: 0, set: { name: 'p1' } }] });
     expect(r.status).toBe(200);
@@ -75,7 +78,7 @@ describe('A3 permission matrix: role × collection × action (over HTTP)', () =>
       const guarded = (FIELD_GUARDS[c] ?? []).flatMap((g) => g.fields);
       const safeField = guarded.includes('title') ? 'note' : 'title';
       const attempts: [string, boolean, object][] = [
-        ['add', exp.add, { collection: c, id: `${role}-new`, op: 'upsert', baseRev: 0, set: { [safeField]: 'x', projectId: 'p1', fromProjectId: 'p1' } }],
+        ['add', exp.add, { collection: c, id: `${role}-new`, op: 'upsert', baseRev: 0, set: { [safeField]: 'x', projectId: 'p1', fromProjectId: 'p1', ...VALID_SHAPE[c] } }],
         ['edit', exp.edit, { collection: c, id: `${role}-edit`, op: 'upsert', baseRev: 1, set: { [safeField]: 'edited' } }],
         ['delete', exp.delete, { collection: c, id: `${role}-del`, op: 'delete', baseRev: 1 }],
       ];

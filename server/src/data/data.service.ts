@@ -26,6 +26,8 @@ const RELATIONAL_WRITERS: Record<string, { fn: string; table: string }> = {
   'clients.customers': { fn: 'legacy_write_customer', table: 'customers' },
 };
 /** أكواد PostgreSQL لرفض قيد (تفرّد/CHECK/قيمة) ← تعارض صريح بدل 500 */
+/** مجموعات عليها قيود قاعدة بيانات بتتفحص بعد الكتابة (B-50: الرصيد السالب) — الرفض بيرجع تعارض صريح ومابيوقفش باقي الدفعة */
+const GUARDED_COLLECTIONS = new Set(['warehouses.movements']);
 const CONSTRAINT_CODES = new Set(['23505', '23514', '23502', '22023', '22P02', '22007', '22008', '22003']);
 
 interface RecordRow { collection: string; id: string; data: Json; rev: number; deleted_at: Date | null }
@@ -360,7 +362,11 @@ export class DataService {
       if (p.kind === 'insert' || p.kind === 'restore') { op = 'insert'; diff = p.kind === 'restore' ? { set: p.data, restored: true } : { set: p.data }; fields = p.fields; }
       else if (p.kind === 'update') { op = 'update'; fields = p.fields; diff = { set: p.set, ...(p.unset.length ? { unset: p.unset } : {}), ...(p.overwrote.length ? { overwrote: p.overwrote } : {}), before: pickBefore(p.row.data, p.fields) }; }
       else { op = 'delete'; diff = { before: capBefore((p as { row: RecordRow }).row.data) }; fields = []; }
-    } else if (p.kind === 'insert') {
+    } else {
+      const guarded = GUARDED_COLLECTIONS.has(c.collection);
+      if (guarded) await qr.query(`SAVEPOINT guarded_write`);
+      try {
+    if (p.kind === 'insert') {
       await qr.query(`INSERT INTO records (collection, id, data, rev, project_id, created_by, updated_by, created_at) VALUES ($1, $2, $3::jsonb, 1, $4, $5, $5, clock_timestamp())`, [c.collection, c.id, JSON.stringify(p.data), pid(p.data), user.id]);
       rev = 1; op = 'insert'; diff = { set: p.data }; fields = p.fields;
     } else if (p.kind === 'restore') {
@@ -373,6 +379,21 @@ export class DataService {
     } else {
       const r = firstRow<{ rev: number }>(await qr.query(`UPDATE records SET deleted_at = now(), rev = rev + 1, updated_by = $3, updated_at = now() WHERE collection = $1 AND id = $2 RETURNING rev`, [c.collection, c.id, user.id]));
       rev = r.rev; op = 'delete'; diff = { before: capBefore((p as { row: RecordRow }).row.data) }; fields = [];
+    }
+      if (guarded) await qr.query(`RELEASE SAVEPOINT guarded_write`);
+      } catch (e) {
+        const code = (e as { code?: string }).code ?? '';
+        if (!guarded || code !== '23514') throw e;
+        await qr.query(`ROLLBACK TO SAVEPOINT guarded_write`);
+        const msg = (e as Error).message;
+        // B-50 §6: المحاولة المرفوضة بتتسجّل في التدقيق (في نفس المعاملة اللي بتكمل)
+        await qr.query(`INSERT INTO audit_log (user_id, username, action, entity, entity_id, details) VALUES ($1, $2, $3, $4, $5, $6::jsonb)`,
+          [user.id, user.username, msg.startsWith('NEGATIVE_STOCK') ? 'stock.issue_rejected' : 'stock.movement_rejected', c.collection, c.id,
+           JSON.stringify({ op: c.op, reason: msg, attempted: c.op === 'delete' ? null : (p as { data?: Json }).data ?? null })]);
+        const row = 'row' in p ? (p as { row: RecordRow }).row : null;
+        const current = row && !row.deleted_at ? { rev: row.rev, data: stripHidden(row.data, hiddenFields(user, c.collection)) } : null;
+        return { collection: c.collection, id: c.id, reason: 'constraint', fields: [`${msg.startsWith('NEGATIVE_STOCK') ? 'negative_stock' : 'invalid_movement'}:${msg}`], current };
+      }
     }
     await qr.query(`INSERT INTO changes (collection, record_id, op, rev, user_id, fields, diff) VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb)`, [c.collection, c.id, op, rev, user.id, fields, JSON.stringify(diff)]);
     const merged = p.kind === 'update' && c.baseRev < p.row.rev; // حد تاني عدّل بعد baseRev → رجّع النسخة المدموجة

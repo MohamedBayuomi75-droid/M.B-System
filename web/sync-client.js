@@ -226,7 +226,12 @@
       if (c.current) { replaceLocal(DATA, c.collection, c.id, c.current.data); S.base[c.collection].set(c.id, clone(c.current.data)); revs[c.id] = c.current.rev; }
       else { replaceLocal(DATA, c.collection, c.id, null); S.base[c.collection].delete(c.id); delete revs[c.id]; }
       changedLocal = true;
-      var why = c.reason === 'deleted' ? 'اتمسح من مستخدم تاني' : c.reason === 'changed_since' ? 'اتعدّل من مستخدم تاني قبل الحذف' : 'مستخدم تاني غيّر ' + (c.fields || []).join('، ') + ' في نفس الوقت';
+      // reason=constraint: قاعدة البيانات رفضت القيمة (مثلًا B-50 رصيد سالب، أو كود مكرر) — مش تعارض مع مستخدم تاني
+      var cf = String((c.fields || [])[0] || '');
+      var why = c.reason === 'deleted' ? 'اتمسح من مستخدم تاني' : c.reason === 'changed_since' ? 'اتعدّل من مستخدم تاني قبل الحذف'
+        : c.reason === 'constraint' ? (cf.indexOf('negative_stock') === 0 ? 'الرصيد المتاح مايكفيش — ممنوع الرصيد المخزني السالب (كمّل الاستلام أو اعمل تسوية معتمدة الأول)'
+          : cf.indexOf('invalid_movement') === 0 ? 'بيانات حركة المخزن غير صحيحة' : cf.indexOf('duplicate') === 0 ? 'الكود مستخدم لسجل تاني' : 'القيمة مرفوضة من قواعد النظام')
+        : 'مستخدم تاني غيّر ' + (c.fields || []).join('، ') + ' في نفس الوقت';
       notes.push('⚠️ تعديلك على ' + label(c.collection) + ' ماتحفظش لأنه ' + why + ' — اتعرضت النسخة الحالية، راجعها وعدّل تاني لو لازم');
     });
     var dByKey = {};
