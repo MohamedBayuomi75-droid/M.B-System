@@ -16,6 +16,7 @@ import { ProjectsModule } from './projects/projects.module';
 import { NumberingModule } from './numbering/numbering.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { ApprovalsModule } from './approvals/approvals.module';
+import { PartiesModule } from './parties/parties.module';
 import { HistoryModule } from './history/history.module';
 
 @Module({
@@ -56,7 +57,7 @@ import { HistoryModule } from './history/history.module';
     NumberingModule,
     NotificationsModule,
     ApprovalsModule,
-    HistoryModule,
+    HistoryModule, PartiesModule,
   ],
 })
 export class AppModule {}

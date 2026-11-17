@@ -108,7 +108,7 @@
 الترتيب يُعتمد في تقرير ما قبل المرحلة 6 (`MODULE_MIGRATION_PLAN.md §6`).
 | # | الموديول | قرارات مانعة | الحالة |
 |---|---|---|---|
-| 6.1 | Suppliers + Customers (بيانات أساسية) | — | Not Started |
+| 6.1 | Suppliers + Customers (بيانات أساسية) | — | **Tested (اختبار بس)** — الخطوات 1–6 و8 و9 (`docs/modules/PARTIES_MODULE.md`). الترحيل (7) وقلب التوجيه (11) بموافقة منفصلة |
 | 6.2 | Warehouses | B-26, B-49, B-50 | Blocked |
 | 6.3 | Supplier Invoices & Returns | B-20, B-31, B-26 | Blocked |
 | 6.4 | Payments & Collections | B-69, B-29, B-53, B-52 | Blocked |
