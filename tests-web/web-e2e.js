@@ -61,7 +61,8 @@ async function newUser(username, role, extra = {}) {
     await page.waitForSelector('#waPwdForm');
     ok(true, 'forced password change form shown');
     await page.fill('#waNew', 'short'); await page.fill('#waNew2', 'short'); await page.click('#waChange');
-    ok(/10/.test(await page.textContent('#waErr')), 'weak new password rejected in the form');
+    await page.waitForFunction(() => /10/.test(document.getElementById('waErr').textContent), null, { timeout: 5000 }).catch(() => {}); // الرسالة ممكن تتأخر لحظة (كان بيقرا قبلها)
+    ok(/10/.test(await page.textContent('#waErr')), 'weak new password rejected in the form', await page.evaluate(() => ({ err: document.getElementById('waErr') && document.getElementById('waErr').textContent, pwdForm: !!document.getElementById('waPwdForm'), loginForm: !!document.getElementById('waForm'), overlay: !!document.getElementById('webAuthOverlay'), newVal: (document.getElementById('waNew') || {}).value })));
     await page.fill('#waNew', 'First#Login#2026'); await page.fill('#waNew2', 'First#Login#2026'); await page.click('#waChange');
     await page.waitForFunction(() => !document.getElementById('webAuthOverlay') && typeof DATA !== 'undefined' && currentUser && currentUser.username === 'first_login', null, { timeout: 20000 });
     ok(true, 'app opens after the change, currentUser from the server');
