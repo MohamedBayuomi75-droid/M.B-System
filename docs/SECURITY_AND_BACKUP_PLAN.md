@@ -22,7 +22,7 @@
 | إدارة الأسرار | Implemented (متغيرات بيئة؛ الإنتاج يرفض الإقلاع بدون `JWT_SECRET`) | `server/src/config/env.validation.ts` (VERIFIED) |
 | قاعدة البيانات غير منشورة خارج شبكة Docker | Implemented | `docker/docker-compose.yml` (VERIFIED) |
 | تبعيات الخادم | 0 ثغرات | REPORTED (`npm audit`، 2026-11-16) |
-| مكتبة `xlsx` 0.18.5 القديمة (تُحمَّل في المتصفح أيضًا) | **Blocked** — النسخة المصلَّحة على cdn.sheetjs.com بس، والشبكة الحالية بتمنعه | VERIFIED (رفض الـ proxy) |
+| مكتبة `xlsx` | **Implemented (المرحلة 3)** — `vendor/xlsx.full.min.js` = SheetJS 0.20.3 الرسمي (البصمة في `VENDOR_LIBRARIES.md`)، واعتماد npm 0.18.5 اتشال، والديسكتوب بيحمّل المحلي بس | VERIFIED (`npm test`، `phase60`) |
 | 2FA للحسابات الإدارية | **Implemented (المرحلة 2)** — TOTP + أكواد استرداد + إلزام أدوار (`REQUIRE_2FA_ROLES`، الافتراضي admin) | VERIFIED (`two-factor.e2e`، `test:web`) |
 | النسخ الاحتياطي للخادم | **Implemented (المرحلة 2)** — يومي + WAL ≤15 دقيقة + نسخة مشفّرة خارجية + احتفاظ 30/12/12 | VERIFIED (بيئة معزولة) |
 | اختبار استعادة فعلي | **Implemented (المرحلة 2)** — استعادة لنقطة زمنية + استعادة من النسخة المشفّرة: الأعداد مطابقة | VERIFIED (بيئة معزولة) |
