@@ -39,7 +39,7 @@ const STATUS: Record<string, string> = { draft: 'مسودة', pending: 'بانت
           @for (v of c.versions; track v.id) {
             <tr [attr.data-version]="v.id" [attr.data-status]="v.status">
               <td dir="ltr">{{ c.code }}</td><td>{{ c.name }}</td><td>{{ catLabel(c.category) }}</td><td>{{ v.version }}</td><td>{{ statusLabel(v.status) }}</td>
-              <td dir="ltr">{{ v.method === 'PERCENT' ? v.rate + '%' : v.method === 'FIXED' ? v.fixed_amount : 'شرائح' }}{{ v.base_ratio !== '100.000000' ? ' × ' + (+v.base_ratio) + '% من الأساس' : '' }}</td>
+              <td dir="ltr">{{ v.method === 'PERCENT' ? v.rate + '%' : v.method === 'FIXED' ? v.fixed_amount : v.method === 'CONTRACT' ? 'من بند العقد' : 'شرائح' }}{{ v.base_ratio !== '100.000000' ? ' × ' + (+v.base_ratio) + '% من الأساس' : '' }}</td>
               <td dir="ltr">{{ v.effective_from }} → {{ v.effective_to || '…' }}</td><td>{{ v.legal_ref || '—' }}</td>
               <td>
                 @if (canPrepare && v.status === 'draft') { <button mat-button (click)="act(v, 'submit')" data-act="submit">إرسال</button><button mat-button (click)="del(v)">مسح</button> }
@@ -57,9 +57,10 @@ const STATUS: Record<string, string> = { draft: 'مسودة', pending: 'بانت
       <h2>إصدار جديد (مسودة)</h2>
       <form id="taxVersionForm" (ngSubmit)="createVersion()" class="grid">
         <mat-form-field appearance="outline"><mat-label>الكود</mat-label><mat-select name="vcode" [(ngModel)]="v.code">@for (c of codes(); track c.code) { <mat-option [value]="c.code">{{ c.code }}</mat-option> }</mat-select></mat-form-field>
-        <mat-form-field appearance="outline"><mat-label>طريقة الحساب</mat-label><mat-select name="method" [(ngModel)]="v.method"><mat-option value="PERCENT">نسبة</mat-option><mat-option value="FIXED">قيمة ثابتة</mat-option><mat-option value="BRACKETS">شرائح</mat-option></mat-select></mat-form-field>
+        <mat-form-field appearance="outline"><mat-label>طريقة الحساب</mat-label><mat-select name="method" [(ngModel)]="v.method"><mat-option value="PERCENT">نسبة</mat-option><mat-option value="FIXED">قيمة ثابتة</mat-option><mat-option value="BRACKETS">شرائح</mat-option><mat-option value="CONTRACT">من بند العقد (استقطاع تعاقدي)</mat-option></mat-select></mat-form-field>
         @if (v.method === 'PERCENT') { <mat-form-field appearance="outline"><mat-label>النسبة %</mat-label><input matInput name="rate" [(ngModel)]="v.rate" dir="ltr" /></mat-form-field> }
         @if (v.method === 'FIXED') { <mat-form-field appearance="outline"><mat-label>القيمة</mat-label><input matInput name="fixed" [(ngModel)]="v.fixedAmount" dir="ltr" /></mat-form-field> }
+        @if (v.method === 'CONTRACT') { <mat-form-field appearance="outline"><mat-label>قالب افتراضي % (اختياري — مابيتطبّقش مباشرة)</mat-label><input matInput name="templateRate" [(ngModel)]="v.templateRate" dir="ltr" /></mat-form-field> }
         @if (v.method === 'BRACKETS') { <mat-form-field appearance="outline" class="wide"><mat-label>الشرائح (JSON: [&#123;"upTo":"1000","rate":"0"&#125;,…])</mat-label><input matInput name="brackets" [(ngModel)]="v.bracketsJson" dir="ltr" /></mat-form-field> }
         <mat-form-field appearance="outline"><mat-label>الأساس</mat-label><mat-select name="base" [(ngModel)]="v.base">@for (b of bases; track b[0]) { <mat-option [value]="b[0]">{{ b[1] }}</mat-option> }</mat-select></mat-form-field>
         <mat-form-field appearance="outline"><mat-label>% الخاضع من الأساس</mat-label><input matInput name="baseRatio" [(ngModel)]="v.baseRatio" dir="ltr" /></mat-form-field>
@@ -102,7 +103,7 @@ export class TaxesPage implements OnInit {
   readonly bases: [string, string][] = [['NET_OF_DISCOUNT', 'الصافي بعد الخصم التجاري'], ['GROSS', 'الإجمالي'], ['NET_PLUS_VAT', 'الصافي + القيمة المضافة'], ['TAXABLE_WAGE', 'الأجر الخاضع'], ['CONTRACT_VALUE', 'قيمة العقد']];
   newCode = { code: '', name: '', category: 'VAT' };
   note = '';
-  v = { code: '', method: 'PERCENT', rate: '', fixedAmount: '', bracketsJson: '', base: 'NET_OF_DISCOUNT', baseRatio: '100', minBase: '', appliesTo: '', bearer: 'COUNTERPARTY', collector: 'COUNTERPARTY_CHARGES', effectiveFrom: '', effectiveTo: '', conditionsJson: '', exemptionsJson: '', legalRef: '', notesCfo: '', notesAdvisor: '', changeReason: '' };
+  v = { code: '', method: 'PERCENT', rate: '', templateRate: '', fixedAmount: '', bracketsJson: '', base: 'NET_OF_DISCOUNT', baseRatio: '100', minBase: '', appliesTo: '', bearer: 'COUNTERPARTY', collector: 'COUNTERPARTY_CHARGES', effectiveFrom: '', effectiveTo: '', conditionsJson: '', exemptionsJson: '', legalRef: '', notesCfo: '', notesAdvisor: '', changeReason: '' };
   p = { documentType: '', date: '', codes: '', amount: '', contractDate: '' };
   readonly total = computed(() => this.codes().length);
   catLabel = (c: string) => this.categories.find((x) => x[0] === c)?.[1] ?? c;
@@ -117,7 +118,7 @@ export class TaxesPage implements OnInit {
     try {
       parsed = { brackets: v['bracketsJson'] ? JSON.parse(v['bracketsJson']) : undefined, conditions: v['conditionsJson'] ? JSON.parse(v['conditionsJson']) : undefined, exemptions: v['exemptionsJson'] ? JSON.parse(v['exemptionsJson']) : undefined };
     } catch { this.error.set('صيغة JSON غير صحيحة في الشرائح/الشروط/الإعفاءات'); return; }
-    const body = { method: v['method'], rate: v['method'] === 'PERCENT' ? opt(v['rate']) : undefined, fixedAmount: v['method'] === 'FIXED' ? opt(v['fixedAmount']) : undefined, ...parsed,
+    const body = { method: v['method'], rate: v['method'] === 'PERCENT' ? opt(v['rate']) : undefined, fixedAmount: v['method'] === 'FIXED' ? opt(v['fixedAmount']) : undefined, templateRate: v['method'] === 'CONTRACT' ? opt(v['templateRate']) : undefined, ...parsed,
       base: v['base'], baseRatio: opt(v['baseRatio']), minBase: opt(v['minBase']), appliesTo: v['appliesTo'].split(',').map((s) => s.trim()).filter(Boolean),
       bearer: v['bearer'], collector: v['collector'], effectiveFrom: v['effectiveFrom'], effectiveTo: opt(v['effectiveTo']), legalRef: opt(v['legalRef']),
       notesCfo: opt(v['notesCfo']), notesAdvisor: opt(v['notesAdvisor']), changeReason: v['changeReason'] };

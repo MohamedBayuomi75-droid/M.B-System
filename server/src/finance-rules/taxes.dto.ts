@@ -18,7 +18,8 @@ export class BracketDto {
   @ApiProperty({ example: '10' }) @Matches(RATE) rate: string;
 }
 export class CreateTaxVersionDto {
-  @ApiProperty({ enum: ['PERCENT', 'FIXED', 'BRACKETS'] }) @IsIn(['PERCENT', 'FIXED', 'BRACKETS']) method: 'PERCENT' | 'FIXED' | 'BRACKETS';
+  @ApiProperty({ enum: ['PERCENT', 'FIXED', 'BRACKETS', 'CONTRACT'], description: 'CONTRACT = للاستقطاعات التعاقدية بس: النسبة من بند العقد المعتمد' }) @IsIn(['PERCENT', 'FIXED', 'BRACKETS', 'CONTRACT']) method: 'PERCENT' | 'FIXED' | 'BRACKETS' | 'CONTRACT';
+  @ApiPropertyOptional({ description: 'قالب افتراضي اختياري للاستقطاع التعاقدي (بيتعتمد) — اقتراح عند إنشاء بند العقد، مابيتطبّقش مباشرة' }) @IsOptional() @Matches(RATE) templateRate?: string;
   @ApiPropertyOptional({ example: '14', description: 'نسبة مئوية (حتى 6 خانات)' }) @IsOptional() @Matches(RATE) rate?: string;
   @ApiPropertyOptional() @IsOptional() @IsMoneyString() fixedAmount?: string;
   @ApiPropertyOptional({ type: [BracketDto] }) @IsOptional() @IsArray() @ArrayMaxSize(30) @ValidateNested({ each: true }) @Type(() => BracketDto) brackets?: BracketDto[];
@@ -45,4 +46,5 @@ export class ComputeTaxesDto {
   @ApiProperty() @IsArray() @ArrayMinSize(1) @ArrayMaxSize(20) @Matches(/^[A-Z][A-Z0-9_-]{1,40}$/, { each: true }) codes: string[];
   @ApiProperty({ description: '{ NET_OF_DISCOUNT: "1000.0000", ... } — نصوص عشرية' }) @IsObject() bases: Record<string, string>;
   @ApiPropertyOptional() @IsOptional() @IsObject() context?: { contractDate?: string; activity?: string; counterpartyType?: string; flags?: string[] };
+  @ApiPropertyOptional({ description: '{ CODE: { rate | amount, termRef } } — بنود العقد المعتمدة للاستقطاعات التعاقدية' }) @IsOptional() @IsObject() contractTerms?: Record<string, { rate?: string; amount?: string; termRef: string }>;
 }

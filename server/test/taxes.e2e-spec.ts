@@ -1,4 +1,8 @@
 import { adminToken, bearer, createTestApp, newUser, TestApp } from './app';
+import { execFileSync } from 'node:child_process';
+import { mkdtempSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { TaxesService } from '../src/finance-rules/taxes.service';
 
 /**
@@ -96,13 +100,35 @@ describe('B-21 tax engine', () => {
   });
 
   it('contractual deductions are separate from taxes; brackets; suspension stops use', async () => {
-    const ret = await flow('TEST-RET', draft({ rate: '5', base: 'GROSS', bearer: 'COUNTERPARTY', collector: 'COMPANY_WITHHOLDS' }));
-    const both = await compute({ codes: ['TEST-VAT', 'TEST-RET'], bases: { NET_OF_DISCOUNT: '1000', GROSS: '1000' } });
+    // قرار 2026-11-17: الكود التعاقدي عام، والنسبة من بند العقد المعتمد — والإصدار بنسبة ثابتة مرفوض (خادم + قاعدة)
+    expect((await t.http().post(`${base}/codes/TEST-RET/versions`).set(bearer(admin)).send(draft({ rate: '5', base: 'GROSS' }))).body.code).toBe('BAD_VERSION');
+    expect((await t.http().post(`${base}/codes/TEST-VAT/versions`).set(bearer(admin)).send(draft({ method: 'CONTRACT', rate: undefined }))).body.code).toBe('BAD_VERSION');
+    const ret = await flow('TEST-RET', draft({ method: 'CONTRACT', rate: undefined, templateRate: '5', base: 'GROSS', bearer: 'COUNTERPARTY', collector: 'COMPANY_WITHHOLDS' }));
+    expect(ret.approve.body).toMatchObject({ status: 'approved', template_rate: '5.000000' });
+    expect((await compute({ codes: ['TEST-RET'], bases: { GROSS: '1000' } })).body.code).toBe('CONTRACT_TERM_REQUIRED');
+    const both = await compute({ codes: ['TEST-VAT', 'TEST-RET'], bases: { NET_OF_DISCOUNT: '1000', GROSS: '1000' }, contractTerms: { 'TEST-RET': { rate: '5', termRef: 'عقد اختبار — بند 12' } } });
     expect(both.body.map((l: { category: string; amount: string }) => [l.category, l.amount])).toEqual([['VAT', '100.0000'], ['CONTRACTUAL', '50.0000']]);
     await flow('TEST-PAY', draft({ method: 'BRACKETS', rate: undefined, base: 'TAXABLE_WAGE', appliesTo: ['test-payroll'], bearer: 'EMPLOYEE', collector: 'COMPANY_WITHHOLDS',
       brackets: [{ upTo: '1000', rate: '0' }, { upTo: '3000', rate: '10' }, { upTo: null, rate: '20' }] }));
     expect((await compute({ documentType: 'test-payroll', codes: ['TEST-PAY'], bases: { TAXABLE_WAGE: '5000' } })).body[0].amount).toBe('600.0000');
     expect((await t.http().post(`${base}/versions/${ret.id}/suspend`).set(bearer(approver.token)).send({ note: 'إيقاف اختباري' })).body.status).toBe('suspended');
-    expect((await compute({ codes: ['TEST-RET'], bases: { GROSS: '1000' } })).body.code).toBe('NO_APPROVED_RATE');
+    expect((await compute({ codes: ['TEST-RET'], bases: { GROSS: '1000' }, contractTerms: { 'TEST-RET': { rate: '5', termRef: 'x' } } })).body.code).toBe('NO_APPROVED_RATE');
+  });
+
+  it('draft-entry tool (taxes:drafts) creates drafts only — never submits, approves or applies; unverified rows skipped', async () => {
+    const dir = mkdtempSync(join(tmpdir(), 'taxdrafts-'));
+    const file = join(dir, 'in.json');
+    writeFileSync(file, JSON.stringify({ rows: [
+      { code: 'TEST-IMP', name: 'استيراد اختبار', category: 'WHT', verified: true, version: { method: 'PERCENT', rate: '2', base: 'NET_OF_DISCOUNT', appliesTo: ['test-invoice'], bearer: 'COUNTERPARTY', collector: 'COMPANY_WITHHOLDS', effectiveFrom: '2026-01-01', legalRef: 'مرجع اختباري', changeReason: 'استيراد' } },
+      { code: 'TEST-NOPE', name: 'غير متحقق', category: 'STAMP', verified: false, version: {} },
+      { code: 'TEST-BAD', name: 'ناقص', category: 'STAMP', verified: true, version: { method: 'PERCENT', base: 'NET_OF_DISCOUNT' } },
+    ] }));
+    const out = execFileSync('node', ['dist/cli/tax-drafts.js', file, '--execute', '--by', 'admin'], { env: { ...process.env }, encoding: 'utf8' });
+    expect(out).toMatch(/TEST-IMP v1: draft/);
+    expect(out).toMatch(/TEST-NOPE: تخطّي/);
+    expect(out).toMatch(/TEST-BAD: تخطّي/);
+    const rows = await t.ds.query(`SELECT code, status FROM tax_code_versions WHERE code LIKE 'TEST-IMP%' OR code IN ('TEST-NOPE','TEST-BAD')`);
+    expect(rows).toEqual([{ code: 'TEST-IMP', status: 'draft' }]);
+    expect((await compute({ codes: ['TEST-IMP'] })).body.code).toBe('NO_APPROVED_RATE');
   });
 });

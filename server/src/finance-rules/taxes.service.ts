@@ -10,7 +10,7 @@ import { TaxesRepository, VersionRow } from './taxes.repository';
 
 const toVersion = (r: VersionRow): TaxVersion => ({
   id: r.id, code: r.code, category: r.category, version: r.version, method: r.method, rate: r.rate == null ? null : Money.of(r.rate).toString(),
-  fixedAmount: r.fixed_amount, brackets: r.brackets, base: r.base, baseRatio: Money.of(r.base_ratio).toString(), minBase: r.min_base,
+  templateRate: r.template_rate, fixedAmount: r.fixed_amount, brackets: r.brackets, base: r.base, baseRatio: Money.of(r.base_ratio).toString(), minBase: r.min_base,
   appliesTo: r.applies_to, conditions: r.conditions ?? {}, exemptions: r.exemptions ?? [], allowStacking: r.allow_stacking,
   effectiveFrom: r.effective_from, effectiveTo: r.effective_to,
 });
@@ -59,14 +59,18 @@ export class TaxesService {
       for (let i = 1; i < dto.brackets.length; i++) { const p = dto.brackets[i - 1].upTo, c = dto.brackets[i].upTo; if (p != null && c != null && Money.of(c).cmp(p) <= 0) bad('الشرائح لازم تكون تصاعدية'); }
     }
     if (dto.effectiveTo && dto.effectiveTo < dto.effectiveFrom) bad('نهاية السريان قبل بدايته');
+    if (dto.templateRate != null && dto.method !== 'CONTRACT') bad('القالب الافتراضي للاستقطاع التعاقدي بس');
   }
 
   async createVersion(u: AuthUser, code: string, dto: CreateTaxVersionDto, req: Request) {
     this.canPrepare(u);
-    if (!(await this.repo.code(code))) throw new NotFoundException({ statusCode: 404, code: 'NOT_FOUND', message: 'الكود غير موجود' });
+    const c = await this.repo.code(code);
+    if (!c) throw new NotFoundException({ statusCode: 404, code: 'NOT_FOUND', message: 'الكود غير موجود' });
     TaxesService.validate(dto);
+    if ((c.category === 'CONTRACTUAL') !== (dto.method === 'CONTRACT'))
+      throw new BadRequestException({ statusCode: 400, code: 'BAD_VERSION', message: 'الاستقطاع التعاقدي طريقته CONTRACT (النسبة من بند العقد المعتمد)، والضرايب مابتستخدمهاش' });
     const id = await this.tx.run(async (em) => this.repo.insertVersion({
-      code, version: await this.repo.nextVersion(code, em), status: 'draft', method: dto.method, rate: dto.rate ?? null, fixed_amount: dto.fixedAmount ?? null,
+      code, version: await this.repo.nextVersion(code, em), status: 'draft', method: dto.method, rate: dto.rate ?? null, template_rate: dto.templateRate ?? null, fixed_amount: dto.fixedAmount ?? null,
       brackets: dto.brackets ?? null, base: dto.base, base_ratio: dto.baseRatio ?? '100', min_base: dto.minBase ?? null, applies_to: dto.appliesTo,
       bearer: dto.bearer, collector: dto.collector, conditions: dto.conditions ?? {}, exemptions: dto.exemptions ?? [], allow_stacking: dto.allowStacking ?? false,
       effective_from: dto.effectiveFrom, effective_to: dto.effectiveTo ?? null, legal_ref: dto.legalRef ?? null, notes_cfo: dto.notesCfo ?? null,

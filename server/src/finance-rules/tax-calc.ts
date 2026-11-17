@@ -10,7 +10,7 @@ export interface Conditions { contractDateFrom?: string; contractDateTo?: string
 export interface Exemption { reason: string; activities?: string[]; counterpartyTypes?: string[]; flags?: string[] }
 export interface TaxVersion {
   id: string; code: string; category: string; version: number;
-  method: 'PERCENT' | 'FIXED' | 'BRACKETS'; rate: string | null; fixedAmount: string | null; brackets: Bracket[] | null;
+  method: 'PERCENT' | 'FIXED' | 'BRACKETS' | 'CONTRACT'; rate: string | null; templateRate?: string | null; fixedAmount: string | null; brackets: Bracket[] | null;
   base: TaxBase; baseRatio: string; minBase: string | null; appliesTo: string[];
   conditions: Conditions; exemptions: Exemption[]; allowStacking: boolean;
   effectiveFrom: string; effectiveTo: string | null;
@@ -19,6 +19,8 @@ export interface ComputeInput {
   documentType: string; date: string; codes: string[];
   bases: Partial<Record<TaxBase, string>>;
   context?: { contractDate?: string; activity?: string; counterpartyType?: string; flags?: string[] };
+  /** بنود العقد المعتمدة للاستقطاعات التعاقدية (الاحتجاز/ضمان الأعمال/الغرامات): النسبة أو القيمة + مرجع البند المعتمد */
+  contractTerms?: Record<string, { rate?: string; amount?: string; termRef: string }>;
 }
 export interface TaxLine { code: string; versionId: string; version: number; category: string; base: TaxBase; baseAmount: string; taxableAmount: string; rate: string | null; amount: string; exemptReason: string | null }
 export class TaxCalcError extends Error { constructor(public readonly code: string, message: string, public readonly details?: unknown) { super(message); } }
@@ -91,6 +93,13 @@ export function computeTaxes(i: ComputeInput, approved: TaxVersion[]): TaxLine[]
     const ex = exemption(v, i);
     if (ex) return line(Money.zero(), ex);
     if (v.minBase != null && base.cmp(v.minBase) <= 0) return line(Money.zero(), 'BELOW_MIN_BASE');
+    if (v.method === 'CONTRACT') {
+      // قرار 2026-11-17: النسبة/القيمة من بند العقد المعتمد بس — القالب (templateRate) مابيتطبّقش مباشرة أبدًا
+      const term = i.contractTerms?.[v.code];
+      if (!term || !term.termRef?.trim() || (term.rate == null) === (term.amount == null))
+        throw new TaxCalcError('CONTRACT_TERM_REQUIRED', `الاستقطاع ${v.code} محتاج بند عقد معتمد (نسبة أو قيمة + مرجع البند)`);
+      return { ...line(term.amount != null ? Money.of(term.amount) : taxable.times(term.rate!).div('100'), null), rate: term.rate ?? null };
+    }
     if (v.method === 'FIXED') return line(Money.of(v.fixedAmount!), null);
     if (v.method === 'BRACKETS') return line(bracketsTax(taxable, v.brackets ?? []), null);
     return line(taxable.times(v.rate!).div('100'), null);

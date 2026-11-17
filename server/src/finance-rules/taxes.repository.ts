@@ -4,7 +4,7 @@ import { DataSource, EntityManager } from 'typeorm';
 import type { TaxVersion } from './tax-calc';
 
 export interface VersionRow {
-  id: string; code: string; version: number; status: string; method: TaxVersion['method']; rate: string | null; fixed_amount: string | null; brackets: TaxVersion['brackets'];
+  id: string; code: string; version: number; status: string; method: TaxVersion['method']; rate: string | null; template_rate: string | null; fixed_amount: string | null; brackets: TaxVersion['brackets'];
   base: TaxVersion['base']; base_ratio: string; min_base: string | null; applies_to: string[]; bearer: string; collector: string; conditions: TaxVersion['conditions'];
   exemptions: TaxVersion['exemptions']; allow_stacking: boolean; effective_from: string; effective_to: string | null; legal_ref: string | null; notes_cfo: string | null; notes_advisor: string | null;
   change_reason: string; created_by: string; created_at: Date; submitted_by: string | null; submitted_at: Date | null; approved_by: string | null; approved_at: Date | null; decision_note: string | null; category: string;

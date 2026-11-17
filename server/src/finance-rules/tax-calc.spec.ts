@@ -39,6 +39,16 @@ describe('tax calculator (B-21)', () => {
     expect(computeTaxes(inp({ bases: { NET_OF_DISCOUNT: '300' } }), [v({ minBase: '300' })])[0]).toMatchObject({ amount: '0.0000', exemptReason: 'BELOW_MIN_BASE' });
     expect(computeTaxes(inp({ bases: { NET_OF_DISCOUNT: '300.0001' } }), [v({ minBase: '300' })])[0].amount).toBe('30.0000');
   });
+  it('contractual deductions: rate/amount only from an approved contract term; template never applied', () => {
+    const r = v({ code: 'R', category: 'CONTRACTUAL', method: 'CONTRACT', rate: null, templateRate: '5', base: 'GROSS' });
+    const run = (contractTerms?: Record<string, unknown>) => () => computeTaxes(inp({ codes: ['R'], bases: { GROSS: '2000' }, contractTerms }), [r])[0];
+    expect(err(run())).toBe('CONTRACT_TERM_REQUIRED');
+    expect(err(run({ R: { rate: '7' } }))).toBe('CONTRACT_TERM_REQUIRED');
+    expect(err(run({ R: { rate: '7', amount: '1', termRef: 'بند 9' } }))).toBe('CONTRACT_TERM_REQUIRED');
+    expect(run({ R: { rate: '7', termRef: 'بند 9' } })()).toMatchObject({ amount: '140.0000', rate: '7' });
+    expect(run({ R: { amount: '250', termRef: 'بند 10' } })()).toMatchObject({ amount: '250.0000', rate: null });
+  });
+
   it('fixed amount and progressive brackets', () => {
     expect(computeTaxes(inp(), [v({ method: 'FIXED', rate: null, fixedAmount: '15.5' })])[0].amount).toBe('15.5000');
     const b = v({ method: 'BRACKETS', rate: null, base: 'TAXABLE_WAGE', brackets: [{ upTo: '1000', rate: '0' }, { upTo: '3000', rate: '10' }, { upTo: null, rate: '20' }] });

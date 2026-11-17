@@ -19,7 +19,8 @@
     "test": "jest --config jest.config.js --runInBand",
     "test:unit": "jest --config jest.config.js --selectProjects unit",
     "test:e2e": "jest --config jest.config.js --runInBand --selectProjects e2e",
-    "cutover": "node dist/cli/cutover.js"
+    "cutover": "node dist/cli/cutover.js",
+    "taxes:drafts": "node dist/cli/tax-drafts.js"
   },
   "dependencies": {
     "@nestjs/common": "^11.2.10",
