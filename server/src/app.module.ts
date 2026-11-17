@@ -18,6 +18,7 @@ import { NotificationsModule } from './notifications/notifications.module';
 import { ApprovalsModule } from './approvals/approvals.module';
 import { PartiesModule } from './parties/parties.module';
 import { FinanceRulesModule } from './finance-rules/finance-rules.module';
+import { StockModule } from './stock/stock.module';
 import { HistoryModule } from './history/history.module';
 
 @Module({
@@ -58,7 +59,7 @@ import { HistoryModule } from './history/history.module';
     NumberingModule,
     NotificationsModule,
     ApprovalsModule,
-    HistoryModule, PartiesModule, FinanceRulesModule,
+    HistoryModule, PartiesModule, FinanceRulesModule, StockModule,
   ],
 })
 export class AppModule {}

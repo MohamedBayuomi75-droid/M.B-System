@@ -25,12 +25,31 @@ export class AttachmentsService {
 
   /** السجل المالك لازم يكون موجود ومش محذوف وفي نطاق المستخدم — وإلا 404 (مانكشفش وجوده) */
   private async ownerOrThrow(user: AuthUser, collection: string, recordId: string, mode: 'read' | 'write') {
+    if (collection === 'stock.adjustments') return this.adjustmentOwner(user, recordId, mode);
     if (COLLECTIONS_MAP[collection] !== 'collection') throw new BadRequestException({ statusCode: 400, code: 'BAD_OWNER', message: 'مجموعة غير صالحة للمرفقات' });
     if (!canRead(user, collection)) throw new ForbiddenException({ statusCode: 403, code: 'FORBIDDEN', message: 'ليس لديك صلاحية على هذه البيانات' });
     if (mode === 'write' && !canWrite(user, collection, 'edit')) throw new ForbiddenException({ statusCode: 403, code: 'FORBIDDEN', message: 'ليس لديك صلاحية تعديل هذه البيانات' });
     const [rec] = await this.ds.query(`SELECT data FROM legacy_records WHERE collection = $1 AND id = $2 AND deleted_at IS NULL`, [collection, recordId]);
     if (!rec) throw new NotFoundException({ statusCode: 404, code: 'NOT_FOUND', message: 'السجل غير موجود' });
     if (!inProjectScope(user, collection, rec.data)) throw new ForbiddenException({ statusCode: 403, code: 'OUT_OF_PROJECT_SCOPE', message: 'السجل خارج نطاق مشروعاتك' });
+  }
+
+  /**
+   * مرفقات التسوية المخزنية (B-51 §2.2 و§4: محضر الجرد/التلف والمستندات المؤيدة بتتحفظ).
+   * القراءة: صاحب صفحة المخازن أو المدير أو المنشئ أو أي حد في مسار اعتمادها. الرفع: المنشئ وهي مسودة/مرتجعة بس.
+   */
+  private async adjustmentOwner(user: AuthUser, id: string, mode: 'read' | 'write') {
+    const [a] = await this.ds.query(`SELECT created_by, status, approval_request_id FROM stock_adjustments WHERE id::text = $1`, [id]);
+    if (!a) throw new NotFoundException({ statusCode: 404, code: 'NOT_FOUND', message: 'السجل غير موجود' });
+    if (mode === 'write') {
+      if (a.created_by !== user.id || !['draft', 'returned'].includes(a.status)) throw new ForbiddenException({ statusCode: 403, code: 'FORBIDDEN', message: 'المرفقات بيضيفها منشئ التسوية قبل الإرسال' });
+      return;
+    }
+    const pages = user.permissions.pages;
+    if (user.permissions.manageUsers || pages['warehouses.home']?.view || pages['warehouses.reports']?.view || a.created_by === user.id) return;
+    const [inv] = a.approval_request_id ? await this.ds.query(
+      `SELECT 1 FROM approval_request_steps s, jsonb_array_elements(s.approvers) x, jsonb_array_elements_text(x->'users') u WHERE s.request_id = $1 AND u = $2 LIMIT 1`, [a.approval_request_id, user.id]) : [];
+    if (!inv) throw new NotFoundException({ statusCode: 404, code: 'NOT_FOUND', message: 'السجل غير موجود' });
   }
 
   async upload(user: AuthUser, collection: string, recordId: string, file: { buffer: Buffer; originalname: string } | undefined, req: Request, replaces?: string): Promise<AttachmentDto> {

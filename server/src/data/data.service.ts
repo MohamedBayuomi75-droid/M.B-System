@@ -128,7 +128,11 @@ export class DataService {
 
   // =============================== sync ===============================
 
-  async sync(user: AuthUser, body: SyncRequestDto): Promise<SyncResponseDto> {
+  /**
+   * opts.trusted: للاستدعاء الداخلي بس (مثلًا الترحيل الآلي لتسوية اتعتمدت بالكامل — B-51) — بيتخطّى صلاحية الصفحة
+   * لأن التفويض جه من مسار الاعتماد، **لكن كل قيود قاعدة البيانات (B-50) بتفضل سارية**. مش متاح من أي controller.
+   */
+  async sync(user: AuthUser, body: SyncRequestDto, opts: { trusted?: boolean } = {}): Promise<SyncResponseDto> {
     const changes = body.changes ?? [];
     const docChanges = body.docs ?? [];
     this.validateShape(changes, docChanges);
@@ -149,11 +153,11 @@ export class DataService {
         const row = rows.get(`${c.collection}\u0000${c.id}`) ?? null;
         const live = row && !row.deleted_at ? row : null;
         const action: WriteAction = c.op === 'delete' ? 'delete' : live ? 'edit' : 'add';
-        const reason = this.authorize(user, c, action, live);
+        const reason = opts.trusted ? null : this.authorize(user, c, action, live);
         if (reason) { forbidden.push({ collection: c.collection, id: c.id, reason }); continue; }
         const plan = await this.planRecord(qr, user, c, row);
         if (plan.kind === 'insert' || plan.kind === 'restore' || plan.kind === 'update') {
-          if (!inProjectScope(user, c.collection, plan.data)) { forbidden.push({ collection: c.collection, id: c.id, reason: 'OUT_OF_PROJECT_SCOPE' }); continue; }
+          if (!opts.trusted && !inProjectScope(user, c.collection, plan.data)) { forbidden.push({ collection: c.collection, id: c.id, reason: 'OUT_OF_PROJECT_SCOPE' }); continue; }
           if (Buffer.byteLength(JSON.stringify(plan.data)) > MAX_RECORD_BYTES) throw new BadRequestException(`السجل ${c.collection}/${c.id} أكبر من الحد المسموح`);
         }
         plans.push(plan);

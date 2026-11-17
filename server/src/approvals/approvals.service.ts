@@ -20,9 +20,21 @@ import { ApprovalsRepository, RequestRow, StepRow } from './approvals.repository
  */
 type Cmd = 'approve' | 'reject' | 'return';
 const OPEN = ['Submitted', 'Under Review'];
+/**
+ * أنواع مستندات فصل المهام فيها إلزامي **من غير أي استثناء** (حتى بمرجع إدارة):
+ * B-51 (2026-11-17): «لا يسمح للمنشئ باعتماد طلبه» في التسويات المخزنية.
+ */
+export const SOD_MANDATORY_TYPES = new Set(['stock-adjustment']);
+/** بعد ما الطلب يوصل حالة نهائية (معتمد/مرفوض/مرتجع/ملغى/مسحوب) — الموديولات المالكة بتسجّل نفسها (مثلًا الترحيل الآلي للتسوية بعد الاعتماد) */
+export type FinalStatusHandler = (e: { requestId: string; documentType: string; documentId: string; status: string; actor: AuthUser }) => Promise<void>;
 
 @Injectable()
 export class ApprovalsService {
+  private readonly finalHandlers = new Map<string, FinalStatusHandler[]>();
+  /** تسجيل معالج للحالات النهائية لنوع مستند (بيتنفّذ بعد commit قرار الاعتماد — فشله مابيلغيش الاعتماد) */
+  onFinalStatus(documentType: string, h: FinalStatusHandler) { this.finalHandlers.set(documentType, [...(this.finalHandlers.get(documentType) ?? []), h]); }
+  private async fireFinal(e: Parameters<FinalStatusHandler>[0]) { for (const h of this.finalHandlers.get(e.documentType) ?? []) await h(e); }
+
   constructor(private readonly repo: ApprovalsRepository, private readonly tx: TransactionRunner, private readonly notifications: NotificationsService, private readonly audit: AuditService) {}
 
   // ================= التهيئة (مدير النظام)
@@ -54,6 +66,8 @@ export class ApprovalsService {
       if (a.type === 'USER' && !(await this.repo.activeUser(a.ref))) throw new BadRequestException({ statusCode: 400, code: 'UNKNOWN_USER', message: 'مستخدم معتمد غير موجود أو متعطل' });
     }
     const self = dto.allowSelfApproval ?? false, cross = dto.allowSameApproverAcrossLevels ?? false;
+    if (SOD_MANDATORY_TYPES.has(dto.documentType) && (self || cross))
+      throw new UnprocessableEntityException({ statusCode: 422, code: 'SOD_MANDATORY', message: 'نوع المستند ده فصل المهام فيه إلزامي من غير استثناء (B-51)' });
     const ref = dto.sodExceptionRef?.trim() || null;
     if ((self || cross) && !ref) throw new BadRequestException({ statusCode: 400, code: 'SOD_EXCEPTION_REF_REQUIRED', message: 'الاستثناء من فصل المهام محتاج مرجع اعتماد الإدارة (B-04)' });
     const id = await this.tx.run(async (em) => {
@@ -82,6 +96,8 @@ export class ApprovalsService {
       if (!wfs.length) throw new UnprocessableEntityException({ statusCode: 422, code: 'NO_WORKFLOW', message: 'مفيش مسار اعتماد معرّف لنوع المستند ده وقيمته — لازم يتعرّف من الإعداد' });
       if (wfs.length > 1) throw new ConflictException({ statusCode: 409, code: 'AMBIGUOUS_WORKFLOW', message: 'أكتر من مسار مطابق — راجع إعداد النطاقات' });
       const wf = wfs[0];
+      if (SOD_MANDATORY_TYPES.has(dto.documentType) && (wf.allow_self_approval || wf.allow_same_approver_across_levels))
+        throw new UnprocessableEntityException({ statusCode: 422, code: 'SOD_MANDATORY', message: 'مسار الاعتماد فيه استثناء من فصل المهام، وده ممنوع لنوع المستند ده (B-51)' });
       const levels = await this.repo.workflowLevels(wf.id, em);
       const snapshot: { seq: number; mode: string; required: number | null; approvers: { type: string; ref: string; users: string[] }[] }[] = [];
       for (const l of levels) {
@@ -144,6 +160,7 @@ export class ApprovalsService {
       return { r, to };
     });
     await this.audit.record({ action: `approvals.${cmd}`, userId: actor.id, username: actor.username, entity: out.r.document_type, entityId: out.r.document_id, details: { requestId: id, from: out.r.status, to: out.to, comment: comment ?? null }, req });
+    if (out.to !== out.r.status && !OPEN.includes(out.to)) await this.fireFinal({ requestId: id, documentType: out.r.document_type, documentId: out.r.document_id, status: out.to, actor });
     return this.get(id, actor);
   }
 
@@ -173,6 +190,7 @@ export class ApprovalsService {
       return r;
     });
     await this.audit.record({ action: `approvals.${cmd}`, userId: actor.id, username: actor.username, entity: out.document_type, entityId: out.document_id, details: { requestId: id, reason: reason ?? null }, req });
+    await this.fireFinal({ requestId: id, documentType: out.document_type, documentId: out.document_id, status: cmd === 'withdraw' ? 'Withdrawn' : 'Cancelled', actor });
     return this.get(id, actor);
   }
 

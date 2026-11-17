@@ -11,7 +11,9 @@ const LAYER1_TABLES = ['attachments', 'audit_log', 'changes', 'docs', 'records',
   // B-21 — فاضية: مفيش نسبة متسجّلة
   'document_tax_lines', 'tax_code_versions', 'tax_codes',
   // B-50 — فاضي: مفيش وظائف حجز لسه
-  'stock_reservations'].sort();
+  'stock_reservations',
+  // B-51 — فاضي
+  'stock_adjustments'].sort();
 
 async function tables(ds: DataSource): Promise<string[]> {
   const rows: { table_name: string }[] = await ds.query(
