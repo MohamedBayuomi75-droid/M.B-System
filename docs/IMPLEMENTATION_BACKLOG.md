@@ -79,15 +79,17 @@
 | S-8 | `xlsx` (من المرحلة 2): الرسمي 0.20.3 محلي، شيل npm القديم، اختبارات استيراد/تصدير (`npm test` + `phase60`) | **Tested** |
 | 3.7 | القرارات الـ 13 (2026-11-17): `TARGET_BUSINESS_RULES.md` + `target.js` + `phase62` (21 فحص) | **Tested** |
 | 3.8 | قياس الفروق على البيانات الحقيقية + `DATA_REMEDIATION_PLAN.md` | **Tested — الخطة تنتظر الموافقة (مفيش أي معالجة اتنفذت)** |
-| — | **المرحلة كلها** | **Tested — تنتظر موافقة المستخدم** |
+| — | **المرحلة كلها** | **Accepted** (2026-11-17) |
 
 ### المرحلة 4 — تجهيز البنية التقنية النهائية
+التفاصيل: `reports/PHASE_04_AFTER_REPORT.md`
 | # | المهمة | الحالة |
 |---|---|---|
-| 4.1 | مشروع Angular + Material، RTL، PWA، نفس الجلسة والصلاحيات | Not Started |
-| 4.2 | هيكل NestJS بالطبقات الأربع + موديول تجريبي | Not Started |
-| 4.3 | أداة الحساب العشري (4 خانات HALF_UP) + اختبارات حدود (ADR-023) | Not Started |
-| 4.4 | توحيد Transactions/Validation/Logging + بيئات Development/Testing | Not Started |
+| 4.1 | Angular 22 + Material على `/app/`: RTL، PWA، نفس الجلسة و2FA، جدول توجيه الصفحات، شاشة تجريبية (ADR-026) | **Tested** |
+| 4.2 | NestJS بالطبقات الأربع + موديول تجريبي `GET /api/v1/projects` + اختبار حدود الطبقات (ADR-027) | **Tested** |
+| 4.3 | `Money` (decimal.js، 4 خانات HALF_UP) + مطابقة PostgreSQL والمرجع (ADR-023 Accepted) | **Tested** |
+| 4.4 | Transactions + صيغة أخطاء موحّدة + Logging + بيئات Development/Testing (`DEVELOPMENT_ENVIRONMENTS.md`) | **Tested** |
+| — | **المرحلة كلها** | **Tested — تنتظر موافقة المستخدم** |
 
 ### المرحلة 5 — بناء الأساس المشترك
 | # | المهمة | يعتمد على | الحالة |

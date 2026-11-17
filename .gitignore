@@ -5,6 +5,7 @@ dist/
 .env.*
 data.json
 !.env.example
+!.env.*.example
 server/dist/
 server/coverage/
 

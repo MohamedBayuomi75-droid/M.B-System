@@ -1,0 +1,17 @@
+# بيئة التطوير والاختبار (المرحلة 4): PostgreSQL بس، على المنفذ 55432 (نفس الافتراضي في اختبارات السيرفر والواجهة).
+#   docker compose -f docker/docker-compose.dev.yml up -d
+# ممنوع أي بيانات حقيقية هنا — الاختبارات بتعمل قواعد مؤقتة وبتمسحها. الإنتاج: docker/docker-compose.yml.
+name: unified-dev
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: unified
+      POSTGRES_PASSWORD: devpass
+      POSTGRES_DB: unified
+    ports:
+      - "127.0.0.1:55432:5432"   # على الجهاز المحلي بس
+    volumes:
+      - devdata:/var/lib/postgresql/data
+volumes:
+  devdata:
