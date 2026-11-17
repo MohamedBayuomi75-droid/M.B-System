@@ -86,6 +86,8 @@ Internal فقط · Angular + Angular Material · NestJS · PostgreSQL · Modular
 | الـ commit | في نهاية كل مرحلة بعد الاختبارات، برسالة تصف المرحلة؛ لا PR دون طلب |
 | اختبارات آمنة (لا تغيّر بيانات) | `npm run check` · `npm test` · `npm --prefix server run lint` · اختبارات الوحدة `jest --selectProjects unit` · `node tools/web/build-web.js --check` |
 | اختبارات تطبّق Migrations على قواعد مؤقتة | `npm --prefix server test` (e2e) · `npm run test:ui:web` · `npm run test:web` — تحتاج PostgreSQL للاختبار؛ **لا تُشغَّل على قاعدة حقيقية أبدًا** |
+| فحص XSS (المرحلة 2) — يتشغّل بعد أي تعديل في `renderer/` | `node tools/security/xss-probe.js` · `XSS_ALL=1 ...` (أرقام وتواريخ كمان) · `WEB_MODE=1 ...` · `DATA_JSON=<نسخة خارج المستودع> ...` (شكل البيانات الحقيقية — النتيجة مسارات حقول بس). لازم **0** |
+| النسخ والاستعادة (المرحلة 2) | `docker compose exec backup /opt/backup/restore-test.sh` — على بيئة منفصلة؛ **أي استعادة على بيانات حقيقية بموافقة المستخدم** (`OPERATIONS_SECURITY_BACKUP.md`) |
 | اختبار الواجهة الحالية | `npm run test:ui` |
 | أدوات الفحص (قراءة فقط) | `tools/audit/*.js`، `tools/web/inventory.js` |
 | البيانات الحقيقية | نسخة خارج المستودع؛ تُستخدم للفحص بأعداد فقط |

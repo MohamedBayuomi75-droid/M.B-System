@@ -1,6 +1,6 @@
 # خطة الأمان والنسخ الاحتياطي (Security & Backup Plan)
 
-- **التاريخ:** 2026-11-17 · **المرحلة:** 1 (خطة — لم يُنفَّذ منها شيء في هذه المرحلة). التنفيذ في **المرحلة 2** من الخطة الرئيسية.
+- **التاريخ:** 2026-11-17 · **المرحلة:** 1 (خطة) — **اتنفذت في المرحلة 2** (التفاصيل: `reports/PHASE_02_AFTER_REPORT.md` و`OPERATIONS_SECURITY_BACKUP.md`). الحالات في القسم 1 محدّثة لنهاية المرحلة 2.
 - **المراجع:** `ERP_MASTER_IMPLEMENTATION_PLAN.md` §9 (المرحلة 2) و§11؛ `SECURITY_AUDIT.md` (REPORTED)؛ ADR-001, ADR-007, ADR-008, ADR-018, ADR-020, ADR-021.
 - **الحالات:** Implemented · Partially Implemented · Not Implemented · Needs Verification.
 
@@ -12,20 +12,20 @@
 |---|---|---|
 | المصادقة (JWT قصير + Refresh دوّار، argon2id، حد محاولات، قفل) | Implemented | `server/src/auth/` — اختبارات e2e: REPORTED (`TEST_BASELINE.md`) |
 | RBAC على الخادم (صفحة × 4 أفعال) + نطاق مشاريع + حقول حساسة | Implemented | `server/src/authz/guards.ts:10,26`, `server/src/data/policy.ts`, `field-guards.ts` (VERIFIED قراءة) |
-| مستوى الموديول، أفعال Approve/Reject/Print/Export/Pay/Cancel/Post، نطاقا «إدارته/ما أنشأه» | Not Implemented | — |
-| حماية XSS في الواجهة الحالية | **Not Implemented** — 216 `innerHTML` + 16 `insertAdjacentHTML` + 161 `onclick=` نصي | REPORTED (`web/code-metrics.md`) |
-| CSP وترويسات الأمان | **Not Implemented** | VERIFIED: لا `helmet` ولا ترويسات أمان في `server/` |
-| Nginx وHTTPS | **Not Implemented** | VERIFIED: لا إعداد خادم عكسي في `docker/` |
-| رفع الملفات وفحصها | **Not Implemented** | VERIFIED: `AttachmentEntity` غير مستخدم؛ `web/web-api.js:143` |
-| حماية سجل التدقيق على مستوى القاعدة | **Not Implemented** | VERIFIED: لا Trigger ولا صلاحيات منفصلة في `server/src/migrations/` |
-| القيم السابقة في سجل التدقيق | **Not Implemented** | VERIFIED: `server/src/data/data.service.ts:327` يسجل الجديد فقط |
+| مستوى الموديول، أفعال Approve/Reject/Print/Export/Pay/Cancel/Post، نطاقا «إدارته/ما أنشأه» | Not Implemented (المرحلة 5) | — |
+| حماية XSS في الواجهة الحالية | **Implemented (المرحلة 2)** — فحص آلي (`tools/security/xss-probe.js`): 0 تنفيذ بعد الإصلاح، والمعرّفات مقفولة على السيرفر | VERIFIED |
+| CSP وترويسات الأمان | **Partially Implemented (المرحلة 2)** — ترويسات كاملة + CSP مُنفَّذة من غير eval؛ `unsafe-inline` باقية لحد إزالة 161 `onclick` (R-26) | VERIFIED (`security.e2e`) |
+| Nginx وHTTPS | **Implemented (المرحلة 2)** — Internal CA (B-57)، TLS 1.2/1.3، HSTS، WebSocket | VERIFIED (بيئة معزولة) |
+| رفع الملفات وفحصها | **Implemented — الهيكل الأمني (المرحلة 2)**: فحص المحتوى والنوع والحجم + صلاحية السجل المالك. الربط بالواجهة: المرحلة 5 | VERIFIED (`attachments.e2e`) |
+| حماية سجل التدقيق على مستوى القاعدة | **Implemented (المرحلة 2)** — Trigger إلحاق فقط + دور تطبيق بأقل صلاحية | VERIFIED (`audit.e2e`) |
+| القيم السابقة في سجل التدقيق | **Implemented (المرحلة 2)** — `changes.diff.before` | VERIFIED (`audit.e2e`) |
 | إدارة الأسرار | Implemented (متغيرات بيئة؛ الإنتاج يرفض الإقلاع بدون `JWT_SECRET`) | `server/src/config/env.validation.ts` (VERIFIED) |
 | قاعدة البيانات غير منشورة خارج شبكة Docker | Implemented | `docker/docker-compose.yml` (VERIFIED) |
 | تبعيات الخادم | 0 ثغرات | REPORTED (`npm audit`، 2026-11-16) |
-| مكتبة `xlsx` 0.18.5 القديمة (تُحمَّل في المتصفح أيضًا) | Not Implemented (التحديث) | REPORTED (`SECURITY_AUDIT.md` S8) |
-| 2FA للحسابات الإدارية | Not Implemented | — |
-| النسخ الاحتياطي للخادم | **Not Implemented** | VERIFIED |
-| اختبار استعادة فعلي | **Not Implemented** | VERIFIED |
+| مكتبة `xlsx` 0.18.5 القديمة (تُحمَّل في المتصفح أيضًا) | **Blocked** — النسخة المصلَّحة على cdn.sheetjs.com بس، والشبكة الحالية بتمنعه | VERIFIED (رفض الـ proxy) |
+| 2FA للحسابات الإدارية | **Implemented (المرحلة 2)** — TOTP + أكواد استرداد + إلزام أدوار (`REQUIRE_2FA_ROLES`، الافتراضي admin) | VERIFIED (`two-factor.e2e`، `test:web`) |
+| النسخ الاحتياطي للخادم | **Implemented (المرحلة 2)** — يومي + WAL ≤15 دقيقة + نسخة مشفّرة خارجية + احتفاظ 30/12/12 | VERIFIED (بيئة معزولة) |
+| اختبار استعادة فعلي | **Implemented (المرحلة 2)** — استعادة لنقطة زمنية + استعادة من النسخة المشفّرة: الأعداد مطابقة | VERIFIED (بيئة معزولة) |
 
 ---
 
@@ -68,11 +68,13 @@
 ### 3.3 القيم المفتوحة (لا تُخترع)
 | القيمة | القرار |
 |---|---|
-| RPO (أقصى فقد مقبول) | B-63 |
-| RTO (أقصى توقف مقبول) | B-64 |
-| مدة الاحتفاظ | B-65 |
-| مكان النسخة المنفصلة | B-66 |
-| مفاتيح التشفير ومسؤول اختبار الاستعادة | B-67 |
+| RPO (أقصى فقد مقبول) | ✅ 15 دقيقة (نسخة كاملة يومية + WAL كل 15 دقيقة) |
+| RTO (أقصى توقف مقبول) | ✅ 4 ساعات (هدف مبدئي) |
+| مدة الاحتفاظ | ✅ يومي 30 يوم · أسبوعي 12 أسبوع · شهري 12 شهر |
+| مكان النسخة المنفصلة | ✅ جهاز تخزين منفصل داخل الشركة + نسخة مشفّرة خارج السيرفر |
+| مفاتيح التشفير ومسؤول اختبار الاستعادة | ⏳ B-67 (مفتوح) |
+
+> ملاحظة: ترقيم المستخدم لقرارات النسخ (2026-11-17) كان مُزاحًا بخانة عن الجدول ده؛ اتسجّلت حسب المحتوى في `OPEN_BUSINESS_DECISIONS.md`.
 
 **يمكن بناء آلية النسخ واختبارها بقيم اختبار في المرحلة 2؛ لا يمكن اعتبارها جاهزة للتشغيل قبل هذه القرارات.**
 
