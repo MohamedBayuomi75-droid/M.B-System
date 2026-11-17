@@ -84,6 +84,16 @@
     return c;
   }
 
+  /** تركيز أول خانة في الفورم: فورًا (الـ overlay في الصفحة ومرئي)، ومحاولة احتياطية بعد لحظة
+      بس لو التركيز لسه برّه الفورم. ممنوع نسرق التركيز من خانة المستخدم بدأ يكتب فيها: المؤقت القديم
+      (focus بعد 30ms بدون شرط) كان بينقل التركيز لأول خانة في نص الكتابة في التانية، فالنص يتلزق في الأولى. */
+  function focusField(form, input) {
+    input.focus();
+    setTimeout(function () {
+      if (input.isConnected && !form.contains(document.activeElement)) input.focus();
+    }, 30);
+  }
+
   function field(label, id, type, autocomplete) {
     var input = el('input', { className: 'input', id: id, type: type, autocomplete: autocomplete, dir: type === 'password' || id === 'waUser' ? 'ltr' : 'rtl' });
     return { wrap: el('label', { className: 'web-auth-field' }, [el('span', { text: label }), input]), input: input };
@@ -105,7 +115,7 @@
       var form = el('form', { id: 'waForm', novalidate: 'novalidate' }, [u.wrap, p.wrap, o.wrap, err, btn]);
       c.appendChild(form);
       ov.appendChild(c);
-      setTimeout(function () { u.input.focus(); }, 30);
+      focusField(form, u.input);
       form.addEventListener('submit', async function (e) {
         e.preventDefault();
         err.textContent = '';
@@ -148,7 +158,7 @@
       var form = el('form', { id: 'waPwdForm', novalidate: 'novalidate' }, [p1.wrap, p2.wrap, err, btn, out]);
       c.appendChild(form);
       ov.appendChild(c);
-      setTimeout(function () { p1.input.focus(); }, 30);
+      focusField(form, p1.input);
       out.addEventListener('click', function () { logout(); });
       form.addEventListener('submit', async function (e) {
         e.preventDefault();
@@ -178,7 +188,7 @@
       var form = el('form', { novalidate: 'novalidate' }, [p.wrap, err, btn, out]);
       c.appendChild(form); ov.appendChild(c);
       out.addEventListener('click', function () { logout(); });
-      setTimeout(function () { p.input.focus(); }, 30);
+      focusField(form, p.input);
       var step = 'password';
       var o = null;
       form.addEventListener('submit', async function (e) {
@@ -197,7 +207,7 @@
             o.input.setAttribute('inputmode', 'numeric'); o.input.setAttribute('dir', 'ltr'); o.input.setAttribute('maxlength', '6');
             form.insertBefore(o.wrap, err);
             btn.textContent = 'تفعيل';
-            setTimeout(function () { o.input.focus(); }, 30);
+            focusField(form, o.input);
           } else if (step === 'code') {
             var r2 = await api('POST', '/api/auth/2fa/enable', { otp: o.input.value.trim() });
             if (!r2.ok) { err.textContent = (r2.body && r2.body.message) || 'الكود غلط'; o.input.value = ''; o.input.focus(); return; }
