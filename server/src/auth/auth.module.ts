@@ -11,6 +11,8 @@ import { BootstrapAdminService } from './bootstrap-admin.service';
 import { LoginBodyGuard } from './login-body.guard';
 import { LoginThrottlerGuard } from './login-throttler.guard';
 import { JwtStrategy, LocalStrategy } from './strategies';
+import { TwoFactorController } from './two-factor.controller';
+import { TwoFactorService } from './two-factor.service';
 
 @Module({
   imports: [
@@ -24,8 +26,8 @@ import { JwtStrategy, LocalStrategy } from './strategies';
       useFactory: (cfg: AuthConfig) => ({ secret: cfg.jwtSecret, signOptions: { algorithm: 'HS256', expiresIn: cfg.accessTtlSec } }),
     }),
   ],
-  controllers: [AuthController],
-  providers: [AuthConfig, AuthService, LocalStrategy, JwtStrategy, LoginThrottlerGuard, LoginBodyGuard, BootstrapAdminService],
+  controllers: [AuthController, TwoFactorController],
+  providers: [AuthConfig, AuthService, TwoFactorService, LocalStrategy, JwtStrategy, LoginThrottlerGuard, LoginBodyGuard, BootstrapAdminService],
   exports: [AuthConfig, JwtModule],
 })
 export class AuthModule {}

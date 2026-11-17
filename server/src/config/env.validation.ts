@@ -1,5 +1,5 @@
 import { plainToInstance, Type } from 'class-transformer';
-import { IsIn, IsInt, IsOptional, IsString, Max, Min, MinLength, validateSync } from 'class-validator';
+import { IsIn, IsInt, IsOptional, IsString, Matches, Max, Min, MinLength, validateSync } from 'class-validator';
 
 /** كل إعدادات السيرفر من env — بتتحقق عند الإقلاع، ولو فيه غلط السيرفر مش هيقوم. */
 export class EnvironmentVariables {
@@ -58,6 +58,24 @@ export class EnvironmentVariables {
   /** كلمة مرور أول أدمن (لو الداتابيز فاضية). لو مش محددة بتتولّد عشوائي وتتكتب في السجل مرة واحدة. تغييرها إجباري أول دخول */
   @IsOptional() @IsString() @MinLength(10)
   ADMIN_INITIAL_PASSWORD?: string;
+
+  /** المرحلة 2 — 2FA: مفتاح تشفير أسرار TOTP (32 بايت: 64 hex أو base64). لو مش موجود بيتشتق من JWT_SECRET */
+  @IsOptional() @IsString() @Matches(/^([0-9a-fA-F]{64}|[A-Za-z0-9+/]{43}=)$/, { message: 'TOTP_ENC_KEY لازم 32 بايت (64 hex أو base64)' })
+  TOTP_ENC_KEY?: string;
+
+  /** أدوار لازم تفعّل 2FA (مفصولة بفاصلة، مثلًا admin). المستخدم بيقدر يدخل بس مايقدرش يعمل أي حاجة غير تفعيل 2FA */
+  @IsOptional() @IsString()
+  REQUIRE_2FA_ROLES?: string;
+
+  /** المرحلة 2 — رفع الملفات: الحد الأقصى بالميجابايت (القرار B-59: 25) */
+  @IsOptional() @Type(() => Number) @IsInt() @Min(1) @Max(100)
+  ATTACH_MAX_MB?: number;
+
+  /** ترويسات CSP (الطوارئ بس: false بيقفلها) */
+  @IsOptional() @IsIn(['true', 'false']) CSP_ENFORCE?: 'true' | 'false';
+  @IsOptional() @IsIn(['true', 'false']) CSP_REPORT_ONLY?: 'true' | 'false';
+  /** أصول إضافية مسموح لها بطلبات التعديل (مفصولة بفاصلة) — الافتراضي: نفس الأصل بس */
+  @IsOptional() @IsString() ALLOWED_ORIGINS?: string;
 }
 
 export function validateEnv(config: Record<string, unknown>): EnvironmentVariables {

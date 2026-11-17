@@ -35,6 +35,8 @@ export class UsersService {
       id: u.id, username: u.username, name: u.name, role: u.role,
       mustChangePassword: u.mustChangePassword, tokenVersion: u.tokenVersion, projectScope: u.projectScope,
       permissions: effectivePermissions(u, ov),
+      twoFactorEnabled: u.totpEnabled,
+      twoFactorSetupRequired: !u.totpEnabled && requires2fa(u.role),
     };
   }
 
@@ -187,4 +189,9 @@ export class UsersService {
       lastLoginAt: u.lastLoginAt, createdAt: u.createdAt,
     };
   }
+}
+
+/** REQUIRE_2FA_ROLES=admin,ledgerAccountant → الأدوار دي لازم تفعّل 2FA (المرحلة 2 — S-8) */
+export function requires2fa(role: string, env: NodeJS.ProcessEnv = process.env): boolean {
+  return (env.REQUIRE_2FA_ROLES || '').split(',').map((r) => r.trim()).filter(Boolean).includes(role);
 }

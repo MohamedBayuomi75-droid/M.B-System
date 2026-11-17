@@ -10,6 +10,7 @@
 .web-auth-field span { display: block; margin-bottom: 4px; color: var(--ink-soft, #6b6555); }
 .web-auth-field input { width: 100%; box-sizing: border-box; }
 .web-auth-err { min-height: 20px; color: #b42318; font-size: 13px; margin: 4px 0 10px; white-space: pre-line; }
+.web-auth-secret { font-family: ui-monospace, Consolas, monospace; font-size: 17px; letter-spacing: 1px; background: #f4f1e8; border: 1px dashed #b9b29c; border-radius: 8px; padding: 10px 12px; margin: 0 0 14px; text-align: center; word-break: break-all; user-select: all; }
 .web-auth-btn { width: 100%; margin-top: 6px; }
 
 /* أجزاء خاصة بالديسكتوب (D-007: remove) */

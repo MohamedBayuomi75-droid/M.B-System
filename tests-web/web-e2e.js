@@ -39,6 +39,7 @@ async function newUser(username, role, extra = {}) {
 }
 
 (async () => {
+  process.env.REQUIRE_2FA_ROLES = 'clientsSales'; // المرحلة 2: دور بيتطلب 2FA (اختبار [12])
   srv = await startWebServer();
   browser = await chromium.launch({ args: ['--no-sandbox'] });
   // أدمن عبر الـ API (عشان ننشئ مستخدمين)
@@ -220,6 +221,48 @@ async function newUser(username, role, extra = {}) {
     ok(true, 'logout → login screen');
     const r2 = await A.page.evaluate(async () => (await fetch('/api/auth/refresh', { method: 'POST' })).status);
     eq(r2, 401, 'refresh cookie revoked');
+  }
+
+  console.log('[12] two-factor: required role enrols in the browser, then logs in with a code');
+  {
+    const { totpAt, currentStep } = require('../server/dist/auth/totp');
+    await newUser('tf_sales', 'clientsSales');
+    const ctx = await browser.newContext({ viewport: { width: 1300, height: 850 }, locale: 'ar-EG' });
+    const page = await ctx.newPage();
+    page.on('pageerror', (e) => errors.push(`tf pageerror: ${e.message}`));
+    await page.goto(srv.base + '/legacy/');
+    await page.waitForSelector('#waForm');
+    await page.fill('#waUser', 'tf_sales'); await page.fill('#waPass', PW); await page.click('#waLogin');
+    await page.waitForSelector('#wa2Pass');
+    ok(true, 'enrolment screen shown for a required role');
+    await page.fill('#wa2Pass', PW); await page.click('#wa2Start');
+    await page.waitForSelector('#wa2Secret');
+    const secret = (await page.textContent('#wa2Secret')).replace(/\s/g, '');
+    ok(/^[A-Z2-7]{32}$/.test(secret), 'secret shown for manual entry');
+    await page.fill('#wa2Otp', totpAt(secret, currentStep())); await page.click('#wa2Start');
+    await page.waitForSelector('#wa2Codes');
+    eq((await page.textContent('#wa2Codes')).trim().split(/\s+/).length, 10, '10 recovery codes shown once');
+    await page.click('#wa2Done');
+    await page.waitForFunction(() => !document.getElementById('webAuthOverlay') && typeof DATA !== 'undefined' && document.querySelector('#app').innerText.length > 100, null, { timeout: 20000 });
+    ok(true, 'app opens after enrolment');
+    await page.evaluate(() => apiLogout());
+    await page.waitForSelector('#waForm', { timeout: 10000 });
+    await page.fill('#waUser', 'tf_sales'); await page.fill('#waPass', PW); await page.click('#waLogin');
+    await page.waitForFunction(() => getComputedStyle(document.getElementById('waOtp').closest('label')).display !== 'none', null, { timeout: 10000 });
+    ok((await page.textContent('#waErr')).includes('كود'), 'login asks for the code after the password');
+    await page.fill('#waOtp', totpAt(secret, currentStep() + 1)); await page.click('#waLogin');
+    await page.waitForFunction(() => !document.getElementById('webAuthOverlay') && typeof DATA !== 'undefined', null, { timeout: 20000 });
+    ok(true, 'login with code succeeds');
+    await ctx.close();
+  }
+
+  console.log('[13] security headers on the legacy UI');
+  {
+    const r = await fetch(srv.base + '/legacy/');
+    ok(/frame-ancestors 'none'/.test(r.headers.get('content-security-policy') || ''), 'CSP enforced on /legacy/');
+    eq(r.headers.get('x-content-type-options'), 'nosniff', 'nosniff');
+    const x = await fetch(srv.base + '/api/auth/refresh', { method: 'POST', headers: { origin: 'http://evil.example' } });
+    eq(x.status, 403, 'cross-origin refresh rejected');
   }
 
   await browser.close();

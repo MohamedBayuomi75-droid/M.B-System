@@ -6,6 +6,7 @@ import { RoleEntity } from './role.entity';
 @Check('ck_users_password_algo', `"password_algo" IN ('argon2id', 'scrypt')`)
 @Check('ck_users_scrypt_salt', `"password_algo" <> 'scrypt' OR "password_salt" IS NOT NULL`)
 @Check('ck_users_username_not_blank', `length(btrim("username")) > 0`)
+@Check('ck_users_totp_enabled_secret', `NOT "totp_enabled" OR "totp_secret" IS NOT NULL`)
 @Index('uq_users_username_lower', { synchronize: false }) // فهرس فريد على lower(username) معرّف في الـ migration
 export class UserEntity {
   @PrimaryGeneratedColumn('uuid') id: string;
@@ -44,9 +45,12 @@ export class UserEntity {
   /** بيزيد مع «خروج من كل الأجهزة» — أي JWT بنسخة أقدم مرفوض */
   @Column({ name: 'token_version', type: 'int', default: 0 }) tokenVersion: number;
 
-  /** 2FA (A8) */
+  /** 2FA (المرحلة 2 — S-8): الأسرار مشفّرة (AES-256-GCM)، أكواد الاسترداد HMAC بس */
   @Column({ name: 'totp_secret', type: 'text', nullable: true }) totpSecret: string | null;
   @Column({ name: 'totp_enabled', type: 'boolean', default: false }) totpEnabled: boolean;
+  @Column({ name: 'totp_pending', type: 'text', nullable: true }) totpPending: string | null;
+  @Column({ name: 'totp_recovery', type: 'text', array: true, nullable: true }) totpRecovery: string[] | null;
+  @Column({ name: 'totp_last_step', type: 'bigint', nullable: true }) totpLastStep: string | null;
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' }) createdAt: Date;
   @UpdateDateColumn({ name: 'updated_at', type: 'timestamptz' }) updatedAt: Date;

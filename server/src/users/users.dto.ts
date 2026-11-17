@@ -66,6 +66,8 @@ export class MeDto {
   @ApiProperty({ enum: ROLE_KEYS }) role: string;
   @ApiProperty({ example: 'مدير النظام' }) roleLabel: string;
   @ApiProperty() mustChangePassword: boolean;
+  @ApiProperty({ description: 'التحقق بخطوتين مفعّل' }) twoFactorEnabled: boolean;
+  @ApiProperty({ description: 'لازم يفعّل التحقق بخطوتين قبل أي عملية (REQUIRE_2FA_ROLES)' }) twoFactorSetupRequired: boolean;
   @ApiProperty({ type: [String], nullable: true }) projectScope: string[] | null;
   @ApiProperty({ type: PermissionsDto }) permissions: PermissionsDto;
   @ApiProperty({ enum: PAGES, isArray: true, description: 'كل مفاتيح الصفحات بالترتيب (بديل HR_PAGES في الواجهة)' }) pages: string[];

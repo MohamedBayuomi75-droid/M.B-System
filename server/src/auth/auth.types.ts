@@ -10,6 +10,10 @@ export interface AuthUser {
   tokenVersion: number;
   projectScope: string[] | null;
   permissions: Permissions;
+  /** 2FA مفعّل للمستخدم */
+  twoFactorEnabled: boolean;
+  /** دوره ضمن REQUIRE_2FA_ROLES ولسه مافعّلش 2FA → ممنوع من كل حاجة غير التفعيل */
+  twoFactorSetupRequired: boolean;
   /** id جلسة الـ refresh اللي الـ access token اتولد منها */
   sessionId?: string;
 }
@@ -34,4 +38,8 @@ export const AuthErrorCode = {
   FORBIDDEN: 'FORBIDDEN',
   WEAK_PASSWORD: 'WEAK_PASSWORD',
   CURRENT_PASSWORD_WRONG: 'CURRENT_PASSWORD_WRONG',
+  OTP_REQUIRED: 'OTP_REQUIRED',
+  OTP_INVALID: 'OTP_INVALID',
+  TWO_FACTOR_SETUP_REQUIRED: 'TWO_FACTOR_SETUP_REQUIRED',
+  TWO_FACTOR_STATE: 'TWO_FACTOR_STATE',
 } as const;

@@ -11,7 +11,7 @@ export class LoginBodyGuard implements CanActivate {
     const dto = plainToInstance(LoginDto, req.body ?? {});
     const errors = validateSync(dto, { whitelist: true, forbidNonWhitelisted: true });
     if (errors.length) throw new BadRequestException(errors.flatMap((e) => Object.values(e.constraints ?? {})));
-    req.body = { username: dto.username, password: dto.password };
+    req.body = { username: dto.username, password: dto.password, ...(dto.otp !== undefined ? { otp: dto.otp } : {}) };
     return true;
   }
 }

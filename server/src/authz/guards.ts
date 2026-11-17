@@ -33,6 +33,9 @@ export class PermissionsGuard implements CanActivate {
     if (user.mustChangePassword && !this.reflector.getAllAndOverride<boolean>(ALLOW_PENDING_PASSWORD_CHANGE, targets)) {
       throw new ForbiddenException({ statusCode: 403, code: AuthErrorCode.PASSWORD_CHANGE_REQUIRED, message: 'لازم تغيّر كلمة المرور الأول' });
     }
+    if (user.twoFactorSetupRequired && !this.reflector.getAllAndOverride<boolean>(ALLOW_PENDING_PASSWORD_CHANGE, targets)) {
+      throw new ForbiddenException({ statusCode: 403, code: AuthErrorCode.TWO_FACTOR_SETUP_REQUIRED, message: 'لازم تفعّل التحقق بخطوتين الأول' });
+    }
     const required = this.reflector.getAllAndMerge<RequiredPerm[]>(REQUIRED_PERMS, targets) ?? [];
     for (const r of required) {
       const ok = 'flag' in r ? !!user.permissions[r.flag] : hasPagePermission(user.permissions, r.page, r.action);

@@ -96,9 +96,13 @@
       var c = card('تسجيل الدخول', 'ادخل باسم المستخدم وكلمة المرور');
       var u = field('اسم المستخدم', 'waUser', 'text', 'username');
       var p = field('كلمة المرور', 'waPass', 'password', 'current-password');
+      // التحقق بخطوتين (المرحلة 2): الخانة بتظهر لما السيرفر يطلب الكود (OTP_REQUIRED)
+      var o = field('كود التحقق (6 أرقام) أو كود استرداد', 'waOtp', 'text', 'one-time-code');
+      o.input.setAttribute('inputmode', 'numeric'); o.input.setAttribute('dir', 'ltr'); o.input.setAttribute('maxlength', '16');
+      o.wrap.style.display = 'none';
       var err = el('div', { className: 'web-auth-err', id: 'waErr', role: 'alert', text: message || '' });
       var btn = el('button', { type: 'submit', className: 'btn btn-primary web-auth-btn', id: 'waLogin', text: 'دخول' });
-      var form = el('form', { id: 'waForm', novalidate: 'novalidate' }, [u.wrap, p.wrap, err, btn]);
+      var form = el('form', { id: 'waForm', novalidate: 'novalidate' }, [u.wrap, p.wrap, o.wrap, err, btn]);
       c.appendChild(form);
       ov.appendChild(c);
       setTimeout(function () { u.input.focus(); }, 30);
@@ -109,12 +113,21 @@
         if (!username || !password) { err.textContent = 'اكتب اسم المستخدم وكلمة المرور'; return; }
         btn.disabled = true;
         try {
-          var r = await rawFetch('POST', '/api/auth/login', { username: username, password: password }, { noAuth: true });
+          var body = { username: username, password: password };
+          var otp = o.input.value.trim();
+          if (o.wrap.style.display !== 'none' && otp) body.otp = otp;
+          var r = await rawFetch('POST', '/api/auth/login', body, { noAuth: true });
           if (r.ok && r.body && r.body.accessToken) { setSession(r.body); resolve(); return; }
           var b = r.body || {};
+          if (b.code === 'OTP_REQUIRED' || b.code === 'OTP_INVALID') {
+            o.wrap.style.display = '';
+            err.textContent = b.code === 'OTP_REQUIRED' ? 'أدخل كود التحقق من تطبيق المصادقة على موبايلك' : (b.message || 'كود التحقق غلط');
+            o.input.value = ''; o.input.focus();
+            return;
+          }
           if (r.status === 429) err.textContent = 'محاولات كتير — استنى دقيقة وحاول تاني';
           else err.textContent = (typeof b.message === 'string' ? b.message : '') || 'تعذر تسجيل الدخول';
-          p.input.value = ''; p.input.focus();
+          p.input.value = ''; o.input.value = ''; p.input.focus();
         } catch (ex) {
           err.textContent = 'تعذر الاتصال بالسيرفر';
         } finally { btn.disabled = false; }
@@ -153,6 +166,56 @@
     });
   }
 
+  /** تفعيل التحقق بخطوتين الإجباري (REQUIRE_2FA_ROLES) — كلمة المرور ← السر ← أول كود ← أكواد الاسترداد */
+  function twoFactorSetupForm() {
+    return new Promise(function (resolve) {
+      var ov = overlay();
+      var c = card('لازم تفعّل التحقق بخطوتين', 'حسابك يتطلب كود من تطبيق مصادقة على الموبايل (Google أو Microsoft Authenticator) مع كلمة المرور');
+      var p = field('كلمة المرور الحالية', 'wa2Pass', 'password', 'current-password');
+      var err = el('div', { className: 'web-auth-err', id: 'wa2Err', role: 'alert' });
+      var btn = el('button', { type: 'submit', className: 'btn btn-primary web-auth-btn', id: 'wa2Start', text: 'متابعة' });
+      var out = el('button', { type: 'button', className: 'btn btn-outline web-auth-btn', text: 'تسجيل الخروج' });
+      var form = el('form', { novalidate: 'novalidate' }, [p.wrap, err, btn, out]);
+      c.appendChild(form); ov.appendChild(c);
+      out.addEventListener('click', function () { logout(); });
+      setTimeout(function () { p.input.focus(); }, 30);
+      var step = 'password';
+      var o = null;
+      form.addEventListener('submit', async function (e) {
+        e.preventDefault(); err.textContent = ''; btn.disabled = true;
+        try {
+          if (step === 'password') {
+            var r = await api('POST', '/api/auth/2fa/setup', { password: p.input.value });
+            if (!r.ok) { err.textContent = (r.body && r.body.message) || 'تعذر البدء'; return; }
+            step = 'code';
+            p.wrap.remove();
+            var secret = String(r.body.secret).replace(/(.{4})/g, '$1 ').trim();
+            form.insertBefore(el('p', { className: 'web-auth-sub', text: '١) في تطبيق المصادقة اختار «إضافة حساب» ← «إدخال مفتاح يدويًا»، واكتب المفتاح ده (نوع الحساب: حسب الوقت):' }), err);
+            form.insertBefore(el('div', { className: 'web-auth-secret', id: 'wa2Secret', dir: 'ltr', text: secret }), err);
+            form.insertBefore(el('p', { className: 'web-auth-sub', text: '٢) اكتب الكود اللي ظهر في التطبيق:' }), err);
+            o = field('كود التحقق (6 أرقام)', 'wa2Otp', 'text', 'one-time-code');
+            o.input.setAttribute('inputmode', 'numeric'); o.input.setAttribute('dir', 'ltr'); o.input.setAttribute('maxlength', '6');
+            form.insertBefore(o.wrap, err);
+            btn.textContent = 'تفعيل';
+            setTimeout(function () { o.input.focus(); }, 30);
+          } else if (step === 'code') {
+            var r2 = await api('POST', '/api/auth/2fa/enable', { otp: o.input.value.trim() });
+            if (!r2.ok) { err.textContent = (r2.body && r2.body.message) || 'الكود غلط'; o.input.value = ''; o.input.focus(); return; }
+            step = 'done';
+            while (form.firstChild) form.removeChild(form.firstChild);
+            form.appendChild(el('p', { className: 'web-auth-sub', text: 'تم التفعيل. احتفظ بأكواد الاسترداد دي في مكان آمن — كل كود يستخدم مرة واحدة لو الموبايل ضاع. مش هتظهر تاني:' }));
+            form.appendChild(el('div', { className: 'web-auth-secret', id: 'wa2Codes', dir: 'ltr', text: r2.body.recoveryCodes.join('   ') }));
+            form.appendChild(el('button', { type: 'submit', className: 'btn btn-primary web-auth-btn', id: 'wa2Done', text: 'حفظت الأكواد — متابعة' }));
+          } else {
+            var me = await api('GET', '/api/me');
+            if (me.ok) state.me = me.body;
+            resolve();
+          }
+        } catch (ex) { err.textContent = 'تعذر الاتصال بالسيرفر'; } finally { btn.disabled = false; }
+      });
+    });
+  }
+
   /** بيرجّع بعد ما المستخدم يبقى مسجّل دخول وكلمة مروره سليمة (مرة واحدة لكل تحميل صفحة) */
   function ready() {
     if (state.readyPromise) return state.readyPromise;
@@ -161,6 +224,7 @@
       try { ok = await refresh(); } catch (e) { ok = false; }
       if (!ok) await loginForm();
       if (state.me && state.me.mustChangePassword) await changePasswordForm();
+      if (state.me && state.me.twoFactorSetupRequired) await twoFactorSetupForm();
       closeOverlay();
       document.documentElement.classList.add('web-mode');
       return state.me;

@@ -11,6 +11,7 @@ import { DomainEvents } from '../events/domain-events';
 import { AuthConfig } from './auth.config';
 import { AccessTokenPayload, AuthErrorCode, AuthUser } from './auth.types';
 import { ARGON2_OPTIONS, PasswordService } from './password.service';
+import { TwoFactorService } from './two-factor.service';
 
 const INVALID = () => new UnauthorizedException({ statusCode: 401, code: AuthErrorCode.INVALID_CREDENTIALS, message: 'اسم المستخدم أو كلمة المرور غلط' });
 
@@ -29,6 +30,7 @@ export class AuthService {
     private readonly cfg: AuthConfig,
     private readonly audit: AuditService,
     private readonly events: DomainEvents,
+    private readonly twoFactor: TwoFactorService,
   ) {
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     this.dummyHash = require('argon2').hash('dummy-password-for-timing', ARGON2_OPTIONS);
@@ -57,6 +59,8 @@ export class AuthService {
       else await this.audit.record({ action: 'auth.login_failed', userId: u.id, username: u.username, details: { reason: 'inactive' }, req });
       throw INVALID();
     }
+    // 2FA (المرحلة 2): بعد كلمة مرور صحيحة وقبل أي تحديث — الكود الغلط بيتعد ضمن المحاولات الفاشلة (نفس القفل)
+    await this.twoFactor.checkLogin(u, (req.body as { otp?: string } | undefined)?.otp, req, () => this.registerFailure(u, req));
     const patch: Partial<UserEntity> = { failedAttempts: 0, lockedUntil: null, lastLoginAt: new Date() };
     if (res.needsRehash) {
       // أول دخول ناجح بهاش scrypt القديم (أو argon2 بإعدادات أضعف) → argon2id (D-005)
