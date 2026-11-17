@@ -6,8 +6,15 @@ export interface Me {
   id: string; username: string; name: string; role: string; roleLabel: string;
   mustChangePassword: boolean; twoFactorEnabled: boolean; twoFactorSetupRequired: boolean;
   projectScope: string[] | null; permissions: Permissions; pages: string[];
+  /** المرحلة 5: أفعال المستندات والموديولات الظاهرة */
+  docActions?: Record<DocAction, boolean>; modules?: string[];
 }
 export interface TokenResponse { accessToken: string; tokenType: 'Bearer'; expiresIn: number; user: Me }
 export interface ApiError { statusCode: number; code?: string; message?: string | string[]; requestId?: string; retryAfterSec?: number }
 export interface Project { id: string; code: string | null; name: string; status: string | null; stage: string | null; budget: string | null; supervisorId: string | null; customerId: string | null; rev: number; updatedAt: string | null }
 export interface ProjectList { items: Project[]; total: number; source: string }
+export type DocAction = 'approve' | 'reject' | 'print' | 'export' | 'pay' | 'cancel' | 'post';
+export interface InboxItem { id: string; documentType: string; documentName: string; documentId: string; cycle: number; amount: string | null; status: string; currentLevel: number; submittedAt: string }
+export interface AppNotification { id: string; kind: string; title: string; body: string | null; entity: string | null; entityId: string | null; createdAt: string; readAt: string | null }
+export interface NotificationList { items: AppNotification[]; unread: number }
+export interface Attachment { id: string; filename: string; kind: string; size: number; createdAt: string; version: number; versionOf: string | null; supersededAt: string | null }

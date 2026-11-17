@@ -147,6 +147,51 @@ async function login(page, username, password) {
     await S.ctx.close();
   }
 
+  console.log('[6b] phase 5: approvals inbox + notifications bell + attachment versions (test data only)');
+  {
+    const idem = (k) => ({ 'idempotency-key': 'app-e2e-' + k + '-' + Date.now() });
+    const apiH = async (method, path, body, token, headers) => {
+      const r = await fetch(srv.base + path, { method, headers: { 'content-type': 'application/json', authorization: 'Bearer ' + token, ...headers }, body: JSON.stringify(body) });
+      return { status: r.status, body: await r.json() };
+    };
+    const ap = await api('POST', '/api/users', { username: 'app_approver', password: PW, role: 'viewer' }, adminTok);
+    eq(ap.status, 201, 'approver user created');
+    eq((await api('POST', '/api/v1/approvals/config/document-types', { code: 'e2e-doc', name: 'مستند اختبار', module: 'ledger.invoices' }, adminTok)).status, 201, 'test document type');
+    eq((await api('POST', '/api/v1/approvals/config/workflows', { documentType: 'e2e-doc', allowSelfApproval: false, allowSameApproverAcrossLevels: false, levels: [{ mode: 'ANY', approvers: [{ type: 'USER', ref: ap.body.id }] }] }, adminTok)).status, 201, 'test workflow');
+    const sub = await apiH('POST', '/api/v1/approvals/requests', { documentType: 'e2e-doc', documentId: 'E2E-1', amount: '1500.5' }, adminTok, idem('s'));
+    eq([sub.status, sub.body.status], [201, 'Submitted'], 'submitted for approval');
+
+    const P = await newContext('approver');
+    await login(P.page, 'app_approver', PW);
+    await P.page.waitForSelector('#whoami');
+    await P.page.waitForFunction(() => document.querySelector('#bellBadge')?.getAttribute('data-unread') === '1');
+    ok(true, 'bell shows 1 unread notification');
+    await P.page.click('#navApprovals');
+    await P.page.waitForSelector(`#inbox [data-id="${sub.body.id}"]`);
+    ok((await P.page.textContent('#inbox')).includes('١٬٥٠٠٫٥٠'), 'inbox lists the request with formatted amount');
+    await P.page.click(`#inbox [data-id="${sub.body.id}"] [data-act="reject"]`);
+    ok((await P.page.textContent('#apprError')).includes('السبب'), 'reject without a reason is blocked');
+    await P.page.click(`#inbox [data-id="${sub.body.id}"] [data-act="approve"]`);
+    await P.page.waitForSelector('#inboxEmpty');
+    eq((await api('GET', '/api/v1/approvals/requests/' + sub.body.id, null, adminTok)).body.status, 'Approved', 'approved from the UI');
+    await P.ctx.close();
+
+    eq((await api('POST', '/api/sync', { changes: [{ collection: 'projects', id: 'e2e-att', op: 'upsert', baseRev: 0, set: { name: 'مشروع مرفقات اختبار' } }] }, adminTok)).status, 200, 'test project');
+    await A.page.goto(srv.base + '/app/projects');
+    await A.page.waitForSelector('#projectsTable [data-id="e2e-att"]');
+    await A.page.click('#projectsTable [data-id="e2e-att"]');
+    await A.page.waitForSelector('#attUpload', { state: 'attached' });
+    const pdf = (t) => Buffer.from(`%PDF-1.4\n1 0 obj << /Type /Catalog /Pages 2 0 R /T (${t}) >> endobj\n2 0 obj << /Type /Pages /Kids [] /Count 0 >> endobj\ntrailer << /Root 1 0 R >>\n%%EOF\n`, 'latin1');
+    await A.page.setInputFiles('#attUpload', { name: 'عقد.pdf', mimeType: 'application/pdf', buffer: pdf('v1') });
+    await A.page.waitForSelector('#attList [data-version="1"]');
+    const v1 = await A.page.getAttribute('#attList [data-version="1"]', 'data-id');
+    await A.page.setInputFiles(`#attList [data-replace="${v1}"]`, { name: 'عقد-معدل.pdf', mimeType: 'application/pdf', buffer: pdf('v2') });
+    await A.page.waitForSelector('#attList [data-version="2"]');
+    ok((await A.page.textContent('#attList')).includes('متبدّل'), 'old version kept and marked superseded');
+    const latest = await api('GET', '/api/attachments?collection=projects&recordId=e2e-att', null, adminTok);
+    eq(latest.body.map((a) => a.version), [2], 'list returns the latest version only');
+  }
+
   console.log('[7] logout ends the shared session; PWA service worker registers; no CSP violations');
   {
     const reg = await A.page.waitForFunction(() => navigator.serviceWorker.getRegistration('/app/').then((r) => !!r), null, { timeout: 45000 }).then(() => true).catch(() => false);

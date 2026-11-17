@@ -14,6 +14,7 @@ export const routes: Routes = [
     path: '', component: ShellComponent, canActivate: [authGuard], children: [
       { path: '', component: HomePage, title: 'النظام الموحد' },
       { path: 'projects', canActivate: [pageGuard], data: { page: 'projects' }, loadComponent: () => import('./features/projects.page').then((m) => m.ProjectsPage), title: 'المشروعات (تجريبي)' },
+      { path: 'approvals', loadComponent: () => import('./features/approvals.page').then((m) => m.ApprovalsPage), title: 'بانتظار اعتمادي' },
       { path: 'forbidden', component: ForbiddenPage },
       { path: '**', component: NotFoundPage },
     ],
