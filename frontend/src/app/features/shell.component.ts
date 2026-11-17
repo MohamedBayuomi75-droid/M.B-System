@@ -27,6 +27,7 @@ import { NotificationsBellComponent } from './notifications-bell.component';
         <mat-nav-list id="nav">
           <a mat-list-item routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"><mat-icon matListItemIcon>home</mat-icon><span matListItemTitle>الرئيسية</span></a>
           <a mat-list-item routerLink="/approvals" routerLinkActive="active" id="navApprovals"><mat-icon matListItemIcon>fact_check</mat-icon><span matListItemTitle>بانتظار اعتمادي</span></a>
+          @if (me()?.permissions?.manageUsers || me()?.docActions?.approve) { <a mat-list-item routerLink="/taxes" routerLinkActive="active" id="navTaxes"><mat-icon matListItemIcon>percent</mat-icon><span matListItemTitle>الضرائب والاستقطاعات</span></a> }
           @for (p of pages(); track p.label) {
             @if (p.target === 'angular') {
               <a mat-list-item [routerLink]="p.path" routerLinkActive="active" [attr.data-page]="p.key"><mat-icon matListItemIcon>{{ p.icon }}</mat-icon><span matListItemTitle>{{ p.label }}</span></a>

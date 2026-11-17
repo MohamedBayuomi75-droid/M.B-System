@@ -233,6 +233,42 @@ async function login(page, username, password) {
     ok(nav.some(([t, h]) => t.includes('الموردين') && !t.includes('الكاملة') && h.endsWith('/suppliers')) && nav.some(([t, h]) => t.includes('الموردين — الشاشة الكاملة') && h.includes('/legacy/')), 'cutover: suppliers → new screen, full legacy screen still reachable');
   }
 
+  console.log('[6d] B-21: taxes screen — admin prepares, a different approver approves, preview uses approved only (test data)');
+  {
+    await A.page.goto(srv.base + '/app/taxes');
+    await A.page.waitForSelector('#taxEmpty');
+    ok(true, 'no tax codes seeded');
+    await A.page.fill('#taxCodeForm input[name="code"]', 'TEST-E2E');
+    await A.page.fill('#taxCodeForm input[name="name"]', 'ضريبة اختبار');
+    await A.page.click('#taxCodeAdd');
+    await A.page.waitForSelector('#taxTable tr[data-code="TEST-E2E"]');
+    const ver = await api('POST', '/api/v1/finance/taxes/codes/TEST-E2E/versions', { method: 'PERCENT', rate: '10', base: 'NET_OF_DISCOUNT', appliesTo: ['test-doc'], bearer: 'COUNTERPARTY', collector: 'COUNTERPARTY_CHARGES', effectiveFrom: '2026-01-01', legalRef: 'مرجع اختباري', changeReason: 'اختبار' }, adminTok);
+    eq(ver.status, 201, 'draft version created');
+    await A.page.reload(); await A.page.waitForSelector(`tr[data-version="${ver.body.id}"][data-status="draft"]`);
+    await A.page.click(`tr[data-version="${ver.body.id}"] [data-act="submit"]`);
+    await A.page.waitForSelector(`tr[data-version="${ver.body.id}"][data-status="pending"]`);
+    ok(!(await A.page.$(`tr[data-version="${ver.body.id}"] [data-act="approve"]`)), 'preparer sees no approve button (B-04)');
+    const prev = await api('POST', '/api/v1/finance/taxes/compute', { documentType: 'test-doc', date: '2026-06-01', codes: ['TEST-E2E'], bases: { NET_OF_DISCOUNT: '1000' } }, adminTok);
+    eq(prev.body.code, 'NO_APPROVED_RATE', 'pending rate is not applied');
+    const apr = await api('POST', '/api/users', { username: 'app_tax_approver', password: PW, role: 'viewer' }, adminTok);
+    await fetch(srv.base + `/api/users/${apr.body.id}/doc-actions`, { method: 'PUT', headers: { 'content-type': 'application/json', authorization: 'Bearer ' + adminTok }, body: JSON.stringify({ approve: true }) });
+    const T = await newContext('tax-approver');
+    await login(T.page, 'app_tax_approver', PW);
+    await T.page.waitForSelector('#navTaxes');
+    await T.page.click('#navTaxes');
+    await T.page.waitForSelector(`tr[data-version="${ver.body.id}"] [data-act="approve"]`);
+    await T.page.click(`tr[data-version="${ver.body.id}"] [data-act="approve"]`);
+    await T.page.waitForSelector(`tr[data-version="${ver.body.id}"][data-status="approved"]`);
+    await T.page.fill('#taxPreview input[name="pdoc"]', 'test-doc');
+    await T.page.fill('#taxPreview input[name="pdate"]', '2026-06-01');
+    await T.page.fill('#taxPreview input[name="pcodes"]', 'TEST-E2E');
+    await T.page.fill('#taxPreview input[name="pbase"]', '1000');
+    await T.page.click('#taxPreviewBtn');
+    await T.page.waitForSelector('#taxPreviewOut li');
+    ok((await T.page.textContent('#taxPreviewOut')).includes('100.0000'), 'preview with the approved version');
+    await T.ctx.close();
+  }
+
   console.log('[7] logout ends the shared session; PWA service worker registers; no CSP violations');
   {
     const reg = await A.page.waitForFunction(() => navigator.serviceWorker.getRegistration('/app/').then((r) => !!r), null, { timeout: 45000 }).then(() => true).catch(() => false);

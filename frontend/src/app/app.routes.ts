@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { authGuard, pageGuard } from './core/guards';
+import { authGuard, financeRulesGuard, pageGuard } from './core/guards';
 import { ChangePasswordPage } from './features/change-password.page';
 import { ForbiddenPage, HomePage, NotFoundPage } from './features/home.page';
 import { LoginPage } from './features/login.page';
@@ -16,6 +16,7 @@ export const routes: Routes = [
       { path: 'projects', canActivate: [pageGuard], data: { page: 'projects' }, loadComponent: () => import('./features/projects.page').then((m) => m.ProjectsPage), title: 'المشروعات (تجريبي)' },
       { path: 'suppliers', canActivate: [pageGuard], data: { page: 'ledger.suppliers' }, loadComponent: () => import('./features/suppliers.page').then((m) => m.SuppliersPage), title: 'الموردين' },
       { path: 'customers', canActivate: [pageGuard], data: { page: 'clients.customers' }, loadComponent: () => import('./features/customers.page').then((m) => m.CustomersPage), title: 'العملاء' },
+      { path: 'taxes', canActivate: [financeRulesGuard], loadComponent: () => import('./features/taxes.page').then((m) => m.TaxesPage), title: 'الضرائب والاستقطاعات' },
       { path: 'approvals', loadComponent: () => import('./features/approvals.page').then((m) => m.ApprovalsPage), title: 'بانتظار اعتمادي' },
       { path: 'forbidden', component: ForbiddenPage },
       { path: '**', component: NotFoundPage },

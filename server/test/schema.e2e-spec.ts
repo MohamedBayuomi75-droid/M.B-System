@@ -7,7 +7,9 @@ const LAYER1_TABLES = ['attachments', 'audit_log', 'changes', 'docs', 'records',
   'approval_decisions', 'approval_document_types', 'approval_level_approvers', 'approval_request_steps', 'approval_requests', 'approval_state_log', 'approval_workflow_levels', 'approval_workflows',
   'document_counters', 'document_numbers', 'idempotency_keys', 'notifications', 'projects', 'user_action_permissions',
   // المرحلة 6.1 — فاضية: الترحيل بموافقة منفصلة
-  'customer_contacts', 'customers', 'suppliers', 'module_cutover'].sort();
+  'customer_contacts', 'customers', 'suppliers', 'module_cutover',
+  // B-21 — فاضية: مفيش نسبة متسجّلة
+  'document_tax_lines', 'tax_code_versions', 'tax_codes'].sort();
 
 async function tables(ds: DataSource): Promise<string[]> {
   const rows: { table_name: string }[] = await ds.query(

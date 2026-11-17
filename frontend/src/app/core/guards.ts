@@ -19,3 +19,9 @@ export const pageGuard: CanActivateFn = (route) => {
   const page = route.data?.['page'] as string | undefined;
   return !page || session.can(page, 'view') ? true : inject(Router).createUrlTree(['/forbidden']);
 };
+
+/** إعداد الضرائب (B-21): المدير (إعداد) أو صاحب فعل «اعتماد» (مراجعة/اعتماد) بس — المستخدمين العاديين لأ */
+export const financeRulesGuard: CanActivateFn = () => {
+  const me = inject(SessionService).me();
+  return me && (me.permissions.manageUsers || me.docActions?.approve) ? true : inject(Router).createUrlTree(['/forbidden']);
+};
