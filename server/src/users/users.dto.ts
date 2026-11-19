@@ -66,9 +66,23 @@ export class MeDto {
   @ApiProperty({ enum: ROLE_KEYS }) role: string;
   @ApiProperty({ example: 'مدير النظام' }) roleLabel: string;
   @ApiProperty() mustChangePassword: boolean;
+  @ApiProperty({ description: 'أفعال المستندات (المرحلة 5): approve/reject/print/export/pay/cancel/post', type: 'object', additionalProperties: { type: 'boolean' } }) docActions: Record<string, boolean>;
+  @ApiProperty({ type: [String], description: 'الموديولات الظاهرة (مشتقة من الصفحات)' }) modules: string[];
   @ApiProperty({ description: 'التحقق بخطوتين مفعّل' }) twoFactorEnabled: boolean;
   @ApiProperty({ description: 'لازم يفعّل التحقق بخطوتين قبل أي عملية (REQUIRE_2FA_ROLES)' }) twoFactorSetupRequired: boolean;
   @ApiProperty({ type: [String], nullable: true }) projectScope: string[] | null;
   @ApiProperty({ type: PermissionsDto }) permissions: PermissionsDto;
   @ApiProperty({ enum: PAGES, isArray: true, description: 'كل مفاتيح الصفحات بالترتيب (بديل HR_PAGES في الواجهة)' }) pages: string[];
 }
+
+/** المرحلة 5: منح/منع أفعال المستندات لمستخدم — true منح، false منع صريح، null رجوع للافتراضي (ممنوع) */
+export class DocActionsDto {
+  @ApiPropertyOptional({ nullable: true }) @IsOptional() @IsBoolean() approve?: boolean | null;
+  @ApiPropertyOptional({ nullable: true }) @IsOptional() @IsBoolean() reject?: boolean | null;
+  @ApiPropertyOptional({ nullable: true }) @IsOptional() @IsBoolean() print?: boolean | null;
+  @ApiPropertyOptional({ nullable: true }) @IsOptional() @IsBoolean() export?: boolean | null;
+  @ApiPropertyOptional({ nullable: true }) @IsOptional() @IsBoolean() pay?: boolean | null;
+  @ApiPropertyOptional({ nullable: true }) @IsOptional() @IsBoolean() cancel?: boolean | null;
+  @ApiPropertyOptional({ nullable: true }) @IsOptional() @IsBoolean() post?: boolean | null;
+}
+

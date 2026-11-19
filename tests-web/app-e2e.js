@@ -20,7 +20,7 @@ async function newContext(tag) {
   await ctx.addInitScript(() => { window.__csp = []; document.addEventListener('securitypolicyviolation', (e) => window.__csp.push(e.disposition + ' ' + e.effectiveDirective + ' ' + e.blockedURI)); });
   const page = await ctx.newPage();
   page.on('pageerror', (e) => errors.push(`${tag} pageerror: ${e.message}`));
-  page.on('console', (m) => { if (m.type() === 'error' && !/status of (401|403|404)/.test(m.text())) errors.push(`${tag} console: ${m.text()}`); });
+  page.on('console', (m) => { if (m.type() === 'error' && !/status of (400|401|403|404)/.test(m.text())) errors.push(`${tag} console: ${m.text()}`); });
   return { ctx, page };
 }
 
@@ -145,6 +145,199 @@ async function login(page, username, password) {
     await S.page.waitForSelector('#whoami');
     ok(true, 'login with code');
     await S.ctx.close();
+  }
+
+  console.log('[6b] phase 5: approvals inbox + notifications bell + attachment versions (test data only)');
+  {
+    const idem = (k) => ({ 'idempotency-key': 'app-e2e-' + k + '-' + Date.now() });
+    const apiH = async (method, path, body, token, headers) => {
+      const r = await fetch(srv.base + path, { method, headers: { 'content-type': 'application/json', authorization: 'Bearer ' + token, ...headers }, body: JSON.stringify(body) });
+      return { status: r.status, body: await r.json() };
+    };
+    const ap = await api('POST', '/api/users', { username: 'app_approver', password: PW, role: 'viewer' }, adminTok);
+    eq(ap.status, 201, 'approver user created');
+    eq((await api('POST', '/api/v1/approvals/config/document-types', { code: 'e2e-doc', name: 'مستند اختبار', module: 'ledger.invoices' }, adminTok)).status, 201, 'test document type');
+    eq((await api('POST', '/api/v1/approvals/config/workflows', { documentType: 'e2e-doc', allowSelfApproval: false, allowSameApproverAcrossLevels: false, levels: [{ mode: 'ANY', approvers: [{ type: 'USER', ref: ap.body.id }] }] }, adminTok)).status, 201, 'test workflow');
+    const sub = await apiH('POST', '/api/v1/approvals/requests', { documentType: 'e2e-doc', documentId: 'E2E-1', amount: '1500.5' }, adminTok, idem('s'));
+    eq([sub.status, sub.body.status], [201, 'Submitted'], 'submitted for approval');
+
+    const P = await newContext('approver');
+    await login(P.page, 'app_approver', PW);
+    await P.page.waitForSelector('#whoami');
+    await P.page.waitForFunction(() => document.querySelector('#bellBadge')?.getAttribute('data-unread') === '1');
+    ok(true, 'bell shows 1 unread notification');
+    await P.page.click('#navApprovals');
+    await P.page.waitForSelector(`#inbox [data-id="${sub.body.id}"]`);
+    ok((await P.page.textContent('#inbox')).includes('١٬٥٠٠٫٥٠'), 'inbox lists the request with formatted amount');
+    await P.page.click(`#inbox [data-id="${sub.body.id}"] [data-act="reject"]`);
+    ok((await P.page.textContent('#apprError')).includes('السبب'), 'reject without a reason is blocked');
+    await P.page.click(`#inbox [data-id="${sub.body.id}"] [data-act="approve"]`);
+    await P.page.waitForSelector('#inboxEmpty');
+    eq((await api('GET', '/api/v1/approvals/requests/' + sub.body.id, null, adminTok)).body.status, 'Approved', 'approved from the UI');
+    await P.ctx.close();
+
+    eq((await api('POST', '/api/sync', { changes: [{ collection: 'projects', id: 'e2e-att', op: 'upsert', baseRev: 0, set: { name: 'مشروع مرفقات اختبار' } }] }, adminTok)).status, 200, 'test project');
+    await A.page.goto(srv.base + '/app/projects');
+    await A.page.waitForSelector('#projectsTable [data-id="e2e-att"]');
+    await A.page.click('#projectsTable [data-id="e2e-att"]');
+    await A.page.waitForSelector('#attUpload', { state: 'attached' });
+    const pdf = (t) => Buffer.from(`%PDF-1.4\n1 0 obj << /Type /Catalog /Pages 2 0 R /T (${t}) >> endobj\n2 0 obj << /Type /Pages /Kids [] /Count 0 >> endobj\ntrailer << /Root 1 0 R >>\n%%EOF\n`, 'latin1');
+    await A.page.setInputFiles('#attUpload', { name: 'عقد.pdf', mimeType: 'application/pdf', buffer: pdf('v1') });
+    await A.page.waitForSelector('#attList [data-version="1"]');
+    const v1 = await A.page.getAttribute('#attList [data-version="1"]', 'data-id');
+    await A.page.setInputFiles(`#attList [data-replace="${v1}"]`, { name: 'عقد-معدل.pdf', mimeType: 'application/pdf', buffer: pdf('v2') });
+    await A.page.waitForSelector('#attList [data-version="2"]');
+    ok((await A.page.textContent('#attList')).includes('متبدّل'), 'old version kept and marked superseded');
+    const latest = await api('GET', '/api/attachments?collection=projects&recordId=e2e-att', null, adminTok);
+    eq(latest.body.map((a) => a.version), [2], 'list returns the latest version only');
+  }
+
+  console.log('[6c] phase 6.1: suppliers & customers screens (cutover) write the same records the legacy UI reads (test data)');
+  {
+    await A.page.goto(srv.base + '/app/suppliers');
+    await A.page.waitForSelector('#supNew');
+    await A.page.click('#supNew');
+    await A.page.fill('#supForm [data-field="name"]', 'مورد اختبار الواجهة');
+    await A.page.fill('#supForm [data-field="taxId"]', '1234');
+    await A.page.click('#supSave');
+    await A.page.waitForSelector('#supError');
+    ok((await A.page.textContent('#supError')).includes('الرقم الضريبي'), 'server validation shown (short tax id)');
+    await A.page.fill('#supForm [data-field="taxId"]', '123456789');
+    await A.page.fill('#supForm [data-field="openingBalance"]', '-750.25');
+    await A.page.click('#supSave');
+    await A.page.waitForFunction(() => /٧٥٠٫٢٥|750\.25/.test(document.querySelector('#supOpening')?.textContent || ''));
+    const b = await api('GET', '/api/bootstrap', null, adminTok);
+    const legacy = b.body.data.ledger.suppliers.find((x) => x.name === 'مورد اختبار الواجهة');
+    eq(legacy && [legacy.taxId, legacy.openingBalance, legacy.attachments], ['123456789', -750.25, []], 'legacy sees the supplier with the same field types');
+    await A.page.fill('#supSearch', 'اختبار الواجهه');
+    await A.page.waitForFunction(() => document.querySelectorAll('#supList li[data-id]').length === 1);
+    ok(true, 'Arabic-normalized search');
+
+    await A.page.goto(srv.base + '/app/customers');
+    await A.page.waitForSelector('#cusNew');
+    await A.page.click('#cusNew');
+    await A.page.fill('#cusForm [data-field="name"]', 'عميل اختبار الواجهة');
+    await A.page.click('#cusSave');
+    await A.page.waitForFunction(() => /^CUS-\d{4}$/.test(document.querySelector('#cusForm [data-field="code"]')?.value || ''));
+    ok(true, 'customer code generated by the server (legacy format)');
+    await A.page.click('#cusAddContact');
+    await A.page.fill('[data-contact="0"] input[name="cn0"]', 'م. اختبار');
+    await A.page.fill('[data-contact="0"] input[name="cp0"]', '0100');
+    const [pr] = await Promise.all([A.page.waitForResponse((r) => r.url().includes('/api/v1/customers/') && r.request().method() === 'PATCH'), A.page.click('#cusSave')]);
+    eq(pr.status(), 200, 'customer with a contact saved');
+    const b2 = await api('GET', '/api/bootstrap', null, adminTok);
+    const c = b2.body.data.clients.customers.find((x) => x.name === 'عميل اختبار الواجهة');
+    eq(c && [c.status, Array.isArray(c.contracts), typeof c.createdAt], ['active', true, 'string'], 'legacy customer shape');
+    eq(c && c.contacts.map((k) => [k.name, k.title, k.phone, k.email]), [['م. اختبار', '', '0100', '']], 'contacts edited in the new screen reach the legacy record');
+    const nav = await A.page.$$eval('#nav a', (as) => as.map((x) => [x.textContent.trim(), x.getAttribute('href') || '']));
+    ok(nav.some(([t, h]) => t.includes('الموردين') && !t.includes('الكاملة') && h.endsWith('/suppliers')) && nav.some(([t, h]) => t.includes('الموردين — الشاشة الكاملة') && h.includes('/legacy/')), 'cutover: suppliers → new screen, full legacy screen still reachable');
+  }
+
+  console.log('[6d] B-21: taxes screen — admin prepares, a different approver approves, preview uses approved only (test data)');
+  {
+    await A.page.goto(srv.base + '/app/taxes');
+    await A.page.waitForSelector('#taxEmpty');
+    ok(true, 'no tax codes seeded');
+    await A.page.fill('#taxCodeForm input[name="code"]', 'TEST-E2E');
+    await A.page.fill('#taxCodeForm input[name="name"]', 'ضريبة اختبار');
+    await A.page.click('#taxCodeAdd');
+    await A.page.waitForSelector('#taxTable tr[data-code="TEST-E2E"]');
+    const ver = await api('POST', '/api/v1/finance/taxes/codes/TEST-E2E/versions', { method: 'PERCENT', rate: '10', base: 'NET_OF_DISCOUNT', appliesTo: ['test-doc'], bearer: 'COUNTERPARTY', collector: 'COUNTERPARTY_CHARGES', effectiveFrom: '2026-01-01', legalRef: 'مرجع اختباري', changeReason: 'اختبار' }, adminTok);
+    eq(ver.status, 201, 'draft version created');
+    await A.page.reload(); await A.page.waitForSelector(`tr[data-version="${ver.body.id}"][data-status="draft"]`);
+    await A.page.click(`tr[data-version="${ver.body.id}"] [data-act="submit"]`);
+    await A.page.waitForSelector(`tr[data-version="${ver.body.id}"][data-status="pending"]`);
+    ok(!(await A.page.$(`tr[data-version="${ver.body.id}"] [data-act="approve"]`)), 'preparer sees no approve button (B-04)');
+    const prev = await api('POST', '/api/v1/finance/taxes/compute', { documentType: 'test-doc', date: '2026-06-01', codes: ['TEST-E2E'], bases: { NET_OF_DISCOUNT: '1000' } }, adminTok);
+    eq(prev.body.code, 'NO_APPROVED_RATE', 'pending rate is not applied');
+    const apr = await api('POST', '/api/users', { username: 'app_tax_approver', password: PW, role: 'viewer' }, adminTok);
+    await fetch(srv.base + `/api/users/${apr.body.id}/doc-actions`, { method: 'PUT', headers: { 'content-type': 'application/json', authorization: 'Bearer ' + adminTok }, body: JSON.stringify({ approve: true }) });
+    const T = await newContext('tax-approver');
+    await login(T.page, 'app_tax_approver', PW);
+    await T.page.waitForSelector('#navTaxes');
+    await T.page.click('#navTaxes');
+    await T.page.waitForSelector(`tr[data-version="${ver.body.id}"] [data-act="approve"]`);
+    await T.page.click(`tr[data-version="${ver.body.id}"] [data-act="approve"]`);
+    await T.page.waitForSelector(`tr[data-version="${ver.body.id}"][data-status="approved"]`);
+    await T.page.fill('#taxPreview input[name="pdoc"]', 'test-doc');
+    await T.page.fill('#taxPreview input[name="pdate"]', '2026-06-01');
+    await T.page.fill('#taxPreview input[name="pcodes"]', 'TEST-E2E');
+    await T.page.fill('#taxPreview input[name="pbase"]', '1000');
+    await T.page.click('#taxPreviewBtn');
+    await T.page.waitForSelector('#taxPreviewOut li');
+    ok((await T.page.textContent('#taxPreviewOut')).includes('100.0000'), 'preview with the approved version');
+    await T.ctx.close();
+  }
+
+  console.log('[6e] 6.2-B: warehouses screen — items/balances, transfer blocked above availability, adjustment → approval → auto-post (test data)');
+  {
+    A.page.on('dialog', (d) => d.accept('سبب اختباري'));
+    await A.page.goto(srv.base + '/app/warehouses');
+    await A.page.waitForSelector('#whItems');
+    const loc = async (name) => (await api('POST', '/api/v1/warehouses/locations', { name }, adminTok)).body.id;
+    const L1 = await loc('مخزن واجهة 1'), L2 = await loc('مخزن واجهة 2');
+    await A.page.click('text=الأصناف');
+    await A.page.fill('#whItemForm input[name="iname"]', 'صنف واجهة');
+    await A.page.click('#whItemSave');
+    await A.page.waitForFunction(() => [...document.querySelectorAll('#whItems tr')].some((r) => r.textContent.includes('صنف واجهة')));
+    const ov = await api('GET', '/api/v1/warehouses', null, adminTok);
+    const it = ov.body.items.find((x) => x.name === 'صنف واجهة');
+    ok(/^ITM-\d{4}$/.test(it.code), 'item created from the new screen (server code)');
+    await api('POST', '/api/sync', { changes: [{ collection: 'warehouses.movements', id: 'ui-rcv', op: 'upsert', baseRev: 0, set: { id: 'ui-rcv', type: 'in', itemId: it.id, qty: 5, locationId: L1 } }] }, adminTok);
+    const tr = await api('POST', '/api/v1/warehouses/transfers', { itemId: it.id, fromLocationId: L1, toLocationId: L2, qty: '6' }, adminTok);
+    eq([tr.status, tr.body.code], [409, 'NEGATIVE_STOCK'], 'transfer above availability refused by the server (B-50)');
+    eq((await api('POST', '/api/v1/warehouses/transfers', { itemId: it.id, fromLocationId: L1, toLocationId: L2, qty: '2' }, adminTok)).status, 201, 'valid transfer');
+    await A.page.reload(); await A.page.waitForSelector(`#whItems tr[data-id="${it.id}"]`);
+    eq(await A.page.getAttribute(`#whItems tr[data-id="${it.id}"] td[data-total]`, 'data-total'), '5', 'total unchanged by a transfer');
+    // التسوية: مسار اختبار بمعتمد واحد (مستخدم تاني)
+    eq((await api('POST', '/api/v1/approvals/config/document-types', { code: 'stock-adjustment', name: 'تسوية مخزنية', module: 'warehouses.home' }, adminTok)).status, 201, 'test doc type');
+    const apr = await api('POST', '/api/users', { username: 'app_adj_approver', password: PW, role: 'viewer' }, adminTok);
+    eq((await api('POST', '/api/v1/approvals/config/workflows', { documentType: 'stock-adjustment', levels: [{ mode: 'ANY', approvers: [{ type: 'USER', ref: apr.body.id }] }] }, adminTok)).status, 201, 'test workflow');
+    const adj = await api('POST', '/api/v1/stock/adjustments', { kind: 'increase', itemId: it.id, locationId: L1, qty: '1.5', reason: 'تسوية من اختبار الواجهة' }, adminTok);
+    await A.page.reload(); await A.page.click('text=التسويات');
+    await A.page.waitForSelector(`#whAdjs tr[data-id="${adj.body.id}"][data-status="draft"]`);
+    await A.page.click(`#whAdjs tr[data-id="${adj.body.id}"] [data-act="submit"]`);
+    await A.page.waitForSelector(`#whAdjs tr[data-id="${adj.body.id}"][data-status="submitted"]`);
+    ok(true, 'submitted for approval from the screen');
+    const t2 = (await api('POST', '/api/auth/login', { username: 'app_adj_approver', password: PW })).body.accessToken;
+    const reqId = (await api('GET', `/api/v1/stock/adjustments/${adj.body.id}`, null, adminTok)).body.approvalRequestId;
+    const r = await fetch(srv.base + `/api/v1/approvals/requests/${reqId}/approve`, { method: 'POST', headers: { 'content-type': 'application/json', authorization: 'Bearer ' + t2, 'idempotency-key': 'app-e2e-adj-' + Date.now() }, body: '{}' });
+    eq(r.status, 200, 'approved by a different user');
+    await A.page.reload(); await A.page.click('text=التسويات');
+    await A.page.waitForSelector(`#whAdjs tr[data-id="${adj.body.id}"][data-status="posted"]`);
+    ok(true, 'auto-posted after the last approval');
+    eq((await api('GET', '/api/v1/warehouses', null, adminTok)).body.items.find((x) => x.id === it.id).total, '6.5', 'balance includes the posted adjustment only after posting');
+  }
+
+  console.log('[6f] B-20: Financial Rules Management — draft with passing tests, preview, submit, approval by a different user (test data)');
+  {
+    const lib = JSON.parse(require('fs').readFileSync(require('path').join(__dirname, '../server/finance-formulas/B20_LIBRARY.json'), 'utf8')).formulas;
+    const f = lib.find((x) => x.code === 'PROJECT-PROFIT');
+    eq((await api('POST', '/api/v1/finance/formulas', { code: f.code, name: f.name, module: f.module }, adminTok)).status, 201, 'formula created');
+    const v = await api('POST', `/api/v1/finance/formulas/${f.code}/versions`, { changeKind: 'new', effectiveFrom: '2026-01-01', changeReason: 'اختبار الواجهة', definition: { variables: f.variables, lists: f.lists, steps: f.steps }, testCases: f.testCases }, adminTok);
+    eq([v.status, v.body.tests_passed], [201, true], 'draft version with passing tests');
+    await A.page.goto(srv.base + '/app/formulas');
+    await A.page.waitForSelector(`#frmTable tr[data-version="${v.body.id}"][data-status="draft"]`);
+    await A.page.click(`#frmTable tr[data-version="${v.body.id}"] td:first-child`);
+    await A.page.waitForSelector('#frmTests tr[data-test-status="PASS"]');
+    ok((await A.page.textContent('#frmSteps')).includes('GrossProfit'), 'formula steps shown');
+    await A.page.click('#frmPreviewBtn');
+    await A.page.waitForSelector('#frmPreviewOut');
+    ok((await A.page.textContent('#frmPreviewOut')).includes('34569.7500'), 'preview result');
+    ok(!(await A.page.$('#frmDetail [data-act="approve"]')), 'creator sees no approve button');
+    await A.page.click('#frmDetail [data-act="submit"]');
+    await A.page.waitForSelector(`#frmTable tr[data-version="${v.body.id}"][data-status="pending"]`);
+    const T = await newContext('formula-approver');
+    await login(T.page, 'app_tax_approver', PW);
+    await T.page.waitForSelector('#navFormulas');
+    await T.page.click('#navFormulas');
+    await T.page.click(`#frmTable tr[data-version="${v.body.id}"] td:first-child`);
+    await T.page.click('#frmDetail [data-act="approve"]');
+    await T.page.waitForSelector(`#frmTable tr[data-version="${v.body.id}"][data-status="approved"]`);
+    ok(true, 'approved by a different user from the screen');
+    await T.ctx.close();
+    const e = await api('POST', `/api/v1/finance/formulas/${f.code}/evaluate`, { date: '2026-06-01', inputs: { RecognizedRevenue: '200', RecognizedProjectCost: '150' } }, adminTok);
+    eq(e.body.outputs, { GrossProfit: '50.0000', ProfitMargin: '25.0000' }, 'evaluation uses the approved version');
   }
 
   console.log('[7] logout ends the shared session; PWA service worker registers; no CSP violations');

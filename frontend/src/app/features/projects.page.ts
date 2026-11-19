@@ -8,12 +8,13 @@ import { MatTableModule } from '@angular/material/table';
 import { firstValueFrom } from 'rxjs';
 import { Project, ProjectList } from '../core/models';
 import { formatMoney } from '../core/money';
-import { errorMessage } from '../core/session.service';
+import { errorMessage, SessionService } from '../core/session.service';
+import { AttachmentsPanelComponent } from './attachments-panel.component';
 
 /** الشاشة التجريبية (المرحلة 4): قراءة بس من GET /api/v1/projects — مش بديل لصفحة المشروعات الحالية */
 @Component({
   selector: 'app-projects',
-  imports: [FormsModule, MatTableModule, MatFormFieldModule, MatInputModule, MatProgressBarModule],
+  imports: [FormsModule, MatTableModule, MatFormFieldModule, MatInputModule, MatProgressBarModule, AttachmentsPanelComponent],
   template: `
     <h1>المشروعات <small class="muted">(تجريبي — عرض بس)</small></h1>
     <mat-form-field appearance="outline" class="search"><mat-label>بحث بالاسم أو الكود</mat-label>
@@ -26,9 +27,10 @@ import { errorMessage } from '../core/session.service';
       <ng-container matColumnDef="status"><th mat-header-cell *matHeaderCellDef>الحالة</th><td mat-cell *matCellDef="let p">{{ p.status || '—' }}</td></ng-container>
       <ng-container matColumnDef="budget"><th mat-header-cell *matHeaderCellDef>الميزانية</th><td mat-cell *matCellDef="let p" class="num">{{ money(p.budget) }}</td></ng-container>
       <tr mat-header-row *matHeaderRowDef="cols"></tr>
-      <tr mat-row *matRowDef="let row; columns: cols" [attr.data-id]="row.id"></tr>
+      <tr mat-row *matRowDef="let row; columns: cols" [attr.data-id]="row.id" (click)="selected.set(row)" [class.selected]="selected()?.id === row.id"></tr>
     </table>
-    <p class="muted" id="projTotal">العدد: {{ total() }}</p>`,
+    <p class="muted" id="projTotal">العدد: {{ total() }}</p>
+    @if (selected(); as p) { <h3 id="selProject">{{ p.name }}</h3><app-attachments collection="projects" [recordId]="p.id" [canEdit]="canEdit" /> }`,
 })
 export class ProjectsPage implements OnInit {
   private readonly http = inject(HttpClient);
@@ -36,6 +38,8 @@ export class ProjectsPage implements OnInit {
   readonly items = signal<Project[]>([]); readonly total = signal(0);
   readonly loading = signal(false); readonly error = signal('');
   q = '';
+  readonly selected = signal<Project | null>(null);
+  readonly canEdit = inject(SessionService).can('projects', 'edit');
   money = formatMoney;
   ngOnInit() { void this.load(); }
   async load() {

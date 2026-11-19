@@ -11,6 +11,8 @@ function valueFor(coll, k, spec, n) {
   if (REF[k]) return idOf(REF[k], 1);
   if (spec.enums) return spec.enums[n % spec.enums.length];
   if (/date$|Date$|^date/.test(k)) return '2026-0' + (1 + (n % 9)) + '-1' + n;
+  // حقول البريد بصيغة بريد (قرار 2026-11-17: صيغة بريد العميل بيتحقق منها في قاعدة البيانات بعد نقل الموديول)
+  if (k === 'email') return `نص_${k}_${n}@example.com`;
   switch (spec.type) {
     case 'number': return 10 * (n + 1);
     case 'boolean': return false;
