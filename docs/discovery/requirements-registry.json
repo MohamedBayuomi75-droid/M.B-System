@@ -6,7 +6,7 @@
   "TECH": 19,
   "NEW": 10,
   "CHG": 15,
-  "DEC": 93
+  "DEC": 94
  },
  "entries": [
   {
@@ -2157,6 +2157,24 @@
    "decisionStatus": "resolved",
    "priorityStatus": "—",
    "status": "resolved"
+  },
+  {
+   "id": "DEC-0093",
+   "key": "decision:DEC-0093",
+   "prefix": "DEC",
+   "classification": "OPEN-DECISION",
+   "kind": "decision",
+   "title": "تطابق شكل `/app/` مع الواجهة القديمة (ملاحظة الـ UAT): (أ) تطابق كامل للإطار والشاشتين (مقترح، وده طلب الخطة) · (ب) الشاشتين بس، والإطار بعدين · (ج) اعتماد الشك",
+   "module": "قرارات",
+   "priority": "—",
+   "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",
+   "tests": [],
+   "target": "—",
+   "notes": "مفتوح",
+   "aliases": [],
+   "decisionStatus": "open",
+   "priorityStatus": "—",
+   "status": "open"
   },
   {
    "id": "LEG-0001",
