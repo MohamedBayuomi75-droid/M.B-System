@@ -73,232 +73,232 @@
 | LEG-0052 | page | (خارج القايمة) | صفحة «personDetail» (personDetail) | P1 | renderer/modules/hr/pages-person-detail.js:238 | legacy /legacy/ | phase61.js | verified-static | مش في القايمة، مش في مصفوفة الصلاحيات |
 | LEG-0053 | page | (خارج القايمة) | صفحة «ledger.dashboard» (ledger.dashboard) — اسم بديل لـ dashboard | P1 | renderer/modules/ledger/glue.js:41 | legacy /legacy/ | phase61.js | verified-static | مش في القايمة، في مصفوفة الصلاحيات |
 | LEG-0054 | page | (خارج القايمة) | صفحة «general.overview» (general.overview) — اسم بديل لـ dashboard | P1 | renderer/modules/hr/pages-dashboard.js:28 | legacy /legacy/ | phase61.js | verified-static | مش في القايمة، في مصفوفة الصلاحيات |
-| LEG-0055 | calc | core | دالة حساب compCostProjectNames | P1 | renderer/core/cost-center.js:15 | legacy |  | verified-static |  |
-| LEG-0056 | calc | core | دالة حساب compCostCollected | P1 | renderer/core/cost-center.js:26 | legacy |  | verified-static |  |
-| LEG-0057 | calc | core | دالة حساب compCostRows | P1 | renderer/core/cost-center.js:32 | legacy |  | verified-static |  |
-| LEG-0058 | calc | core | دالة حساب comprehensiveCostsPageHtml | P1 | renderer/core/cost-center.js:41 | legacy |  | verified-static |  |
-| LEG-0059 | calc | core | دالة حساب comprehensiveCostsBoardCard | P1 | renderer/core/cost-center.js:78 | legacy |  | verified-static |  |
-| LEG-0060 | data-write | core | كتابة بيانات saveData | P0 | renderer/core/data-store.js | legacy |  | verified-static | سلامة البيانات (P0 مقترح) |
-| LEG-0061 | modal | core | نافذة openExcelImportModal | P1 | renderer/core/excel-import.js:260 | legacy |  | verified-static |  |
-| LEG-0062 | data-write | core | كتابة بيانات approveExpense | P0 | renderer/core/extras.js | legacy |  | verified-static | سلامة البيانات (P0 مقترح) |
-| LEG-0063 | calc | core | دالة حساب fcCostDetailHtml | P1 | renderer/core/follow-center.js:202 | legacy |  | verified-static |  |
-| LEG-0064 | modal | core | نافذة openModal | P1 | renderer/core/helpers.js:472 | legacy |  | verified-static |  |
-| LEG-0065 | modal | core | نافذة openSubModal | P1 | renderer/core/helpers.js:614 | legacy |  | verified-static |  |
-| LEG-0066 | modal | core | نافذة openPersonDetailModal | P1 | renderer/core/helpers.js:2956 | legacy |  | verified-static |  |
-| LEG-0067 | modal | core | نافذة openPersonAlertsModal | P1 | renderer/core/helpers.js:3259 | legacy |  | verified-static |  |
-| LEG-0068 | modal | core | نافذة openAlertsMoreModal | P1 | renderer/core/helpers.js:3310 | legacy |  | verified-static |  |
-| LEG-0069 | modal | core | نافذة openAddCategoryModal | P1 | renderer/core/helpers.js:3793 | legacy |  | verified-static |  |
-| LEG-0070 | modal | core | نافذة openRenameCategoryModal | P1 | renderer/core/helpers.js:3818 | legacy |  | verified-static |  |
-| LEG-0071 | modal | core | نافذة openDeleteCategoryModal | P1 | renderer/core/helpers.js:3857 | legacy |  | verified-static |  |
-| LEG-0072 | calc | core | دالة حساب employeeLeaveBalance | P1 | renderer/core/helpers.js:201 | legacy |  | verified-static |  |
-| LEG-0073 | calc | core | دالة حساب attendanceDayWage | P1 | renderer/core/helpers.js:260 | legacy |  | verified-static |  |
-| LEG-0074 | calc | core | دالة حساب workerDueAmount | P1 | renderer/core/helpers.js:343 | legacy |  | verified-static |  |
-| LEG-0075 | calc | core | دالة حساب workerWageSummary | P1 | renderer/core/helpers.js:349 | legacy |  | verified-static |  |
-| LEG-0076 | calc | core | دالة حساب extraFieldsSummary | P1 | renderer/core/helpers.js:1055 | legacy |  | verified-static |  |
-| LEG-0077 | calc | core | دالة حساب supervisorExpensesTotal | P1 | renderer/core/helpers.js:2095 | legacy |  | verified-static |  |
-| LEG-0078 | calc | core | دالة حساب supervisorWageStatement | P1 | renderer/core/helpers.js:2119 | legacy |  | verified-static |  |
-| LEG-0079 | calc | core | دالة حساب personUnpaidBonuses | P1 | renderer/core/helpers.js:4134 | legacy |  | verified-static |  |
-| LEG-0080 | calc | core | دالة حساب workerPaidTotal | P1 | renderer/core/helpers.js:4156 | legacy |  | verified-static |  |
-| LEG-0081 | calc | core | دالة حساب workerPenaltyTotal | P1 | renderer/core/helpers.js:4166 | legacy |  | verified-static |  |
-| LEG-0082 | calc | core | دالة حساب supervisorPenaltyTotal | P1 | renderer/core/helpers.js:4175 | legacy |  | verified-static |  |
-| LEG-0083 | calc | core | دالة حساب supervisorPaidTotal | P1 | renderer/core/helpers.js:4184 | legacy |  | verified-static |  |
-| LEG-0084 | calc | core | دالة حساب workerBalance | P1 | renderer/core/helpers.js:4193 | legacy |  | verified-static |  |
-| LEG-0085 | calc | core | دالة حساب employeePenaltyTotal | P1 | renderer/core/helpers.js:4200 | legacy |  | verified-static |  |
-| LEG-0086 | calc | core | دالة حساب driverDueAmount | P1 | renderer/core/helpers.js:4989 | legacy |  | verified-static |  |
-| LEG-0087 | calc | core | دالة حساب driverPaidTotal | P1 | renderer/core/helpers.js:4993 | legacy |  | verified-static |  |
-| LEG-0088 | calc | core | دالة حساب driverPenaltyTotal | P1 | renderer/core/helpers.js:5002 | legacy |  | verified-static |  |
-| LEG-0089 | calc | core | دالة حساب employeeDueAmount | P1 | renderer/core/helpers.js:5024 | legacy |  | verified-static |  |
-| LEG-0090 | calc | core | دالة حساب employeeBalance | P1 | renderer/core/helpers.js:5056 | legacy |  | verified-static |  |
-| LEG-0091 | calc | core | دالة حساب driverBalance | P1 | renderer/core/helpers.js:5071 | legacy |  | verified-static |  |
-| LEG-0092 | calc | core | دالة حساب extraCalcChecks | P1 | renderer/core/helpers.js:5081 | legacy |  | verified-static |  |
-| LEG-0093 | calc | core | دالة حساب validateCalculations | P1 | renderer/core/helpers.js:5146 | legacy |  | verified-static |  |
-| LEG-0094 | calc | core | دالة حساب paginateTotalsAtEnd | P1 | renderer/core/helpers.js:5924 | legacy |  | verified-static |  |
-| LEG-0095 | calc | core | دالة حساب statementHeaderHtml | P1 | renderer/core/helpers.js:6420 | legacy |  | verified-static |  |
-| LEG-0096 | calc | core | دالة حساب statementFooterHtml | P1 | renderer/core/helpers.js:6442 | legacy |  | verified-static |  |
-| LEG-0097 | calc | core | دالة حساب shouldBrandStatement | P1 | renderer/core/helpers.js:6459 | legacy |  | verified-static |  |
-| LEG-0098 | calc | core | دالة حساب personExpensesTotal | P1 | renderer/core/helpers.js:6469 | legacy |  | verified-static |  |
-| LEG-0099 | calc | core | دالة حساب costKindLabel | P1 | renderer/core/helpers.js:6483 | legacy |  | verified-static |  |
-| LEG-0100 | calc | core | دالة حساب costPersonName | P1 | renderer/core/helpers.js:6484 | legacy |  | verified-static |  |
-| LEG-0101 | calc | core | دالة حساب costsInRange | P1 | renderer/core/helpers.js:6498 | legacy |  | verified-static |  |
-| LEG-0102 | calc | core | دالة حساب personCostsTotal | P1 | renderer/core/helpers.js:6506 | legacy |  | verified-static |  |
-| LEG-0103 | calc | core | دالة حساب costsTableHtml | P1 | renderer/core/helpers.js:6510 | legacy |  | verified-static |  |
-| LEG-0104 | calc | core | دالة حساب costsStatementBlock | P1 | renderer/core/helpers.js:6520 | legacy |  | verified-static |  |
-| LEG-0105 | calc | core | دالة حساب personExtrasTotal | P1 | renderer/core/helpers.js:6525 | legacy |  | verified-static |  |
-| LEG-0106 | calc | core | دالة حساب duesPaidBadge | P1 | renderer/core/helpers.js:6547 | legacy |  | verified-static |  |
-| LEG-0107 | calc | core | دالة حساب expensesStatementBlock | P1 | renderer/core/helpers.js:6635 | legacy |  | verified-static |  |
-| LEG-0108 | calc | core | دالة حساب printEquipmentAccountStatement | P1 | renderer/core/helpers.js:6697 | legacy |  | verified-static |  |
-| LEG-0109 | calc | core | دالة حساب paymentsStatementBlock | P1 | renderer/core/helpers.js:6764 | legacy |  | verified-static |  |
-| LEG-0110 | calc | core | دالة حساب printWorkerStatement | P1 | renderer/core/helpers.js:7107 | legacy |  | verified-static |  |
-| LEG-0111 | calc | core | دالة حساب printDriverStatement | P1 | renderer/core/helpers.js:7157 | legacy |  | verified-static |  |
-| LEG-0112 | calc | core | دالة حساب _payTotalCard | P1 | renderer/core/helpers.js:7259 | legacy |  | verified-static |  |
-| LEG-0113 | calc | core | دالة حساب printDaysStatement | P1 | renderer/core/helpers.js:7458 | legacy |  | verified-static |  |
-| LEG-0114 | calc | core | دالة حساب printEmployeeStatement | P1 | renderer/core/helpers.js:7544 | legacy |  | verified-static |  |
-| LEG-0115 | calc | core | دالة حساب equipmentTotalHours | P1 | renderer/core/helpers.js:7801 | legacy |  | verified-static |  |
-| LEG-0116 | calc | core | دالة حساب equipmentTotalCost | P1 | renderer/core/helpers.js:7804 | legacy |  | verified-static |  |
-| LEG-0117 | calc | core | دالة حساب equipmentTotalFuel | P1 | renderer/core/helpers.js:7808 | legacy |  | verified-static |  |
-| LEG-0118 | calc | core | دالة حساب projectCostSummary | P1 | renderer/core/helpers.js:7816 | legacy |  | verified-static |  |
-| LEG-0119 | calc | core | دالة حساب projectSupplyCostLines | P1 | renderer/core/helpers.js:7894 | legacy |  | verified-static |  |
-| LEG-0120 | export/print | core | تصدير/طباعة downloadXlsx | P1 | renderer/core/helpers.js | legacy |  | verified-static |  |
-| LEG-0121 | export/print | core | تصدير/طباعة downloadCsv | P1 | renderer/core/helpers.js | legacy |  | verified-static |  |
-| LEG-0122 | export/print | core | تصدير/طباعة printAttachmentPdf | P1 | renderer/core/helpers.js | legacy |  | verified-static |  |
-| LEG-0123 | export/print | core | تصدير/طباعة printHtml | P1 | renderer/core/helpers.js | legacy |  | verified-static |  |
-| LEG-0124 | export/print | core | تصدير/طباعة exportArchiveFolder | P1 | renderer/core/helpers.js | legacy |  | verified-static |  |
-| LEG-0125 | export/print | core | تصدير/طباعة printPersonFilePdf | P1 | renderer/core/helpers.js | legacy |  | verified-static |  |
-| LEG-0126 | export/print | core | تصدير/طباعة printArchiveAllPdf | P1 | renderer/core/helpers.js | legacy |  | verified-static |  |
-| LEG-0127 | export/print | core | تصدير/طباعة printExpenseRecord | P1 | renderer/core/helpers.js | legacy |  | verified-static |  |
-| LEG-0128 | export/print | core | تصدير/طباعة exportExpenseExcel | P1 | renderer/core/helpers.js | legacy |  | verified-static |  |
-| LEG-0129 | export/print | core | تصدير/طباعة printEquipmentAccountStatement | P1 | renderer/core/helpers.js | legacy |  | verified-static |  |
-| LEG-0130 | export/print | core | تصدير/طباعة printWorkerStatement | P1 | renderer/core/helpers.js | legacy |  | verified-static |  |
-| LEG-0131 | export/print | core | تصدير/طباعة printDriverStatement | P1 | renderer/core/helpers.js | legacy |  | verified-static |  |
-| LEG-0132 | export/print | core | تصدير/طباعة printDaysStatement | P1 | renderer/core/helpers.js | legacy |  | verified-static |  |
-| LEG-0133 | export/print | core | تصدير/طباعة printEmployeeStatement | P1 | renderer/core/helpers.js | legacy |  | verified-static |  |
-| LEG-0134 | export/print | core | تصدير/طباعة printPayslip | P1 | renderer/core/helpers.js | legacy |  | verified-static |  |
-| LEG-0135 | export/print | core | تصدير/طباعة printLeaveForm | P1 | renderer/core/helpers.js | legacy |  | verified-static |  |
-| LEG-0136 | data-write | core | كتابة بيانات addAudit | P0 | renderer/core/helpers.js | legacy |  | verified-static | سلامة البيانات (P0 مقترح) |
-| LEG-0137 | data-write | core | كتابة بيانات deleteProjectById | P0 | renderer/core/helpers.js | legacy |  | verified-static | سلامة البيانات (P0 مقترح) |
-| LEG-0138 | data-write | core | كتابة بيانات addExtraFieldRow | P0 | renderer/core/helpers.js | legacy |  | verified-static | سلامة البيانات (P0 مقترح) |
-| LEG-0139 | data-write | core | كتابة بيانات updateBulkBar | P0 | renderer/core/helpers.js | legacy |  | verified-static | سلامة البيانات (P0 مقترح) |
-| LEG-0140 | modal | core | نافذة openScanAttachModal | P1 | renderer/core/modals-common.js:9 | legacy |  | verified-static |  |
-| LEG-0141 | calc | core | دالة حساب activateHostMode | P1 | renderer/core/network.js:799 | legacy |  | verified-static |  |
-| LEG-0142 | calc | core | دالة حساب activateClientMode | P1 | renderer/core/network.js:820 | legacy |  | verified-static |  |
-| LEG-0143 | calc | core | دالة حساب deactivateNetworkMode | P1 | renderer/core/network.js:841 | legacy |  | verified-static |  |
-| LEG-0144 | data-write | core | كتابة بيانات saveDataNetwork | P0 | renderer/core/network.js | legacy |  | verified-static | سلامة البيانات (P0 مقترح) |
-| LEG-0145 | calc | core | دالة حساب archiveTotalFilesForKind | P1 | renderer/core/pages-archive.js:44 | legacy |  | verified-static |  |
-| LEG-0146 | modal | core | نافذة openUserModal | P1 | renderer/core/pages-users.js:190 | legacy |  | verified-static |  |
-| LEG-0147 | calc | core | دالة حساب repAlertsSummaryTab | P1 | renderer/core/smart-tools.js:692 | legacy |  | verified-static |  |
-| LEG-0148 | calc | core | دالة حساب alertsSummaryExportData | P1 | renderer/core/smart-tools.js:726 | legacy |  | verified-static |  |
-| LEG-0149 | modal | clients | نافذة openChangeOrderModal | P1 | renderer/modules/clients/change-orders.js:87 | legacy |  | verified-static |  |
-| LEG-0150 | calc | clients | دالة حساب clRecalcContractValue | P0 | renderer/modules/clients/change-orders.js:12 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
-| LEG-0151 | modal | clients | نافذة openGuaranteeModal | P1 | renderer/modules/clients/guarantees.js:231 | legacy |  | verified-static |  |
-| LEG-0152 | modal | clients | نافذة openGuaranteeActionModal | P1 | renderer/modules/clients/guarantees.js:329 | legacy |  | verified-static |  |
-| LEG-0153 | calc | clients | دالة حساب clGuaranteeTotals | P0 | renderer/modules/clients/guarantees.js:68 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
-| LEG-0154 | calc | clients | دالة حساب clGuaranteeTotalsHtml | P0 | renderer/modules/clients/guarantees.js:122 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
-| LEG-0155 | calc | clients | دالة حساب clReconcilePaid | P1 | renderer/modules/clients/helpers.js:590 | legacy |  | verified-static |  |
-| LEG-0156 | calc | clients | دالة حساب clMigratePaidSource | P1 | renderer/modules/clients/helpers.js:600 | legacy |  | verified-static |  |
-| LEG-0157 | modal | clients | نافذة openBoqModal | P1 | renderer/modules/clients/pages-boqs.js:200 | legacy |  | verified-static |  |
-| LEG-0158 | calc | clients | دالة حساب clCalcBoqItem | P1 | renderer/modules/clients/pages-boqs.js:10 | legacy |  | verified-static |  |
-| LEG-0159 | calc | clients | دالة حساب clBoqTotal | P0 | renderer/modules/clients/pages-boqs.js:17 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
-| LEG-0160 | modal | clients | نافذة openCollectionModal | P1 | renderer/modules/clients/pages-collections.js:136 | legacy |  | verified-static |  |
-| LEG-0161 | modal | clients | نافذة openContractModal | P1 | renderer/modules/clients/pages-contracts.js:200 | legacy |  | verified-static |  |
-| LEG-0162 | modal | clients | نافذة openOppModal | P1 | renderer/modules/clients/pages-crm.js:230 | legacy |  | verified-static |  |
-| LEG-0163 | modal | clients | نافذة openCommModal | P1 | renderer/modules/clients/pages-crm.js:289 | legacy |  | verified-static |  |
-| LEG-0164 | modal | clients | نافذة openCustomerModal | P1 | renderer/modules/clients/pages-customers.js:290 | legacy |  | verified-static |  |
-| LEG-0165 | modal | clients | نافذة openClientInvoiceModal | P1 | renderer/modules/clients/pages-invoices.js:220 | legacy |  | verified-static |  |
-| LEG-0166 | modal | clients | نافذة openWorkSurveyModal | P1 | renderer/modules/clients/pages-work-surveys.js:324 | legacy |  | verified-static |  |
-| LEG-0167 | calc | clients | دالة حساب clCalcSurveyItem | P1 | renderer/modules/clients/pages-work-surveys.js:17 | legacy |  | verified-static |  |
-| LEG-0168 | calc | clients | دالة حساب clSurveyTotal | P0 | renderer/modules/clients/pages-work-surveys.js:41 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
-| LEG-0169 | modal | clients | نافذة openReasonModal | P1 | renderer/modules/clients/project-path.js:265 | legacy |  | verified-static |  |
-| LEG-0170 | modal | clients | نافذة openStepModal | P1 | renderer/modules/clients/project-path.js:301 | legacy |  | verified-static |  |
-| LEG-0171 | modal | clients | نافذة openPathHistoryModal | P1 | renderer/modules/clients/project-path.js:435 | legacy |  | verified-static |  |
-| LEG-0172 | modal | hr | نافذة openEmployeeModal | P1 | renderer/modules/hr/modals-employees.js:1 | legacy |  | verified-static |  |
-| LEG-0173 | modal | hr | نافذة openAttendanceModal | P1 | renderer/modules/hr/pages-attendance.js:121 | legacy |  | verified-static |  |
-| LEG-0174 | modal | hr | نافذة openCostModal | P1 | renderer/modules/hr/pages-costs.js:411 | legacy |  | verified-static |  |
-| LEG-0175 | calc | hr | دالة حساب ensureCostItemPool | P0 | renderer/modules/hr/pages-costs.js:12 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
-| LEG-0176 | calc | hr | دالة حساب costLines | P0 | renderer/modules/hr/pages-costs.js:21 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
-| LEG-0177 | calc | hr | دالة حساب costItemText | P0 | renderer/modules/hr/pages-costs.js:26 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
-| LEG-0178 | calc | hr | دالة حساب costItemSuggestions | P0 | renderer/modules/hr/pages-costs.js:31 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
-| LEG-0179 | calc | hr | دالة حساب saveCostItemSuggestion | P0 | renderer/modules/hr/pages-costs.js:40 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
-| LEG-0180 | calc | hr | دالة حساب removeCostItemSuggestion | P0 | renderer/modules/hr/pages-costs.js:46 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
-| LEG-0181 | calc | hr | دالة حساب renameCostItemSuggestion | P0 | renderer/modules/hr/pages-costs.js:51 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
-| LEG-0182 | calc | hr | دالة حساب filteredCosts | P0 | renderer/modules/hr/pages-costs.js:65 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
-| LEG-0183 | calc | hr | دالة حساب costPersonBalance | P0 | renderer/modules/hr/pages-costs.js:82 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
-| LEG-0184 | calc | hr | دالة حساب costItemsUsed | P0 | renderer/modules/hr/pages-costs.js:92 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
-| LEG-0185 | calc | hr | دالة حساب costSectionsFor | P0 | renderer/modules/hr/pages-costs.js:403 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
-| LEG-0186 | calc | hr | دالة حساب costTabIdForKind | P0 | renderer/modules/hr/pages-costs.js:408 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
-| LEG-0187 | data-write | hr | كتابة بيانات saveCostItemSuggestion | P0 | renderer/modules/hr/pages-costs.js | legacy |  | verified-static | سلامة البيانات (P0 مقترح) |
-| LEG-0188 | data-write | hr | كتابة بيانات removeCostItemSuggestion | P0 | renderer/modules/hr/pages-costs.js | legacy |  | verified-static | سلامة البيانات (P0 مقترح) |
-| LEG-0189 | modal | hr | نافذة openEquipmentModal | P1 | renderer/modules/hr/pages-equipment.js:665 | legacy |  | verified-static |  |
-| LEG-0190 | modal | hr | نافذة openEquipmentDailyModal | P1 | renderer/modules/hr/pages-equipment.js:1074 | legacy |  | verified-static |  |
-| LEG-0191 | modal | hr | نافذة openEquipLogModal | P1 | renderer/modules/hr/pages-equipment.js:1228 | legacy |  | verified-static |  |
-| LEG-0192 | calc | hr | دالة حساب printEquipmentDaysStatement | P1 | renderer/modules/hr/pages-equipment.js:250 | legacy |  | verified-static |  |
-| LEG-0193 | calc | hr | دالة حساب printEquipmentDailyStatement | P1 | renderer/modules/hr/pages-equipment.js:1024 | legacy |  | verified-static |  |
-| LEG-0194 | export/print | hr | تصدير/طباعة printEquipmentDaysStatement | P1 | renderer/modules/hr/pages-equipment.js | legacy |  | verified-static |  |
-| LEG-0195 | export/print | hr | تصدير/طباعة printEquipmentDailyStatement | P1 | renderer/modules/hr/pages-equipment.js | legacy |  | verified-static |  |
-| LEG-0196 | modal | hr | نافذة openLeaveModal | P1 | renderer/modules/hr/pages-leaves.js:172 | legacy |  | verified-static |  |
-| LEG-0197 | calc | hr | دالة حساب calcLeaveDays | P0 | renderer/modules/hr/pages-leaves.js:32 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
-| LEG-0198 | modal | hr | نافذة openExternalDriverModal | P1 | renderer/modules/hr/pages-ops.js:133 | legacy |  | verified-static |  |
-| LEG-0199 | modal | hr | نافذة openDriverModal | P1 | renderer/modules/hr/pages-ops.js:189 | legacy |  | verified-static |  |
-| LEG-0200 | modal | hr | نافذة openFuelModal | P1 | renderer/modules/hr/pages-ops.js:274 | legacy |  | verified-static |  |
-| LEG-0201 | modal | hr | نافذة openTransferModal | P1 | renderer/modules/hr/pages-ops.js:419 | legacy |  | verified-static |  |
-| LEG-0202 | modal | hr | نافذة openPerfModal | P1 | renderer/modules/hr/pages-ops.js:610 | legacy |  | verified-static |  |
-| LEG-0203 | modal | hr | نافذة openManageDocTypesModal | P1 | renderer/modules/hr/pages-ops.js:675 | legacy |  | verified-static |  |
-| LEG-0204 | modal | hr | نافذة openDocModal | P1 | renderer/modules/hr/pages-ops.js:721 | legacy |  | verified-static |  |
-| LEG-0205 | modal | hr | نافذة openExpenseDetailModal | P1 | renderer/modules/hr/pages-ops.js:1417 | legacy |  | verified-static |  |
-| LEG-0206 | modal | hr | نافذة openExpenseModal | P1 | renderer/modules/hr/pages-ops.js:1464 | legacy |  | verified-static |  |
-| LEG-0207 | modal | hr | نافذة openVehicleExpenseModal | P1 | renderer/modules/hr/pages-ops.js:1842 | legacy |  | verified-static |  |
-| LEG-0208 | data-write | hr | كتابة بيانات saveExpenseItemSuggestion | P0 | renderer/modules/hr/pages-ops.js | legacy |  | verified-static | سلامة البيانات (P0 مقترح) |
-| LEG-0209 | data-write | hr | كتابة بيانات removeExpenseItemSuggestion | P0 | renderer/modules/hr/pages-ops.js | legacy |  | verified-static | سلامة البيانات (P0 مقترح) |
-| LEG-0210 | data-write | hr | كتابة بيانات saveVehicleExpenseItem | P0 | renderer/modules/hr/pages-ops.js | legacy |  | verified-static | سلامة البيانات (P0 مقترح) |
-| LEG-0211 | calc | hr | دالة حساب printPersonFinanceStatement | P1 | renderer/modules/hr/pages-person-detail.js:126 | legacy |  | verified-static |  |
-| LEG-0212 | export/print | hr | تصدير/طباعة printPersonFinanceStatement | P1 | renderer/modules/hr/pages-person-detail.js | legacy |  | verified-static |  |
-| LEG-0213 | modal | hr | نافذة openProjectModal | P1 | renderer/modules/hr/pages-projects.js:334 | legacy |  | verified-static |  |
-| LEG-0214 | modal | hr | نافذة openPlanModal | P1 | renderer/modules/hr/pages-projects.js:508 | legacy |  | verified-static |  |
-| LEG-0215 | calc | hr | دالة حساب repDuesFull | P0 | renderer/modules/hr/pages-reports.js:365 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
-| LEG-0216 | export/print | hr | تصدير/طباعة exportCurrentReportCsv | P1 | renderer/modules/hr/pages-reports.js | legacy |  | verified-static |  |
-| LEG-0217 | export/print | hr | تصدير/طباعة exportCurrentReportXlsx | P1 | renderer/modules/hr/pages-reports.js | legacy |  | verified-static |  |
-| LEG-0218 | export/print | hr | تصدير/طباعة printCurrentReport | P1 | renderer/modules/hr/pages-reports.js | legacy |  | verified-static |  |
-| LEG-0219 | modal | hr | نافذة openSupervisorModal | P1 | renderer/modules/hr/pages-supervisors.js:323 | legacy |  | verified-static |  |
-| LEG-0220 | calc | hr | دالة حساب supervisorStatementSectionsHtml | P1 | renderer/modules/hr/pages-supervisors.js:99 | legacy |  | verified-static |  |
-| LEG-0221 | calc | hr | دالة حساب supervisorStatementCardsHtml | P1 | renderer/modules/hr/pages-supervisors.js:149 | legacy |  | verified-static |  |
-| LEG-0222 | modal | hr | نافذة openWattDaySitesModal | P1 | renderer/modules/hr/pages-worker-attendance.js:541 | legacy |  | verified-static |  |
-| LEG-0223 | modal | hr | نافذة openWorkerAttModal | P1 | renderer/modules/hr/pages-worker-attendance.js:577 | legacy |  | verified-static |  |
-| LEG-0224 | modal | hr | نافذة openUnifiedPayModal | P1 | renderer/modules/hr/pages-worker-dues.js:741 | legacy |  | verified-static |  |
-| LEG-0225 | modal | hr | نافذة openPayItemsManageModal | P1 | renderer/modules/hr/pages-worker-dues.js:1454 | legacy |  | verified-static |  |
-| LEG-0226 | calc | hr | دالة حساب duesEntityKind | P0 | renderer/modules/hr/pages-worker-dues.js:12 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
-| LEG-0227 | calc | hr | دالة حساب duesListForKind | P0 | renderer/modules/hr/pages-worker-dues.js:17 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
-| LEG-0228 | modal | hr | نافذة openWorkerModal | P1 | renderer/modules/hr/pages-workers.js:216 | legacy |  | verified-static |  |
-| LEG-0229 | calc | hr | دالة حساب projectStatement | P1 | renderer/modules/hr/project-statement.js:48 | legacy |  | verified-static |  |
-| LEG-0230 | calc | hr | دالة حساب projectStatementSectionsHtml | P1 | renderer/modules/hr/project-statement.js:177 | legacy |  | verified-static |  |
-| LEG-0231 | modal | ledger | نافذة openGlobalValidationModal | P1 | renderer/modules/ledger/app.js:567 | legacy |  | verified-static |  |
-| LEG-0232 | calc | ledger | دالة حساب refreshOpenStatements | P1 | renderer/modules/ledger/app.js:773 | legacy |  | verified-static |  |
-| LEG-0233 | calc | ledger | دالة حساب normalizeTaxId | P0 | renderer/modules/ledger/excel-import.js:240 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
-| LEG-0234 | export/print | ledger | تصدير/طباعة exportCategoriesExcel | P1 | renderer/modules/ledger/exports.js | legacy |  | verified-static |  |
-| LEG-0235 | export/print | ledger | تصدير/طباعة exportSuppliersCsv | P1 | renderer/modules/ledger/exports.js | legacy |  | verified-static |  |
-| LEG-0236 | export/print | ledger | تصدير/طباعة exportAllInvoicesCsv | P1 | renderer/modules/ledger/exports.js | legacy |  | verified-static |  |
-| LEG-0237 | export/print | ledger | تصدير/طباعة exportAllPaymentsCsv | P1 | renderer/modules/ledger/exports.js | legacy |  | verified-static |  |
-| LEG-0238 | export/print | ledger | تصدير/طباعة exportSupplierCsv | P1 | renderer/modules/ledger/exports.js | legacy |  | verified-static |  |
-| LEG-0239 | export/print | ledger | تصدير/طباعة exportVisibleQuarterNoticesPdf | P1 | renderer/modules/ledger/exports.js | legacy |  | verified-static |  |
-| LEG-0240 | export/print | ledger | تصدير/طباعة exportSupplierDiscountNoticesPdf | P1 | renderer/modules/ledger/exports.js | legacy |  | verified-static |  |
-| LEG-0241 | export/print | ledger | تصدير/طباعة exportQuarterNoticesPdf | P1 | renderer/modules/ledger/exports.js | legacy |  | verified-static |  |
-| LEG-0242 | calc | ledger | دالة حساب previewInvoiceCalculationFixes | P0 | renderer/modules/ledger/helpers.js:143 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
-| LEG-0243 | calc | ledger | دالة حساب fixInvoiceCalculations | P0 | renderer/modules/ledger/helpers.js:169 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
-| LEG-0244 | calc | ledger | دالة حساب lgExtraFieldsSummary | P0 | renderer/modules/ledger/helpers.js:492 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
-| LEG-0245 | calc | ledger | دالة حساب supplierBalance | P0 | renderer/modules/ledger/helpers.js:576 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
-| LEG-0246 | calc | ledger | دالة حساب invoiceRemaining | P0 | renderer/modules/ledger/helpers.js:590 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
-| LEG-0247 | calc | ledger | دالة حساب getInvoiceDueDate | P0 | renderer/modules/ledger/helpers.js:720 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
-| LEG-0248 | calc | ledger | دالة حساب getOverdueInvoices | P0 | renderer/modules/ledger/helpers.js:734 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
-| LEG-0249 | calc | ledger | دالة حساب recalcLinkedOriginal | P1 | renderer/modules/ledger/helpers.js:1927 | legacy |  | verified-static |  |
-| LEG-0250 | calc | ledger | دالة حساب maybeShowOverdueAlert | P0 | renderer/modules/ledger/helpers.js:2031 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
-| LEG-0251 | calc | ledger | دالة حساب pfSummaryHtml | P0 | renderer/modules/ledger/helpers.js:2265 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
-| LEG-0252 | export/print | ledger | تصدير/طباعة downloadFile | P1 | renderer/modules/ledger/helpers.js | legacy |  | verified-static |  |
-| LEG-0253 | export/print | ledger | تصدير/طباعة exportExcelFile | P1 | renderer/modules/ledger/helpers.js | legacy |  | verified-static |  |
-| LEG-0254 | export/print | ledger | تصدير/طباعة printHtmlContent | P1 | renderer/modules/ledger/helpers.js | legacy |  | verified-static |  |
-| LEG-0255 | data-write | ledger | كتابة بيانات addDaysToIsoDate | P0 | renderer/modules/ledger/helpers.js | legacy |  | verified-static | سلامة البيانات (P0 مقترح) |
-| LEG-0256 | data-write | ledger | كتابة بيانات saveCustomLinkedItem | P0 | renderer/modules/ledger/helpers.js | legacy |  | verified-static | سلامة البيانات (P0 مقترح) |
-| LEG-0257 | data-write | ledger | كتابة بيانات deleteCustomLinkedItem | P0 | renderer/modules/ledger/helpers.js | legacy |  | verified-static | سلامة البيانات (P0 مقترح) |
-| LEG-0258 | modal | ledger | نافذة openAddSupplierModal | P1 | renderer/modules/ledger/modals.js:9 | legacy |  | verified-static |  |
-| LEG-0259 | modal | ledger | نافذة openDeleteSupplierModal | P1 | renderer/modules/ledger/modals.js:136 | legacy |  | verified-static |  |
-| LEG-0260 | modal | ledger | نافذة openPaymentModal | P1 | renderer/modules/ledger/modals.js:192 | legacy |  | verified-static |  |
-| LEG-0261 | modal | ledger | نافذة openAddEditInvoiceModal | P1 | renderer/modules/ledger/modals.js:660 | legacy |  | verified-static |  |
-| LEG-0262 | modal | ledger | نافذة openDiscountNoticeModal | P1 | renderer/modules/ledger/modals.js:1410 | legacy |  | verified-static |  |
-| LEG-0263 | modal | ledger | نافذة openViewInvoiceModal | P1 | renderer/modules/ledger/modals.js:1452 | legacy |  | verified-static |  |
-| LEG-0264 | modal | ledger | نافذة openViewPaymentModal | P1 | renderer/modules/ledger/modals.js:1633 | legacy |  | verified-static |  |
-| LEG-0265 | calc | ledger | دالة حساب printSupplierStatementTab | P1 | renderer/modules/ledger/modals.js:1439 | legacy |  | verified-static |  |
-| LEG-0266 | calc | ledger | دالة حساب printSupplierStatement | P1 | renderer/modules/ledger/modals.js:1446 | legacy |  | verified-static |  |
-| LEG-0267 | export/print | ledger | تصدير/طباعة printSupplierStatementTab | P1 | renderer/modules/ledger/modals.js | legacy |  | verified-static |  |
-| LEG-0268 | export/print | ledger | تصدير/طباعة printSupplierStatement | P1 | renderer/modules/ledger/modals.js | legacy |  | verified-static |  |
-| LEG-0269 | data-write | ledger | كتابة بيانات saveInvoiceData | P0 | renderer/modules/ledger/modals.js | legacy |  | verified-static | سلامة البيانات (P0 مقترح) |
-| LEG-0270 | modal | ledger | نافذة openAddSupplierDocumentModal | P1 | renderer/modules/ledger/pages-archive.js:774 | legacy |  | verified-static |  |
-| LEG-0271 | calc | ledger | دالة حساب archSummary | P0 | renderer/modules/ledger/pages-archive.js:138 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
-| LEG-0272 | modal | ledger | نافذة openLinkedItemModal | P1 | renderer/modules/ledger/pages-categories.js:231 | legacy |  | verified-static |  |
-| LEG-0273 | export/print | ledger | تصدير/طباعة exportPeriodicReportCsv | P1 | renderer/modules/ledger/pages-reports.js | legacy |  | verified-static |  |
-| LEG-0274 | calc | ledger | دالة حساب statementRows | P1 | renderer/modules/ledger/statement.js:3 | legacy |  | verified-static |  |
-| LEG-0275 | calc | ledger | دالة حساب buildAccountStatementHtml | P1 | renderer/modules/ledger/statement.js:61 | legacy |  | verified-static |  |
-| LEG-0276 | calc | ledger | دالة حساب printBankStatement | P1 | renderer/modules/ledger/statement.js:140 | legacy |  | verified-static |  |
-| LEG-0277 | export/print | ledger | تصدير/طباعة printBankStatement | P1 | renderer/modules/ledger/statement.js | legacy |  | verified-static |  |
-| LEG-0278 | modal | warehouses | نافذة openWhItemModal | P1 | renderer/modules/warehouses/pages-home.js:203 | legacy |  | verified-static |  |
-| LEG-0279 | modal | warehouses | نافذة openWhLocationModal | P1 | renderer/modules/warehouses/pages-home.js:237 | legacy |  | verified-static |  |
-| LEG-0280 | modal | warehouses | نافذة openWhMovementModal | P1 | renderer/modules/warehouses/pages-home.js:260 | legacy |  | verified-static |  |
+| LEG-0055 | calc | مشترك (core) | دالة حساب compCostProjectNames | P1 | renderer/core/cost-center.js:15 | legacy |  | verified-static |  |
+| LEG-0056 | calc | مشترك (core) | دالة حساب compCostCollected | P1 | renderer/core/cost-center.js:26 | legacy |  | verified-static |  |
+| LEG-0057 | calc | مشترك (core) | دالة حساب compCostRows | P1 | renderer/core/cost-center.js:32 | legacy |  | verified-static |  |
+| LEG-0058 | calc | مشترك (core) | دالة حساب comprehensiveCostsPageHtml | P1 | renderer/core/cost-center.js:41 | legacy |  | verified-static |  |
+| LEG-0059 | calc | مشترك (core) | دالة حساب comprehensiveCostsBoardCard | P1 | renderer/core/cost-center.js:78 | legacy |  | verified-static |  |
+| LEG-0060 | data-write | مشترك (core) | كتابة بيانات saveData | P0 | renderer/core/data-store.js | legacy |  | verified-static | سلامة البيانات (P0 مقترح) |
+| LEG-0061 | modal | مشترك (core) | نافذة openExcelImportModal | P1 | renderer/core/excel-import.js:260 | legacy |  | verified-static |  |
+| LEG-0062 | data-write | مشترك (core) | كتابة بيانات approveExpense | P0 | renderer/core/extras.js | legacy |  | verified-static | سلامة البيانات (P0 مقترح) |
+| LEG-0063 | calc | مشترك (core) | دالة حساب fcCostDetailHtml | P1 | renderer/core/follow-center.js:202 | legacy |  | verified-static |  |
+| LEG-0064 | modal | مشترك (core) | نافذة openModal | P1 | renderer/core/helpers.js:472 | legacy |  | verified-static |  |
+| LEG-0065 | modal | مشترك (core) | نافذة openSubModal | P1 | renderer/core/helpers.js:614 | legacy |  | verified-static |  |
+| LEG-0066 | modal | مشترك (core) | نافذة openPersonDetailModal | P1 | renderer/core/helpers.js:2956 | legacy |  | verified-static |  |
+| LEG-0067 | modal | مشترك (core) | نافذة openPersonAlertsModal | P1 | renderer/core/helpers.js:3259 | legacy |  | verified-static |  |
+| LEG-0068 | modal | مشترك (core) | نافذة openAlertsMoreModal | P1 | renderer/core/helpers.js:3310 | legacy |  | verified-static |  |
+| LEG-0069 | modal | مشترك (core) | نافذة openAddCategoryModal | P1 | renderer/core/helpers.js:3793 | legacy |  | verified-static |  |
+| LEG-0070 | modal | مشترك (core) | نافذة openRenameCategoryModal | P1 | renderer/core/helpers.js:3818 | legacy |  | verified-static |  |
+| LEG-0071 | modal | مشترك (core) | نافذة openDeleteCategoryModal | P1 | renderer/core/helpers.js:3857 | legacy |  | verified-static |  |
+| LEG-0072 | calc | مشترك (core) | دالة حساب employeeLeaveBalance | P1 | renderer/core/helpers.js:201 | legacy |  | verified-static |  |
+| LEG-0073 | calc | مشترك (core) | دالة حساب attendanceDayWage | P1 | renderer/core/helpers.js:260 | legacy |  | verified-static |  |
+| LEG-0074 | calc | مشترك (core) | دالة حساب workerDueAmount | P1 | renderer/core/helpers.js:343 | legacy |  | verified-static |  |
+| LEG-0075 | calc | مشترك (core) | دالة حساب workerWageSummary | P1 | renderer/core/helpers.js:349 | legacy |  | verified-static |  |
+| LEG-0076 | calc | مشترك (core) | دالة حساب extraFieldsSummary | P1 | renderer/core/helpers.js:1055 | legacy |  | verified-static |  |
+| LEG-0077 | calc | مشترك (core) | دالة حساب supervisorExpensesTotal | P1 | renderer/core/helpers.js:2095 | legacy |  | verified-static |  |
+| LEG-0078 | calc | مشترك (core) | دالة حساب supervisorWageStatement | P1 | renderer/core/helpers.js:2119 | legacy |  | verified-static |  |
+| LEG-0079 | calc | مشترك (core) | دالة حساب personUnpaidBonuses | P1 | renderer/core/helpers.js:4134 | legacy |  | verified-static |  |
+| LEG-0080 | calc | مشترك (core) | دالة حساب workerPaidTotal | P1 | renderer/core/helpers.js:4156 | legacy |  | verified-static |  |
+| LEG-0081 | calc | مشترك (core) | دالة حساب workerPenaltyTotal | P1 | renderer/core/helpers.js:4166 | legacy |  | verified-static |  |
+| LEG-0082 | calc | مشترك (core) | دالة حساب supervisorPenaltyTotal | P1 | renderer/core/helpers.js:4175 | legacy |  | verified-static |  |
+| LEG-0083 | calc | مشترك (core) | دالة حساب supervisorPaidTotal | P1 | renderer/core/helpers.js:4184 | legacy |  | verified-static |  |
+| LEG-0084 | calc | مشترك (core) | دالة حساب workerBalance | P1 | renderer/core/helpers.js:4193 | legacy |  | verified-static |  |
+| LEG-0085 | calc | مشترك (core) | دالة حساب employeePenaltyTotal | P1 | renderer/core/helpers.js:4200 | legacy |  | verified-static |  |
+| LEG-0086 | calc | مشترك (core) | دالة حساب driverDueAmount | P1 | renderer/core/helpers.js:4989 | legacy |  | verified-static |  |
+| LEG-0087 | calc | مشترك (core) | دالة حساب driverPaidTotal | P1 | renderer/core/helpers.js:4993 | legacy |  | verified-static |  |
+| LEG-0088 | calc | مشترك (core) | دالة حساب driverPenaltyTotal | P1 | renderer/core/helpers.js:5002 | legacy |  | verified-static |  |
+| LEG-0089 | calc | مشترك (core) | دالة حساب employeeDueAmount | P1 | renderer/core/helpers.js:5024 | legacy |  | verified-static |  |
+| LEG-0090 | calc | مشترك (core) | دالة حساب employeeBalance | P1 | renderer/core/helpers.js:5056 | legacy |  | verified-static |  |
+| LEG-0091 | calc | مشترك (core) | دالة حساب driverBalance | P1 | renderer/core/helpers.js:5071 | legacy |  | verified-static |  |
+| LEG-0092 | calc | مشترك (core) | دالة حساب extraCalcChecks | P1 | renderer/core/helpers.js:5081 | legacy |  | verified-static |  |
+| LEG-0093 | calc | مشترك (core) | دالة حساب validateCalculations | P1 | renderer/core/helpers.js:5146 | legacy |  | verified-static |  |
+| LEG-0094 | calc | مشترك (core) | دالة حساب paginateTotalsAtEnd | P1 | renderer/core/helpers.js:5924 | legacy |  | verified-static |  |
+| LEG-0095 | calc | مشترك (core) | دالة حساب statementHeaderHtml | P1 | renderer/core/helpers.js:6420 | legacy |  | verified-static |  |
+| LEG-0096 | calc | مشترك (core) | دالة حساب statementFooterHtml | P1 | renderer/core/helpers.js:6442 | legacy |  | verified-static |  |
+| LEG-0097 | calc | مشترك (core) | دالة حساب shouldBrandStatement | P1 | renderer/core/helpers.js:6459 | legacy |  | verified-static |  |
+| LEG-0098 | calc | مشترك (core) | دالة حساب personExpensesTotal | P1 | renderer/core/helpers.js:6469 | legacy |  | verified-static |  |
+| LEG-0099 | calc | مشترك (core) | دالة حساب costKindLabel | P1 | renderer/core/helpers.js:6483 | legacy |  | verified-static |  |
+| LEG-0100 | calc | مشترك (core) | دالة حساب costPersonName | P1 | renderer/core/helpers.js:6484 | legacy |  | verified-static |  |
+| LEG-0101 | calc | مشترك (core) | دالة حساب costsInRange | P1 | renderer/core/helpers.js:6498 | legacy |  | verified-static |  |
+| LEG-0102 | calc | مشترك (core) | دالة حساب personCostsTotal | P1 | renderer/core/helpers.js:6506 | legacy |  | verified-static |  |
+| LEG-0103 | calc | مشترك (core) | دالة حساب costsTableHtml | P1 | renderer/core/helpers.js:6510 | legacy |  | verified-static |  |
+| LEG-0104 | calc | مشترك (core) | دالة حساب costsStatementBlock | P1 | renderer/core/helpers.js:6520 | legacy |  | verified-static |  |
+| LEG-0105 | calc | مشترك (core) | دالة حساب personExtrasTotal | P1 | renderer/core/helpers.js:6525 | legacy |  | verified-static |  |
+| LEG-0106 | calc | مشترك (core) | دالة حساب duesPaidBadge | P1 | renderer/core/helpers.js:6547 | legacy |  | verified-static |  |
+| LEG-0107 | calc | مشترك (core) | دالة حساب expensesStatementBlock | P1 | renderer/core/helpers.js:6635 | legacy |  | verified-static |  |
+| LEG-0108 | calc | مشترك (core) | دالة حساب printEquipmentAccountStatement | P1 | renderer/core/helpers.js:6697 | legacy |  | verified-static |  |
+| LEG-0109 | calc | مشترك (core) | دالة حساب paymentsStatementBlock | P1 | renderer/core/helpers.js:6764 | legacy |  | verified-static |  |
+| LEG-0110 | calc | مشترك (core) | دالة حساب printWorkerStatement | P1 | renderer/core/helpers.js:7107 | legacy |  | verified-static |  |
+| LEG-0111 | calc | مشترك (core) | دالة حساب printDriverStatement | P1 | renderer/core/helpers.js:7157 | legacy |  | verified-static |  |
+| LEG-0112 | calc | مشترك (core) | دالة حساب _payTotalCard | P1 | renderer/core/helpers.js:7259 | legacy |  | verified-static |  |
+| LEG-0113 | calc | مشترك (core) | دالة حساب printDaysStatement | P1 | renderer/core/helpers.js:7458 | legacy |  | verified-static |  |
+| LEG-0114 | calc | مشترك (core) | دالة حساب printEmployeeStatement | P1 | renderer/core/helpers.js:7544 | legacy |  | verified-static |  |
+| LEG-0115 | calc | مشترك (core) | دالة حساب equipmentTotalHours | P1 | renderer/core/helpers.js:7801 | legacy |  | verified-static |  |
+| LEG-0116 | calc | مشترك (core) | دالة حساب equipmentTotalCost | P1 | renderer/core/helpers.js:7804 | legacy |  | verified-static |  |
+| LEG-0117 | calc | مشترك (core) | دالة حساب equipmentTotalFuel | P1 | renderer/core/helpers.js:7808 | legacy |  | verified-static |  |
+| LEG-0118 | calc | مشترك (core) | دالة حساب projectCostSummary | P1 | renderer/core/helpers.js:7816 | legacy |  | verified-static |  |
+| LEG-0119 | calc | مشترك (core) | دالة حساب projectSupplyCostLines | P1 | renderer/core/helpers.js:7894 | legacy |  | verified-static |  |
+| LEG-0120 | export/print | مشترك (core) | تصدير/طباعة downloadXlsx | P1 | renderer/core/helpers.js | legacy |  | verified-static |  |
+| LEG-0121 | export/print | مشترك (core) | تصدير/طباعة downloadCsv | P1 | renderer/core/helpers.js | legacy |  | verified-static |  |
+| LEG-0122 | export/print | مشترك (core) | تصدير/طباعة printAttachmentPdf | P1 | renderer/core/helpers.js | legacy |  | verified-static |  |
+| LEG-0123 | export/print | مشترك (core) | تصدير/طباعة printHtml | P1 | renderer/core/helpers.js | legacy |  | verified-static |  |
+| LEG-0124 | export/print | مشترك (core) | تصدير/طباعة exportArchiveFolder | P1 | renderer/core/helpers.js | legacy |  | verified-static |  |
+| LEG-0125 | export/print | مشترك (core) | تصدير/طباعة printPersonFilePdf | P1 | renderer/core/helpers.js | legacy |  | verified-static |  |
+| LEG-0126 | export/print | مشترك (core) | تصدير/طباعة printArchiveAllPdf | P1 | renderer/core/helpers.js | legacy |  | verified-static |  |
+| LEG-0127 | export/print | مشترك (core) | تصدير/طباعة printExpenseRecord | P1 | renderer/core/helpers.js | legacy |  | verified-static |  |
+| LEG-0128 | export/print | مشترك (core) | تصدير/طباعة exportExpenseExcel | P1 | renderer/core/helpers.js | legacy |  | verified-static |  |
+| LEG-0129 | export/print | مشترك (core) | تصدير/طباعة printEquipmentAccountStatement | P1 | renderer/core/helpers.js | legacy |  | verified-static |  |
+| LEG-0130 | export/print | مشترك (core) | تصدير/طباعة printWorkerStatement | P1 | renderer/core/helpers.js | legacy |  | verified-static |  |
+| LEG-0131 | export/print | مشترك (core) | تصدير/طباعة printDriverStatement | P1 | renderer/core/helpers.js | legacy |  | verified-static |  |
+| LEG-0132 | export/print | مشترك (core) | تصدير/طباعة printDaysStatement | P1 | renderer/core/helpers.js | legacy |  | verified-static |  |
+| LEG-0133 | export/print | مشترك (core) | تصدير/طباعة printEmployeeStatement | P1 | renderer/core/helpers.js | legacy |  | verified-static |  |
+| LEG-0134 | export/print | مشترك (core) | تصدير/طباعة printPayslip | P1 | renderer/core/helpers.js | legacy |  | verified-static |  |
+| LEG-0135 | export/print | مشترك (core) | تصدير/طباعة printLeaveForm | P1 | renderer/core/helpers.js | legacy |  | verified-static |  |
+| LEG-0136 | data-write | مشترك (core) | كتابة بيانات addAudit | P0 | renderer/core/helpers.js | legacy |  | verified-static | سلامة البيانات (P0 مقترح) |
+| LEG-0137 | data-write | مشترك (core) | كتابة بيانات deleteProjectById | P0 | renderer/core/helpers.js | legacy |  | verified-static | سلامة البيانات (P0 مقترح) |
+| LEG-0138 | data-write | مشترك (core) | كتابة بيانات addExtraFieldRow | P0 | renderer/core/helpers.js | legacy |  | verified-static | سلامة البيانات (P0 مقترح) |
+| LEG-0139 | data-write | مشترك (core) | كتابة بيانات updateBulkBar | P0 | renderer/core/helpers.js | legacy |  | verified-static | سلامة البيانات (P0 مقترح) |
+| LEG-0140 | modal | مشترك (core) | نافذة openScanAttachModal | P1 | renderer/core/modals-common.js:9 | legacy |  | verified-static |  |
+| LEG-0141 | calc | مشترك (core) | دالة حساب activateHostMode | P1 | renderer/core/network.js:799 | legacy |  | verified-static |  |
+| LEG-0142 | calc | مشترك (core) | دالة حساب activateClientMode | P1 | renderer/core/network.js:820 | legacy |  | verified-static |  |
+| LEG-0143 | calc | مشترك (core) | دالة حساب deactivateNetworkMode | P1 | renderer/core/network.js:841 | legacy |  | verified-static |  |
+| LEG-0144 | data-write | مشترك (core) | كتابة بيانات saveDataNetwork | P0 | renderer/core/network.js | legacy |  | verified-static | سلامة البيانات (P0 مقترح) |
+| LEG-0145 | calc | مشترك (core) | دالة حساب archiveTotalFilesForKind | P1 | renderer/core/pages-archive.js:44 | legacy |  | verified-static |  |
+| LEG-0146 | modal | مشترك (core) | نافذة openUserModal | P1 | renderer/core/pages-users.js:190 | legacy |  | verified-static |  |
+| LEG-0147 | calc | مشترك (core) | دالة حساب repAlertsSummaryTab | P1 | renderer/core/smart-tools.js:692 | legacy |  | verified-static |  |
+| LEG-0148 | calc | مشترك (core) | دالة حساب alertsSummaryExportData | P1 | renderer/core/smart-tools.js:726 | legacy |  | verified-static |  |
+| LEG-0149 | modal | العملاء والمشاريع | نافذة openChangeOrderModal | P1 | renderer/modules/clients/change-orders.js:87 | legacy |  | verified-static |  |
+| LEG-0150 | calc | العملاء والمشاريع | دالة حساب clRecalcContractValue | P0 | renderer/modules/clients/change-orders.js:12 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
+| LEG-0151 | modal | العملاء والمشاريع | نافذة openGuaranteeModal | P1 | renderer/modules/clients/guarantees.js:231 | legacy |  | verified-static |  |
+| LEG-0152 | modal | العملاء والمشاريع | نافذة openGuaranteeActionModal | P1 | renderer/modules/clients/guarantees.js:329 | legacy |  | verified-static |  |
+| LEG-0153 | calc | العملاء والمشاريع | دالة حساب clGuaranteeTotals | P0 | renderer/modules/clients/guarantees.js:68 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
+| LEG-0154 | calc | العملاء والمشاريع | دالة حساب clGuaranteeTotalsHtml | P0 | renderer/modules/clients/guarantees.js:122 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
+| LEG-0155 | calc | العملاء والمشاريع | دالة حساب clReconcilePaid | P1 | renderer/modules/clients/helpers.js:590 | legacy |  | verified-static |  |
+| LEG-0156 | calc | العملاء والمشاريع | دالة حساب clMigratePaidSource | P1 | renderer/modules/clients/helpers.js:600 | legacy |  | verified-static |  |
+| LEG-0157 | modal | العملاء والمشاريع | نافذة openBoqModal | P1 | renderer/modules/clients/pages-boqs.js:200 | legacy |  | verified-static |  |
+| LEG-0158 | calc | العملاء والمشاريع | دالة حساب clCalcBoqItem | P1 | renderer/modules/clients/pages-boqs.js:10 | legacy |  | verified-static |  |
+| LEG-0159 | calc | العملاء والمشاريع | دالة حساب clBoqTotal | P0 | renderer/modules/clients/pages-boqs.js:17 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
+| LEG-0160 | modal | العملاء والمشاريع | نافذة openCollectionModal | P1 | renderer/modules/clients/pages-collections.js:136 | legacy |  | verified-static |  |
+| LEG-0161 | modal | العملاء والمشاريع | نافذة openContractModal | P1 | renderer/modules/clients/pages-contracts.js:200 | legacy |  | verified-static |  |
+| LEG-0162 | modal | العملاء والمشاريع | نافذة openOppModal | P1 | renderer/modules/clients/pages-crm.js:230 | legacy |  | verified-static |  |
+| LEG-0163 | modal | العملاء والمشاريع | نافذة openCommModal | P1 | renderer/modules/clients/pages-crm.js:289 | legacy |  | verified-static |  |
+| LEG-0164 | modal | العملاء والمشاريع | نافذة openCustomerModal | P1 | renderer/modules/clients/pages-customers.js:290 | legacy |  | verified-static |  |
+| LEG-0165 | modal | العملاء والمشاريع | نافذة openClientInvoiceModal | P1 | renderer/modules/clients/pages-invoices.js:220 | legacy |  | verified-static |  |
+| LEG-0166 | modal | العملاء والمشاريع | نافذة openWorkSurveyModal | P1 | renderer/modules/clients/pages-work-surveys.js:324 | legacy |  | verified-static |  |
+| LEG-0167 | calc | العملاء والمشاريع | دالة حساب clCalcSurveyItem | P1 | renderer/modules/clients/pages-work-surveys.js:17 | legacy |  | verified-static |  |
+| LEG-0168 | calc | العملاء والمشاريع | دالة حساب clSurveyTotal | P0 | renderer/modules/clients/pages-work-surveys.js:41 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
+| LEG-0169 | modal | العملاء والمشاريع | نافذة openReasonModal | P1 | renderer/modules/clients/project-path.js:265 | legacy |  | verified-static |  |
+| LEG-0170 | modal | العملاء والمشاريع | نافذة openStepModal | P1 | renderer/modules/clients/project-path.js:301 | legacy |  | verified-static |  |
+| LEG-0171 | modal | العملاء والمشاريع | نافذة openPathHistoryModal | P1 | renderer/modules/clients/project-path.js:435 | legacy |  | verified-static |  |
+| LEG-0172 | modal | الموارد البشرية | نافذة openEmployeeModal | P1 | renderer/modules/hr/modals-employees.js:1 | legacy |  | verified-static |  |
+| LEG-0173 | modal | الموارد البشرية | نافذة openAttendanceModal | P1 | renderer/modules/hr/pages-attendance.js:121 | legacy |  | verified-static |  |
+| LEG-0174 | modal | الموارد البشرية | نافذة openCostModal | P1 | renderer/modules/hr/pages-costs.js:411 | legacy |  | verified-static |  |
+| LEG-0175 | calc | الموارد البشرية | دالة حساب ensureCostItemPool | P0 | renderer/modules/hr/pages-costs.js:12 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
+| LEG-0176 | calc | الموارد البشرية | دالة حساب costLines | P0 | renderer/modules/hr/pages-costs.js:21 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
+| LEG-0177 | calc | الموارد البشرية | دالة حساب costItemText | P0 | renderer/modules/hr/pages-costs.js:26 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
+| LEG-0178 | calc | الموارد البشرية | دالة حساب costItemSuggestions | P0 | renderer/modules/hr/pages-costs.js:31 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
+| LEG-0179 | calc | الموارد البشرية | دالة حساب saveCostItemSuggestion | P0 | renderer/modules/hr/pages-costs.js:40 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
+| LEG-0180 | calc | الموارد البشرية | دالة حساب removeCostItemSuggestion | P0 | renderer/modules/hr/pages-costs.js:46 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
+| LEG-0181 | calc | الموارد البشرية | دالة حساب renameCostItemSuggestion | P0 | renderer/modules/hr/pages-costs.js:51 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
+| LEG-0182 | calc | الموارد البشرية | دالة حساب filteredCosts | P0 | renderer/modules/hr/pages-costs.js:65 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
+| LEG-0183 | calc | الموارد البشرية | دالة حساب costPersonBalance | P0 | renderer/modules/hr/pages-costs.js:82 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
+| LEG-0184 | calc | الموارد البشرية | دالة حساب costItemsUsed | P0 | renderer/modules/hr/pages-costs.js:92 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
+| LEG-0185 | calc | الموارد البشرية | دالة حساب costSectionsFor | P0 | renderer/modules/hr/pages-costs.js:403 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
+| LEG-0186 | calc | الموارد البشرية | دالة حساب costTabIdForKind | P0 | renderer/modules/hr/pages-costs.js:408 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
+| LEG-0187 | data-write | الموارد البشرية | كتابة بيانات saveCostItemSuggestion | P0 | renderer/modules/hr/pages-costs.js | legacy |  | verified-static | سلامة البيانات (P0 مقترح) |
+| LEG-0188 | data-write | الموارد البشرية | كتابة بيانات removeCostItemSuggestion | P0 | renderer/modules/hr/pages-costs.js | legacy |  | verified-static | سلامة البيانات (P0 مقترح) |
+| LEG-0189 | modal | الموارد البشرية | نافذة openEquipmentModal | P1 | renderer/modules/hr/pages-equipment.js:665 | legacy |  | verified-static |  |
+| LEG-0190 | modal | الموارد البشرية | نافذة openEquipmentDailyModal | P1 | renderer/modules/hr/pages-equipment.js:1074 | legacy |  | verified-static |  |
+| LEG-0191 | modal | الموارد البشرية | نافذة openEquipLogModal | P1 | renderer/modules/hr/pages-equipment.js:1228 | legacy |  | verified-static |  |
+| LEG-0192 | calc | الموارد البشرية | دالة حساب printEquipmentDaysStatement | P1 | renderer/modules/hr/pages-equipment.js:250 | legacy |  | verified-static |  |
+| LEG-0193 | calc | الموارد البشرية | دالة حساب printEquipmentDailyStatement | P1 | renderer/modules/hr/pages-equipment.js:1024 | legacy |  | verified-static |  |
+| LEG-0194 | export/print | الموارد البشرية | تصدير/طباعة printEquipmentDaysStatement | P1 | renderer/modules/hr/pages-equipment.js | legacy |  | verified-static |  |
+| LEG-0195 | export/print | الموارد البشرية | تصدير/طباعة printEquipmentDailyStatement | P1 | renderer/modules/hr/pages-equipment.js | legacy |  | verified-static |  |
+| LEG-0196 | modal | الموارد البشرية | نافذة openLeaveModal | P1 | renderer/modules/hr/pages-leaves.js:172 | legacy |  | verified-static |  |
+| LEG-0197 | calc | الموارد البشرية | دالة حساب calcLeaveDays | P0 | renderer/modules/hr/pages-leaves.js:32 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
+| LEG-0198 | modal | الموارد البشرية | نافذة openExternalDriverModal | P1 | renderer/modules/hr/pages-ops.js:133 | legacy |  | verified-static |  |
+| LEG-0199 | modal | الموارد البشرية | نافذة openDriverModal | P1 | renderer/modules/hr/pages-ops.js:189 | legacy |  | verified-static |  |
+| LEG-0200 | modal | الموارد البشرية | نافذة openFuelModal | P1 | renderer/modules/hr/pages-ops.js:274 | legacy |  | verified-static |  |
+| LEG-0201 | modal | الموارد البشرية | نافذة openTransferModal | P1 | renderer/modules/hr/pages-ops.js:419 | legacy |  | verified-static |  |
+| LEG-0202 | modal | الموارد البشرية | نافذة openPerfModal | P1 | renderer/modules/hr/pages-ops.js:610 | legacy |  | verified-static |  |
+| LEG-0203 | modal | الموارد البشرية | نافذة openManageDocTypesModal | P1 | renderer/modules/hr/pages-ops.js:675 | legacy |  | verified-static |  |
+| LEG-0204 | modal | الموارد البشرية | نافذة openDocModal | P1 | renderer/modules/hr/pages-ops.js:721 | legacy |  | verified-static |  |
+| LEG-0205 | modal | الموارد البشرية | نافذة openExpenseDetailModal | P1 | renderer/modules/hr/pages-ops.js:1417 | legacy |  | verified-static |  |
+| LEG-0206 | modal | الموارد البشرية | نافذة openExpenseModal | P1 | renderer/modules/hr/pages-ops.js:1464 | legacy |  | verified-static |  |
+| LEG-0207 | modal | الموارد البشرية | نافذة openVehicleExpenseModal | P1 | renderer/modules/hr/pages-ops.js:1842 | legacy |  | verified-static |  |
+| LEG-0208 | data-write | الموارد البشرية | كتابة بيانات saveExpenseItemSuggestion | P0 | renderer/modules/hr/pages-ops.js | legacy |  | verified-static | سلامة البيانات (P0 مقترح) |
+| LEG-0209 | data-write | الموارد البشرية | كتابة بيانات removeExpenseItemSuggestion | P0 | renderer/modules/hr/pages-ops.js | legacy |  | verified-static | سلامة البيانات (P0 مقترح) |
+| LEG-0210 | data-write | الموارد البشرية | كتابة بيانات saveVehicleExpenseItem | P0 | renderer/modules/hr/pages-ops.js | legacy |  | verified-static | سلامة البيانات (P0 مقترح) |
+| LEG-0211 | calc | الموارد البشرية | دالة حساب printPersonFinanceStatement | P1 | renderer/modules/hr/pages-person-detail.js:126 | legacy |  | verified-static |  |
+| LEG-0212 | export/print | الموارد البشرية | تصدير/طباعة printPersonFinanceStatement | P1 | renderer/modules/hr/pages-person-detail.js | legacy |  | verified-static |  |
+| LEG-0213 | modal | الموارد البشرية | نافذة openProjectModal | P1 | renderer/modules/hr/pages-projects.js:334 | legacy |  | verified-static |  |
+| LEG-0214 | modal | الموارد البشرية | نافذة openPlanModal | P1 | renderer/modules/hr/pages-projects.js:508 | legacy |  | verified-static |  |
+| LEG-0215 | calc | الموارد البشرية | دالة حساب repDuesFull | P0 | renderer/modules/hr/pages-reports.js:365 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
+| LEG-0216 | export/print | الموارد البشرية | تصدير/طباعة exportCurrentReportCsv | P1 | renderer/modules/hr/pages-reports.js | legacy |  | verified-static |  |
+| LEG-0217 | export/print | الموارد البشرية | تصدير/طباعة exportCurrentReportXlsx | P1 | renderer/modules/hr/pages-reports.js | legacy |  | verified-static |  |
+| LEG-0218 | export/print | الموارد البشرية | تصدير/طباعة printCurrentReport | P1 | renderer/modules/hr/pages-reports.js | legacy |  | verified-static |  |
+| LEG-0219 | modal | الموارد البشرية | نافذة openSupervisorModal | P1 | renderer/modules/hr/pages-supervisors.js:323 | legacy |  | verified-static |  |
+| LEG-0220 | calc | الموارد البشرية | دالة حساب supervisorStatementSectionsHtml | P1 | renderer/modules/hr/pages-supervisors.js:99 | legacy |  | verified-static |  |
+| LEG-0221 | calc | الموارد البشرية | دالة حساب supervisorStatementCardsHtml | P1 | renderer/modules/hr/pages-supervisors.js:149 | legacy |  | verified-static |  |
+| LEG-0222 | modal | الموارد البشرية | نافذة openWattDaySitesModal | P1 | renderer/modules/hr/pages-worker-attendance.js:541 | legacy |  | verified-static |  |
+| LEG-0223 | modal | الموارد البشرية | نافذة openWorkerAttModal | P1 | renderer/modules/hr/pages-worker-attendance.js:577 | legacy |  | verified-static |  |
+| LEG-0224 | modal | الموارد البشرية | نافذة openUnifiedPayModal | P1 | renderer/modules/hr/pages-worker-dues.js:741 | legacy |  | verified-static |  |
+| LEG-0225 | modal | الموارد البشرية | نافذة openPayItemsManageModal | P1 | renderer/modules/hr/pages-worker-dues.js:1454 | legacy |  | verified-static |  |
+| LEG-0226 | calc | الموارد البشرية | دالة حساب duesEntityKind | P0 | renderer/modules/hr/pages-worker-dues.js:12 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
+| LEG-0227 | calc | الموارد البشرية | دالة حساب duesListForKind | P0 | renderer/modules/hr/pages-worker-dues.js:17 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
+| LEG-0228 | modal | الموارد البشرية | نافذة openWorkerModal | P1 | renderer/modules/hr/pages-workers.js:216 | legacy |  | verified-static |  |
+| LEG-0229 | calc | الموارد البشرية | دالة حساب projectStatement | P1 | renderer/modules/hr/project-statement.js:48 | legacy |  | verified-static |  |
+| LEG-0230 | calc | الموارد البشرية | دالة حساب projectStatementSectionsHtml | P1 | renderer/modules/hr/project-statement.js:177 | legacy |  | verified-static |  |
+| LEG-0231 | modal | الموردون | نافذة openGlobalValidationModal | P1 | renderer/modules/ledger/app.js:567 | legacy |  | verified-static |  |
+| LEG-0232 | calc | الموردون | دالة حساب refreshOpenStatements | P1 | renderer/modules/ledger/app.js:773 | legacy |  | verified-static |  |
+| LEG-0233 | calc | الموردون | دالة حساب normalizeTaxId | P0 | renderer/modules/ledger/excel-import.js:240 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
+| LEG-0234 | export/print | الموردون | تصدير/طباعة exportCategoriesExcel | P1 | renderer/modules/ledger/exports.js | legacy |  | verified-static |  |
+| LEG-0235 | export/print | الموردون | تصدير/طباعة exportSuppliersCsv | P1 | renderer/modules/ledger/exports.js | legacy |  | verified-static |  |
+| LEG-0236 | export/print | الموردون | تصدير/طباعة exportAllInvoicesCsv | P1 | renderer/modules/ledger/exports.js | legacy |  | verified-static |  |
+| LEG-0237 | export/print | الموردون | تصدير/طباعة exportAllPaymentsCsv | P1 | renderer/modules/ledger/exports.js | legacy |  | verified-static |  |
+| LEG-0238 | export/print | الموردون | تصدير/طباعة exportSupplierCsv | P1 | renderer/modules/ledger/exports.js | legacy |  | verified-static |  |
+| LEG-0239 | export/print | الموردون | تصدير/طباعة exportVisibleQuarterNoticesPdf | P1 | renderer/modules/ledger/exports.js | legacy |  | verified-static |  |
+| LEG-0240 | export/print | الموردون | تصدير/طباعة exportSupplierDiscountNoticesPdf | P1 | renderer/modules/ledger/exports.js | legacy |  | verified-static |  |
+| LEG-0241 | export/print | الموردون | تصدير/طباعة exportQuarterNoticesPdf | P1 | renderer/modules/ledger/exports.js | legacy |  | verified-static |  |
+| LEG-0242 | calc | الموردون | دالة حساب previewInvoiceCalculationFixes | P0 | renderer/modules/ledger/helpers.js:143 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
+| LEG-0243 | calc | الموردون | دالة حساب fixInvoiceCalculations | P0 | renderer/modules/ledger/helpers.js:169 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
+| LEG-0244 | calc | الموردون | دالة حساب lgExtraFieldsSummary | P0 | renderer/modules/ledger/helpers.js:492 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
+| LEG-0245 | calc | الموردون | دالة حساب supplierBalance | P0 | renderer/modules/ledger/helpers.js:576 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
+| LEG-0246 | calc | الموردون | دالة حساب invoiceRemaining | P0 | renderer/modules/ledger/helpers.js:590 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
+| LEG-0247 | calc | الموردون | دالة حساب getInvoiceDueDate | P0 | renderer/modules/ledger/helpers.js:720 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
+| LEG-0248 | calc | الموردون | دالة حساب getOverdueInvoices | P0 | renderer/modules/ledger/helpers.js:734 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
+| LEG-0249 | calc | الموردون | دالة حساب recalcLinkedOriginal | P1 | renderer/modules/ledger/helpers.js:1927 | legacy |  | verified-static |  |
+| LEG-0250 | calc | الموردون | دالة حساب maybeShowOverdueAlert | P0 | renderer/modules/ledger/helpers.js:2031 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
+| LEG-0251 | calc | الموردون | دالة حساب pfSummaryHtml | P0 | renderer/modules/ledger/helpers.js:2265 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
+| LEG-0252 | export/print | الموردون | تصدير/طباعة downloadFile | P1 | renderer/modules/ledger/helpers.js | legacy |  | verified-static |  |
+| LEG-0253 | export/print | الموردون | تصدير/طباعة exportExcelFile | P1 | renderer/modules/ledger/helpers.js | legacy |  | verified-static |  |
+| LEG-0254 | export/print | الموردون | تصدير/طباعة printHtmlContent | P1 | renderer/modules/ledger/helpers.js | legacy |  | verified-static |  |
+| LEG-0255 | data-write | الموردون | كتابة بيانات addDaysToIsoDate | P0 | renderer/modules/ledger/helpers.js | legacy |  | verified-static | سلامة البيانات (P0 مقترح) |
+| LEG-0256 | data-write | الموردون | كتابة بيانات saveCustomLinkedItem | P0 | renderer/modules/ledger/helpers.js | legacy |  | verified-static | سلامة البيانات (P0 مقترح) |
+| LEG-0257 | data-write | الموردون | كتابة بيانات deleteCustomLinkedItem | P0 | renderer/modules/ledger/helpers.js | legacy |  | verified-static | سلامة البيانات (P0 مقترح) |
+| LEG-0258 | modal | الموردون | نافذة openAddSupplierModal | P1 | renderer/modules/ledger/modals.js:9 | legacy |  | verified-static |  |
+| LEG-0259 | modal | الموردون | نافذة openDeleteSupplierModal | P1 | renderer/modules/ledger/modals.js:136 | legacy |  | verified-static |  |
+| LEG-0260 | modal | الموردون | نافذة openPaymentModal | P1 | renderer/modules/ledger/modals.js:192 | legacy |  | verified-static |  |
+| LEG-0261 | modal | الموردون | نافذة openAddEditInvoiceModal | P1 | renderer/modules/ledger/modals.js:660 | legacy |  | verified-static |  |
+| LEG-0262 | modal | الموردون | نافذة openDiscountNoticeModal | P1 | renderer/modules/ledger/modals.js:1410 | legacy |  | verified-static |  |
+| LEG-0263 | modal | الموردون | نافذة openViewInvoiceModal | P1 | renderer/modules/ledger/modals.js:1452 | legacy |  | verified-static |  |
+| LEG-0264 | modal | الموردون | نافذة openViewPaymentModal | P1 | renderer/modules/ledger/modals.js:1633 | legacy |  | verified-static |  |
+| LEG-0265 | calc | الموردون | دالة حساب printSupplierStatementTab | P1 | renderer/modules/ledger/modals.js:1439 | legacy |  | verified-static |  |
+| LEG-0266 | calc | الموردون | دالة حساب printSupplierStatement | P1 | renderer/modules/ledger/modals.js:1446 | legacy |  | verified-static |  |
+| LEG-0267 | export/print | الموردون | تصدير/طباعة printSupplierStatementTab | P1 | renderer/modules/ledger/modals.js | legacy |  | verified-static |  |
+| LEG-0268 | export/print | الموردون | تصدير/طباعة printSupplierStatement | P1 | renderer/modules/ledger/modals.js | legacy |  | verified-static |  |
+| LEG-0269 | data-write | الموردون | كتابة بيانات saveInvoiceData | P0 | renderer/modules/ledger/modals.js | legacy |  | verified-static | سلامة البيانات (P0 مقترح) |
+| LEG-0270 | modal | الموردون | نافذة openAddSupplierDocumentModal | P1 | renderer/modules/ledger/pages-archive.js:774 | legacy |  | verified-static |  |
+| LEG-0271 | calc | الموردون | دالة حساب archSummary | P0 | renderer/modules/ledger/pages-archive.js:138 | legacy |  | verified-static | حساب مالي/مخزني (أولوية مقترحة P0) |
+| LEG-0272 | modal | الموردون | نافذة openLinkedItemModal | P1 | renderer/modules/ledger/pages-categories.js:231 | legacy |  | verified-static |  |
+| LEG-0273 | export/print | الموردون | تصدير/طباعة exportPeriodicReportCsv | P1 | renderer/modules/ledger/pages-reports.js | legacy |  | verified-static |  |
+| LEG-0274 | calc | الموردون | دالة حساب statementRows | P1 | renderer/modules/ledger/statement.js:3 | legacy |  | verified-static |  |
+| LEG-0275 | calc | الموردون | دالة حساب buildAccountStatementHtml | P1 | renderer/modules/ledger/statement.js:61 | legacy |  | verified-static |  |
+| LEG-0276 | calc | الموردون | دالة حساب printBankStatement | P1 | renderer/modules/ledger/statement.js:140 | legacy |  | verified-static |  |
+| LEG-0277 | export/print | الموردون | تصدير/طباعة printBankStatement | P1 | renderer/modules/ledger/statement.js | legacy |  | verified-static |  |
+| LEG-0278 | modal | المخازن | نافذة openWhItemModal | P1 | renderer/modules/warehouses/pages-home.js:203 | legacy |  | verified-static |  |
+| LEG-0279 | modal | المخازن | نافذة openWhLocationModal | P1 | renderer/modules/warehouses/pages-home.js:237 | legacy |  | verified-static |  |
+| LEG-0280 | modal | المخازن | نافذة openWhMovementModal | P1 | renderer/modules/warehouses/pages-home.js:260 | legacy |  | verified-static |  |
 | LEG-0281 | permission | الإعدادات | مصفوفة صلاحيات الصفحات (عرض/إضافة/تعديل/حذف لكل صفحة) | P0 | renderer/core/permissions.js | server (ADR-016) |  | verified-static | السيرفر هو المرجع |
 | LEG-0282 | permission | الإعدادات | قالب دور admin | P1 | renderer/core/permissions.js | server |  | verified-static |  |
 | LEG-0283 | permission | الإعدادات | قالب دور hr | P1 | renderer/core/permissions.js | server |  | verified-static |  |
@@ -307,16 +307,16 @@
 | LEG-0286 | permission | الإعدادات | قالب دور clientsSales | P1 | renderer/core/permissions.js | server |  | verified-static |  |
 | LEG-0287 | permission | الإعدادات | قالب دور clientsAccounts | P1 | renderer/core/permissions.js | server |  | verified-static |  |
 | LEG-0288 | permission | الإعدادات | قالب دور clientsProjects | P1 | renderer/core/permissions.js | server |  | verified-static |  |
-| LEG-0289 | calc | core | دالة حساب attendanceNetPay | P0 | renderer/core/helpers.js:286 | legacy | tests-merge/phase59.js، tools/formulas/compare.js | verified-static | حساب مالي بتستخدمه المعادلات المرجعية (اتضافت من legacy-runner) |
-| LEG-0290 | calc | clients | دالة حساب clInvNet | P0 | renderer/modules/clients/pages-invoices.js:6 | legacy | tests-merge/phase59.js، tools/formulas/compare.js | verified-static | حساب مالي بتستخدمه المعادلات المرجعية (اتضافت من legacy-runner) |
-| LEG-0291 | calc | clients | دالة حساب clVoApprovedSum | P0 | renderer/modules/clients/change-orders.js:8 | legacy | tests-merge/phase59.js، tools/formulas/compare.js | verified-static | حساب مالي بتستخدمه المعادلات المرجعية (اتضافت من legacy-runner) |
-| LEG-0292 | calc | core | دالة حساب equipmentDailyCost | P0 | renderer/core/helpers.js:7778 | legacy | tests-merge/phase59.js، tools/formulas/compare.js | verified-static | حساب مالي بتستخدمه المعادلات المرجعية (اتضافت من legacy-runner) |
-| LEG-0293 | calc | ledger | دالة حساب noticeAmountsFor | P0 | renderer/modules/ledger/helpers.js:606 | legacy | tests-merge/phase59.js، tools/formulas/compare.js | verified-static | حساب مالي بتستخدمه المعادلات المرجعية (اتضافت من legacy-runner) |
-| LEG-0294 | calc | ledger | دالة حساب openingBalanceFor | P0 | renderer/modules/ledger/statement.js:43 | legacy | tests-merge/phase59.js، tools/formulas/compare.js | verified-static | حساب مالي بتستخدمه المعادلات المرجعية (اتضافت من legacy-runner) |
-| LEG-0295 | calc | ledger | دالة حساب roundMoney | P0 | renderer/modules/ledger/helpers.js:208 | legacy | tests-merge/phase59.js، tools/formulas/compare.js | verified-static | حساب مالي بتستخدمه المعادلات المرجعية (اتضافت من legacy-runner) |
-| LEG-0296 | calc | core | دالة حساب supervisorOwnDue | P0 | renderer/core/helpers.js:2066 | legacy | tests-merge/phase59.js، tools/formulas/compare.js | verified-static | حساب مالي بتستخدمه المعادلات المرجعية (اتضافت من legacy-runner) |
-| LEG-0297 | calc | warehouses | دالة حساب whStockQty | P0 | renderer/modules/warehouses/helpers.js:27 | legacy | tests-merge/phase59.js، tools/formulas/compare.js | verified-static | حساب مالي بتستخدمه المعادلات المرجعية (اتضافت من legacy-runner) |
-| LEG-0298 | calc | warehouses | دالة حساب whStockValue | P0 | renderer/modules/warehouses/helpers.js:48 | legacy | tests-merge/phase59.js، tools/formulas/compare.js | verified-static | حساب مالي بتستخدمه المعادلات المرجعية (اتضافت من legacy-runner) |
+| LEG-0289 | calc | مشترك (core) | دالة حساب attendanceNetPay | P0 | renderer/core/helpers.js:286 | legacy | tests-merge/phase59.js، tools/formulas/compare.js | verified-static | حساب مالي بتستخدمه المعادلات المرجعية (اتضافت من legacy-runner) |
+| LEG-0290 | calc | العملاء والمشاريع | دالة حساب clInvNet | P0 | renderer/modules/clients/pages-invoices.js:6 | legacy | tests-merge/phase59.js، tools/formulas/compare.js | verified-static | حساب مالي بتستخدمه المعادلات المرجعية (اتضافت من legacy-runner) |
+| LEG-0291 | calc | العملاء والمشاريع | دالة حساب clVoApprovedSum | P0 | renderer/modules/clients/change-orders.js:8 | legacy | tests-merge/phase59.js، tools/formulas/compare.js | verified-static | حساب مالي بتستخدمه المعادلات المرجعية (اتضافت من legacy-runner) |
+| LEG-0292 | calc | مشترك (core) | دالة حساب equipmentDailyCost | P0 | renderer/core/helpers.js:7778 | legacy | tests-merge/phase59.js، tools/formulas/compare.js | verified-static | حساب مالي بتستخدمه المعادلات المرجعية (اتضافت من legacy-runner) |
+| LEG-0293 | calc | الموردون | دالة حساب noticeAmountsFor | P0 | renderer/modules/ledger/helpers.js:606 | legacy | tests-merge/phase59.js، tools/formulas/compare.js | verified-static | حساب مالي بتستخدمه المعادلات المرجعية (اتضافت من legacy-runner) |
+| LEG-0294 | calc | الموردون | دالة حساب openingBalanceFor | P0 | renderer/modules/ledger/statement.js:43 | legacy | tests-merge/phase59.js، tools/formulas/compare.js | verified-static | حساب مالي بتستخدمه المعادلات المرجعية (اتضافت من legacy-runner) |
+| LEG-0295 | calc | الموردون | دالة حساب roundMoney | P0 | renderer/modules/ledger/helpers.js:208 | legacy | tests-merge/phase59.js، tools/formulas/compare.js | verified-static | حساب مالي بتستخدمه المعادلات المرجعية (اتضافت من legacy-runner) |
+| LEG-0296 | calc | مشترك (core) | دالة حساب supervisorOwnDue | P0 | renderer/core/helpers.js:2066 | legacy | tests-merge/phase59.js، tools/formulas/compare.js | verified-static | حساب مالي بتستخدمه المعادلات المرجعية (اتضافت من legacy-runner) |
+| LEG-0297 | calc | المخازن | دالة حساب whStockQty | P0 | renderer/modules/warehouses/helpers.js:27 | legacy | tests-merge/phase59.js، tools/formulas/compare.js | verified-static | حساب مالي بتستخدمه المعادلات المرجعية (اتضافت من legacy-runner) |
+| LEG-0298 | calc | المخازن | دالة حساب whStockValue | P0 | renderer/modules/warehouses/helpers.js:48 | legacy | tests-merge/phase59.js، tools/formulas/compare.js | verified-static | حساب مالي بتستخدمه المعادلات المرجعية (اتضافت من legacy-runner) |
 | LEG-0299 | electron-capability | ديسكتوب | قدرة ديسكتوب askPin | P1 | preload.js (app:askPin) | يتراجع: صلاحيات السيرفر بدل PIN |  | verified-static | الفئة: auth |
 | LEG-0300 | electron-capability | ديسكتوب | قدرة ديسكتوب backupNow | P0 | preload.js (backup:runNow) | POST /api/backups |  | verified-static | الفئة: backup |
 | LEG-0301 | electron-capability | ديسكتوب | قدرة ديسكتوب cleanupOrphans | P0 | preload.js (storage:cleanupOrphans) | POST /api/admin/attachments/cleanup (dry-run) |  | verified-static | الفئة: attach |

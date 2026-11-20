@@ -23,10 +23,11 @@ const angularPages = new Map([...routes.matchAll(/key: '([^']+)'[^}]*target: 'an
 
 const sectionOfPage = new Map();
 for (const s of inv.sections) for (const k of s.pages) sectionOfPage.set(k, s.label.replace(/^[^\p{L}]+/u, '').trim());
-const moduleOfFile = (f) => (f.match(/renderer\/modules\/([^/]+)\//) || [, f.includes('renderer/core/') ? 'core' : 'other'])[1];
+const MODULE_AR = { hr: 'الموارد البشرية', ledger: 'الموردون', clients: 'العملاء والمشاريع', warehouses: 'المخازن', core: 'مشترك (core)' };
+const moduleOfFile = (f) => { const m = (f.match(/renderer\/modules\/([^/]+)\//) || [, f.includes('renderer/core/') ? 'core' : 'other'])[1]; return MODULE_AR[m] || m; };
 
 // موديولات حسابها مالي ← أولوية مقترحة P0 لدوال الحساب (01 §3 + 00 §3: الصحة المالية P0)
-const FINANCIAL_MODULES = new Set(['ledger', 'clients', 'warehouses', 'hr']);
+const FINANCIAL_MODULES = new Set(['الموردون', 'العملاء والمشاريع', 'المخازن', 'الموارد البشرية']);
 const FINANCIAL_HINT = /(cost|balance|total|net|due|pay|salary|wage|invoice|amount|price|vat|tax|deduct|retention|certificate|cert|stock|value|sum|profit|debt|credit|leave)/i;
 
 // ---------------------------------------------------------------- عناصر LEG (قدرات قديمة مُتحقَّق منها)
