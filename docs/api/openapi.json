@@ -1,0 +1,5355 @@
+{
+ "components": {
+  "schemas": {
+   "AppliedDocDto": {
+    "properties": {
+     "data": {
+      "description": "القيمة بعد الدمج (arrayDelta أو لما حد تاني عدّل بعد baseRev)",
+      "type": "object"
+     },
+     "key": {
+      "type": "string"
+     },
+     "op": {
+      "enum": [
+       "set",
+       "patch",
+       "arrayDelta",
+       "noop",
+       "ignored"
+      ],
+      "type": "string"
+     },
+     "overwrote": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array"
+     },
+     "rev": {
+      "type": "number"
+     }
+    },
+    "required": [
+     "key",
+     "rev",
+     "op"
+    ],
+    "type": "object"
+   },
+   "AppliedRecordDto": {
+    "properties": {
+     "collection": {
+      "type": "string"
+     },
+     "data": {
+      "additionalProperties": true,
+      "description": "السجل بعد الدمج — بيرجع لما حد تاني كان عدّل نفس السجل بعد baseRev (العميل يستبدل نسخته بيه)",
+      "type": "object"
+     },
+     "id": {
+      "type": "string"
+     },
+     "op": {
+      "enum": [
+       "insert",
+       "update",
+       "delete",
+       "noop",
+       "ignored"
+      ],
+      "type": "string"
+     },
+     "overwrote": {
+      "description": "حقول نصية اتعدّلت من حد تاني بعد baseRev واتكتب فوقها (آخر واحد يكسب)",
+      "items": {
+       "type": "string"
+      },
+      "type": "array"
+     },
+     "rev": {
+      "description": "الـ rev الجديد (يتحفظ عند العميل كـ baseRev للمرة الجاية)",
+      "type": "number"
+     }
+    },
+    "required": [
+     "collection",
+     "id",
+     "rev",
+     "op"
+    ],
+    "type": "object"
+   },
+   "ApproverDto": {
+    "properties": {
+     "ref": {
+      "description": "مفتاح دور موجود (roles) أو معرّف مستخدم موجود",
+      "type": "string"
+     },
+     "type": {
+      "enum": [
+       "ROLE",
+       "USER"
+      ],
+      "type": "string"
+     }
+    },
+    "required": [
+     "type",
+     "ref"
+    ],
+    "type": "object"
+   },
+   "AttachmentDto": {
+    "properties": {
+     "collection": {
+      "type": "string"
+     },
+     "createdAt": {
+      "type": "string"
+     },
+     "filename": {
+      "type": "string"
+     },
+     "id": {
+      "type": "string"
+     },
+     "kind": {
+      "enum": [
+       "pdf",
+       "jpg",
+       "png",
+       "docx",
+       "xlsx"
+      ],
+      "type": "string"
+     },
+     "mime": {
+      "type": "string"
+     },
+     "recordId": {
+      "type": "string"
+     },
+     "sha256": {
+      "type": "string"
+     },
+     "size": {
+      "type": "number"
+     },
+     "supersededAt": {
+      "nullable": true,
+      "type": "object"
+     },
+     "version": {
+      "description": "رقم الإصدار",
+      "type": "number"
+     },
+     "versionOf": {
+      "description": "معرّف الإصدار الأول",
+      "nullable": true,
+      "type": "object"
+     }
+    },
+    "required": [
+     "id",
+     "collection",
+     "recordId",
+     "filename",
+     "kind",
+     "mime",
+     "size",
+     "sha256",
+     "createdAt",
+     "version",
+     "versionOf",
+     "supersededAt"
+    ],
+    "type": "object"
+   },
+   "BootstrapDto": {
+    "properties": {
+     "data": {
+      "additionalProperties": true,
+      "description": "نفس شكل DATA في الديسكتوب (مفلتر بالصلاحية والمشروع)",
+      "type": "object"
+     },
+     "me": {
+      "$ref": "#/components/schemas/MeDto"
+     },
+     "meta": {
+      "$ref": "#/components/schemas/BootstrapMetaDto"
+     },
+     "schemaVersion": {
+      "example": 9,
+      "type": "number"
+     },
+     "seq": {
+      "description": "آخر seq وقت اللقطة — يستخدم في /api/changes?since= بعد إعادة الاتصال",
+      "type": "number"
+     }
+    },
+    "required": [
+     "seq",
+     "schemaVersion",
+     "data",
+     "meta",
+     "me"
+    ],
+    "type": "object"
+   },
+   "BootstrapMetaDto": {
+    "properties": {
+     "catalog": {
+      "additionalProperties": {
+       "enum": [
+        "collection",
+        "lookup",
+        "doc",
+        "meta-flag",
+        "system-table",
+        "legacy-ref"
+       ],
+       "type": "string"
+      },
+      "description": "نوع كل مفتاح في DATA (العميل بيبني الـ diff على أساسه)",
+      "type": "object"
+     },
+     "docRevs": {
+      "additionalProperties": {
+       "type": "integer"
+      },
+      "description": "doc key → rev",
+      "type": "object"
+     },
+     "docsWritable": {
+      "description": "يقدر يعدّل القوائم المرجعية والإعدادات",
+      "type": "boolean"
+     },
+     "hidden": {
+      "description": "collections مش مسموح للمستخدم يقراها (راجعة فاضية — العميل ماينفعش يبعت لها تغييرات)",
+      "items": {
+       "type": "string"
+      },
+      "type": "array"
+     },
+     "hiddenFields": {
+      "additionalProperties": {
+       "items": {
+        "type": "string"
+       },
+       "type": "array"
+      },
+      "description": "collection → حقول اتشالت (صلاحية)",
+      "type": "object"
+     },
+     "revs": {
+      "additionalProperties": {
+       "additionalProperties": {
+        "type": "integer"
+       },
+       "type": "object"
+      },
+      "description": "collection → (id → rev)",
+      "type": "object"
+     },
+     "writable": {
+      "additionalProperties": {
+       "$ref": "#/components/schemas/WriteAccessDto"
+      },
+      "description": "صلاحيات الكتابة لكل collection مقروءة",
+      "type": "object"
+     }
+    },
+    "required": [
+     "revs",
+     "docRevs",
+     "hidden",
+     "writable",
+     "docsWritable",
+     "hiddenFields",
+     "catalog"
+    ],
+    "type": "object"
+   },
+   "BracketDto": {
+    "properties": {
+     "rate": {
+      "example": "10",
+      "type": "string"
+     },
+     "upTo": {
+      "description": "نهاية الشريحة (null = مفتوحة)",
+      "nullable": true,
+      "type": "object"
+     }
+    },
+    "required": [
+     "rate"
+    ],
+    "type": "object"
+   },
+   "ChangeEventDto": {
+    "properties": {
+     "collection": {
+      "description": "collection (للسجل) أو key (للـ doc)",
+      "type": "string"
+     },
+     "data": {
+      "additionalProperties": true,
+      "nullable": true,
+      "type": "object"
+     },
+     "id": {
+      "type": "string"
+     },
+     "kind": {
+      "enum": [
+       "record",
+       "doc"
+      ],
+      "type": "string"
+     },
+     "op": {
+      "enum": [
+       "upsert",
+       "delete"
+      ],
+      "type": "string"
+     },
+     "rev": {
+      "type": "number"
+     },
+     "seq": {
+      "type": "number"
+     }
+    },
+    "required": [
+     "seq",
+     "kind",
+     "collection",
+     "id",
+     "op",
+     "rev",
+     "data"
+    ],
+    "type": "object"
+   },
+   "ChangePasswordDto": {
+    "properties": {
+     "currentPassword": {
+      "description": "مطلوبة إلا لو التغيير إجباري (mustChangePassword) بعد دخول لسه حالًا",
+      "type": "string"
+     },
+     "newPassword": {
+      "maxLength": 128,
+      "minLength": 10,
+      "type": "string"
+     }
+    },
+    "required": [
+     "newPassword"
+    ],
+    "type": "object"
+   },
+   "ChangesResponseDto": {
+    "properties": {
+     "changes": {
+      "items": {
+       "$ref": "#/components/schemas/ChangeEventDto"
+      },
+      "type": "array"
+     },
+     "hasMore": {
+      "description": "فيه تغييرات تانية لسه",
+      "type": "boolean"
+     },
+     "seq": {
+      "description": "آخر seq اتقرا (استخدمه في الطلب الجاي)",
+      "type": "number"
+     }
+    },
+    "required": [
+     "seq",
+     "hasMore",
+     "changes"
+    ],
+    "type": "object"
+   },
+   "ComputeTaxesDto": {
+    "properties": {
+     "bases": {
+      "description": "{ NET_OF_DISCOUNT: \"1000.0000\", ... } — نصوص عشرية",
+      "type": "object"
+     },
+     "codes": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array"
+     },
+     "context": {
+      "type": "object"
+     },
+     "contractTerms": {
+      "description": "{ CODE: { rate | amount, termRef } } — بنود العقد المعتمدة للاستقطاعات التعاقدية",
+      "type": "object"
+     },
+     "date": {
+      "type": "string"
+     },
+     "documentType": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "documentType",
+     "date",
+     "codes",
+     "bases"
+    ],
+    "type": "object"
+   },
+   "ConflictDocDto": {
+    "properties": {
+     "current": {
+      "allOf": [
+       {
+        "$ref": "#/components/schemas/CurrentVersionDto"
+       }
+      ],
+      "nullable": true,
+      "type": "object"
+     },
+     "fields": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array"
+     },
+     "key": {
+      "type": "string"
+     },
+     "reason": {
+      "enum": [
+       "field_conflict",
+       "changed_since",
+       "bad_rev"
+      ],
+      "type": "string"
+     }
+    },
+    "required": [
+     "key",
+     "reason",
+     "current"
+    ],
+    "type": "object"
+   },
+   "ConflictRecordDto": {
+    "properties": {
+     "collection": {
+      "type": "string"
+     },
+     "current": {
+      "allOf": [
+       {
+        "$ref": "#/components/schemas/CurrentVersionDto"
+       }
+      ],
+      "description": "النسخة الحالية على السيرفر (بعد إخفاء الحقول المحمية)",
+      "nullable": true,
+      "type": "object"
+     },
+     "fields": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array"
+     },
+     "id": {
+      "type": "string"
+     },
+     "reason": {
+      "description": "field_conflict = حقل مالي/مركّب اتعدّل من حد تاني · deleted = السجل اتمسح · changed_since = حذف سجل اتعدّل بعد ما شفته · constraint = قيد في قاعدة البيانات رفض القيمة (مثلًا كود عميل مكرر) — fields فيها السبب",
+      "enum": [
+       "field_conflict",
+       "deleted",
+       "changed_since",
+       "bad_rev",
+       "constraint"
+      ],
+      "type": "string"
+     }
+    },
+    "required": [
+     "collection",
+     "id",
+     "reason",
+     "current"
+    ],
+    "type": "object"
+   },
+   "ContactDto": {
+    "properties": {
+     "email": {
+      "type": "string"
+     },
+     "name": {
+      "type": "string"
+     },
+     "phone": {
+      "type": "string"
+     },
+     "title": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "name"
+    ],
+    "type": "object"
+   },
+   "CreateAdjustmentDto": {
+    "properties": {
+     "direction": {
+      "description": "إلزامي للتصحيح ونتيجة الجرد بس",
+      "enum": [
+       "in",
+       "out"
+      ],
+      "type": "string"
+     },
+     "itemId": {
+      "type": "string"
+     },
+     "kind": {
+      "description": "زيادة / عجز / تلف أو إعدام / تصحيح خطأ تسجيل / نتيجة جرد / تحويل مخزني",
+      "enum": [
+       "increase",
+       "deficit",
+       "damage",
+       "correction",
+       "stocktake",
+       "transfer"
+      ],
+      "type": "string"
+     },
+     "locationId": {
+      "type": "string"
+     },
+     "qty": {
+      "description": "نص عشري موجب حتى 5 خانات (B-26)",
+      "example": "12.5",
+      "type": "string"
+     },
+     "reason": {
+      "type": "string"
+     },
+     "toLocationId": {
+      "description": "للتحويل بس",
+      "type": "string"
+     }
+    },
+    "required": [
+     "kind",
+     "itemId",
+     "locationId",
+     "qty",
+     "reason"
+    ],
+    "type": "object"
+   },
+   "CreateCustomerDto": {
+    "properties": {
+     "address": {
+      "type": "string"
+     },
+     "category": {
+      "type": "string"
+     },
+     "city": {
+      "type": "string"
+     },
+     "code": {
+      "description": "فاضي = بيتولّد بنفس صيغة الواجهة الحالية (البادئة + 4 أرقام)",
+      "type": "string"
+     },
+     "contacts": {
+      "items": {
+       "$ref": "#/components/schemas/ContactDto"
+      },
+      "type": "array"
+     },
+     "department": {
+      "type": "string"
+     },
+     "email": {
+      "type": "string"
+     },
+     "extraFields": {
+      "items": {
+       "$ref": "#/components/schemas/ExtraFieldDto"
+      },
+      "type": "array"
+     },
+     "name": {
+      "type": "string"
+     },
+     "notes": {
+      "type": "string"
+     },
+     "openingBalance": {
+      "description": "مؤقتًا خانتين بس — توافق مع الواجهة الحالية (toInt → round2)",
+      "type": "string"
+     },
+     "phone": {
+      "type": "string"
+     },
+     "taxId": {
+      "type": "string"
+     }
+    },
+    "type": "object"
+   },
+   "CreateDocumentTypeDto": {
+    "properties": {
+     "code": {
+      "example": "supplier-invoice",
+      "type": "string"
+     },
+     "module": {
+      "description": "صفحة الموديول المالك — صلاحية «تعديل» عليها مطلوبة لإرسال مستند للاعتماد",
+      "example": "ledger.invoices",
+      "type": "string"
+     },
+     "name": {
+      "example": "فاتورة مورد",
+      "type": "string"
+     }
+    },
+    "required": [
+     "code",
+     "name",
+     "module"
+    ],
+    "type": "object"
+   },
+   "CreateFormulaDto": {
+    "properties": {
+     "code": {
+      "example": "SUP-INVOICE",
+      "type": "string"
+     },
+     "description": {
+      "type": "string"
+     },
+     "module": {
+      "example": "suppliers",
+      "type": "string"
+     },
+     "name": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "code",
+     "name",
+     "module"
+    ],
+    "type": "object"
+   },
+   "CreateFormulaVersionDto": {
+    "properties": {
+     "changeKind": {
+      "description": "نوع التعديل (§13.6): منطق المعادلة ولا القيم والمعاملات — الاتنين إصدار جديد واعتماد",
+      "enum": [
+       "new",
+       "logic",
+       "parameters"
+      ],
+      "type": "string"
+     },
+     "changeReason": {
+      "type": "string"
+     },
+     "conditions": {
+      "description": "شروط التطبيق: { documentType: [...], activity: ... }",
+      "type": "object"
+     },
+     "definition": {
+      "description": "{ variables: {اسم: money|qty|rate|list}, lists: {قائمة: [حقول]}, steps: [{name, expr, kind}] } — expr بلغة التعبيرات المحدودة بس",
+      "type": "object"
+     },
+     "effectiveFrom": {
+      "type": "string"
+     },
+     "effectiveTo": {
+      "type": "string"
+     },
+     "testCases": {
+      "description": "[{name, inputs, expected | expectError}] — إلزامية قبل الإرسال للاعتماد",
+      "items": {
+       "type": "string"
+      },
+      "type": "array"
+     }
+    },
+    "required": [
+     "changeKind",
+     "definition",
+     "testCases",
+     "effectiveFrom",
+     "changeReason"
+    ],
+    "type": "object"
+   },
+   "CreateItemDto": {
+    "properties": {
+     "category": {
+      "type": "string"
+     },
+     "code": {
+      "description": "فاضي = بيتولّد بنفس صيغة الواجهة الحالية (بادئة الإعدادات أو ITM- + 4 أرقام)",
+      "type": "string"
+     },
+     "minQty": {
+      "description": "حد إعادة الطلب (5 خانات)",
+      "type": "string"
+     },
+     "name": {
+      "type": "string"
+     },
+     "notes": {
+      "type": "string"
+     },
+     "unit": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "name"
+    ],
+    "type": "object"
+   },
+   "CreateLocationDto": {
+    "properties": {
+     "name": {
+      "type": "string"
+     },
+     "notes": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "name"
+    ],
+    "type": "object"
+   },
+   "CreateSupplierDto": {
+    "properties": {
+     "address": {
+      "type": "string"
+     },
+     "bankAccount": {
+      "type": "string"
+     },
+     "businessNature": {
+      "type": "string"
+     },
+     "commercialReg": {
+      "type": "string"
+     },
+     "email": {
+      "type": "string"
+     },
+     "extraFields": {
+      "items": {
+       "$ref": "#/components/schemas/ExtraFieldDto"
+      },
+      "type": "array"
+     },
+     "iban": {
+      "type": "string"
+     },
+     "name": {
+      "type": "string"
+     },
+     "notes": {
+      "type": "string"
+     },
+     "openingBalance": {
+      "description": "نص عشري (حتى 4 خانات، يقبل السالب)",
+      "example": "-1250.5",
+      "type": "string"
+     },
+     "openingBalanceDate": {
+      "example": "2026-01-01",
+      "type": "string"
+     },
+     "phone": {
+      "type": "string"
+     },
+     "taxId": {
+      "type": "string"
+     }
+    },
+    "type": "object"
+   },
+   "CreateTaxCodeDto": {
+    "properties": {
+     "category": {
+      "description": "CONTRACTUAL = استقطاع تعاقدي (ضمان أعمال/محتجزات/غرامات) — مش ضريبة",
+      "enum": [
+       "VAT",
+       "SCHEDULE",
+       "WHT",
+       "STAMP",
+       "PAYROLL_TAX",
+       "SOCIAL_INSURANCE",
+       "CONTRACTUAL"
+      ],
+      "type": "string"
+     },
+     "code": {
+      "example": "VAT-STD",
+      "type": "string"
+     },
+     "name": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "code",
+     "name",
+     "category"
+    ],
+    "type": "object"
+   },
+   "CreateTaxVersionDto": {
+    "properties": {
+     "allowStacking": {
+      "description": "تطبيق مع ضريبة من نفس النوع على نفس الأساس — بسند قانوني بس",
+      "type": "boolean"
+     },
+     "appliesTo": {
+      "example": [
+       "supplier-invoice"
+      ],
+      "items": {
+       "type": "string"
+      },
+      "type": "array"
+     },
+     "base": {
+      "enum": [
+       "NET_OF_DISCOUNT",
+       "GROSS",
+       "NET_PLUS_VAT",
+       "TAXABLE_WAGE",
+       "CONTRACT_VALUE"
+      ],
+      "type": "string"
+     },
+     "baseRatio": {
+      "description": "نسبة الجزء الخاضع من الأساس (مثلًا معاملة انتقالية)",
+      "example": "100",
+      "type": "string"
+     },
+     "bearer": {
+      "enum": [
+       "COMPANY",
+       "COUNTERPARTY",
+       "EMPLOYEE",
+       "EMPLOYER"
+      ],
+      "type": "string"
+     },
+     "brackets": {
+      "items": {
+       "$ref": "#/components/schemas/BracketDto"
+      },
+      "type": "array"
+     },
+     "changeReason": {
+      "description": "سبب الإصدار/التعديل",
+      "type": "string"
+     },
+     "collector": {
+      "enum": [
+       "COMPANY_WITHHOLDS",
+       "COUNTERPARTY_CHARGES",
+       "COMPANY_CHARGES",
+       "PAID_DIRECTLY"
+      ],
+      "type": "string"
+     },
+     "conditions": {
+      "description": "{ contractDateFrom, contractDateTo, activities[], counterpartyTypes[] }",
+      "type": "object"
+     },
+     "effectiveFrom": {
+      "example": "2026-01-01",
+      "type": "string"
+     },
+     "effectiveTo": {
+      "type": "string"
+     },
+     "exemptions": {
+      "description": "[{ reason, activities[], counterpartyTypes[], flags[] }]",
+      "items": {
+       "type": "string"
+      },
+      "type": "array"
+     },
+     "fixedAmount": {
+      "type": "string"
+     },
+     "legalRef": {
+      "description": "المرجع القانوني (رقم القانون/القرار) — إلزامي قبل الإرسال للاعتماد",
+      "type": "string"
+     },
+     "method": {
+      "description": "CONTRACT = للاستقطاعات التعاقدية بس: النسبة من بند العقد المعتمد",
+      "enum": [
+       "PERCENT",
+       "FIXED",
+       "BRACKETS",
+       "CONTRACT"
+      ],
+      "type": "string"
+     },
+     "minBase": {
+      "description": "حد أدنى للأساس — المساوي أو الأقل مايتحسبش عليه",
+      "type": "string"
+     },
+     "notesAdvisor": {
+      "type": "string"
+     },
+     "notesCfo": {
+      "type": "string"
+     },
+     "rate": {
+      "description": "نسبة مئوية (حتى 6 خانات)",
+      "example": "14",
+      "type": "string"
+     },
+     "templateRate": {
+      "description": "قالب افتراضي اختياري للاستقطاع التعاقدي (بيتعتمد) — اقتراح عند إنشاء بند العقد، مابيتطبّقش مباشرة",
+      "type": "string"
+     }
+    },
+    "required": [
+     "method",
+     "base",
+     "appliesTo",
+     "bearer",
+     "collector",
+     "effectiveFrom",
+     "changeReason"
+    ],
+    "type": "object"
+   },
+   "CreateUserDto": {
+    "properties": {
+     "active": {
+      "type": "boolean"
+     },
+     "deleteData": {
+      "description": "لو مش محدد: من قالب الدور",
+      "type": "boolean"
+     },
+     "editData": {
+      "description": "لو مش محدد: من قالب الدور",
+      "type": "boolean"
+     },
+     "manageUsers": {
+      "description": "لو مش محدد: من قالب الدور. منحها للأدمن بس",
+      "type": "boolean"
+     },
+     "mustChangePassword": {
+      "default": false,
+      "type": "boolean"
+     },
+     "name": {
+      "example": "أحمد محمد",
+      "type": "string"
+     },
+     "pages": {
+      "description": "تخصيص صفحات فوق قالب الدور (بيستبدل كل التخصيصات الحالية)",
+      "items": {
+       "$ref": "#/components/schemas/PageOverrideDto"
+      },
+      "type": "array"
+     },
+     "password": {
+      "maxLength": 128,
+      "minLength": 10,
+      "type": "string"
+     },
+     "projectScope": {
+      "description": "null = كل المشاريع",
+      "items": {
+       "type": "string"
+      },
+      "nullable": true,
+      "type": "array"
+     },
+     "role": {
+      "enum": [
+       "admin",
+       "hr",
+       "viewer",
+       "payroll",
+       "clientsSales",
+       "clientsAccounts",
+       "clientsProjects",
+       "warehouse",
+       "ledgerAccountant",
+       "projectManager",
+       "custom"
+      ],
+      "type": "string"
+     },
+     "username": {
+      "example": "ahmed",
+      "type": "string"
+     }
+    },
+    "required": [
+     "username",
+     "password"
+    ],
+    "type": "object"
+   },
+   "CreateWorkflowDto": {
+    "properties": {
+     "allowSameApproverAcrossLevels": {
+      "default": false,
+      "description": "استثناء: نفس الشخص يعتمد في أكتر من مستوى (B-04: ممنوع افتراضيًا)",
+      "type": "boolean"
+     },
+     "allowSelfApproval": {
+      "default": false,
+      "description": "استثناء: مقدّم الطلب يعتمد مستنده (B-04: ممنوع افتراضيًا)",
+      "type": "boolean"
+     },
+     "amountFrom": {
+      "description": "بداية نطاق القيمة (نص عشري) — من غير = مفتوح",
+      "example": "0.0000",
+      "type": "string"
+     },
+     "amountTo": {
+      "example": "50000.0000",
+      "type": "string"
+     },
+     "documentType": {
+      "type": "string"
+     },
+     "levels": {
+      "description": "المستويات بالترتيب (B-03) — مفيش عدد افتراضي",
+      "items": {
+       "$ref": "#/components/schemas/LevelDto"
+      },
+      "type": "array"
+     },
+     "sodExceptionRef": {
+      "description": "مرجع اعتماد الإدارة للاستثناء — إلزامي لو أي استثناء من فصل المهام متفعّل (B-04)",
+      "type": "string"
+     }
+    },
+    "required": [
+     "documentType",
+     "levels"
+    ],
+    "type": "object"
+   },
+   "CurrentVersionDto": {
+    "properties": {
+     "data": {
+      "additionalProperties": true,
+      "nullable": true,
+      "type": "object"
+     },
+     "rev": {
+      "type": "number"
+     }
+    },
+    "required": [
+     "rev",
+     "data"
+    ],
+    "type": "object"
+   },
+   "DbHealthDto": {
+    "properties": {
+     "latencyMs": {
+      "description": "زمن استعلام SELECT 1 بالمللي ثانية",
+      "example": 3,
+      "nullable": true,
+      "type": "number"
+     },
+     "up": {
+      "description": "الاتصال بالداتابيز شغال",
+      "example": true,
+      "type": "boolean"
+     },
+     "version": {
+      "example": "16.4",
+      "nullable": true,
+      "type": "string"
+     }
+    },
+    "required": [
+     "up",
+     "latencyMs",
+     "version"
+    ],
+    "type": "object"
+   },
+   "DecisionDto": {
+    "properties": {
+     "comment": {
+      "description": "إلزامي للرفض والإرجاع والإلغاء",
+      "type": "string"
+     }
+    },
+    "type": "object"
+   },
+   "DecisionNoteDto": {
+    "properties": {
+     "note": {
+      "type": "string"
+     }
+    },
+    "type": "object"
+   },
+   "DocActionsDto": {
+    "properties": {
+     "approve": {
+      "nullable": true,
+      "type": "object"
+     },
+     "cancel": {
+      "nullable": true,
+      "type": "object"
+     },
+     "export": {
+      "nullable": true,
+      "type": "object"
+     },
+     "pay": {
+      "nullable": true,
+      "type": "object"
+     },
+     "post": {
+      "nullable": true,
+      "type": "object"
+     },
+     "print": {
+      "nullable": true,
+      "type": "object"
+     },
+     "reject": {
+      "nullable": true,
+      "type": "object"
+     }
+    },
+    "type": "object"
+   },
+   "DocChangeDto": {
+    "properties": {
+     "add": {
+      "items": {},
+      "type": "array"
+     },
+     "baseRev": {
+      "example": 2,
+      "type": "number"
+     },
+     "key": {
+      "description": "مفتاح doc/lookup (settings، formLayouts، ledger.customItemNames، ...)",
+      "example": "settings",
+      "type": "string"
+     },
+     "op": {
+      "description": "set = استبدال كامل · patch = حقول في كائن · arrayDelta = إضافة/حذف عناصر من قائمة (بيندمج دايمًا)",
+      "enum": [
+       "set",
+       "patch",
+       "arrayDelta"
+      ],
+      "type": "string"
+     },
+     "remove": {
+      "items": {},
+      "type": "array"
+     },
+     "set": {
+      "additionalProperties": true,
+      "type": "object"
+     },
+     "unset": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array"
+     },
+     "value": {
+      "description": "للـ set: القيمة الكاملة",
+      "type": "object"
+     }
+    },
+    "required": [
+     "key",
+     "baseRev",
+     "op"
+    ],
+    "type": "object"
+   },
+   "ErrorDto": {
+    "properties": {
+     "code": {
+      "example": "INVALID_CREDENTIALS",
+      "type": "string"
+     },
+     "message": {
+      "example": "اسم المستخدم أو كلمة المرور غلط",
+      "type": "object"
+     },
+     "retryAfterSec": {
+      "description": "ثواني لحد فك القفل (ACCOUNT_LOCKED)",
+      "example": 900,
+      "type": "number"
+     },
+     "statusCode": {
+      "example": 401,
+      "type": "number"
+     }
+    },
+    "required": [
+     "statusCode",
+     "message"
+    ],
+    "type": "object"
+   },
+   "EvaluateDto": {
+    "properties": {
+     "context": {
+      "type": "object"
+     },
+     "date": {
+      "type": "string"
+     },
+     "inputs": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "date",
+     "inputs"
+    ],
+    "type": "object"
+   },
+   "ExtraFieldDto": {
+    "properties": {
+     "label": {
+      "type": "string"
+     },
+     "value": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "label",
+     "value"
+    ],
+    "type": "object"
+   },
+   "HealthDto": {
+    "properties": {
+     "db": {
+      "$ref": "#/components/schemas/DbHealthDto"
+     },
+     "legacySchemaVersion": {
+      "description": "آخر SCHEMA_VERSION لبيانات الديسكتوب المدعوم",
+      "example": 9,
+      "nullable": true,
+      "type": "number"
+     },
+     "migrations": {
+      "allOf": [
+       {
+        "$ref": "#/components/schemas/MigrationsHealthDto"
+       }
+      ],
+      "nullable": true,
+      "type": "object"
+     },
+     "status": {
+      "enum": [
+       "ok",
+       "degraded",
+       "error"
+      ],
+      "example": "ok",
+      "type": "string"
+     },
+     "time": {
+      "example": "2026-11-15T22:00:00.000Z",
+      "type": "string"
+     },
+     "uptimeSec": {
+      "example": 120,
+      "type": "number"
+     },
+     "version": {
+      "description": "نسخة السيرفر",
+      "example": "0.1.0",
+      "type": "string"
+     }
+    },
+    "required": [
+     "status",
+     "version",
+     "legacySchemaVersion",
+     "uptimeSec",
+     "time",
+     "db",
+     "migrations"
+    ],
+    "type": "object"
+   },
+   "LevelDto": {
+    "properties": {
+     "approvers": {
+      "items": {
+       "$ref": "#/components/schemas/ApproverDto"
+      },
+      "type": "array"
+     },
+     "mode": {
+      "enum": [
+       "ALL",
+       "ANY",
+       "N_OF_M"
+      ],
+      "type": "string"
+     },
+     "requiredCount": {
+      "description": "إلزامي مع N_OF_M بس",
+      "type": "number"
+     }
+    },
+    "required": [
+     "mode",
+     "approvers"
+    ],
+    "type": "object"
+   },
+   "LoginDto": {
+    "properties": {
+     "otp": {
+      "description": "كود التحقق بخطوتين (6 أرقام) أو كود استرداد — مطلوب لو 2FA مفعّل (401 OTP_REQUIRED)",
+      "example": "123456",
+      "type": "string"
+     },
+     "password": {
+      "example": "••••••••••",
+      "type": "string"
+     },
+     "username": {
+      "example": "admin",
+      "type": "string"
+     }
+    },
+    "required": [
+     "username",
+     "password"
+    ],
+    "type": "object"
+   },
+   "MeDto": {
+    "properties": {
+     "docActions": {
+      "additionalProperties": {
+       "type": "boolean"
+      },
+      "description": "أفعال المستندات (المرحلة 5): approve/reject/print/export/pay/cancel/post",
+      "type": "object"
+     },
+     "id": {
+      "type": "string"
+     },
+     "modules": {
+      "description": "الموديولات الظاهرة (مشتقة من الصفحات)",
+      "items": {
+       "type": "string"
+      },
+      "type": "array"
+     },
+     "mustChangePassword": {
+      "type": "boolean"
+     },
+     "name": {
+      "type": "string"
+     },
+     "pages": {
+      "description": "كل مفاتيح الصفحات بالترتيب (بديل HR_PAGES في الواجهة)",
+      "items": {
+       "enum": [
+        "dashboard",
+        "employees",
+        "workers",
+        "supervisors",
+        "equipment",
+        "projects",
+        "drivers",
+        "transfers",
+        "performance",
+        "departments",
+        "attendance",
+        "workerAttendance",
+        "workerDues",
+        "expenses",
+        "costs",
+        "leaves",
+        "payroll",
+        "reports",
+        "archive",
+        "backup",
+        "users",
+        "ledger.dashboard",
+        "ledger.suppliers",
+        "ledger.invoices",
+        "ledger.returns",
+        "ledger.payments",
+        "ledger.categories",
+        "ledger.quarterly",
+        "ledger.reports",
+        "ledger.archive",
+        "general.overview",
+        "tasks.my",
+        "clients.dashboard",
+        "clients.customers",
+        "clients.workSurveys",
+        "clients.boqs",
+        "clients.contracts",
+        "clients.invoices",
+        "clients.guarantees",
+        "clients.comparison",
+        "clients.crm",
+        "clients.collections",
+        "clients.accounts",
+        "clients.reports",
+        "clients.archive",
+        "warehouses.home",
+        "warehouses.reports",
+        "accounts.reports"
+       ],
+       "type": "string"
+      },
+      "type": "array"
+     },
+     "permissions": {
+      "$ref": "#/components/schemas/PermissionsDto"
+     },
+     "projectScope": {
+      "items": {
+       "type": "string"
+      },
+      "nullable": true,
+      "type": "array"
+     },
+     "role": {
+      "enum": [
+       "admin",
+       "hr",
+       "viewer",
+       "payroll",
+       "clientsSales",
+       "clientsAccounts",
+       "clientsProjects",
+       "warehouse",
+       "ledgerAccountant",
+       "projectManager",
+       "custom"
+      ],
+      "type": "string"
+     },
+     "roleLabel": {
+      "example": "مدير النظام",
+      "type": "string"
+     },
+     "twoFactorEnabled": {
+      "description": "التحقق بخطوتين مفعّل",
+      "type": "boolean"
+     },
+     "twoFactorSetupRequired": {
+      "description": "لازم يفعّل التحقق بخطوتين قبل أي عملية (REQUIRE_2FA_ROLES)",
+      "type": "boolean"
+     },
+     "username": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "id",
+     "username",
+     "name",
+     "role",
+     "roleLabel",
+     "mustChangePassword",
+     "docActions",
+     "modules",
+     "twoFactorEnabled",
+     "twoFactorSetupRequired",
+     "projectScope",
+     "permissions",
+     "pages"
+    ],
+    "type": "object"
+   },
+   "MigrationsHealthDto": {
+    "properties": {
+     "applied": {
+      "example": 1,
+      "type": "number"
+     },
+     "latest": {
+      "example": "InitLayer11763200000000",
+      "nullable": true,
+      "type": "string"
+     },
+     "pending": {
+      "description": "لازم تبقى 0 — غير كده السيرفر شغال على schema قديم",
+      "example": 0,
+      "type": "number"
+     }
+    },
+    "required": [
+     "applied",
+     "pending",
+     "latest"
+    ],
+    "type": "object"
+   },
+   "NoteDto": {
+    "properties": {
+     "note": {
+      "type": "string"
+     }
+    },
+    "type": "object"
+   },
+   "PageOverrideDto": {
+    "properties": {
+     "add": {
+      "type": "boolean"
+     },
+     "delete": {
+      "type": "boolean"
+     },
+     "edit": {
+      "type": "boolean"
+     },
+     "page": {
+      "enum": [
+       "dashboard",
+       "employees",
+       "workers",
+       "supervisors",
+       "equipment",
+       "projects",
+       "drivers",
+       "transfers",
+       "performance",
+       "departments",
+       "attendance",
+       "workerAttendance",
+       "workerDues",
+       "expenses",
+       "costs",
+       "leaves",
+       "payroll",
+       "reports",
+       "archive",
+       "backup",
+       "users",
+       "ledger.dashboard",
+       "ledger.suppliers",
+       "ledger.invoices",
+       "ledger.returns",
+       "ledger.payments",
+       "ledger.categories",
+       "ledger.quarterly",
+       "ledger.reports",
+       "ledger.archive",
+       "general.overview",
+       "tasks.my",
+       "clients.dashboard",
+       "clients.customers",
+       "clients.workSurveys",
+       "clients.boqs",
+       "clients.contracts",
+       "clients.invoices",
+       "clients.guarantees",
+       "clients.comparison",
+       "clients.crm",
+       "clients.collections",
+       "clients.accounts",
+       "clients.reports",
+       "clients.archive",
+       "warehouses.home",
+       "warehouses.reports",
+       "accounts.reports"
+      ],
+      "example": "payroll",
+      "type": "string"
+     },
+     "view": {
+      "type": "boolean"
+     }
+    },
+    "required": [
+     "page",
+     "view",
+     "add",
+     "edit",
+     "delete"
+    ],
+    "type": "object"
+   },
+   "PagePermDto": {
+    "properties": {
+     "add": {
+      "type": "boolean"
+     },
+     "delete": {
+      "type": "boolean"
+     },
+     "edit": {
+      "type": "boolean"
+     },
+     "view": {
+      "type": "boolean"
+     }
+    },
+    "required": [
+     "view",
+     "add",
+     "edit",
+     "delete"
+    ],
+    "type": "object"
+   },
+   "PermissionsDto": {
+    "properties": {
+     "deleteData": {
+      "type": "boolean"
+     },
+     "editData": {
+      "type": "boolean"
+     },
+     "manageUsers": {
+      "type": "boolean"
+     },
+     "pages": {
+      "additionalProperties": {
+       "$ref": "#/components/schemas/PagePermDto"
+      },
+      "description": "مفتاح الصفحة → view/add/edit/delete",
+      "type": "object"
+     }
+    },
+    "required": [
+     "editData",
+     "deleteData",
+     "manageUsers",
+     "pages"
+    ],
+    "type": "object"
+   },
+   "PreviewDto": {
+    "properties": {
+     "inputs": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "inputs"
+    ],
+    "type": "object"
+   },
+   "ProjectDto": {
+    "properties": {
+     "budget": {
+      "description": "الميزانية: نص عشري بأربع خانات (ADR-023) — أو null",
+      "example": "10000.0000",
+      "nullable": true,
+      "type": "object"
+     },
+     "code": {
+      "nullable": true,
+      "type": "object"
+     },
+     "customerId": {
+      "nullable": true,
+      "type": "object"
+     },
+     "id": {
+      "type": "string"
+     },
+     "name": {
+      "type": "string"
+     },
+     "rev": {
+      "type": "number"
+     },
+     "stage": {
+      "description": "مرحلة مسار المشروع",
+      "nullable": true,
+      "type": "object"
+     },
+     "status": {
+      "nullable": true,
+      "type": "object"
+     },
+     "supervisorId": {
+      "nullable": true,
+      "type": "object"
+     },
+     "updatedAt": {
+      "nullable": true,
+      "type": "object"
+     }
+    },
+    "required": [
+     "id",
+     "code",
+     "name",
+     "status",
+     "stage",
+     "budget",
+     "supervisorId",
+     "customerId",
+     "rev",
+     "updatedAt"
+    ],
+    "type": "object"
+   },
+   "ProjectListDto": {
+    "properties": {
+     "items": {
+      "items": {
+       "$ref": "#/components/schemas/ProjectDto"
+      },
+      "type": "array"
+     },
+     "source": {
+      "description": "مصدر البيانات: legacy-records (الافتراضي) أو relational (بعد ترحيل معتمد)",
+      "example": "legacy-records",
+      "type": "string"
+     },
+     "total": {
+      "type": "number"
+     }
+    },
+    "required": [
+     "items",
+     "total",
+     "source"
+    ],
+    "type": "object"
+   },
+   "ReasonDto": {
+    "properties": {
+     "reason": {
+      "type": "string"
+     }
+    },
+    "type": "object"
+   },
+   "RecordChangeDto": {
+    "properties": {
+     "baseRev": {
+      "description": "آخر rev العميل شافه للسجل ده (0 = سجل جديد)",
+      "example": 3,
+      "type": "number"
+     },
+     "collection": {
+      "description": "مسار الـ collection زي ما هو في DATA (employees، ledger.invoices، ...)",
+      "example": "employees",
+      "type": "string"
+     },
+     "id": {
+      "example": "emp_1",
+      "type": "string"
+     },
+     "op": {
+      "enum": [
+       "upsert",
+       "delete"
+      ],
+      "type": "string"
+     },
+     "set": {
+      "additionalProperties": true,
+      "description": "الحقول المتغيّرة بقيمها الجديدة (للسجل الجديد: السجل كله)",
+      "type": "object"
+     },
+     "unset": {
+      "description": "حقول اتشالت من السجل",
+      "items": {
+       "type": "string"
+      },
+      "type": "array"
+     }
+    },
+    "required": [
+     "collection",
+     "id",
+     "op",
+     "baseRev"
+    ],
+    "type": "object"
+   },
+   "ResetPasswordDto": {
+    "properties": {
+     "mustChangePassword": {
+      "default": true,
+      "description": "يجبر المستخدم يغيّرها أول دخول",
+      "type": "boolean"
+     },
+     "newPassword": {
+      "maxLength": 128,
+      "minLength": 10,
+      "type": "string"
+     }
+    },
+    "required": [
+     "newPassword"
+    ],
+    "type": "object"
+   },
+   "RoleDto": {
+    "properties": {
+     "key": {
+      "enum": [
+       "admin",
+       "hr",
+       "viewer",
+       "payroll",
+       "clientsSales",
+       "clientsAccounts",
+       "clientsProjects",
+       "warehouse",
+       "ledgerAccountant",
+       "projectManager",
+       "custom"
+      ],
+      "type": "string"
+     },
+     "label": {
+      "example": "موارد بشرية",
+      "type": "string"
+     },
+     "permissions": {
+      "$ref": "#/components/schemas/PermissionsDto"
+     }
+    },
+    "required": [
+     "key",
+     "label",
+     "permissions"
+    ],
+    "type": "object"
+   },
+   "SubmitDto": {
+    "properties": {
+     "amount": {
+      "description": "قيمة المستند (نص عشري) — بتحدد المسار حسب النطاقات",
+      "example": "12500.0000",
+      "type": "string"
+     },
+     "documentId": {
+      "type": "string"
+     },
+     "documentType": {
+      "type": "string"
+     },
+     "materialHash": {
+      "description": "بصمة الحقول الجوهرية وقت الإرسال (B-07)",
+      "type": "string"
+     }
+    },
+    "required": [
+     "documentType",
+     "documentId"
+    ],
+    "type": "object"
+   },
+   "SyncRequestDto": {
+    "properties": {
+     "changes": {
+      "items": {
+       "$ref": "#/components/schemas/RecordChangeDto"
+      },
+      "type": "array"
+     },
+     "docs": {
+      "items": {
+       "$ref": "#/components/schemas/DocChangeDto"
+      },
+      "type": "array"
+     }
+    },
+    "type": "object"
+   },
+   "SyncResponseDto": {
+    "properties": {
+     "applied": {
+      "items": {
+       "$ref": "#/components/schemas/AppliedRecordDto"
+      },
+      "type": "array"
+     },
+     "conflicts": {
+      "items": {
+       "$ref": "#/components/schemas/ConflictRecordDto"
+      },
+      "type": "array"
+     },
+     "docConflicts": {
+      "items": {
+       "$ref": "#/components/schemas/ConflictDocDto"
+      },
+      "type": "array"
+     },
+     "docsApplied": {
+      "items": {
+       "$ref": "#/components/schemas/AppliedDocDto"
+      },
+      "type": "array"
+     },
+     "seq": {
+      "description": "آخر seq بعد التطبيق",
+      "type": "number"
+     }
+    },
+    "required": [
+     "seq",
+     "applied",
+     "conflicts",
+     "docsApplied",
+     "docConflicts"
+    ],
+    "type": "object"
+   },
+   "TokenResponseDto": {
+    "properties": {
+     "accessToken": {
+      "description": "JWT قصير العمر — يتبعت في Authorization: Bearer. الـ refresh token في cookie HttpOnly اسمها rt",
+      "type": "string"
+     },
+     "expiresIn": {
+      "description": "بالثواني",
+      "example": 900,
+      "type": "number"
+     },
+     "tokenType": {
+      "example": "Bearer",
+      "type": "string"
+     },
+     "user": {
+      "$ref": "#/components/schemas/MeDto"
+     }
+    },
+    "required": [
+     "accessToken",
+     "tokenType",
+     "expiresIn",
+     "user"
+    ],
+    "type": "object"
+   },
+   "TransferDto": {
+    "properties": {
+     "date": {
+      "type": "string"
+     },
+     "fromLocationId": {
+      "type": "string"
+     },
+     "itemId": {
+      "type": "string"
+     },
+     "notes": {
+      "type": "string"
+     },
+     "qty": {
+      "example": "2.5",
+      "type": "string"
+     },
+     "toLocationId": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "itemId",
+     "fromLocationId",
+     "toLocationId",
+     "qty"
+    ],
+    "type": "object"
+   },
+   "TwoFactorCodeDto": {
+    "properties": {
+     "otp": {
+      "example": "123456",
+      "type": "string"
+     }
+    },
+    "required": [
+     "otp"
+    ],
+    "type": "object"
+   },
+   "TwoFactorDisableDto": {
+    "properties": {
+     "otp": {
+      "example": "123456",
+      "type": "string"
+     },
+     "password": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "password",
+     "otp"
+    ],
+    "type": "object"
+   },
+   "TwoFactorEnabledResponseDto": {
+    "properties": {
+     "recoveryCodes": {
+      "description": "أكواد استرداد — بتظهر مرة واحدة بس، كل كود يستخدم مرة",
+      "items": {
+       "type": "string"
+      },
+      "type": "array"
+     }
+    },
+    "required": [
+     "recoveryCodes"
+    ],
+    "type": "object"
+   },
+   "TwoFactorPasswordDto": {
+    "properties": {
+     "password": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "password"
+    ],
+    "type": "object"
+   },
+   "TwoFactorSetupResponseDto": {
+    "properties": {
+     "otpauthUrl": {
+      "description": "رابط otpauth:// (لـ QR)",
+      "type": "string"
+     },
+     "secret": {
+      "description": "السر (base32) للإدخال اليدوي في تطبيق المصادقة",
+      "type": "string"
+     }
+    },
+    "required": [
+     "secret",
+     "otpauthUrl"
+    ],
+    "type": "object"
+   },
+   "UpdateAdjustmentDto": {
+    "properties": {
+     "qty": {
+      "type": "string"
+     },
+     "reason": {
+      "type": "string"
+     },
+     "rowVersion": {
+      "type": "number"
+     }
+    },
+    "required": [
+     "rowVersion"
+    ],
+    "type": "object"
+   },
+   "UpdateCustomerDto": {
+    "properties": {
+     "address": {
+      "type": "string"
+     },
+     "category": {
+      "type": "string"
+     },
+     "city": {
+      "type": "string"
+     },
+     "code": {
+      "description": "فاضي = بيتولّد بنفس صيغة الواجهة الحالية (البادئة + 4 أرقام)",
+      "type": "string"
+     },
+     "contacts": {
+      "items": {
+       "$ref": "#/components/schemas/ContactDto"
+      },
+      "type": "array"
+     },
+     "department": {
+      "type": "string"
+     },
+     "email": {
+      "type": "string"
+     },
+     "extraFields": {
+      "items": {
+       "$ref": "#/components/schemas/ExtraFieldDto"
+      },
+      "type": "array"
+     },
+     "name": {
+      "type": "string"
+     },
+     "notes": {
+      "type": "string"
+     },
+     "openingBalance": {
+      "description": "مؤقتًا خانتين بس — توافق مع الواجهة الحالية (toInt → round2)",
+      "type": "string"
+     },
+     "phone": {
+      "type": "string"
+     },
+     "rev": {
+      "type": "number"
+     },
+     "taxId": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "rev"
+    ],
+    "type": "object"
+   },
+   "UpdateItemDto": {
+    "properties": {
+     "category": {
+      "type": "string"
+     },
+     "code": {
+      "description": "فاضي = بيتولّد بنفس صيغة الواجهة الحالية (بادئة الإعدادات أو ITM- + 4 أرقام)",
+      "type": "string"
+     },
+     "minQty": {
+      "description": "حد إعادة الطلب (5 خانات)",
+      "type": "string"
+     },
+     "name": {
+      "type": "string"
+     },
+     "notes": {
+      "type": "string"
+     },
+     "rev": {
+      "type": "number"
+     },
+     "unit": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "rev"
+    ],
+    "type": "object"
+   },
+   "UpdateSupplierDto": {
+    "properties": {
+     "address": {
+      "type": "string"
+     },
+     "bankAccount": {
+      "type": "string"
+     },
+     "businessNature": {
+      "type": "string"
+     },
+     "commercialReg": {
+      "type": "string"
+     },
+     "email": {
+      "type": "string"
+     },
+     "extraFields": {
+      "items": {
+       "$ref": "#/components/schemas/ExtraFieldDto"
+      },
+      "type": "array"
+     },
+     "iban": {
+      "type": "string"
+     },
+     "name": {
+      "type": "string"
+     },
+     "notes": {
+      "type": "string"
+     },
+     "openingBalance": {
+      "description": "نص عشري (حتى 4 خانات، يقبل السالب)",
+      "example": "-1250.5",
+      "type": "string"
+     },
+     "openingBalanceDate": {
+      "example": "2026-01-01",
+      "type": "string"
+     },
+     "phone": {
+      "type": "string"
+     },
+     "rev": {
+      "description": "آخر rev شفته (للتعارض)",
+      "type": "number"
+     },
+     "taxId": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "rev"
+    ],
+    "type": "object"
+   },
+   "UpdateUserDto": {
+    "properties": {
+     "active": {
+      "type": "boolean"
+     },
+     "deleteData": {
+      "description": "لو مش محدد: من قالب الدور",
+      "type": "boolean"
+     },
+     "editData": {
+      "description": "لو مش محدد: من قالب الدور",
+      "type": "boolean"
+     },
+     "manageUsers": {
+      "description": "لو مش محدد: من قالب الدور. منحها للأدمن بس",
+      "type": "boolean"
+     },
+     "name": {
+      "example": "أحمد محمد",
+      "type": "string"
+     },
+     "pages": {
+      "description": "تخصيص صفحات فوق قالب الدور (بيستبدل كل التخصيصات الحالية)",
+      "items": {
+       "$ref": "#/components/schemas/PageOverrideDto"
+      },
+      "type": "array"
+     },
+     "projectScope": {
+      "description": "null = كل المشاريع",
+      "items": {
+       "type": "string"
+      },
+      "nullable": true,
+      "type": "array"
+     },
+     "role": {
+      "enum": [
+       "admin",
+       "hr",
+       "viewer",
+       "payroll",
+       "clientsSales",
+       "clientsAccounts",
+       "clientsProjects",
+       "warehouse",
+       "ledgerAccountant",
+       "projectManager",
+       "custom"
+      ],
+      "type": "string"
+     }
+    },
+    "type": "object"
+   },
+   "UserDto": {
+    "properties": {
+     "active": {
+      "type": "boolean"
+     },
+     "createdAt": {
+      "format": "date-time",
+      "type": "string"
+     },
+     "deleteData": {
+      "type": "boolean"
+     },
+     "editData": {
+      "type": "boolean"
+     },
+     "id": {
+      "type": "string"
+     },
+     "lastLoginAt": {
+      "format": "date-time",
+      "nullable": true,
+      "type": "string"
+     },
+     "lockedUntil": {
+      "format": "date-time",
+      "nullable": true,
+      "type": "string"
+     },
+     "manageUsers": {
+      "type": "boolean"
+     },
+     "mustChangePassword": {
+      "type": "boolean"
+     },
+     "name": {
+      "type": "string"
+     },
+     "pages": {
+      "items": {
+       "$ref": "#/components/schemas/PageOverrideDto"
+      },
+      "type": "array"
+     },
+     "projectScope": {
+      "items": {
+       "type": "string"
+      },
+      "nullable": true,
+      "type": "array"
+     },
+     "role": {
+      "enum": [
+       "admin",
+       "hr",
+       "viewer",
+       "payroll",
+       "clientsSales",
+       "clientsAccounts",
+       "clientsProjects",
+       "warehouse",
+       "ledgerAccountant",
+       "projectManager",
+       "custom"
+      ],
+      "type": "string"
+     },
+     "username": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "id",
+     "username",
+     "name",
+     "role",
+     "active",
+     "mustChangePassword",
+     "editData",
+     "deleteData",
+     "manageUsers",
+     "projectScope",
+     "pages",
+     "lockedUntil",
+     "lastLoginAt",
+     "createdAt"
+    ],
+    "type": "object"
+   },
+   "WriteAccessDto": {
+    "properties": {
+     "add": {
+      "type": "boolean"
+     },
+     "delete": {
+      "type": "boolean"
+     },
+     "edit": {
+      "type": "boolean"
+     }
+    },
+    "required": [
+     "add",
+     "edit",
+     "delete"
+    ],
+    "type": "object"
+   }
+  },
+  "securitySchemes": {
+   "bearer": {
+    "bearerFormat": "JWT",
+    "scheme": "bearer",
+    "type": "http"
+   },
+   "cookie": {
+    "in": "cookie",
+    "name": "refresh_token",
+    "type": "apiKey"
+   }
+  }
+ },
+ "info": {
+  "contact": {},
+  "description": "Compat API (للواجهة القديمة) + Resource API /api/v1 (لـ Angular). المصدر لتوليد عميل Angular.",
+  "title": "النظام الموحد — API",
+  "version": "0.1.0"
+ },
+ "openapi": "3.0.0",
+ "paths": {
+  "/api/attachments": {
+   "get": {
+    "operationId": "AttachmentsController_list",
+    "parameters": [
+     {
+      "description": "مجموعة السجل المالك",
+      "in": "query",
+      "name": "collection",
+      "required": true,
+      "schema": {
+       "example": "ledger.invoices",
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "recordId",
+      "required": true,
+      "schema": {
+       "example": "inv_123",
+       "type": "string"
+      }
+     },
+     {
+      "description": "المرحلة 5: رفع إصدار جديد بدل مرفق موجود (القديم بيفضل محفوظ)",
+      "in": "query",
+      "name": "replaces",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "items": {
+          "$ref": "#/components/schemas/AttachmentDto"
+         },
+         "type": "array"
+        }
+       }
+      },
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "مرفقات سجل (آخر إصدار من كل مستند)",
+    "tags": [
+     "attachments"
+    ]
+   },
+   "post": {
+    "description": "PDF/JPG/PNG/DOCX/XLSX حتى 25MB. النوع من محتوى الملف، والمحتوى بيتفحص. الصلاحية = تعديل السجل المالك.",
+    "operationId": "AttachmentsController_upload",
+    "parameters": [
+     {
+      "description": "مجموعة السجل المالك",
+      "in": "query",
+      "name": "collection",
+      "required": true,
+      "schema": {
+       "example": "ledger.invoices",
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "recordId",
+      "required": true,
+      "schema": {
+       "example": "inv_123",
+       "type": "string"
+      }
+     },
+     {
+      "description": "المرحلة 5: رفع إصدار جديد بدل مرفق موجود (القديم بيفضل محفوظ)",
+      "in": "query",
+      "name": "replaces",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "multipart/form-data": {
+       "schema": {
+        "properties": {
+         "file": {
+          "format": "binary",
+          "type": "string"
+         }
+        },
+        "required": [
+         "file"
+        ],
+        "type": "object"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/AttachmentDto"
+        }
+       }
+      },
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "رفع مرفق لسجل",
+    "tags": [
+     "attachments"
+    ]
+   }
+  },
+  "/api/attachments/versions": {
+   "get": {
+    "operationId": "AttachmentsController_versions",
+    "parameters": [
+     {
+      "description": "مجموعة السجل المالك",
+      "in": "query",
+      "name": "collection",
+      "required": true,
+      "schema": {
+       "example": "ledger.invoices",
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "recordId",
+      "required": true,
+      "schema": {
+       "example": "inv_123",
+       "type": "string"
+      }
+     },
+     {
+      "description": "المرحلة 5: رفع إصدار جديد بدل مرفق موجود (القديم بيفضل محفوظ)",
+      "in": "query",
+      "name": "replaces",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "items": {
+          "$ref": "#/components/schemas/AttachmentDto"
+         },
+         "type": "array"
+        }
+       }
+      },
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "كل إصدارات مرفقات سجل (المرحلة 5)",
+    "tags": [
+     "attachments"
+    ]
+   }
+  },
+  "/api/attachments/{id}/content": {
+   "get": {
+    "description": "دايمًا كتنزيل (attachment) بنوعه الفعلي ومن غير تنفيذ في المتصفح.",
+    "operationId": "AttachmentsController_download",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "تنزيل مرفق",
+    "tags": [
+     "attachments"
+    ]
+   }
+  },
+  "/api/auth/2fa/disable": {
+   "post": {
+    "description": "كلمة المرور + كود حالي (أو كود استرداد).",
+    "operationId": "TwoFactorController_disable",
+    "parameters": [],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/TwoFactorDisableDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "204": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "إلغاء التحقق بخطوتين",
+    "tags": [
+     "auth"
+    ]
+   }
+  },
+  "/api/auth/2fa/enable": {
+   "post": {
+    "description": "بيرجّع 10 أكواد استرداد — بتظهر مرة واحدة بس.",
+    "operationId": "TwoFactorController_enable",
+    "parameters": [],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/TwoFactorCodeDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/TwoFactorEnabledResponseDto"
+        }
+       }
+      },
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "تأكيد التفعيل بأول كود",
+    "tags": [
+     "auth"
+    ]
+   }
+  },
+  "/api/auth/2fa/setup": {
+   "post": {
+    "description": "بيطلب كلمة المرور، وبيرجّع السر ورابط otpauth لتطبيق المصادقة (Google/Microsoft Authenticator).",
+    "operationId": "TwoFactorController_setup",
+    "parameters": [],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/TwoFactorPasswordDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/TwoFactorSetupResponseDto"
+        }
+       }
+      },
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "بدء تفعيل التحقق بخطوتين",
+    "tags": [
+     "auth"
+    ]
+   }
+  },
+  "/api/auth/change-password": {
+   "post": {
+    "description": "الحد الأدنى 10 حروف. بيلغي كل الجلسات التانية ويرجّع جلسة جديدة للجهاز ده.",
+    "operationId": "AuthController_changePassword",
+    "parameters": [],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ChangePasswordDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/TokenResponseDto"
+        }
+       }
+      },
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "تغيير كلمة المرور",
+    "tags": [
+     "auth"
+    ]
+   }
+  },
+  "/api/auth/login": {
+   "post": {
+    "description": "بيرجّع access token (15 د) وبيحط refresh token في cookie HttpOnly (rt). لو user.mustChangePassword = true كل الـ endpoints هترجع 403 PASSWORD_CHANGE_REQUIRED لحد ما تغيّرها.",
+    "operationId": "AuthController_login",
+    "parameters": [],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/LoginDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/TokenResponseDto"
+        }
+       }
+      },
+      "description": ""
+     },
+     "400": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ErrorDto"
+        }
+       }
+      },
+      "description": "body غير صالح (حقول ناقصة أو زيادة)"
+     },
+     "401": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ErrorDto"
+        }
+       }
+      },
+      "description": "INVALID_CREDENTIALS"
+     },
+     "423": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ErrorDto"
+        }
+       }
+      },
+      "description": "ACCOUNT_LOCKED — قفل مؤقت بعد محاولات فاشلة متتالية"
+     },
+     "429": {
+      "description": "أكتر من الحد المسموح في الدقيقة لنفس IP + اسم مستخدم"
+     }
+    },
+    "summary": "تسجيل الدخول",
+    "tags": [
+     "auth"
+    ]
+   }
+  },
+  "/api/auth/logout": {
+   "post": {
+    "description": "بيلغي جلسة الـ refresh cookie (لو موجودة) ويمسح الكوكي. بيشتغل حتى لو الـ access token انتهى.",
+    "operationId": "AuthController_logout",
+    "parameters": [],
+    "responses": {
+     "204": {
+      "description": ""
+     }
+    },
+    "summary": "خروج من الجهاز ده",
+    "tags": [
+     "auth"
+    ]
+   }
+  },
+  "/api/auth/logout-all": {
+   "post": {
+    "description": "بيلغي كل الجلسات وكل الـ access tokens الحالية فورًا.",
+    "operationId": "AuthController_logoutAll",
+    "parameters": [],
+    "responses": {
+     "204": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "خروج من كل الأجهزة",
+    "tags": [
+     "auth"
+    ]
+   }
+  },
+  "/api/auth/refresh": {
+   "post": {
+    "description": "إعادة استخدام refresh token قديم = اشتباه سرقة → كل جلسات المستخدم بتتلغي.",
+    "operationId": "AuthController_refresh",
+    "parameters": [],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/TokenResponseDto"
+        }
+       }
+      },
+      "description": ""
+     },
+     "401": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ErrorDto"
+        }
+       }
+      },
+      "description": "REFRESH_INVALID / REFRESH_RACE"
+     }
+    },
+    "security": [
+     {
+      "refresh_token": []
+     }
+    ],
+    "summary": "تجديد الـ access token من الـ refresh cookie (مع تدويرها)",
+    "tags": [
+     "auth"
+    ]
+   }
+  },
+  "/api/bootstrap": {
+   "get": {
+    "description": "مفلترة بالصلاحيات ونطاق المشاريع، والحقول المحمية (رواتب/أرصدة) متشالة. meta.revs لازم تتحفظ عند العميل (baseRev).",
+    "operationId": "DataController_bootstrap",
+    "parameters": [],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/BootstrapDto"
+        }
+       }
+      },
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "كل البيانات اللي المستخدم يقدر يشوفها بنفس شكل DATA",
+    "tags": [
+     "data (compat)"
+    ]
+   }
+  },
+  "/api/changes": {
+   "get": {
+    "description": "بالحالة الحالية لكل سجل، مفلترة بالصلاحيات.",
+    "operationId": "DataController_changes",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "since",
+      "required": true,
+      "schema": {
+       "example": 0,
+       "type": "number"
+      }
+     },
+     {
+      "in": "query",
+      "name": "limit",
+      "required": false,
+      "schema": {
+       "default": 1000,
+       "maximum": 5000,
+       "type": "number"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ChangesResponseDto"
+        }
+       }
+      },
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "التغييرات بعد seq (بعد انقطاع الاتصال اللحظي)",
+    "tags": [
+     "data (compat)"
+    ]
+   }
+  },
+  "/api/health": {
+   "get": {
+    "description": "عام (بدون تسجيل دخول) — للـ uptime monitor و Docker healthcheck. ok/degraded = 200، error = 503.",
+    "operationId": "HealthController_get",
+    "parameters": [],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HealthDto"
+        }
+       }
+      },
+      "description": ""
+     },
+     "503": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HealthDto"
+        }
+       }
+      },
+      "description": "الداتابيز مش متاحة"
+     }
+    },
+    "summary": "فحص صحة السيرفر",
+    "tags": [
+     "system"
+    ]
+   }
+  },
+  "/api/me": {
+   "get": {
+    "description": "المصدر اللي الواجهة بتعرض على أساسه (القرار النهائي دايمًا على السيرفر).",
+    "operationId": "MeController_me",
+    "parameters": [],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/MeDto"
+        }
+       }
+      },
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "المستخدم الحالي وصلاحياته الفعلية",
+    "tags": [
+     "auth"
+    ]
+   }
+  },
+  "/api/roles": {
+   "get": {
+    "operationId": "RolesController_list",
+    "parameters": [],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "items": {
+          "$ref": "#/components/schemas/RoleDto"
+         },
+         "type": "array"
+        }
+       }
+      },
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "قوالب الأدوار وصلاحياتها (للعرض في شاشة المستخدمين)",
+    "tags": [
+     "auth"
+    ]
+   }
+  },
+  "/api/sync": {
+   "post": {
+    "description": "كل تغيير معاه baseRev + الحقول المتغيّرة بس. حقول مختلفة = دمج. نفس الحقل اتعدّل من حد تاني: مالي/مركّب = conflict صريح (مايتحفظش)، نصي = آخر واحد يكسب (overwrote). أي تغيير ممنوع = 403 ومفيش حاجة بتتحفظ.",
+    "operationId": "DataController_sync",
+    "parameters": [],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/SyncRequestDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/SyncResponseDto"
+        }
+       }
+      },
+      "description": ""
+     },
+     "400": {
+      "description": "INVALID_SYNC (collection غير معروفة، id مكرر، ...)"
+     },
+     "403": {
+      "description": "FORBIDDEN / FIELD_FORBIDDEN / OUT_OF_PROJECT_SCOPE (في details)"
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "حفظ تغييرات (على مستوى السجل/الحقل) في transaction واحدة",
+    "tags": [
+     "data (compat)"
+    ]
+   }
+  },
+  "/api/users": {
+   "get": {
+    "operationId": "UsersController_list",
+    "parameters": [],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "items": {
+          "$ref": "#/components/schemas/UserDto"
+         },
+         "type": "array"
+        }
+       }
+      },
+      "description": ""
+     },
+     "403": {
+      "description": "مفيش صلاحية manageUsers"
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "كل المستخدمين",
+    "tags": [
+     "users"
+    ]
+   },
+   "post": {
+    "description": "الأعلام (editData/deleteData/manageUsers) الافتراضية من قالب الدور. دور admin أو منح manageUsers = للأدمن بس.",
+    "operationId": "UsersController_create",
+    "parameters": [],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/CreateUserDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/UserDto"
+        }
+       }
+      },
+      "description": ""
+     },
+     "403": {
+      "description": "مفيش صلاحية manageUsers"
+     },
+     "409": {
+      "description": "اسم المستخدم مستخدم"
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "إضافة مستخدم",
+    "tags": [
+     "users"
+    ]
+   }
+  },
+  "/api/users/{id}": {
+   "get": {
+    "operationId": "UsersController_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/UserDto"
+        }
+       }
+      },
+      "description": ""
+     },
+     "403": {
+      "description": "مفيش صلاحية manageUsers"
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "tags": [
+     "users"
+    ]
+   },
+   "patch": {
+    "description": "التعطيل بيلغي كل جلسات المستخدم فورًا. مينفعش تعطيل/تخفيض آخر أدمن نشط.",
+    "operationId": "UsersController_update",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/UpdateUserDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/UserDto"
+        }
+       }
+      },
+      "description": ""
+     },
+     "403": {
+      "description": "مفيش صلاحية manageUsers"
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "تعديل مستخدم (اسم، دور، تفعيل/تعطيل، نطاق مشاريع، تخصيص صفحات)",
+    "tags": [
+     "users"
+    ]
+   }
+  },
+  "/api/users/{id}/2fa/reset": {
+   "post": {
+    "description": "بيقفل كل جلساته. بيتسجل في سجل التدقيق.",
+    "operationId": "TwoFactorController_reset",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "204": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "تصفير التحقق بخطوتين لمستخدم (فقد جهازه)",
+    "tags": [
+     "auth"
+    ]
+   }
+  },
+  "/api/users/{id}/doc-actions": {
+   "get": {
+    "operationId": "UsersController_getDocActions",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": ""
+     },
+     "403": {
+      "description": "مفيش صلاحية manageUsers"
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "أفعال المستندات لمستخدم (المرحلة 5)",
+    "tags": [
+     "users"
+    ]
+   },
+   "put": {
+    "description": "مفيش أي منح افتراضي لأي دور غير مدير النظام. التغيير بيتسجل في التدقيق.",
+    "operationId": "UsersController_setDocActions",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/DocActionsDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": ""
+     },
+     "403": {
+      "description": "مفيش صلاحية manageUsers"
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "منح/منع أفعال المستندات لمستخدم",
+    "tags": [
+     "users"
+    ]
+   }
+  },
+  "/api/users/{id}/reset-password": {
+   "post": {
+    "description": "بيلغي كل جلساته، وافتراضيًا بيجبره يغيّرها أول دخول.",
+    "operationId": "UsersController_resetPassword",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ResetPasswordDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "204": {
+      "description": ""
+     },
+     "403": {
+      "description": "مفيش صلاحية manageUsers"
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "إعادة تعيين كلمة مرور مستخدم",
+    "tags": [
+     "users"
+    ]
+   }
+  },
+  "/api/v1/approvals/config/document-types": {
+   "get": {
+    "operationId": "ApprovalsConfigController_documentTypes",
+    "parameters": [],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "tags": [
+     "v1 approvals: config"
+    ]
+   },
+   "post": {
+    "operationId": "ApprovalsConfigController_createDocumentType",
+    "parameters": [],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/CreateDocumentTypeDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "نوع مستند خاضع للاعتماد (B-01)",
+    "tags": [
+     "v1 approvals: config"
+    ]
+   }
+  },
+  "/api/v1/approvals/config/workflows": {
+   "get": {
+    "operationId": "ApprovalsConfigController_workflows",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "documentType",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "tags": [
+     "v1 approvals: config"
+    ]
+   },
+   "post": {
+    "operationId": "ApprovalsConfigController_createWorkflow",
+    "parameters": [],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/CreateWorkflowDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "مسار اعتماد (نسخة جديدة) — المستويات والمعتمدين والنطاق وفصل المهام كلها إلزامية من الإعداد",
+    "tags": [
+     "v1 approvals: config"
+    ]
+   }
+  },
+  "/api/v1/approvals/inbox": {
+   "get": {
+    "operationId": "ApprovalsController_inbox",
+    "parameters": [],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "الطلبات بانتظار قراري",
+    "tags": [
+     "v1 approvals"
+    ]
+   }
+  },
+  "/api/v1/approvals/requests": {
+   "post": {
+    "operationId": "ApprovalsController_submit",
+    "parameters": [],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/SubmitDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "إرسال مستند للاعتماد",
+    "tags": [
+     "v1 approvals"
+    ]
+   }
+  },
+  "/api/v1/approvals/requests/{id}": {
+   "get": {
+    "operationId": "ApprovalsController_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "tags": [
+     "v1 approvals"
+    ]
+   }
+  },
+  "/api/v1/approvals/requests/{id}/approve": {
+   "post": {
+    "operationId": "ApprovalsController_approve",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/DecisionDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "tags": [
+     "v1 approvals"
+    ]
+   }
+  },
+  "/api/v1/approvals/requests/{id}/cancel": {
+   "post": {
+    "operationId": "ApprovalsController_cancel",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/DecisionDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "tags": [
+     "v1 approvals"
+    ]
+   }
+  },
+  "/api/v1/approvals/requests/{id}/reject": {
+   "post": {
+    "operationId": "ApprovalsController_reject",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/DecisionDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "tags": [
+     "v1 approvals"
+    ]
+   }
+  },
+  "/api/v1/approvals/requests/{id}/return": {
+   "post": {
+    "operationId": "ApprovalsController_ret",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/DecisionDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "tags": [
+     "v1 approvals"
+    ]
+   }
+  },
+  "/api/v1/approvals/requests/{id}/withdraw": {
+   "post": {
+    "operationId": "ApprovalsController_withdraw",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/DecisionDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "tags": [
+     "v1 approvals"
+    ]
+   }
+  },
+  "/api/v1/customers": {
+   "get": {
+    "operationId": "CustomersController_list",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "q",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "tags": [
+     "v1 customers"
+    ]
+   },
+   "post": {
+    "operationId": "CustomersController_create",
+    "parameters": [],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/CreateCustomerDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "إضافة عميل (الكود بيتولّد لو فاضي)",
+    "tags": [
+     "v1 customers"
+    ]
+   }
+  },
+  "/api/v1/customers/{id}": {
+   "get": {
+    "operationId": "CustomersController_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "tags": [
+     "v1 customers"
+    ]
+   },
+   "patch": {
+    "operationId": "CustomersController_update",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/UpdateCustomerDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "tags": [
+     "v1 customers"
+    ]
+   }
+  },
+  "/api/v1/finance/formulas": {
+   "get": {
+    "operationId": "FormulasController_list",
+    "parameters": [],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "tags": [
+     "v1 finance rules — formulas"
+    ]
+   },
+   "post": {
+    "operationId": "FormulasController_createFormula",
+    "parameters": [],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/CreateFormulaDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "tags": [
+     "v1 finance rules — formulas"
+    ]
+   }
+  },
+  "/api/v1/finance/formulas/versions/{id}": {
+   "delete": {
+    "operationId": "FormulasController_deleteDraft",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "tags": [
+     "v1 finance rules — formulas"
+    ]
+   }
+  },
+  "/api/v1/finance/formulas/versions/{id}/approve": {
+   "post": {
+    "operationId": "FormulasController_approve",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/NoteDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "tags": [
+     "v1 finance rules — formulas"
+    ]
+   }
+  },
+  "/api/v1/finance/formulas/versions/{id}/preview": {
+   "post": {
+    "operationId": "FormulasController_preview",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/PreviewDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "معاينة نتيجة أي إصدار بمدخلات يدوية (اختبار بس)",
+    "tags": [
+     "v1 finance rules — formulas"
+    ]
+   }
+  },
+  "/api/v1/finance/formulas/versions/{id}/reject": {
+   "post": {
+    "operationId": "FormulasController_reject",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/NoteDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "tags": [
+     "v1 finance rules — formulas"
+    ]
+   }
+  },
+  "/api/v1/finance/formulas/versions/{id}/submit": {
+   "post": {
+    "operationId": "FormulasController_submit",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "tags": [
+     "v1 finance rules — formulas"
+    ]
+   }
+  },
+  "/api/v1/finance/formulas/versions/{id}/suspend": {
+   "post": {
+    "operationId": "FormulasController_suspend",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/NoteDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "tags": [
+     "v1 finance rules — formulas"
+    ]
+   }
+  },
+  "/api/v1/finance/formulas/{code}/evaluate": {
+   "post": {
+    "operationId": "FormulasController_evaluate",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "code",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/EvaluateDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "حساب بالإصدار المعتمد الساري بس",
+    "tags": [
+     "v1 finance rules — formulas"
+    ]
+   }
+  },
+  "/api/v1/finance/formulas/{code}/versions": {
+   "post": {
+    "operationId": "FormulasController_createVersion",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "code",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/CreateFormulaVersionDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "إصدار جديد (مسودة) — بيتحقق ويشغّل الاختبارات فورًا",
+    "tags": [
+     "v1 finance rules — formulas"
+    ]
+   }
+  },
+  "/api/v1/finance/taxes": {
+   "get": {
+    "operationId": "TaxesController_list",
+    "parameters": [],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "الأكواد بإصداراتها",
+    "tags": [
+     "v1 finance rules — taxes"
+    ]
+   }
+  },
+  "/api/v1/finance/taxes/codes": {
+   "post": {
+    "operationId": "TaxesController_createCode",
+    "parameters": [],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/CreateTaxCodeDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "كود ضريبي/استقطاع جديد (المدير)",
+    "tags": [
+     "v1 finance rules — taxes"
+    ]
+   }
+  },
+  "/api/v1/finance/taxes/codes/{code}/versions": {
+   "post": {
+    "operationId": "TaxesController_createVersion",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "code",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/CreateTaxVersionDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "إصدار جديد (مسودة) — مابيتطبّقش قبل الاعتماد",
+    "tags": [
+     "v1 finance rules — taxes"
+    ]
+   }
+  },
+  "/api/v1/finance/taxes/compute": {
+   "post": {
+    "operationId": "TaxesController_compute",
+    "parameters": [],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ComputeTaxesDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "حساب بالمعتمد الساري بس (معاينة)",
+    "tags": [
+     "v1 finance rules — taxes"
+    ]
+   }
+  },
+  "/api/v1/finance/taxes/versions/{id}": {
+   "delete": {
+    "operationId": "TaxesController_deleteDraft",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "tags": [
+     "v1 finance rules — taxes"
+    ]
+   }
+  },
+  "/api/v1/finance/taxes/versions/{id}/approve": {
+   "post": {
+    "operationId": "TaxesController_approve",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/DecisionNoteDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "اعتماد — من غير اللي أعدّ",
+    "tags": [
+     "v1 finance rules — taxes"
+    ]
+   }
+  },
+  "/api/v1/finance/taxes/versions/{id}/reject": {
+   "post": {
+    "operationId": "TaxesController_reject",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/DecisionNoteDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "tags": [
+     "v1 finance rules — taxes"
+    ]
+   }
+  },
+  "/api/v1/finance/taxes/versions/{id}/submit": {
+   "post": {
+    "operationId": "TaxesController_submit",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "tags": [
+     "v1 finance rules — taxes"
+    ]
+   }
+  },
+  "/api/v1/finance/taxes/versions/{id}/suspend": {
+   "post": {
+    "operationId": "TaxesController_suspend",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/DecisionNoteDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "tags": [
+     "v1 finance rules — taxes"
+    ]
+   }
+  },
+  "/api/v1/history/{collection}/{id}": {
+   "get": {
+    "operationId": "HistoryController_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "collection",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "limit",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "تاريخ سجل: كل تعديل بقيمته قبل وبعد والمستخدم والوقت",
+    "tags": [
+     "v1 history"
+    ]
+   }
+  },
+  "/api/v1/notifications": {
+   "get": {
+    "operationId": "NotificationsController_mine",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "unread",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "إشعاراتي (كل مستخدم بيشوف إشعاراته بس)",
+    "tags": [
+     "v1 notifications"
+    ]
+   }
+  },
+  "/api/v1/notifications/{id}/read": {
+   "post": {
+    "operationId": "NotificationsController_read",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "tags": [
+     "v1 notifications"
+    ]
+   }
+  },
+  "/api/v1/numbering/{scope}/audit": {
+   "get": {
+    "operationId": "NumberingController_audit",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "scope",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "فحص فجوات ترقيم نطاق (NO_GAPS)",
+    "tags": [
+     "v1 numbering"
+    ]
+   }
+  },
+  "/api/v1/projects": {
+   "get": {
+    "description": "نفس الصلاحيات ونطاق المشروع. المبالغ نصوص بأربع خانات.",
+    "operationId": "ProjectsController_list",
+    "parameters": [
+     {
+      "description": "بحث في الاسم أو الكود",
+      "in": "query",
+      "name": "q",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "status",
+      "required": false,
+      "schema": {
+       "example": "active",
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "sort",
+      "required": false,
+      "schema": {
+       "default": "name",
+       "enum": [
+        "name",
+        "code"
+       ],
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "limit",
+      "required": false,
+      "schema": {
+       "default": 100,
+       "maximum": 500,
+       "type": "number"
+      }
+     },
+     {
+      "in": "query",
+      "name": "offset",
+      "required": false,
+      "schema": {
+       "default": 0,
+       "type": "number"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ProjectListDto"
+        }
+       }
+      },
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "المشروعات (قراءة) — موديول تجريبي للبنية الجديدة",
+    "tags": [
+     "v1 projects (pilot)"
+    ]
+   }
+  },
+  "/api/v1/projects/migration-plan": {
+   "get": {
+    "description": "مفيش أي كتابة. التنفيذ في المرحلة 6 بموافقة منفصلة ونسخة احتياطية مختبرة.",
+    "operationId": "ProjectsController_migrationPlan",
+    "parameters": [],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "خطة ترحيل المشروعات للجدول العلائقي — قراءة بس (dry-run)",
+    "tags": [
+     "v1 projects (pilot)"
+    ]
+   }
+  },
+  "/api/v1/projects/{id}": {
+   "get": {
+    "operationId": "ProjectsController_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ProjectDto"
+        }
+       }
+      },
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "tags": [
+     "v1 projects (pilot)"
+    ]
+   }
+  },
+  "/api/v1/stock/adjustments": {
+   "get": {
+    "operationId": "StockController_list",
+    "parameters": [],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "tags": [
+     "v1 stock adjustments"
+    ]
+   },
+   "post": {
+    "operationId": "StockController_create",
+    "parameters": [],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/CreateAdjustmentDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "طلب تسوية (مسودة) — أمين المخزن",
+    "tags": [
+     "v1 stock adjustments"
+    ]
+   }
+  },
+  "/api/v1/stock/adjustments/{id}": {
+   "get": {
+    "operationId": "StockController_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "tags": [
+     "v1 stock adjustments"
+    ]
+   },
+   "patch": {
+    "operationId": "StockController_update",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/UpdateAdjustmentDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "تعديل المسودة/المرتجعة بس",
+    "tags": [
+     "v1 stock adjustments"
+    ]
+   }
+  },
+  "/api/v1/stock/adjustments/{id}/cancel": {
+   "post": {
+    "operationId": "StockController_cancel",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ReasonDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "tags": [
+     "v1 stock adjustments"
+    ]
+   }
+  },
+  "/api/v1/stock/adjustments/{id}/post": {
+   "post": {
+    "operationId": "StockController_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "إعادة محاولة الترحيل — صلاحية «ترحيل» مستقلة بس (الترحيل العادي آلي بعد الاعتماد)",
+    "tags": [
+     "v1 stock adjustments"
+    ]
+   }
+  },
+  "/api/v1/stock/adjustments/{id}/submit": {
+   "post": {
+    "operationId": "StockController_submit",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "tags": [
+     "v1 stock adjustments"
+    ]
+   }
+  },
+  "/api/v1/suppliers": {
+   "get": {
+    "operationId": "SuppliersController_list",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "q",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "الموردين (بحث بالاسم/الرقم الضريبي/السجل/الهاتف/البريد)",
+    "tags": [
+     "v1 suppliers"
+    ]
+   },
+   "post": {
+    "operationId": "SuppliersController_create",
+    "parameters": [],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/CreateSupplierDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "إضافة مورد",
+    "tags": [
+     "v1 suppliers"
+    ]
+   }
+  },
+  "/api/v1/suppliers/migration-plan": {
+   "get": {
+    "operationId": "SuppliersController_plan",
+    "parameters": [],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "خطة ترحيل الموردين والعملاء — قراءة بس (dry-run)",
+    "tags": [
+     "v1 suppliers"
+    ]
+   }
+  },
+  "/api/v1/suppliers/{id}": {
+   "get": {
+    "operationId": "SuppliersController_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "tags": [
+     "v1 suppliers"
+    ]
+   },
+   "patch": {
+    "operationId": "SuppliersController_update",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/UpdateSupplierDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "تعديل بيانات مورد (rev إلزامي)",
+    "tags": [
+     "v1 suppliers"
+    ]
+   }
+  },
+  "/api/v1/warehouses": {
+   "get": {
+    "operationId": "WarehousesController_overview",
+    "parameters": [],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "الأصناف بأرصدتها (رصيد/محجوز لكل مخزن) + المخازن",
+    "tags": [
+     "v1 warehouses"
+    ]
+   }
+  },
+  "/api/v1/warehouses/items": {
+   "post": {
+    "operationId": "WarehousesController_createItem",
+    "parameters": [],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/CreateItemDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "tags": [
+     "v1 warehouses"
+    ]
+   }
+  },
+  "/api/v1/warehouses/items/{id}": {
+   "patch": {
+    "operationId": "WarehousesController_updateItem",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/UpdateItemDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "tags": [
+     "v1 warehouses"
+    ]
+   }
+  },
+  "/api/v1/warehouses/locations": {
+   "post": {
+    "operationId": "WarehousesController_createLocation",
+    "parameters": [],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/CreateLocationDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "tags": [
+     "v1 warehouses"
+    ]
+   }
+  },
+  "/api/v1/warehouses/movements": {
+   "get": {
+    "operationId": "WarehousesController_movements",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "itemId",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "tags": [
+     "v1 warehouses"
+    ]
+   }
+  },
+  "/api/v1/warehouses/transfers": {
+   "post": {
+    "operationId": "WarehousesController_transfer",
+    "parameters": [],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/TransferDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "تحويل بين مخزنين (B-50 على المصدر)",
+    "tags": [
+     "v1 warehouses"
+    ]
+   }
+  }
+ },
+ "servers": [],
+ "tags": []
+}

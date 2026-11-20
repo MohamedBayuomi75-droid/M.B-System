@@ -82,7 +82,10 @@ jobs:
           cache: npm
           cache-dependency-path: server/package-lock.json
       - run: npm --prefix server ci
-      - name: Server e2e tests
+      # بعض الاختبارات بتشغّل أدوات الـ CLI المبنية (dist/cli/tax-drafts.js وformula-drafts.js)
+      - name: Server build
+        run: npm --prefix server run build
+      - name: Server e2e tests (incl. the OpenAPI contract)
         run: npm --prefix server run test:e2e
 
   # (3) المتصفح: الواجهة القديمة في أوضاعها التلاتة + اختبارات الويب والواجهة الجديدة والأمان والمعادلات
