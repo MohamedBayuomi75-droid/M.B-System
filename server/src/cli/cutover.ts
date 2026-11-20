@@ -4,6 +4,7 @@ import { readFileSync } from 'node:fs';
 import ds from '../database/data-source';
 import { cutoverModule, reconcileModule, rollbackModule } from '../cutover/module-cutover';
 import { MODULES } from '../cutover/parties-cutover';
+import { checkBackupGate } from '../cutover/backup-gate';
 
 /**
  * أمر تشغيل نقل الموديول (MODULE_MIGRATION_PLAN §2 الخطوة 7 و§5). مش بيشتغل تلقائيًا مع الـ migrations.
@@ -16,16 +17,10 @@ import { MODULES } from '../cutover/parties-cutover';
 function arg(name: string): string | undefined { const i = process.argv.indexOf(`--${name}`); return i > 0 ? process.argv[i + 1] : undefined; }
 
 function backupGate(): void {
-  const log = arg('backup-log'); const confirm = arg('confirm-backup');
+  const log = arg('backup-log');
   if (!log) throw new Error('--backup-log مطلوب (BACKUP_DIR/backup-log.jsonl)');
-  const events = readFileSync(log, 'utf8').split('\n').filter(Boolean).map((l) => JSON.parse(l) as { at: string; kind: string; status: string });
-  // backup-full.sh بيسجّل النسخة الكاملة (pg_basebackup + pg_verifybackup) بالنوع "base" — و"full" مقبول للتوافق
-  const full = events.filter((e) => (e.kind === 'base' || e.kind === 'full') && e.status === 'ok').at(-1);
-  if (!full) throw new Error('مفيش نسخة كاملة ناجحة في السجل');
-  const restore = events.filter((e) => e.kind === 'restore-test' && e.status === 'ok' && e.at > full.at).at(-1);
-  if (!restore) throw new Error(`مفيش اختبار استعادة ناجح بعد آخر نسخة كاملة (${full.at}) — شغّل restore-test.sh الأول`);
-  console.log(`آخر نسخة كاملة: ${full.at} · اختبار الاستعادة: ${restore.at}`);
-  if (confirm !== full.at) throw new Error(`للتأكيد: أعد التشغيل بـ --confirm-backup ${full.at}`);
+  const g = checkBackupGate(readFileSync(log, 'utf8'), arg('confirm-backup'));
+  console.log(`آخر نسخة كاملة: ${g.full} · اختبار الاستعادة: ${g.restore}`);
 }
 
 async function main() {
