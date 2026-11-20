@@ -6,7 +6,7 @@
   "TECH": 19,
   "NEW": 10,
   "CHG": 15,
-  "DEC": 95
+  "DEC": 96
  },
  "entries": [
   {
@@ -2183,6 +2183,24 @@
    "classification": "OPEN-DECISION",
    "kind": "decision",
    "title": "نطاق الـ UAT اليدوي للموديول التجريبي: المستخدم نفّذ UAT الشكل والقراءة (G1–G3، G6، G7، G9، G11) ونتيجته «تمام». سيناريوهات الكتابة (G4، G5، G8، G10) مااتحفظش م",
+   "module": "قرارات",
+   "priority": "—",
+   "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",
+   "tests": [],
+   "target": "—",
+   "notes": "محسوم",
+   "aliases": [],
+   "decisionStatus": "resolved",
+   "priorityStatus": "—",
+   "status": "resolved"
+  },
+  {
+   "id": "DEC-0095",
+   "key": "decision:DEC-0095",
+   "prefix": "DEC",
+   "classification": "OPEN-DECISION",
+   "kind": "decision",
+   "title": "بوابة المرحلة 6: الموردين والعملاء Accepted كموديول تجريبي، وطريقة النقل والرجوع (الدليل + reconcile) معتمدة للمرحلة 13",
    "module": "قرارات",
    "priority": "—",
    "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",

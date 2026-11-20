@@ -11,8 +11,8 @@
 | `CHG-` | APPROVED-CHANGE | 14 |
 | `TECH-` | TECHNICAL | 18 |
 | `NEW-` | NEW-REQUIREMENT | 9 |
-| `DEC-` | OPEN-DECISION (المفتوح والمحسوم) | 94 (مفتوح: 41) |
-| **الإجمالي** | | **479** |
+| `DEC-` | OPEN-DECISION (المفتوح والمحسوم) | 95 (مفتوح: 41) |
+| **الإجمالي** | | **480** |
 
 **عناصر LEG حسب النوع:** page 54 · calc 120 · data-write 20 · modal 63 · export/print 37 · permission 8 · electron-capability 42
 
@@ -514,4 +514,5 @@
 | DEC-0092 | decision | قرارات | ملاحظات شكل في شاشات `/app/` (درجة منخفضة): السجل المختار مش متعلّم في القايمة، وخانة التاريخ بتظهر `mm/dd/yyyy`، والرصيد الافتتاحي بأرقام عربية في سطر وإنجليزي | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
 | DEC-0093 | decision | قرارات | تطابق شكل `/app/` مع الواجهة القديمة (ملاحظة الـ UAT): (أ) تطابق كامل للإطار والشاشتين (مقترح، وده طلب الخطة) · (ب) الشاشتين بس، والإطار بعدين · (ج) اعتماد الشك | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
 | DEC-0094 | decision | قرارات | نطاق الـ UAT اليدوي للموديول التجريبي: المستخدم نفّذ UAT الشكل والقراءة (G1–G3، G6، G7، G9، G11) ونتيجته «تمام». سيناريوهات الكتابة (G4، G5، G8، G10) مااتحفظش م | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
+| DEC-0095 | decision | قرارات | بوابة المرحلة 6: الموردين والعملاء Accepted كموديول تجريبي، وطريقة النقل والرجوع (الدليل + reconcile) معتمدة للمرحلة 13 | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
 
