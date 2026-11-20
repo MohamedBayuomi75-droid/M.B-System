@@ -159,6 +159,10 @@ jobs:
       - name: Visual comparison with the CI baseline
         if: matrix.suite == 'web-app-security'
         run: node tools/discovery/visual-compare.js --baseline docs/discovery/visual-baseline-ci --out "$RUNNER_TEMP/visual"
+      # الواجهة الجديدة /app/ (المرحلة 6، البند 6.4): الصفحات ونماذج الموردين والعملاء، على خط أساس بيئة الـ CI
+      - name: Visual comparison of /app/ with the CI baseline
+        if: matrix.suite == 'web-app-security'
+        run: node tools/discovery/visual-compare.js --app --baseline docs/discovery/app-baseline-ci --out "$RUNNER_TEMP/visual/app"
       - name: Upload visual comparison report
         if: matrix.suite == 'web-app-security' && always()
         uses: actions/upload-artifact@v4

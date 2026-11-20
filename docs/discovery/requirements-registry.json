@@ -6,7 +6,7 @@
   "TECH": 19,
   "NEW": 10,
   "CHG": 15,
-  "DEC": 91
+  "DEC": 93
  },
  "entries": [
   {
@@ -2121,6 +2121,42 @@
    "decisionStatus": "resolved",
    "priorityStatus": "—",
    "status": "resolved"
+  },
+  {
+   "id": "DEC-0091",
+   "key": "decision:DEC-0091",
+   "prefix": "DEC",
+   "classification": "OPEN-DECISION",
+   "kind": "decision",
+   "title": "فرق حقول في شاشات `/app/`: الخانات المخصصة (`extraFields`) للموردين والعملاء، وحالة العميل (`status`)، ليها مكان في القاعدة والـ API وبتتحفظ زي ما هي، بس مالهاش",
+   "module": "قرارات",
+   "priority": "—",
+   "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",
+   "tests": [],
+   "target": "—",
+   "notes": "مفتوح",
+   "aliases": [],
+   "decisionStatus": "open",
+   "priorityStatus": "—",
+   "status": "open"
+  },
+  {
+   "id": "DEC-0092",
+   "key": "decision:DEC-0092",
+   "prefix": "DEC",
+   "classification": "OPEN-DECISION",
+   "kind": "decision",
+   "title": "ملاحظات شكل في شاشات `/app/` (درجة منخفضة): السجل المختار مش متعلّم في القايمة، وخانة التاريخ بتظهر `mm/dd/yyyy`، والرصيد الافتتاحي بأرقام عربية في سطر وإنجليزي",
+   "module": "قرارات",
+   "priority": "—",
+   "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",
+   "tests": [],
+   "target": "—",
+   "notes": "مفتوح",
+   "aliases": [],
+   "decisionStatus": "open",
+   "priorityStatus": "—",
+   "status": "open"
   },
   {
    "id": "LEG-0001",

@@ -89,3 +89,34 @@ export async function rollbackModule(ds: DataSource, spec: ModuleSpec, by: strin
     throw e;
   } finally { await qr.release(); }
 }
+
+/**
+ * المطابقة (خطة v1.4.5 المرحلة 6، البند 6.5): لكل مجموعة في الموديول — العدد، وبصمة المحتوى (id + rev + بصمة الشكل القديم لكل سجل)،
+ * وبصمة الترتيب. قبل النقل من records (بعد نفس التطبيع الموثّق اللي تحقق التكافؤ بيستخدمه)، وبعده من الجدول (بالشكل اللي الواجهة القديمة بتشوفه).
+ * ومعاهم بصمة واحدة لكل المجموعات التانية (من legacy_records) عشان يبان إن مفيش حاجة تانية اتلمست.
+ * المخرج أعداد وبصمات بس — مفيش أي قيمة من البيانات. قراءة بس.
+ */
+export interface ReconcileReport {
+  at: string;
+  collections: { collection: string; source: 'records' | 'table'; count: number; content: string; order: string }[];
+  others: { collections: number; count: number; content: string };
+}
+export async function reconcileModule(ds: DataSource, spec: ModuleSpec): Promise<ReconcileReport> {
+  const names = spec.collections.map((c) => c.collection);
+  const cut = new Set((await ds.query(`SELECT collection FROM module_cutover WHERE collection = ANY($1)`, [names])).map((r: { collection: string }) => r.collection));
+  const report: ReconcileReport = { at: new Date().toISOString(), collections: [], others: { collections: 0, count: 0, content: '' } };
+  for (const p of spec.collections) {
+    const src = cut.has(p.collection)
+      ? `SELECT t.id, t.row_version AS rev, ${p.read}(t) AS data, t.created_at FROM ${p.table} t WHERE t.deleted_at IS NULL`
+      : `SELECT r.id, r.rev, ${p.normalized} AS data, r.created_at FROM records r WHERE r.collection = '${p.collection}' AND r.deleted_at IS NULL`;
+    const [row] = await ds.query(`SELECT count(*)::int AS count,
+        coalesce(md5(string_agg(x.id || ':' || x.rev || ':' || md5(x.data::text), ',' ORDER BY x.id)), '') AS content,
+        coalesce(md5(string_agg(x.id, ',' ORDER BY x.created_at, x.id)), '') AS "order" FROM (${src}) x`);
+    report.collections.push({ collection: p.collection, source: cut.has(p.collection) ? 'table' : 'records', ...row });
+  }
+  const [o] = await ds.query(`SELECT count(DISTINCT collection)::int AS collections, count(*)::int AS count,
+      coalesce(md5(string_agg(collection || '/' || id || ':' || rev || ':' || md5(data::text), ',' ORDER BY collection, id)), '') AS content
+    FROM legacy_records WHERE deleted_at IS NULL AND NOT (collection = ANY($1))`, [names]);
+  report.others = o;
+  return report;
+}

@@ -1,5 +1,6 @@
 import { adminToken, bearer, bootstrap, createTestApp, sync, TestApp } from './app';
-import { partiesCutover, partiesRollback } from '../src/cutover/parties-cutover';
+import { MODULES, partiesCutover, partiesRollback } from '../src/cutover/parties-cutover';
+import { reconcileModule, ReconcileReport } from '../src/cutover/module-cutover';
 
 /**
  * المرحلة 6.1 — نقل الموردين والعملاء للجداول (الخطوات 6 و7 و§5 الرجوع) ببيانات اختبار.
@@ -13,6 +14,10 @@ describe('phase 6.1 cutover: records → relational tables (and back)', () => {
     phone: '', email: '', address: '', bankAccount: '', iban: '', notes: '', extraFields: [], attachments: [], ...extra });
   const parties = async () => { const b = await bootstrap(t, admin); return { s: b.data.ledger.suppliers, c: b.data.clients.customers, revs: [b.meta.revs['ledger.suppliers'], b.meta.revs['clients.customers']], other: b.data.ledger.invoices }; };
   let before: Awaited<ReturnType<typeof parties>>;
+  // المطابقة (المرحلة 6، البند 6.5): أعداد وبصمات بس، ولازم تتطابق قبل النقل وبعده وبعد الرجوع
+  const reconcile = () => reconcileModule(t.ds, MODULES.parties);
+  const sig = (r: ReconcileReport) => ({ c: r.collections.map(({ collection, count, content, order }) => ({ collection, count, content, order })), o: r.others });
+  let r0: ReconcileReport;
 
   beforeAll(async () => {
     t = await createTestApp();
@@ -34,16 +39,23 @@ describe('phase 6.1 cutover: records → relational tables (and back)', () => {
   afterAll(async () => t?.close());
 
   it('dry-run migrates + verifies everything, then leaves no trace', async () => {
+    r0 = await reconcile();
+    expect(r0.collections.map((c) => [c.collection, c.source, c.count])).toEqual([['ledger.suppliers', 'records', 2], ['clients.customers', 'records', 1]]);
+    expect(r0.others.count).toBeGreaterThan(0);
     const r = await partiesCutover(t.ds, 'test', 'dry-run');
     expect(r.collections.map((c) => [c.collection, c.migrated])).toEqual([['ledger.suppliers', 2], ['clients.customers', 1]]);
     const [{ n }] = await t.ds.query(`SELECT (SELECT count(*) FROM suppliers) + (SELECT count(*) FROM customers) + (SELECT count(*) FROM module_cutover) AS n`);
     expect(Number(n)).toBe(0);
+    expect(sig(await reconcile())).toEqual(sig(r0));
   });
 
   it('execute: the legacy UI sees exactly the same data, order and revs; records are frozen', async () => {
     await partiesCutover(t.ds, 'test', 'execute');
     const after = await parties();
     expect(after).toEqual(before);
+    const r1 = await reconcile();
+    expect(r1.collections.map((c) => c.source)).toEqual(['table', 'table']);
+    expect(sig(r1)).toEqual(sig(r0)); // نفس الأعداد والبصمات والترتيب من الجداول، ومفيش مجموعة تانية اتلمست
     const [{ n }] = await t.ds.query(`SELECT count(*)::int AS n FROM customer_contacts`);
     expect(n).toBe(1);
     await expect(t.ds.query(`UPDATE records SET data = data WHERE collection = 'ledger.suppliers' AND id = 's1'`)).rejects.toThrow(/frozen/);
@@ -80,9 +92,14 @@ describe('phase 6.1 cutover: records → relational tables (and back)', () => {
 
   it('rollback: everything (including changes made after the cutover) goes back to records; tables emptied; legacy writes go to records again', async () => {
     const mid = await parties();
+    const rMid = await reconcile();
+    expect(sig(rMid)).not.toEqual(sig(r0)); // التعديلات بعد النقل باينة في البصمة
     const res = await partiesRollback(t.ds, 'test');
     expect(res.restored).toEqual({ 'ledger.suppliers': 3, 'clients.customers': 2 }); // s3 كان ممسوح قبل النقل فمااتنقلش (حذفه في records زي ما هو)
     expect(await parties()).toEqual(mid);
+    const r2 = await reconcile();
+    expect(r2.collections.map((c) => c.source)).toEqual(['records', 'records']);
+    expect(sig(r2)).toEqual(sig(rMid)); // الرجوع: نفس الحالة اللي كانت في الجداول بالظبط (شاملة التعديلات بعد النقل)
     const [{ n }] = await t.ds.query(`SELECT (SELECT count(*) FROM suppliers) + (SELECT count(*) FROM customers) + (SELECT count(*) FROM module_cutover) AS n`);
     expect(Number(n)).toBe(0);
     const s2 = (await bootstrap(t, admin)).meta.revs['ledger.suppliers'].s2;

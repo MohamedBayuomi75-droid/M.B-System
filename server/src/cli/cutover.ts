@@ -2,7 +2,7 @@
 import 'reflect-metadata';
 import { readFileSync } from 'node:fs';
 import ds from '../database/data-source';
-import { cutoverModule, rollbackModule } from '../cutover/module-cutover';
+import { cutoverModule, reconcileModule, rollbackModule } from '../cutover/module-cutover';
 import { MODULES } from '../cutover/parties-cutover';
 
 /**
@@ -10,6 +10,7 @@ import { MODULES } from '../cutover/parties-cutover';
  *   npm run cutover -- <parties|warehouses> dry-run
  *   npm run cutover -- parties execute  --by <اسم المنفّذ> --backup-log <BACKUP_DIR/backup-log.jsonl> --confirm-backup <وقت آخر نسخة كاملة>
  *   npm run cutover -- parties rollback --by <اسم المنفّذ> --backup-log ... --confirm-backup ...
+ *   npm run cutover -- parties reconcile   (قراءة بس: أعداد وبصمات للمطابقة قبل النقل وبعده وبعد الرجوع — مفيش قيم)
  * execute/rollback: لازم آخر نسخة كاملة ناجحة + اختبار استعادة ناجح بعدها في سجل النسخ، والمنفّذ يأكّد وقت النسخة بنفسه.
  */
 function arg(name: string): string | undefined { const i = process.argv.indexOf(`--${name}`); return i > 0 ? process.argv[i + 1] : undefined; }
@@ -29,11 +30,12 @@ function backupGate(): void {
 async function main() {
   const [mod, action] = process.argv.slice(2).filter((a) => !a.startsWith('--') && !process.argv[process.argv.indexOf(a) - 1]?.startsWith('--'));
   const spec = MODULES[mod];
-  if (!spec || !['dry-run', 'execute', 'rollback'].includes(action)) throw new Error(`الاستخدام: cutover <${Object.keys(MODULES).join('|')}> dry-run|execute|rollback`);
+  if (!spec || !['dry-run', 'execute', 'rollback', 'reconcile'].includes(action)) throw new Error(`الاستخدام: cutover <${Object.keys(MODULES).join('|')}> dry-run|execute|rollback|reconcile`);
   const by = arg('by') ?? 'cli';
-  if (action !== 'dry-run') backupGate();
+  if (action === 'execute' || action === 'rollback') backupGate();
   await ds.initialize();
   try {
+    if (action === 'reconcile') { console.log(JSON.stringify(await reconcileModule(ds, spec), null, 2)); return; }
     const r = action === 'rollback' ? await rollbackModule(ds, spec, by) : await cutoverModule(ds, spec, by, action as 'dry-run' | 'execute');
     console.log(JSON.stringify(r, null, 2));
     console.log(action === 'dry-run' ? '✓ dry-run: كل السجلات اتنقلت واتطابقت — ومفيش أي حاجة اتحفظت (ROLLBACK)' : `✓ ${action} تم`);

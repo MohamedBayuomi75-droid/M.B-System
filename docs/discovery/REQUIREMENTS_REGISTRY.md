@@ -11,8 +11,8 @@
 | `CHG-` | APPROVED-CHANGE | 14 |
 | `TECH-` | TECHNICAL | 18 |
 | `NEW-` | NEW-REQUIREMENT | 9 |
-| `DEC-` | OPEN-DECISION (المفتوح والمحسوم) | 90 (مفتوح: 41) |
-| **الإجمالي** | | **475** |
+| `DEC-` | OPEN-DECISION (المفتوح والمحسوم) | 92 (مفتوح: 43) |
+| **الإجمالي** | | **477** |
 
 **عناصر LEG حسب النوع:** page 54 · calc 120 · data-write 20 · modal 63 · export/print 37 · permission 8 · electron-capability 42
 
@@ -510,4 +510,6 @@
 | DEC-0088 | decision | قرارات | اعتماد ADR-029 لـ ADR-033 كما هم: الإصدار في المسار + عقد OpenAPI متتبّع، والمهام الخلفية بطابور فوق PostgreSQL، والمراقبة بالتدريج + بريد عند الأعطال، وDocker  | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
 | DEC-0089 | decision | قرارات | خط أساس بصري خاص بالـ CI (`docs/discovery/visual-baseline-ci/`) بيتولّد على أجهزة GitHub ويتراجع، وبعدها المقارنة البصرية إلزامية في الـ CI كمان | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
 | DEC-0090 | decision | قرارات | الخطوة الجاية: المرحلة 6 — القبول الرسمي للموردين والعملاء كموديول تجريبي (UAT، وبروفة نقل ورجوع على نسخة البيانات الحقيقية، واختبارات P0 حسب DEC-0086) | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
+| DEC-0091 | decision | قرارات | فرق حقول في شاشات `/app/`: الخانات المخصصة (`extraFields`) للموردين والعملاء، وحالة العميل (`status`)، ليها مكان في القاعدة والـ API وبتتحفظ زي ما هي، بس مالهاش | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | open | مفتوح |
+| DEC-0092 | decision | قرارات | ملاحظات شكل في شاشات `/app/` (درجة منخفضة): السجل المختار مش متعلّم في القايمة، وخانة التاريخ بتظهر `mm/dd/yyyy`، والرصيد الافتتاحي بأرقام عربية في سطر وإنجليزي | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | open | مفتوح |
 
