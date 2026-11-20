@@ -67,7 +67,8 @@ async function login(page, username, password) {
     ok((await A.page.textContent('#whoami')).includes('مدير النظام'), 'shell shows the user and role');
     eq(await A.page.evaluate(() => getComputedStyle(document.body).direction), 'rtl', 'page direction is RTL');
     const nav = await A.page.evaluate(() => ({ app: [...document.querySelectorAll('#nav [data-page]')].map((a) => a.getAttribute('data-page')), legacy: [...document.querySelectorAll('#nav [data-legacy]')].map((a) => a.getAttribute('href')) }));
-    ok(nav.app.includes('projects') && nav.legacy.includes('/legacy/#ledger.suppliers'), 'menu from the page routing table (pilot in Angular, others → legacy)', nav);
+    ok(nav.app.includes('ledger.suppliers') && nav.app.includes('clients.customers') && nav.legacy.includes('/legacy/#dashboard') && nav.legacy.includes('/legacy/#hrHome'), 'legacy sections (DEC-0093): sections with a moved page open it here, the others open their legacy board/page', nav);
+    ok(!!(await A.page.$('.lx .top .brand img.mark-logo')) && !!(await A.page.$('.lx nav.nav.nav-sections')), 'legacy header and section tabs');
   }
   r = await api('POST', '/api/auth/login', { username: 'admin', password: PW });
   adminTok = r.body.accessToken;
@@ -78,7 +79,8 @@ async function login(page, username, password) {
 
   console.log('[3] pilot screen reads /api/v1/projects; money shown from the server string (no client math)');
   {
-    await A.page.click('#nav [data-page="projects"]');
+    await A.page.click('#nav [data-section="clients"]');
+    await A.page.click('#navProjects');
     await A.page.waitForSelector('#projectsTable tr[data-id="p1"]');
     const rows = await A.page.evaluate(() => [...document.querySelectorAll('#projectsTable tr[data-id]')].map((tr) => [...tr.querySelectorAll('td')].map((td) => td.textContent.trim())));
     eq(rows.length, 2, 'two projects listed');
@@ -109,13 +111,13 @@ async function login(page, username, password) {
     await login(W.page, 'app_wh', PW);
     await W.page.waitForSelector('#whoami');
     await W.page.goto(srv.base + '/app/projects');
-    await W.page.waitForSelector('h1');
+    await W.page.waitForSelector('.shell-body h1');
     const canView = !!(me.permissions.pages.projects && me.permissions.pages.projects.view);
-    const h1 = await W.page.textContent('h1');
+    const h1 = await W.page.textContent('.shell-body h1');
     ok(canView ? h1.includes('المشروعات') : h1.includes('ليس لديك صلاحية'), `guard follows server permissions (warehouse can view projects: ${canView})`, h1);
     await W.page.goto(srv.base + '/app/does-not-exist');
-    await W.page.waitForSelector('h1');
-    ok((await W.page.textContent('h1')).includes('غير موجودة'), 'unknown route → not found inside the shell');
+    await W.page.waitForSelector('.shell-body h1');
+    ok((await W.page.textContent('.shell-body h1')).includes('غير موجودة'), 'unknown route → not found inside the shell');
     await W.ctx.close();
   }
 
@@ -194,54 +196,80 @@ async function login(page, username, password) {
 
   console.log('[6c] phase 6.1: suppliers & customers screens (cutover) write the same records the legacy UI reads (test data)');
   {
+    // بنفس شكل الواجهة القديمة (DEC-0093): الإضافة في نافذة «إضافة مورد جديد»، والتعديل في تبويب «البيانات»
     await A.page.goto(srv.base + '/app/suppliers');
     await A.page.waitForSelector('#supNew');
+    ok(!!(await A.page.$('.layout .sidebar .supplier-list, .layout .sidebar .empty-side')) && !!(await A.page.$('.main-panel .welcome')), 'legacy layout: sidebar list + welcome panel');
     await A.page.click('#supNew');
-    await A.page.fill('#supForm [data-field="name"]', 'مورد اختبار الواجهة');
-    await A.page.fill('#supForm [data-field="taxId"]', '1234');
-    await A.page.click('#supSave');
+    await A.page.waitForSelector('#modalOverlay .modal.wide');
+    await A.page.fill('#supNewForm [data-field="name"]', 'مورد اختبار الواجهة');
+    await A.page.fill('#supNewForm [data-field="taxId"]', '1234');
+    await A.page.click('#m_save');
     await A.page.waitForSelector('#supError');
     ok((await A.page.textContent('#supError')).includes('الرقم الضريبي'), 'server validation shown (short tax id)');
-    await A.page.fill('#supForm [data-field="taxId"]', '123456789');
-    await A.page.fill('#supForm [data-field="openingBalance"]', '-750.25');
-    // الخانات المخصصة (DEC-0091): خانة بقيمة بتتحفظ، والفاضية القيمة بتتشال (زي collectExtraFields في الواجهة القديمة)
-    await A.page.click('#supAddExtra'); await A.page.click('#supAddExtra');
-    await A.page.fill('[data-extra="0"] input[name="xl0"]', 'المندوب'); await A.page.fill('[data-extra="0"] input[name="xv0"]', 'سعيد');
-    await A.page.fill('[data-extra="1"] input[name="xl1"]', 'فاضية');
-    await A.page.click('#supSave');
-    await A.page.waitForFunction(() => /^-750\.25/.test(document.querySelector('#supForm [data-field="openingBalance"]')?.value || '') && document.querySelectorAll('#supExtra [data-extra]').length === 1);
-    await A.page.waitForSelector('#supList li.selected');
-    ok(await A.page.$eval('#supList li.selected', (li) => li.textContent.includes('مورد اختبار الواجهة')), 'saved supplier is the selected list item (DEC-0092)');
+    await A.page.fill('#supNewForm [data-field="taxId"]', '123456789');
+    await A.page.fill('#supNewForm [data-field="openingBalance"]', '-750.25');
+    // الهاتف والبريد… مخفيين لحد زرار «+ إضافة خانة» (زي النافذة القديمة)، والخانة المخصصة باسم من نافذة صغيرة
+    ok(!(await A.page.$('#supNewForm [data-field="phone"]')), 'phone/email/bank hidden until requested (legacy modal)');
+    await A.page.click('#m_showExtraFields');
+    await A.page.fill('#supNewForm [data-field="phone"]', '0100');
+    await A.page.click('#m_addCustomFieldBtn'); await A.page.fill('#efPromptInput', 'المندوب'); await A.page.click('#efPromptOk');
+    await A.page.fill('#m_customFieldsWrap [data-extra="0"] input', 'سعيد');
+    await A.page.click('#m_addCustomFieldBtn'); await A.page.fill('#efPromptInput', 'فاضية'); await A.page.click('#efPromptOk');
+    await A.page.click('#m_save');
+    await A.page.waitForSelector('#supForm');
+    await A.page.waitForSelector('#supList li.supplier-item.active');
+    ok(await A.page.$eval('#supList li.supplier-item.active', (li) => li.textContent.includes('مورد اختبار الواجهة')), 'new supplier opened and marked active in the list');
+    eq(await A.page.$eval('#supForm [data-field="openingBalance"]', (i) => i.value), '-750.25', 'opening balance shown like the legacy input (no trailing zeros)');
+    eq(await A.page.$$eval('#supExtra [data-extra]', (r) => r.length), 1, 'empty custom field dropped (legacy collectExtraFields)');
     const b = await api('GET', '/api/bootstrap', null, adminTok);
     const legacy = b.body.data.ledger.suppliers.find((x) => x.name === 'مورد اختبار الواجهة');
-    eq(legacy && [legacy.taxId, legacy.openingBalance, legacy.attachments], ['123456789', -750.25, []], 'legacy sees the supplier with the same field types');
+    eq(legacy && [legacy.taxId, legacy.openingBalance, legacy.phone, legacy.attachments], ['123456789', -750.25, '0100', []], 'legacy sees the supplier with the same field types');
     eq(legacy && legacy.extraFields, [{ label: 'المندوب', value: 'سعيد' }], 'custom fields from the new screen reach the legacy record (DEC-0091)');
+    // التعديل من تبويب «البيانات»
+    await A.page.fill('#supForm [data-field="notes"]', 'ملاحظة');
+    const [pu] = await Promise.all([A.page.waitForResponse((r) => r.url().includes('/api/v1/suppliers/') && r.request().method() === 'PATCH'), A.page.click('#supSave')]);
+    eq(pu.status(), 200, 'info tab saves (PATCH with rev)');
+    await A.page.waitForFunction(() => (document.getElementById('appToast')?.textContent || '').includes('تم حفظ البيانات'));
+    ok(true, 'legacy-style toast');
     await A.page.fill('#supSearch', 'اختبار الواجهه');
     await A.page.waitForFunction(() => document.querySelectorAll('#supList li[data-id]').length === 1);
     ok(true, 'Arabic-normalized search');
 
+    // العملاء: جدول بنفس أعمدة القديمة + نافذة العميل. الخانات المخصصة في القديمة معرّفة من الإعدادات: بتتعدّل قيمتها بس
+    await api('POST', '/api/sync', { changes: [{ collection: 'clients.customers', id: 'cus_x1', op: 'upsert', baseRev: 0,
+      set: { id: 'cus_x1', code: 'CUS-0900', name: 'عميل بخانات', phone: '', status: 'active', contracts: [], extraFields: [{ label: 'المنطقة', value: 'القاهرة' }] } }] }, adminTok);
     await A.page.goto(srv.base + '/app/customers');
     await A.page.waitForSelector('#cusNew');
+    await A.page.waitForSelector('#cusList tr[data-id="cus_x1"]');
+    const row = await A.page.$$eval('#cusList tr[data-id="cus_x1"] td', (td) => td.map((x) => x.textContent.trim()));
+    eq([row[0], row[1], row[2], row[6]], ['CUS-0900', 'عميل بخانات', '—', '0'], 'table columns like the legacy table (code, name, phone, contracts)');
+    ok(row[10].includes('ناقص: رقم الهاتف') && row[10].includes('لا يوجد عقد'), 'notes column from the server (same rules as customerNotesIssues)', row[10]);
     await A.page.click('#cusNew');
+    await A.page.waitForSelector('#appModal .modal');
     await A.page.fill('#cusForm [data-field="name"]', 'عميل اختبار الواجهة');
-    await A.page.click('#cusSave');
-    await A.page.waitForFunction(() => /^CUS-\d{4}$/.test(document.querySelector('#cusForm [data-field="code"]')?.value || ''));
-    ok(true, 'customer code generated by the server (legacy format)');
     await A.page.click('#cusAddContact');
-    await A.page.fill('[data-contact="0"] input[name="cn0"]', 'م. اختبار');
-    await A.page.fill('[data-contact="0"] input[name="cp0"]', '0100');
-    await A.page.click('#cusAddExtra');
-    await A.page.fill('#cusExtra [data-extra="0"] input[name="xl0"]', 'المنطقة'); await A.page.fill('#cusExtra [data-extra="0"] input[name="xv0"]', 'الجيزة');
-    const [pr] = await Promise.all([A.page.waitForResponse((r) => r.url().includes('/api/v1/customers/') && r.request().method() === 'PATCH'), A.page.click('#cusSave')]);
-    eq(pr.status(), 200, 'customer with a contact saved');
+    await A.page.fill('[data-contact="0"] input.ct-name', 'م. اختبار');
+    await A.page.fill('[data-contact="0"] input.ct-phone', '0100');
+    const [pc] = await Promise.all([A.page.waitForResponse((r) => r.url().endsWith('/api/v1/customers') && r.request().method() === 'POST'), A.page.click('#cusSave')]);
+    eq(pc.status(), 201, 'customer with a contact created');
+    await A.page.waitForFunction(() => !document.getElementById('appModal'));
     const b2 = await api('GET', '/api/bootstrap', null, adminTok);
     const c = b2.body.data.clients.customers.find((x) => x.name === 'عميل اختبار الواجهة');
+    ok(c && /^CUS-\d{4}$/.test(c.code), 'customer code generated by the server (legacy format)', c && c.code);
     eq(c && [c.status, Array.isArray(c.contracts), typeof c.createdAt], ['active', true, 'string'], 'legacy customer shape');
     eq(c && c.contacts.map((k) => [k.name, k.title, k.phone, k.email]), [['م. اختبار', '', '0100', '']], 'contacts edited in the new screen reach the legacy record');
-    eq(c && c.extraFields, [{ label: 'المنطقة', value: 'الجيزة' }], 'customer custom fields reach the legacy record (DEC-0091)');
+    await A.page.click('#cusList tr[data-id="cus_x1"] .btn-edit-cust');
+    await A.page.waitForSelector('#cusExtra [data-extra="0"]');
     ok((await A.page.textContent('#cusStatus')).includes('نشط'), 'customer status shown read-only, like the full screen');
+    await A.page.fill('#cusExtra [data-extra="0"] input', 'الجيزة');
+    const [pr] = await Promise.all([A.page.waitForResponse((r) => r.url().includes('/api/v1/customers/') && r.request().method() === 'PATCH'), A.page.click('#cusSave')]);
+    eq(pr.status(), 200, 'customer edited from the modal');
+    const b3 = await api('GET', '/api/bootstrap', null, adminTok);
+    eq(b3.body.data.clients.customers.find((x) => x.id === 'cus_x1').extraFields, [{ label: 'المنطقة', value: 'الجيزة' }], 'customer custom field value reaches the legacy record (DEC-0091)');
+    // التنقل بأقسام الواجهة القديمة: «الموردون» بيفتح الشاشة الجديدة، وباقي صفحات القسم في الواجهة القديمة
     const nav = await A.page.$$eval('#nav a', (as) => as.map((x) => [x.textContent.trim(), x.getAttribute('href') || '']));
-    ok(nav.some(([t, h]) => t.includes('الموردين') && !t.includes('الكاملة') && h.endsWith('/suppliers')) && nav.some(([t, h]) => t.includes('الموردين — الشاشة الكاملة') && h.includes('/legacy/')), 'cutover: suppliers → new screen, full legacy screen still reachable');
+    ok(nav.some(([t, h]) => t === 'العملاء' && h.endsWith('/customers')) && nav.some(([t, h]) => t === 'المشاريع' && h.includes('/legacy/#projects')), 'legacy-style nav: customers → new screen, other pages → legacy', nav.slice(0, 30));
   }
 
   console.log('[6d] B-21: taxes screen — admin prepares, a different approver approves, preview uses approved only (test data)');
@@ -265,6 +293,9 @@ async function login(page, username, password) {
     await fetch(srv.base + `/api/users/${apr.body.id}/doc-actions`, { method: 'PUT', headers: { 'content-type': 'application/json', authorization: 'Bearer ' + adminTok }, body: JSON.stringify({ approve: true }) });
     const T = await newContext('tax-approver');
     await login(T.page, 'app_tax_approver', PW);
+    // صفحات Angular الجديدة في قسم «الإعدادات» (الأقسام بشكل الواجهة القديمة — DEC-0093)
+    await T.page.waitForSelector('#nav [data-section="settings"]');
+    await T.page.click('#nav [data-section="settings"]');
     await T.page.waitForSelector('#navTaxes');
     await T.page.click('#navTaxes');
     await T.page.waitForSelector(`tr[data-version="${ver.body.id}"] [data-act="approve"]`);
@@ -340,6 +371,7 @@ async function login(page, username, password) {
     await A.page.waitForSelector(`#frmTable tr[data-version="${v.body.id}"][data-status="pending"]`);
     const T = await newContext('formula-approver');
     await login(T.page, 'app_tax_approver', PW);
+    await T.page.click('#nav [data-section="settings"]');
     await T.page.waitForSelector('#navFormulas');
     await T.page.click('#navFormulas');
     await T.page.click(`#frmTable tr[data-version="${v.body.id}"] td:first-child`);

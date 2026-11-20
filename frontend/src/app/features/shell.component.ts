@@ -29,7 +29,7 @@ const ROLE_LABEL: Record<string, string> = { admin: 'مدير', hr: 'موارد 
   selector: 'app-shell',
   imports: [RouterOutlet, RouterLink, NotificationsBellComponent],
   template: `
-    <div class="lx-root" [class.density-compact]="density() === 0" [class.density-wide]="density() === 2">
+    <div class="lx-root" [class]="'lx-root ' + bodyClass()" [class.density-compact]="density() === 0" [class.density-wide]="density() === 2">
       <div class="lx"><div class="app shell-head">
         <div class="top">
           <div class="brand">
@@ -81,7 +81,6 @@ const ROLE_LABEL: Record<string, string> = { admin: 'مدير', hr: 'موارد 
     .shell-head { padding-bottom: 0; }
     .shell-body { padding-top: 6px; }
     :host ::ng-deep .lx-root { min-height: 100vh; }
-    a.nav-btn, a.btn { text-decoration: none; display: inline-flex; align-items: center; }
   `],
 })
 export class ShellComponent {
@@ -95,10 +94,12 @@ export class ShellComponent {
   private readonly leaf = toSignal(this.router.events.pipe(filter((e) => e instanceof NavigationEnd), map(() => this.deepest())), { initialValue: this.deepest() });
   readonly url = computed(() => this.leaf().url);
   readonly skin = computed(() => this.leaf().skin === 'legacy');
+  /** كلاس الـ body اللي الواجهة القديمة بتحطه للقسم (مثلًا module-ledger لصفحات دفتر الموردين — app.js:231) */
+  readonly bodyClass = computed(() => this.leaf().bodyClass ?? '');
 
   private deepest() {
     let r = this.route.snapshot; while (r.firstChild) r = r.firstChild;
-    return { url: '/' + r.pathFromRoot.flatMap((x) => x.url.map((u) => u.path)).filter(Boolean).join('/'), page: r.data['page'] as string | undefined, skin: r.data['skin'] as string | undefined };
+    return { url: '/' + r.pathFromRoot.flatMap((x) => x.url.map((u) => u.path)).filter(Boolean).join('/'), page: r.data['page'] as string | undefined, skin: r.data['skin'] as string | undefined, bodyClass: r.data['bodyClass'] as string | undefined };
   }
   private visible(key: string) { return !!this.me() && this.session.can(key, 'view'); }
   private finance() { const m = this.me(); return !!(m?.permissions?.manageUsers || m?.docActions?.approve); }

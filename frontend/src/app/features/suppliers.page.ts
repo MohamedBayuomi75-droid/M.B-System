@@ -122,7 +122,7 @@ const copy = (s: Supplier): Form => ({ ...s, openingBalance: moneyInput(s.openin
     </div>
 
     @if (adding(); as m) {
-      <div class="modal-overlay" id="modalOverlay" (click)="$event.target === $event.currentTarget && adding.set(null)">
+      <div class="modal-overlay" id="modalOverlay" (click)="onOverlay($event)">
         <div class="modal wide">
           <h3>إضافة مورد جديد</h3>
           <form id="supNewForm" (ngSubmit)="create()">
@@ -203,6 +203,8 @@ export class SuppliersPage implements OnInit {
       this.items.set(r.items); this.all.set(r.all);
     } catch (e) { this.error.set(errorMessage(e, 'تعذر تحميل الموردين')); }
   }
+  /** إغلاق النافذة بالضغط على الخلفية بس (زي القديمة). مابيرجّعش قيمة: Angular بيلغي الحدث (preventDefault) لو المعالج رجّع false */
+  onOverlay(e: MouseEvent) { if (e.target === e.currentTarget) this.adding.set(null); }
   open(s: Supplier) { this.error.set(''); this.form.set(copy(s)); }
   startNew() { this.error.set(''); this.showExtra.set(false); this.adding.set({ name: '', extraFields: [] }); }
   promptField(target: Form) { this.prompt.set({ target, label: '' }); }

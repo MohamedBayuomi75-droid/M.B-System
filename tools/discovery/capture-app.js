@@ -49,15 +49,18 @@ const PAGES = [['home', '/app/'], ['projects', '/app/projects'], ['suppliers', '
     // النماذج: تعديل أول سجل، وإضافة جديد (الموردين والعملاء)
     const shot = async (name) => { await page.waitForTimeout(400); await page.screenshot({ path: path.join(OUT, `${name}.png`), animations: 'disabled', caret: 'hide' }); };
     let n = PAGES.length + 1;
-    for (const [pfx, url] of [['sup', '/app/suppliers'], ['cus', '/app/customers']]) {
-      const name = pfx === 'sup' ? 'suppliers' : 'customers';
+    // نفس شكل الواجهة القديمة (DEC-0093): الموردين = لوحة المورد + نافذة «إضافة مورد جديد»، والعملاء = نافذة التعديل + نافذة «عميل جديد»
+    const steps = [
+      ['suppliers-edit', '/app/suppliers', '#supList li[data-id] >> nth=0', '#supForm'],
+      ['suppliers-new', '/app/suppliers', '#supNew', '#modalOverlay'],
+      ['customers-edit', '/app/customers', '#cusList .btn-edit-cust >> nth=0', '#appModal'],
+      ['customers-new', '/app/customers', '#cusNew', '#appModal'],
+    ];
+    for (const [name, url, click, wait] of steps) {
       await page.goto(srv.base + url); await page.waitForLoadState('networkidle');
-      await page.click(`#${pfx}List li[data-id] >> nth=0`); await page.waitForSelector(`#${pfx}Form`);
+      await page.click(click); await page.waitForSelector(wait);
       await page.evaluate(() => document.activeElement && document.activeElement.blur());
-      await shot(`${name}-edit`); n++;
-      await page.click(`#${pfx}New`); await page.waitForSelector(`#${pfx}Form`);
-      await page.evaluate(() => document.activeElement && document.activeElement.blur());
-      await shot(`${name}-new`); n++;
+      await shot(name); n++;
     }
     console.log(`app screenshots: ${n} → ${OUT}`);
   } finally { await browser.close(); await srv.stop?.(); process.exit(0); }

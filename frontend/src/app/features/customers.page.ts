@@ -93,7 +93,7 @@ const copy = (c: Customer): Form => ({ ...c, openingBalance: c.openingBalance ==
     </div>
 
     @if (form(); as f) {
-      <div class="modal-overlay" id="appModal" (click)="$event.target === $event.currentTarget && close()">
+      <div class="modal-overlay" id="appModal" (click)="onOverlay($event)">
         <div class="modal modal-wide">
           <form id="cusForm" (ngSubmit)="save()">
             <div class="modal-header">
@@ -115,7 +115,7 @@ const copy = (c: Customer): Form => ({ ...c, openingBalance: c.openingBalance ==
                 </label>
                 @if (f.openingBalance !== null) { <label>رصيد افتتاحي (ج.م)<input class="input" name="openingBalance" data-field="openingBalance" dir="ltr" inputmode="decimal" [(ngModel)]="f.openingBalance" [readonly]="!canSave()" /></label> }
                 <label style="grid-column:1/-1;">العنوان<input class="input" name="address" data-field="address" [(ngModel)]="f.address" [readonly]="!canSave()" /></label>
-                <div id="cuContactsWrap" style="grid-column:1/-1;">
+                <div id="cuContactsWrap" style="grid-column:1/-1;order:8800;">
                   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
                     <strong>جهات الاتصال</strong>
                     @if (canSave()) { <button type="button" class="btn btn-sm" id="cusAddContact" style="background:#1B4332;color:#fff;border-color:#1B4332;" (click)="(f.contacts = f.contacts ?? []).push({ name: '', title: '', phone: '', email: '' })">+ جهة اتصال</button> }
@@ -191,6 +191,8 @@ export class CustomersPage implements OnInit {
     } catch (e) { this.error.set(errorMessage(e, 'تعذر تحميل العملاء')); }
   }
   clear() { this.q = ''; this.dept = ''; this.hasProject = ''; this.hasInvoice = ''; this.hasSurvey = ''; this.page.set(1); this.tick.update((n) => n + 1); }
+  /** إغلاق النافذة بالضغط على الخلفية بس (زي القديمة). مابيرجّعش قيمة: Angular بيلغي الحدث (preventDefault) لو المعالج رجّع false */
+  onOverlay(e: MouseEvent) { if (e.target === e.currentTarget) this.close(); }
   open(c: Row) { this.error.set(''); this.newDept.set(false); this.form.set(copy(c)); }
   startNew() { this.error.set(''); this.newDept.set(false); this.form.set({ name: '', code: '', category: '', department: '', contacts: [], extraFields: [], openingBalance: '0' }); }
   close() { this.form.set(null); this.error.set(''); }

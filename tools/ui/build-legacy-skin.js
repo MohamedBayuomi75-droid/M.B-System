@@ -1,5 +1,5 @@
 // «جلد» الواجهة القديمة للشاشات الجديدة (خطة v1.4.5 — المرحلة 6، قرار DEC-0093 (أ): تطابق كامل في الشكل).
-// بياخد CSS الواجهة القديمة زي ما هو (renderer/styles/style.css + modules/ledger/ledger.css) ويحصره جوه كلاسين،
+// بياخد CSS الواجهة القديمة زي ما هو (renderer/styles/style.css + modules/ledger/ledger.css + الـ CSS اللي app.js بيحقنه) ويحصره جوه كلاسين،
 // عشان شاشات /app/ تلبس نفس الشكل بالظبط من غير ما تأثر على صفحات Angular Material التانية:
 //   - :root و html و body  ← .lx-root   (غلاف التطبيق كله: المتغيّرات، والخط، والخلفية، وكلاسات الكثافة)
 //   - أي selector تاني      ← .lx <selector>   (.lx بيتحط على الترويسة والتبويبات وشاشات الموديولات المطابقة بس)
@@ -45,9 +45,15 @@ function transform(root) {
   return root;
 }
 
-let css = `/* مولَّد بـ tools/ui/build-legacy-skin.js من ${SOURCES.join(' + ')} — ماتعدّلش الملف باليد (DEC-0093) */\n`;
-for (const src of SOURCES) {
-  const root = postcss.parse(fs.readFileSync(path.join(ROOT, src), 'utf8'), { from: src });
+// الـ CSS اللي الواجهة القديمة بتحقنه من JS بعد style.css (renderer/core/app.js injectExtraCss: .input و.modal-close و.data-table…)
+const appJs = fs.readFileSync(path.join(ROOT, 'renderer/core/app.js'), 'utf8');
+const inj = appJs.slice(appJs.indexOf('(function injectExtraCss(){'));
+const injected = inj.slice(inj.indexOf('s.textContent = `') + 's.textContent = `'.length, inj.indexOf('`;'));
+const parts = [...SOURCES.map((src) => [src, fs.readFileSync(path.join(ROOT, src), 'utf8')]), ['renderer/core/app.js (injectExtraCss)', injected]];
+
+let css = `/* مولَّد بـ tools/ui/build-legacy-skin.js من ${parts.map((p) => p[0]).join(' + ')} — ماتعدّلش الملف باليد (DEC-0093) */\n`;
+for (const [src, text] of parts) {
+  const root = postcss.parse(text, { from: src });
   css += `\n/* ---- ${src} ---- */\n` + transform(root).toString().replace(/\n{3,}/g, '\n\n') + '\n';
 }
 
