@@ -90,7 +90,7 @@ function compare(a, b) {
   const NEW = path.join(OUT, 'visual-baseline');
   const DIFF = path.join(OUT, 'diff');
   fs.mkdirSync(DIFF, { recursive: true });
-  const list = (root) => (fs.existsSync(root) ? fs.readdirSync(root).flatMap((d) => fs.readdirSync(path.join(root, d)).filter((f) => f.endsWith('.png')).map((f) => `${d}/${f}`)) : []).sort();
+  const list = (root) => (fs.existsSync(root) ? fs.readdirSync(root).filter((d) => fs.statSync(path.join(root, d)).isDirectory()).flatMap((d) => fs.readdirSync(path.join(root, d)).filter((f) => f.endsWith('.png')).map((f) => `${d}/${f}`)) : []).sort();
   const baseFiles = list(BASE), newFiles = list(NEW);
   const results = [];
   for (const f of baseFiles) {
