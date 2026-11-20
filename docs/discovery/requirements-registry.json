@@ -2170,11 +2170,11 @@
    "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",
    "tests": [],
    "target": "—",
-   "notes": "مفتوح",
+   "notes": "محسوم",
    "aliases": [],
-   "decisionStatus": "open",
+   "decisionStatus": "resolved",
    "priorityStatus": "—",
-   "status": "open"
+   "status": "resolved"
   },
   {
    "id": "LEG-0001",
