@@ -44,7 +44,7 @@ const daysUntil = (today: string, iso: unknown): number | null => {
   return Math.round((b - Date.parse(`${today}T00:00:00Z`)) / 86400000);
 };
 /**
- * ملخص العميل لجدول العملاء (DEC-0093: نفس أعمدة الشاشة القديمة) — عرض بس، من نفس البيانات ونفس القواعد:
+ * ملخص العميل لجدول العملاء (counts + issues = عمود «ملاحظات» في الجدول القديم، وده غير حقل notes النصي) (DEC-0093: نفس أعمدة الشاشة القديمة) — عرض بس، من نفس البيانات ونفس القواعد:
  * clProjectsOfCustomer/clProjectBelongsTo (helpers.js:60)، وأطوال المصفوفات، وcustomerNotesIssues (core/alerts-center.js:263)
  * بحالة الضمان الفعلية clGuaranteeEffStatus (guarantees.js:26). مقارنة بالدوال القديمة نفسها: tests-merge/phase64.js.
  */
@@ -52,17 +52,17 @@ export function customerSummary(c: Json, id: string, projects: Json[], today: st
   const belongs = (p: Json) => (p.customerId ? p.customerId === id : !!(p.customerName || p.customer) && clNormName(p.customerName || p.customer) === clNormName(c.name));
   const len = (k: string) => (Array.isArray(c[k]) ? (c[k] as unknown[]).length : 0);
   const projectsCount = projects.filter(belongs).length;
-  const notes: string[] = [];
-  if (!c.phone) notes.push('ناقص: رقم الهاتف');
-  if (!len('contracts')) notes.push('لا يوجد عقد');
-  if (!projectsCount) notes.push('لا توجد مشاريع');
+  const issues: string[] = [];
+  if (!c.phone) issues.push('ناقص: رقم الهاتف');
+  if (!len('contracts')) issues.push('لا يوجد عقد');
+  if (!projectsCount) issues.push('لا توجد مشاريع');
   for (const g of (Array.isArray(c.guarantees) ? c.guarantees : []) as Json[]) {
     const st = String(g.status || 'ساري');
     const eff = (st === 'ساري' || st === 'قيد التجديد') && g.expiryDate && String(g.expiryDate) < today ? 'منتهي' : st;
     const d = daysUntil(today, g.expiryDate);
-    if ((eff === 'ساري' || eff === 'قيد التجديد') && d != null && d <= 30) notes.push('ضمان ' + String(g.letterNo || g.id) + (d < 0 ? ' منتهي' : ' ينتهي بعد ' + d + ' يوم'));
+    if ((eff === 'ساري' || eff === 'قيد التجديد') && d != null && d <= 30) issues.push('ضمان ' + String(g.letterNo || g.id) + (d < 0 ? ' منتهي' : ' ينتهي بعد ' + d + ' يوم'));
   }
-  return { counts: { projects: projectsCount, contracts: len('contracts'), invoices: len('invoices'), workSurveys: len('workSurveys'), boqs: len('boqs') }, notes };
+  return { counts: { projects: projectsCount, contracts: len('contracts'), invoices: len('invoices'), workSurveys: len('workSurveys'), boqs: len('boqs') }, issues };
 }
 
 /**

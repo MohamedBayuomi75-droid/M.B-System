@@ -71,18 +71,7 @@ body { color-scheme: light; background: var(--mat-sys-surface); color: var(--mat
 .auth-card form { display: flex; flex-direction: column; gap: 4px; margin-top: 12px; }
 .err { min-height: 20px; color: var(--erp-debt); font-size: 13px; white-space: pre-line; }
 .secret { font-family: ui-monospace, Consolas, monospace; font-size: 17px; letter-spacing: 1px; background: var(--mat-sys-surface-container); border: 1px dashed var(--erp-line); border-radius: 8px; padding: 10px 12px; margin: 0 0 14px; text-align: center; word-break: break-all; user-select: all; }
-// الشريط العلوي: M3 بيحط خلفية الـ toolbar بمتغيّر خاص بيه (background العادية مالهاش أثر)
-.topbar { --mat-toolbar-container-background-color: var(--erp-ledger-green); --mat-toolbar-container-text-color: #fff; background: var(--erp-ledger-green); color: #fff; }
-.topbar .brand { font-weight: 800; }
-.topbar .spacer { flex: 1; }
-.topbar .who { font-size: 14px; margin-inline-end: 8px; }
-.topbar a, .topbar button, .topbar .mat-icon { color: #fff !important; }
-.body { height: calc(100vh - 64px); }
-.nav { width: 250px; }
-.nav .active { background: var(--mat-sys-primary-container); }
-// أيقونة آخر عنصر القايمة (فتح في الواجهة الحالية): خانة الـ meta بتاخد خط النص، فالأيقونة كانت بتظهر كنص «open_in_new»
-.mat-icon[matListItemMeta], .mat-mdc-list-item-meta.mat-icon { font-family: 'Material Symbols Outlined' !important; font-size: 18px; width: 18px; height: 18px; color: var(--erp-ink-soft); }
-.content { padding: 20px; }
+
 .muted { color: var(--erp-ink-soft); font-weight: 400; font-size: 13px; }
 .num { direction: ltr; text-align: start; font-variant-numeric: tabular-nums; }
 .debt { color: var(--erp-debt); }
@@ -98,4 +87,4 @@ body { color-scheme: light; background: var(--mat-sys-surface); color: var(--mat
 .kv-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .kv-row mat-form-field { flex: 1 1 180px; }
 @media (max-width: 900px) { .split { grid-template-columns: 1fr; } .list { max-height: 240px; } }
-@media (max-width: 720px) { .nav { width: 200px; } .content { padding: 12px; } }
+

@@ -1,5 +1,5 @@
 // المرحلة 6 (DEC-0093 أ): جدول العملاء في /app/ بنفس أعمدة الشاشة القديمة — الأعداد والملاحظات بيحسبها السيرفر
-// (GET /api/v1/customers → counts + notes). الاختبار ده بيقارن ناتج السيرفر بالدوال القديمة نفسها على نفس البيانات:
+// (GET /api/v1/customers → counts + issues). الاختبار ده بيقارن ناتج السيرفر بالدوال القديمة نفسها على نفس البيانات:
 // clProjectsOfCustomer وأطوال المصفوفات وcustomerNotesIssues (بالضمانات اللي قربت تنتهي حسب تاريخ النهارده).
 // بيشتغل في وضع الويب بس (WEB_MODE=1)، لأن المقارنة محتاجة السيرفر. في وضع الملف بيتأكد من الدوال القديمة بس.
 const { openApp, WEB } = require('./harness');
@@ -18,7 +18,7 @@ const { ok, eq, summary, baseUser } = require('./lib');
     clients: {
       settings: { customerPrefix: 'CUS-' },
       customers: [
-        { id: 'cA', name: 'أحمد', code: 'CUS-0001', phone: '0100', contracts: [{ id: 'k1' }, { id: 'k2' }], invoices: [{ id: 'i1' }], workSurveys: [{ id: 's1' }], boqs: [{ id: 'b1' }, { id: 'b2' }, { id: 'b3' }],
+        { id: 'cA', name: 'أحمد', code: 'CUS-0001', phone: '0100', notes: 'ملاحظة نصية', contracts: [{ id: 'k1' }, { id: 'k2' }], invoices: [{ id: 'i1' }], workSurveys: [{ id: 's1' }], boqs: [{ id: 'b1' }, { id: 'b2' }, { id: 'b3' }],
           guarantees: [
             { id: 'g1', letterNo: 'LG-1', status: 'ساري', expiryDate: day(10) },        // ينتهي بعد 10 يوم
             { id: 'g2', letterNo: 'LG-2', status: 'ساري', expiryDate: day(60) },        // بعيد: مالوش ملاحظة
@@ -43,8 +43,9 @@ const { ok, eq, summary, baseUser } = require('./lib');
     console.log('[2] السيرفر (GET /api/v1/customers) = الدوال القديمة بالظبط');
     const r = await page.evaluate(() => WebSession.api('GET', '/api/v1/customers'));
     eq(r.status, 200, 'API');
-    const server = r.body.items.map((c) => ({ id: c.id, counts: c.counts, notes: c.notes })).sort((a, b) => (a.id < b.id ? -1 : 1));
+    const server = r.body.items.map((c) => ({ id: c.id, counts: c.counts, notes: c.issues })).sort((a, b) => (a.id < b.id ? -1 : 1));
     eq(server, legacy, 'الأعداد والملاحظات لكل عميل');
+    eq(r.body.items.find((c) => c.id === 'cA').notes, 'ملاحظة نصية', 'حقل الملاحظات النصي زي ما هو (منفصل عن ملاحظات الجدول issues)');
   } else ok(true, 'وضع الملف: مقارنة السيرفر بتتعمل في WEB_MODE=1');
 
   eq(errors, [], 'no JS errors');
