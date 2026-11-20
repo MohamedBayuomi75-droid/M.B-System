@@ -1,7 +1,7 @@
 # مصفوفة التتبّع (خطة v1.4.5 — المرحلة 3)
 
 > **مولَّد** بـ `node tools/discovery/build-traceability.js` من `requirements-registry.json` + ملفات الاختبار. ماتعدّلش الملف باليد.
-> **الاختبارات** بتتلاقى بالبحث عن اسم الدالة أو الصفحة في `tests-merge/` و`tests-web/` و`tools/formulas/` و`server/test/` (96 ملف). ده **دليل إن الاختبار بيلمس العنصر**، مش إثبات إنه بيغطي كل حالاته.
+> **الاختبارات** بتتلاقى بالبحث عن اسم الدالة أو الصفحة في `tests-merge/` و`tests-web/` و`tools/formulas/` و`server/test/` (97 ملف). ده **دليل إن الاختبار بيلمس العنصر**، مش إثبات إنه بيغطي كل حالاته.
 > **الحالات** (`02` §20): Implemented ≠ Verified ≠ Accepted. **مفيش حاجة هنا Accepted**: القبول بيكون لكل موديول ببوابة.
 > **الأولويات مقترحة.**
 
@@ -153,8 +153,8 @@
 | LEG-0010 | page | الموارد البشرية | صفحة «اليوميات» (workerAttendance) | renderer/modules/hr/pages-worker-attendance.js:195 | legacy /legacy/ | phase24.js، phase26.js، phase27.js، phase28.js، phase39.js، phase40.js (+15) | Verified (باختبار) | DEC-0045 (B-45)، DEC-0046 (B-46)، DEC-0047 (B-47)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0076 (B-76)، DEC-0042 (B-42) |
 | LEG-0011 | page | الموارد البشرية | صفحة «الإجازات» (leaves) | renderer/modules/hr/pages-leaves.js:48 | legacy /legacy/ | phase41.js، phase13.js، phase30.js، phase31.js، phase33.js، phase36.js (+5) | Verified (باختبار) | DEC-0045 (B-45)، DEC-0046 (B-46)، DEC-0047 (B-47)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0076 (B-76)، DEC-0042 (B-42) |
 | LEG-0012 | page | الموارد البشرية | صفحة «تقييم الأداء» (performance) | renderer/modules/hr/pages-ops.js:540 | legacy /legacy/ | phase61.js | Verified (باختبار) | DEC-0045 (B-45)، DEC-0046 (B-46)، DEC-0047 (B-47)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0076 (B-76)، DEC-0042 (B-42) |
-| LEG-0013 | page | العملاء والمشاريع | صفحة «العملاء» (clients.customers) | renderer/modules/clients/pages-customers.js:14 | angular /customers | phase2.js، phase5.js، phase7.js، phase15.js، phase19.js، phase46.js (+6) | Implemented (اتنقل) | DEC-0029 (B-29)، DEC-0035 (B-35) |
-| LEG-0014 | page | العملاء والمشاريع | صفحة «المشاريع» (projects) | renderer/modules/hr/pages-projects.js:60 | angular /projects | phase2.js، phase3.js، phase4.js، phase15.js، phase17.js، phase18.js (+39) | Implemented (اتنقل) | DEC-0029 (B-29)، DEC-0035 (B-35) |
+| LEG-0013 | page | العملاء والمشاريع | صفحة «العملاء» (clients.customers) | renderer/modules/clients/pages-customers.js:14 | angular /customers | phase2.js، phase5.js، phase7.js، phase15.js، phase19.js، phase46.js (+7) | Implemented (اتنقل) | DEC-0029 (B-29)، DEC-0035 (B-35) |
+| LEG-0014 | page | العملاء والمشاريع | صفحة «المشاريع» (projects) | renderer/modules/hr/pages-projects.js:60 | angular /projects | phase2.js، phase3.js، phase4.js، phase15.js، phase17.js، phase18.js (+40) | Implemented (اتنقل) | DEC-0029 (B-29)، DEC-0035 (B-35) |
 | LEG-0015 | page | العملاء والمشاريع | صفحة «أعمال الحصر» (clients.workSurveys) | renderer/modules/clients/pages-work-surveys.js:74 | legacy /legacy/ | phase9.js | Verified (باختبار) | DEC-0029 (B-29)، DEC-0035 (B-35) |
 | LEG-0016 | page | العملاء والمشاريع | صفحة «المقايسات» (clients.boqs) | renderer/modules/clients/pages-boqs.js:45 | legacy /legacy/ | phase2.js، phase9.js | Verified (باختبار) | DEC-0029 (B-29)، DEC-0035 (B-35) |
 | LEG-0017 | page | العملاء والمشاريع | صفحة «العقود» (clients.contracts) | renderer/modules/clients/pages-contracts.js:28 | legacy /legacy/ | phase5.js، phase7.js، phase12.js، phase14.js، phase15.js، data.e2e-spec.ts | Verified (باختبار) | DEC-0029 (B-29)، DEC-0035 (B-35) |
@@ -183,7 +183,7 @@
 | LEG-0040 | page | الأرشيف | صفحة «أرشيف الموردين» (ledger.archive) | renderer/modules/ledger/pages-archive.js:215 | legacy /legacy/ | phase61.js | Verified (باختبار) | DEC-0061 (B-61) |
 | LEG-0041 | page | الأرشيف | صفحة «أرشيف العملاء والمشاريع» (clients.archive) | renderer/modules/clients/pages-archive.js:36 | legacy /legacy/ | phase8.js | Verified (باختبار) | DEC-0061 (B-61) |
 | LEG-0042 | page | الإعدادات | صفحة «الإعدادات العامة» (backup) | renderer/core/pages-backup.js:5 | legacy /legacy/ | phase10.js، phase29.js، phase32.js، phase34.js، phase35.js، phase36.js (+3) | Verified (باختبار) | DEC-0035 (B-35) |
-| LEG-0043 | page | الإعدادات | صفحة «المستخدمون» (users) | renderer/core/pages-users.js:16 | legacy /legacy/ | phase61.js، pages-smoke.js، phase10.js، phase11.js، phase12.js، phase13.js (+70) | Verified (باختبار) | DEC-0035 (B-35) |
+| LEG-0043 | page | الإعدادات | صفحة «المستخدمون» (users) | renderer/core/pages-users.js:16 | legacy /legacy/ | phase61.js، pages-smoke.js، phase10.js، phase11.js، phase12.js، phase13.js (+71) | Verified (باختبار) | DEC-0035 (B-35) |
 | LEG-0044 | page | الإعدادات | صفحة «الاقتراحات» (ledger.categories) | renderer/modules/ledger/pages-categories.js:4 | legacy /legacy/ | phase61.js | Verified (باختبار) | DEC-0035 (B-35) |
 | LEG-0045 | page | (خارج القايمة) | صفحة «clients.dashboard» (clients.dashboard) — اسم بديل لـ dashboard | renderer/modules/hr/pages-dashboard.js:28 | legacy /legacy/ | phase20.js | Verified (باختبار) | — |
 | LEG-0046 | page | (خارج القايمة) | صفحة «fuel» (fuel) — اسم بديل لـ equipment | renderer/modules/hr/pages-equipment.js:32 | legacy /legacy/ | phase61.js، phase18.js، phase26.js، legacy-runner.js، reference.js | Verified (باختبار) | — |
