@@ -2,7 +2,7 @@
 
 > **مولَّد** بـ `node tools/discovery/build-registry.js` من الكود والمستندات (قراءة بس). **المصدر الثابت:** `requirements-registry.json`. ماتعدّلش الملف ده باليد.
 > **قواعد الترقيم** (`docs/plan-v1.4.5/00_README_DOCUMENT_INDEX.md` §3): الـ ID بيتحجز مرة واحدة ومابيتعادش، والعنصر اللي يختفي من المصدر بيفضل بحالة `missing-in-source`.
-> **الأولويات كلها مقترحة** (`priorityStatus: proposed`) لحد ما تتعتمد. والأرقام القديمة (B-/F-/TR-/S-/U-) بتفضل أسماء بديلة: راجع `ID_MAPPING.md`.
+> **الأولويات معتمدة كقاعدة** بقرار DEC-0085 (2026-11-20): P0 للحساب المالي وكتابة البيانات وسلامة البيانات، والباقي P1. أي تعديل لعنصر معيّن بيتسجّل كقرار. والأرقام القديمة (B-/F-/TR-/S-/U-) بتفضل أسماء بديلة: راجع `ID_MAPPING.md`.
 
 ## الملخص
 | البادئة | التصنيف | العدد |
@@ -11,8 +11,8 @@
 | `CHG-` | APPROVED-CHANGE | 14 |
 | `TECH-` | TECHNICAL | 18 |
 | `NEW-` | NEW-REQUIREMENT | 9 |
-| `DEC-` | OPEN-DECISION (المفتوح والمحسوم) | 82 (مفتوح: 41) |
-| **الإجمالي** | | **463** |
+| `DEC-` | OPEN-DECISION (المفتوح والمحسوم) | 87 (مفتوح: 41) |
+| **الإجمالي** | | **468** |
 
 **عناصر LEG حسب النوع:** page 54 · calc 120 · data-write 16 · modal 63 · export/print 37 · permission 8 · electron-capability 42
 
@@ -498,4 +498,9 @@
 | DEC-0080 | decision | حوكمة | خطة v1.4.5 بتلغي الخطة القديمة v1.0 وبتحل محلها | — | docs/reports/v1.4.5/PHASE_00_BASELINE_REPORT.md | — |  | resolved | محسوم 2026-11-19 · الأسماء القديمة: U-1 |
 | DEC-0081 | decision | حوكمة | تعارض أهداف النسخ: Policy E في الخطة الرئيسية §4.1 هي اللي تمشي | — | docs/reports/v1.4.5/PHASE_00_BASELINE_REPORT.md | — |  | resolved | محسوم 2026-11-19 · الأسماء القديمة: U-2 |
 | DEC-0082 | decision | حوكمة | العدّ من مراحل v1.4.5، والشغل القديم يتراجع ويتأكد منه | — | docs/reports/v1.4.5/PHASE_00_BASELINE_REPORT.md | — |  | resolved | محسوم 2026-11-19 · الأسماء القديمة: U-3 |
+| DEC-0083 | decision | قرارات | ترقيم القرارات الجديدة بـ `DEC-` مباشرة بدل B-xx | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
+| DEC-0084 | decision | قرارات | الماسح الضوئي (WIA) في الويب: المستخدم بيصوّر بتطبيق الماسح على جهازه وبيرفع الملف. أداة على الجهاز بس لو ده طلع مش كفاية في التشغيل | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
+| DEC-0085 | decision | قرارات | قاعدة الأولويات معتمدة: P0 للحساب المالي والمخزني وكتابة البيانات وسلامة البيانات، والباقي P1 (`REQUIREMENTS_REGISTRY.md`) | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
+| DEC-0086 | decision | قرارات | اختبارات القبول للعناصر P0 اللي مالهاش اختبار (53 عنصر، `TRACEABILITY_MATRIX.md` §3) شرط قبل نقل الموديول بتاعها، مش شغل منفصل دلوقتي | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
+| DEC-0087 | decision | قرارات | الخطوة الجاية: المرحلة 4 (الناقص من الأساس: CI، والمقارنة البصرية، والـ ADRs الناقصة، وOpenAPI) قبل القبول الرسمي للموديول التجريبي (المرحلة 6) | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
 

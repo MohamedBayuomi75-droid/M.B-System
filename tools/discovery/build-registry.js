@@ -112,6 +112,13 @@ for (const line of obd.split('\n')) {
 for (const [b, d] of [...decisions].sort((x, y) => Number(x[0].slice(2)) - Number(y[0].slice(2)))) {
   add({ key: `decision:${b}`, prefix: 'DEC', classification: 'OPEN-DECISION', kind: 'decision', title: d.title, module: 'قرارات', priority: '—', evidence: 'docs/OPEN_BUSINESS_DECISIONS.md', tests: [], target: '—', notes: d.closed ? 'محسوم' : 'مفتوح', aliases: [b], decisionStatus: d.closed ? 'resolved' : 'open' });
 }
+// قرارات بأرقام DEC- مباشرة (قرار DEC-0083: من 2026-11-20 القرارات الجديدة مابتاخدش B-xx)
+for (const line of obd.split('\n')) {
+  const m = line.match(/^\| *(DEC-\d{4}) *\| *(.+?) *\|/);
+  if (!m) continue;
+  const closed = /✅|محسوم/.test(line);
+  add({ key: `decision:${m[1]}`, fixedId: m[1], prefix: 'DEC', classification: 'OPEN-DECISION', kind: 'decision', title: m[2].replace(/\*\*/g, '').slice(0, 160), module: 'قرارات', priority: '—', evidence: 'docs/OPEN_BUSINESS_DECISIONS.md', tests: [], target: '—', notes: closed ? 'محسوم' : 'مفتوح', aliases: [], decisionStatus: closed ? 'resolved' : 'open' });
+}
 for (const [u, t] of [['U-1', 'خطة v1.4.5 بتلغي الخطة القديمة v1.0 وبتحل محلها'], ['U-2', 'تعارض أهداف النسخ: Policy E في الخطة الرئيسية §4.1 هي اللي تمشي'], ['U-3', 'العدّ من مراحل v1.4.5، والشغل القديم يتراجع ويتأكد منه']]) {
   add({ key: `decision:${u}`, prefix: 'DEC', classification: 'OPEN-DECISION', kind: 'decision', title: t, module: 'حوكمة', priority: '—', evidence: 'docs/reports/v1.4.5/PHASE_00_BASELINE_REPORT.md', tests: [], target: '—', notes: 'محسوم 2026-11-19', aliases: [u], decisionStatus: 'resolved' });
 }
@@ -173,12 +180,23 @@ const byKey = new Map(prev.entries.map((e) => [e.key, e]));
 const next = { LEG: 1, TECH: 1, NEW: 1, CHG: 1, DEC: 1, ...prev.next };
 const seen = new Set();
 const entries = [];
-for (const it of items) {
+for (const it of [...items.filter((x) => x.fixedId), ...items.filter((x) => !x.fixedId)]) {
   if (seen.has(it.key)) continue; // نفس المفتاح مرتين في المصدر = عنصر واحد
   seen.add(it.key);
   const old = byKey.get(it.key);
-  const id = old ? old.id : `${it.prefix}-${String(next[it.prefix]++).padStart(4, '0')}`;
-  entries.push({ id, ...it, priority: it.priority, priorityStatus: 'proposed', status: it.kind === 'decision' ? it.decisionStatus : (it.prefix === 'LEG' ? 'verified-static' : 'recorded') });
+  let id;
+  if (it.fixedId) {
+    // رقم مكتوب في المستند نفسه: لازم يكون مش محجوز لعنصر تاني، والعدّاد بيعدّيه
+    const clash = prev.entries.find((e) => e.id === it.fixedId && e.key !== it.key);
+    if (clash) throw new Error(`${it.fixedId} محجوز لـ ${clash.key}`);
+    id = it.fixedId;
+    const n = Number(id.split('-')[1]);
+    if (n >= next[it.prefix]) next[it.prefix] = n + 1;
+  } else id = old ? old.id : `${it.prefix}-${String(next[it.prefix]++).padStart(4, '0')}`;
+  const { fixedId, ...rest } = it;
+  // الأولويات: القاعدة اتعتمدت بقرار DEC-0085 (P0 للحساب المالي وكتابة البيانات، والباقي P1)
+  const priorityStatus = it.priority && it.priority !== '—' ? 'approved (DEC-0085)' : '—';
+  entries.push({ id, ...rest, priorityStatus, status: it.kind === 'decision' ? it.decisionStatus : (it.prefix === 'LEG' ? 'verified-static' : 'recorded') });
 }
 for (const old of prev.entries) if (!seen.has(old.key)) entries.push({ ...old, status: 'missing-in-source' });
 entries.sort((a, b) => a.id.localeCompare(b.id));
@@ -194,7 +212,7 @@ let md = `# سجل المتطلبات بالترقيم الموحّد (خطة v1
 
 > **مولَّد** بـ \`node tools/discovery/build-registry.js\` من الكود والمستندات (قراءة بس). **المصدر الثابت:** \`requirements-registry.json\`. ماتعدّلش الملف ده باليد.
 > **قواعد الترقيم** (\`docs/plan-v1.4.5/00_README_DOCUMENT_INDEX.md\` §3): الـ ID بيتحجز مرة واحدة ومابيتعادش، والعنصر اللي يختفي من المصدر بيفضل بحالة \`missing-in-source\`.
-> **الأولويات كلها مقترحة** (\`priorityStatus: proposed\`) لحد ما تتعتمد. والأرقام القديمة (B-/F-/TR-/S-/U-) بتفضل أسماء بديلة: راجع \`ID_MAPPING.md\`.
+> **الأولويات معتمدة كقاعدة** بقرار DEC-0085 (2026-11-20): P0 للحساب المالي وكتابة البيانات وسلامة البيانات، والباقي P1. أي تعديل لعنصر معيّن بيتسجّل كقرار. والأرقام القديمة (B-/F-/TR-/S-/U-) بتفضل أسماء بديلة: راجع \`ID_MAPPING.md\`.
 
 ## الملخص
 | البادئة | التصنيف | العدد |

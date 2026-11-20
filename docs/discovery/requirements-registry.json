@@ -6,7 +6,7 @@
   "TECH": 19,
   "NEW": 10,
   "CHG": 15,
-  "DEC": 83
+  "DEC": 88
  },
  "entries": [
   {
@@ -30,7 +30,7 @@
     "F-03",
     "F-14"
    ],
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "recorded"
   },
   {
@@ -54,7 +54,7 @@
     "F-01",
     "F-02"
    ],
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "recorded"
   },
   {
@@ -79,7 +79,7 @@
     "F-02",
     "F-05"
    ],
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "recorded"
   },
   {
@@ -103,7 +103,7 @@
     "F-01",
     "F-02"
    ],
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "recorded"
   },
   {
@@ -126,7 +126,7 @@
     "TR-05",
     "F-06"
    ],
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "recorded"
   },
   {
@@ -149,7 +149,7 @@
     "TR-06",
     "F-04"
    ],
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "recorded"
   },
   {
@@ -172,7 +172,7 @@
     "TR-07",
     "F-07"
    ],
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "recorded"
   },
   {
@@ -195,7 +195,7 @@
     "TR-08",
     "F-08"
    ],
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "recorded"
   },
   {
@@ -218,7 +218,7 @@
     "TR-09",
     "F-09"
    ],
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "recorded"
   },
   {
@@ -242,7 +242,7 @@
     "F-10",
     "F-11"
    ],
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "recorded"
   },
   {
@@ -265,7 +265,7 @@
     "TR-11",
     "F-12"
    ],
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "recorded"
   },
   {
@@ -289,7 +289,7 @@
     "F-03",
     "F-14"
    ],
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "recorded"
   },
   {
@@ -312,7 +312,7 @@
     "TR-13",
     "F-15"
    ],
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "recorded"
   },
   {
@@ -335,7 +335,7 @@
     "TR-14",
     "F-13"
    ],
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "recorded"
   },
   {
@@ -355,7 +355,7 @@
     "B-01"
    ],
    "decisionStatus": "resolved",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "resolved"
   },
   {
@@ -375,7 +375,7 @@
     "B-02"
    ],
    "decisionStatus": "resolved",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "resolved"
   },
   {
@@ -395,7 +395,7 @@
     "B-03"
    ],
    "decisionStatus": "resolved",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "resolved"
   },
   {
@@ -415,7 +415,7 @@
     "B-04"
    ],
    "decisionStatus": "resolved",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "resolved"
   },
   {
@@ -435,7 +435,7 @@
     "B-05"
    ],
    "decisionStatus": "resolved",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "resolved"
   },
   {
@@ -455,7 +455,7 @@
     "B-06"
    ],
    "decisionStatus": "resolved",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "resolved"
   },
   {
@@ -475,7 +475,7 @@
     "B-07"
    ],
    "decisionStatus": "resolved",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "resolved"
   },
   {
@@ -495,7 +495,7 @@
     "B-08"
    ],
    "decisionStatus": "resolved",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "resolved"
   },
   {
@@ -515,7 +515,7 @@
     "B-09"
    ],
    "decisionStatus": "open",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "open"
   },
   {
@@ -535,7 +535,7 @@
     "B-10"
    ],
    "decisionStatus": "open",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "open"
   },
   {
@@ -555,7 +555,7 @@
     "B-11"
    ],
    "decisionStatus": "open",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "open"
   },
   {
@@ -575,7 +575,7 @@
     "B-12"
    ],
    "decisionStatus": "open",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "open"
   },
   {
@@ -595,7 +595,7 @@
     "B-13"
    ],
    "decisionStatus": "open",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "open"
   },
   {
@@ -615,7 +615,7 @@
     "B-14"
    ],
    "decisionStatus": "open",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "open"
   },
   {
@@ -635,7 +635,7 @@
     "B-15"
    ],
    "decisionStatus": "open",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "open"
   },
   {
@@ -655,7 +655,7 @@
     "B-16"
    ],
    "decisionStatus": "open",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "open"
   },
   {
@@ -675,7 +675,7 @@
     "B-17"
    ],
    "decisionStatus": "resolved",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "resolved"
   },
   {
@@ -695,7 +695,7 @@
     "B-18"
    ],
    "decisionStatus": "open",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "open"
   },
   {
@@ -715,7 +715,7 @@
     "B-19"
    ],
    "decisionStatus": "open",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "open"
   },
   {
@@ -735,7 +735,7 @@
     "B-20"
    ],
    "decisionStatus": "resolved",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "resolved"
   },
   {
@@ -755,7 +755,7 @@
     "B-21"
    ],
    "decisionStatus": "resolved",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "resolved"
   },
   {
@@ -775,7 +775,7 @@
     "B-22"
    ],
    "decisionStatus": "open",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "open"
   },
   {
@@ -795,7 +795,7 @@
     "B-23"
    ],
    "decisionStatus": "open",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "open"
   },
   {
@@ -815,7 +815,7 @@
     "B-24"
    ],
    "decisionStatus": "open",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "open"
   },
   {
@@ -835,7 +835,7 @@
     "B-25"
    ],
    "decisionStatus": "resolved",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "resolved"
   },
   {
@@ -855,7 +855,7 @@
     "B-26"
    ],
    "decisionStatus": "resolved",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "resolved"
   },
   {
@@ -875,7 +875,7 @@
     "B-27"
    ],
    "decisionStatus": "open",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "open"
   },
   {
@@ -895,7 +895,7 @@
     "B-28"
    ],
    "decisionStatus": "resolved",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "resolved"
   },
   {
@@ -915,7 +915,7 @@
     "B-29"
    ],
    "decisionStatus": "open",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "open"
   },
   {
@@ -935,7 +935,7 @@
     "B-30"
    ],
    "decisionStatus": "resolved",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "resolved"
   },
   {
@@ -955,7 +955,7 @@
     "B-31"
    ],
    "decisionStatus": "resolved",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "resolved"
   },
   {
@@ -975,7 +975,7 @@
     "B-32"
    ],
    "decisionStatus": "resolved",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "resolved"
   },
   {
@@ -995,7 +995,7 @@
     "B-33"
    ],
    "decisionStatus": "open",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "open"
   },
   {
@@ -1015,7 +1015,7 @@
     "B-34"
    ],
    "decisionStatus": "resolved",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "resolved"
   },
   {
@@ -1035,7 +1035,7 @@
     "B-35"
    ],
    "decisionStatus": "open",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "open"
   },
   {
@@ -1055,7 +1055,7 @@
     "B-36"
    ],
    "decisionStatus": "open",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "open"
   },
   {
@@ -1075,7 +1075,7 @@
     "B-37"
    ],
    "decisionStatus": "open",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "open"
   },
   {
@@ -1095,7 +1095,7 @@
     "B-38"
    ],
    "decisionStatus": "open",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "open"
   },
   {
@@ -1115,7 +1115,7 @@
     "B-39"
    ],
    "decisionStatus": "open",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "open"
   },
   {
@@ -1135,7 +1135,7 @@
     "B-40"
    ],
    "decisionStatus": "open",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "open"
   },
   {
@@ -1155,7 +1155,7 @@
     "B-41"
    ],
    "decisionStatus": "open",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "open"
   },
   {
@@ -1175,7 +1175,7 @@
     "B-42"
    ],
    "decisionStatus": "open",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "open"
   },
   {
@@ -1195,7 +1195,7 @@
     "B-43"
    ],
    "decisionStatus": "open",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "open"
   },
   {
@@ -1215,7 +1215,7 @@
     "B-44"
    ],
    "decisionStatus": "open",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "open"
   },
   {
@@ -1235,7 +1235,7 @@
     "B-45"
    ],
    "decisionStatus": "open",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "open"
   },
   {
@@ -1255,7 +1255,7 @@
     "B-46"
    ],
    "decisionStatus": "open",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "open"
   },
   {
@@ -1275,7 +1275,7 @@
     "B-47"
    ],
    "decisionStatus": "open",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "open"
   },
   {
@@ -1295,7 +1295,7 @@
     "B-48"
    ],
    "decisionStatus": "open",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "open"
   },
   {
@@ -1315,7 +1315,7 @@
     "B-49"
    ],
    "decisionStatus": "resolved",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "resolved"
   },
   {
@@ -1335,7 +1335,7 @@
     "B-50"
    ],
    "decisionStatus": "resolved",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "resolved"
   },
   {
@@ -1355,7 +1355,7 @@
     "B-51"
    ],
    "decisionStatus": "resolved",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "resolved"
   },
   {
@@ -1375,7 +1375,7 @@
     "B-52"
    ],
    "decisionStatus": "resolved",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "resolved"
   },
   {
@@ -1395,7 +1395,7 @@
     "B-53"
    ],
    "decisionStatus": "resolved",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "resolved"
   },
   {
@@ -1415,7 +1415,7 @@
     "B-54"
    ],
    "decisionStatus": "resolved",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "resolved"
   },
   {
@@ -1435,7 +1435,7 @@
     "B-55"
    ],
    "decisionStatus": "open",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "open"
   },
   {
@@ -1455,7 +1455,7 @@
     "B-56"
    ],
    "decisionStatus": "open",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "open"
   },
   {
@@ -1475,7 +1475,7 @@
     "B-57"
    ],
    "decisionStatus": "resolved",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "resolved"
   },
   {
@@ -1495,7 +1495,7 @@
     "B-58"
    ],
    "decisionStatus": "open",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "open"
   },
   {
@@ -1515,7 +1515,7 @@
     "B-59"
    ],
    "decisionStatus": "resolved",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "resolved"
   },
   {
@@ -1535,7 +1535,7 @@
     "B-60"
    ],
    "decisionStatus": "open",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "open"
   },
   {
@@ -1555,7 +1555,7 @@
     "B-61"
    ],
    "decisionStatus": "open",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "open"
   },
   {
@@ -1575,7 +1575,7 @@
     "B-62"
    ],
    "decisionStatus": "open",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "open"
   },
   {
@@ -1595,7 +1595,7 @@
     "B-63"
    ],
    "decisionStatus": "resolved",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "resolved"
   },
   {
@@ -1615,7 +1615,7 @@
     "B-64"
    ],
    "decisionStatus": "resolved",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "resolved"
   },
   {
@@ -1635,7 +1635,7 @@
     "B-65"
    ],
    "decisionStatus": "resolved",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "resolved"
   },
   {
@@ -1655,7 +1655,7 @@
     "B-66"
    ],
    "decisionStatus": "resolved",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "resolved"
   },
   {
@@ -1675,7 +1675,7 @@
     "B-67"
    ],
    "decisionStatus": "resolved",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "resolved"
   },
   {
@@ -1695,7 +1695,7 @@
     "B-68"
    ],
    "decisionStatus": "open",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "open"
   },
   {
@@ -1715,7 +1715,7 @@
     "B-69"
    ],
    "decisionStatus": "resolved",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "resolved"
   },
   {
@@ -1735,7 +1735,7 @@
     "B-70"
    ],
    "decisionStatus": "resolved",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "resolved"
   },
   {
@@ -1755,7 +1755,7 @@
     "B-71"
    ],
    "decisionStatus": "resolved",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "resolved"
   },
   {
@@ -1775,7 +1775,7 @@
     "B-72"
    ],
    "decisionStatus": "resolved",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "resolved"
   },
   {
@@ -1795,7 +1795,7 @@
     "B-73"
    ],
    "decisionStatus": "open",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "open"
   },
   {
@@ -1815,7 +1815,7 @@
     "B-74"
    ],
    "decisionStatus": "open",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "open"
   },
   {
@@ -1835,7 +1835,7 @@
     "B-75"
    ],
    "decisionStatus": "resolved",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "resolved"
   },
   {
@@ -1855,7 +1855,7 @@
     "B-76"
    ],
    "decisionStatus": "open",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "open"
   },
   {
@@ -1875,7 +1875,7 @@
     "B-77"
    ],
    "decisionStatus": "open",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "open"
   },
   {
@@ -1895,7 +1895,7 @@
     "B-78"
    ],
    "decisionStatus": "resolved",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "resolved"
   },
   {
@@ -1915,7 +1915,7 @@
     "B-79"
    ],
    "decisionStatus": "resolved",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "resolved"
   },
   {
@@ -1935,7 +1935,7 @@
     "U-1"
    ],
    "decisionStatus": "resolved",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "resolved"
   },
   {
@@ -1955,7 +1955,7 @@
     "U-2"
    ],
    "decisionStatus": "resolved",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
    "status": "resolved"
   },
   {
@@ -1975,7 +1975,97 @@
     "U-3"
    ],
    "decisionStatus": "resolved",
-   "priorityStatus": "proposed",
+   "priorityStatus": "—",
+   "status": "resolved"
+  },
+  {
+   "id": "DEC-0083",
+   "key": "decision:DEC-0083",
+   "prefix": "DEC",
+   "classification": "OPEN-DECISION",
+   "kind": "decision",
+   "title": "ترقيم القرارات الجديدة بـ `DEC-` مباشرة بدل B-xx",
+   "module": "قرارات",
+   "priority": "—",
+   "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",
+   "tests": [],
+   "target": "—",
+   "notes": "محسوم",
+   "aliases": [],
+   "decisionStatus": "resolved",
+   "priorityStatus": "—",
+   "status": "resolved"
+  },
+  {
+   "id": "DEC-0084",
+   "key": "decision:DEC-0084",
+   "prefix": "DEC",
+   "classification": "OPEN-DECISION",
+   "kind": "decision",
+   "title": "الماسح الضوئي (WIA) في الويب: المستخدم بيصوّر بتطبيق الماسح على جهازه وبيرفع الملف. أداة على الجهاز بس لو ده طلع مش كفاية في التشغيل",
+   "module": "قرارات",
+   "priority": "—",
+   "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",
+   "tests": [],
+   "target": "—",
+   "notes": "محسوم",
+   "aliases": [],
+   "decisionStatus": "resolved",
+   "priorityStatus": "—",
+   "status": "resolved"
+  },
+  {
+   "id": "DEC-0085",
+   "key": "decision:DEC-0085",
+   "prefix": "DEC",
+   "classification": "OPEN-DECISION",
+   "kind": "decision",
+   "title": "قاعدة الأولويات معتمدة: P0 للحساب المالي والمخزني وكتابة البيانات وسلامة البيانات، والباقي P1 (`REQUIREMENTS_REGISTRY.md`)",
+   "module": "قرارات",
+   "priority": "—",
+   "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",
+   "tests": [],
+   "target": "—",
+   "notes": "محسوم",
+   "aliases": [],
+   "decisionStatus": "resolved",
+   "priorityStatus": "—",
+   "status": "resolved"
+  },
+  {
+   "id": "DEC-0086",
+   "key": "decision:DEC-0086",
+   "prefix": "DEC",
+   "classification": "OPEN-DECISION",
+   "kind": "decision",
+   "title": "اختبارات القبول للعناصر P0 اللي مالهاش اختبار (53 عنصر، `TRACEABILITY_MATRIX.md` §3) شرط قبل نقل الموديول بتاعها، مش شغل منفصل دلوقتي",
+   "module": "قرارات",
+   "priority": "—",
+   "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",
+   "tests": [],
+   "target": "—",
+   "notes": "محسوم",
+   "aliases": [],
+   "decisionStatus": "resolved",
+   "priorityStatus": "—",
+   "status": "resolved"
+  },
+  {
+   "id": "DEC-0087",
+   "key": "decision:DEC-0087",
+   "prefix": "DEC",
+   "classification": "OPEN-DECISION",
+   "kind": "decision",
+   "title": "الخطوة الجاية: المرحلة 4 (الناقص من الأساس: CI، والمقارنة البصرية، والـ ADRs الناقصة، وOpenAPI) قبل القبول الرسمي للموديول التجريبي (المرحلة 6)",
+   "module": "قرارات",
+   "priority": "—",
+   "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",
+   "tests": [],
+   "target": "—",
+   "notes": "محسوم",
+   "aliases": [],
+   "decisionStatus": "resolved",
+   "priorityStatus": "—",
    "status": "resolved"
   },
   {
@@ -1996,7 +2086,7 @@
    ],
    "target": "legacy /legacy/",
    "notes": "في القايمة، في مصفوفة الصلاحيات",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -2014,7 +2104,7 @@
    ],
    "target": "legacy /legacy/",
    "notes": "في القايمة، في مصفوفة الصلاحيات",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -2032,7 +2122,7 @@
    ],
    "target": "legacy /legacy/",
    "notes": "في القايمة، مش في مصفوفة الصلاحيات",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -2070,7 +2160,7 @@
    ],
    "target": "legacy /legacy/",
    "notes": "في القايمة، في مصفوفة الصلاحيات",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -2094,7 +2184,7 @@
    ],
    "target": "legacy /legacy/",
    "notes": "في القايمة، في مصفوفة الصلاحيات",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -2131,7 +2221,7 @@
    ],
    "target": "legacy /legacy/",
    "notes": "في القايمة، في مصفوفة الصلاحيات",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -2155,7 +2245,7 @@
    ],
    "target": "legacy /legacy/",
    "notes": "في القايمة، في مصفوفة الصلاحيات",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -2186,7 +2276,7 @@
    ],
    "target": "legacy /legacy/",
    "notes": "في القايمة، في مصفوفة الصلاحيات",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -2204,7 +2294,7 @@
    ],
    "target": "legacy /legacy/",
    "notes": "في القايمة، في مصفوفة الصلاحيات",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -2233,7 +2323,7 @@
    ],
    "target": "legacy /legacy/",
    "notes": "في القايمة، في مصفوفة الصلاحيات",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -2251,7 +2341,7 @@
    ],
    "target": "legacy /legacy/",
    "notes": "في القايمة، في مصفوفة الصلاحيات",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -2269,7 +2359,7 @@
    ],
    "target": "legacy /legacy/",
    "notes": "في القايمة، في مصفوفة الصلاحيات",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -2295,7 +2385,7 @@
    ],
    "target": "angular /customers",
    "notes": "في القايمة، في مصفوفة الصلاحيات",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -2323,7 +2413,7 @@
    ],
    "target": "angular /projects",
    "notes": "في القايمة، في مصفوفة الصلاحيات",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -2341,7 +2431,7 @@
    ],
    "target": "legacy /legacy/",
    "notes": "في القايمة، في مصفوفة الصلاحيات",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -2360,7 +2450,7 @@
    ],
    "target": "legacy /legacy/",
    "notes": "في القايمة، في مصفوفة الصلاحيات",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -2382,7 +2472,7 @@
    ],
    "target": "legacy /legacy/",
    "notes": "في القايمة، في مصفوفة الصلاحيات",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -2401,7 +2491,7 @@
    ],
    "target": "legacy /legacy/",
    "notes": "في القايمة، في مصفوفة الصلاحيات",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -2420,7 +2510,7 @@
    ],
    "target": "legacy /legacy/",
    "notes": "في القايمة، في مصفوفة الصلاحيات",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -2440,7 +2530,7 @@
    ],
    "target": "legacy /legacy/",
    "notes": "في القايمة، في مصفوفة الصلاحيات",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -2458,7 +2548,7 @@
    ],
    "target": "legacy /legacy/",
    "notes": "في القايمة، في مصفوفة الصلاحيات",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -2477,7 +2567,7 @@
    ],
    "target": "angular /suppliers",
    "notes": "في القايمة، في مصفوفة الصلاحيات",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -2495,7 +2585,7 @@
    ],
    "target": "legacy /legacy/",
    "notes": "في القايمة، في مصفوفة الصلاحيات",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -2513,7 +2603,7 @@
    ],
    "target": "legacy /legacy/",
    "notes": "في القايمة، في مصفوفة الصلاحيات",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -2531,7 +2621,7 @@
    ],
    "target": "legacy /legacy/",
    "notes": "في القايمة، في مصفوفة الصلاحيات",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -2549,7 +2639,7 @@
    ],
    "target": "angular /warehouses",
    "notes": "في القايمة، في مصفوفة الصلاحيات",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -2567,7 +2657,7 @@
    ],
    "target": "legacy /legacy/",
    "notes": "في القايمة، في مصفوفة الصلاحيات",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -2585,7 +2675,7 @@
    ],
    "target": "legacy /legacy/",
    "notes": "في القايمة، في مصفوفة الصلاحيات",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -2603,7 +2693,7 @@
    ],
    "target": "legacy /legacy/",
    "notes": "في القايمة، في مصفوفة الصلاحيات",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -2621,7 +2711,7 @@
    ],
    "target": "legacy /legacy/",
    "notes": "في القايمة، في مصفوفة الصلاحيات",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -2642,7 +2732,7 @@
    ],
    "target": "legacy /legacy/",
    "notes": "في القايمة، في مصفوفة الصلاحيات",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -2661,7 +2751,7 @@
    ],
    "target": "legacy /legacy/",
    "notes": "في القايمة، في مصفوفة الصلاحيات",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -2680,7 +2770,7 @@
    ],
    "target": "legacy /legacy/",
    "notes": "في القايمة، في مصفوفة الصلاحيات",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -2698,7 +2788,7 @@
    ],
    "target": "legacy /legacy/",
    "notes": "في القايمة، في مصفوفة الصلاحيات",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -2716,7 +2806,7 @@
    ],
    "target": "legacy /legacy/",
    "notes": "في القايمة، في مصفوفة الصلاحيات",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -2734,7 +2824,7 @@
    ],
    "target": "legacy /legacy/",
    "notes": "في القايمة، في مصفوفة الصلاحيات",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -2752,7 +2842,7 @@
    ],
    "target": "legacy /legacy/",
    "notes": "في القايمة، في مصفوفة الصلاحيات",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -2770,7 +2860,7 @@
    ],
    "target": "legacy /legacy/",
    "notes": "في القايمة، في مصفوفة الصلاحيات",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -2789,7 +2879,7 @@
    ],
    "target": "legacy /legacy/",
    "notes": "في القايمة، في مصفوفة الصلاحيات",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -2807,7 +2897,7 @@
    ],
    "target": "legacy /legacy/",
    "notes": "في القايمة، في مصفوفة الصلاحيات",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -2825,7 +2915,7 @@
    ],
    "target": "legacy /legacy/",
    "notes": "في القايمة، في مصفوفة الصلاحيات",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -2850,7 +2940,7 @@
    ],
    "target": "legacy /legacy/",
    "notes": "في القايمة، في مصفوفة الصلاحيات",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -2868,7 +2958,7 @@
    ],
    "target": "legacy /legacy/",
    "notes": "في القايمة، في مصفوفة الصلاحيات",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -2886,7 +2976,7 @@
    ],
    "target": "legacy /legacy/",
    "notes": "في القايمة، في مصفوفة الصلاحيات",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -2904,7 +2994,7 @@
    ],
    "target": "legacy /legacy/",
    "notes": "مش في القايمة، في مصفوفة الصلاحيات",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -2922,7 +3012,7 @@
    ],
    "target": "legacy /legacy/",
    "notes": "مش في القايمة، مش في مصفوفة الصلاحيات",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -2940,7 +3030,7 @@
    ],
    "target": "legacy /legacy/",
    "notes": "مش في القايمة، مش في مصفوفة الصلاحيات",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -2958,7 +3048,7 @@
    ],
    "target": "legacy /legacy/",
    "notes": "مش في القايمة، مش في مصفوفة الصلاحيات",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -2977,7 +3067,7 @@
    ],
    "target": "legacy /legacy/",
    "notes": "مش في القايمة، في مصفوفة الصلاحيات",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -2995,7 +3085,7 @@
    ],
    "target": "legacy /legacy/",
    "notes": "مش في القايمة، في مصفوفة الصلاحيات",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -3013,7 +3103,7 @@
    ],
    "target": "legacy /legacy/",
    "notes": "مش في القايمة، مش في مصفوفة الصلاحيات",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -3031,7 +3121,7 @@
    ],
    "target": "legacy /legacy/",
    "notes": "مش في القايمة، مش في مصفوفة الصلاحيات",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -3049,7 +3139,7 @@
    ],
    "target": "legacy /legacy/",
    "notes": "مش في القايمة، في مصفوفة الصلاحيات",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -3067,7 +3157,7 @@
    ],
    "target": "legacy /legacy/",
    "notes": "مش في القايمة، في مصفوفة الصلاحيات",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -3083,7 +3173,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -3099,7 +3189,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -3115,7 +3205,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -3131,7 +3221,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -3147,7 +3237,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -3163,7 +3253,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "سلامة البيانات (P0 مقترح)",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -3179,7 +3269,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -3195,7 +3285,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "سلامة البيانات (P0 مقترح)",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -3211,7 +3301,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -3227,7 +3317,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -3243,7 +3333,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -3259,7 +3349,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -3275,7 +3365,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -3291,7 +3381,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -3307,7 +3397,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -3323,7 +3413,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -3339,7 +3429,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -3355,7 +3445,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -3371,7 +3461,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -3387,7 +3477,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -3403,7 +3493,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -3419,7 +3509,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -3435,7 +3525,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -3451,7 +3541,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -3467,7 +3557,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -3483,7 +3573,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -3499,7 +3589,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -3515,7 +3605,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -3531,7 +3621,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -3547,7 +3637,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -3563,7 +3653,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -3579,7 +3669,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -3595,7 +3685,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -3611,7 +3701,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -3627,7 +3717,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -3643,7 +3733,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -3659,7 +3749,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -3675,7 +3765,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -3691,7 +3781,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -3707,7 +3797,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -3723,7 +3813,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -3739,7 +3829,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -3755,7 +3845,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -3771,7 +3861,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -3787,7 +3877,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -3803,7 +3893,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -3819,7 +3909,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -3835,7 +3925,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -3851,7 +3941,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -3867,7 +3957,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -3883,7 +3973,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -3899,7 +3989,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -3915,7 +4005,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -3931,7 +4021,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -3947,7 +4037,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -3963,7 +4053,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -3979,7 +4069,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -3995,7 +4085,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -4011,7 +4101,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -4027,7 +4117,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -4043,7 +4133,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -4059,7 +4149,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -4075,7 +4165,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -4091,7 +4181,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -4107,7 +4197,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -4123,7 +4213,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -4139,7 +4229,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -4155,7 +4245,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -4171,7 +4261,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -4187,7 +4277,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -4203,7 +4293,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -4219,7 +4309,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -4235,7 +4325,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -4251,7 +4341,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -4267,7 +4357,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -4283,7 +4373,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -4299,7 +4389,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -4315,7 +4405,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -4331,7 +4421,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -4347,7 +4437,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -4363,7 +4453,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -4379,7 +4469,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "سلامة البيانات (P0 مقترح)",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -4395,7 +4485,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "سلامة البيانات (P0 مقترح)",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -4411,7 +4501,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "سلامة البيانات (P0 مقترح)",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -4427,7 +4517,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "سلامة البيانات (P0 مقترح)",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -4443,7 +4533,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -4459,7 +4549,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -4475,7 +4565,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -4491,7 +4581,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -4507,7 +4597,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "سلامة البيانات (P0 مقترح)",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -4523,7 +4613,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -4539,7 +4629,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -4555,7 +4645,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -4571,7 +4661,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -4587,7 +4677,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -4603,7 +4693,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "حساب مالي/مخزني (أولوية مقترحة P0)",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -4619,7 +4709,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -4635,7 +4725,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -4651,7 +4741,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "حساب مالي/مخزني (أولوية مقترحة P0)",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -4667,7 +4757,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "حساب مالي/مخزني (أولوية مقترحة P0)",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -4683,7 +4773,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -4699,7 +4789,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -4715,7 +4805,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -4731,7 +4821,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -4747,7 +4837,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "حساب مالي/مخزني (أولوية مقترحة P0)",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -4763,7 +4853,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -4779,7 +4869,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -4795,7 +4885,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -4811,7 +4901,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -4827,7 +4917,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -4843,7 +4933,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -4859,7 +4949,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -4875,7 +4965,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -4891,7 +4981,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "حساب مالي/مخزني (أولوية مقترحة P0)",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -4907,7 +4997,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -4923,7 +5013,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -4939,7 +5029,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -4955,7 +5045,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -4971,7 +5061,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -4987,7 +5077,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5003,7 +5093,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "حساب مالي/مخزني (أولوية مقترحة P0)",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5019,7 +5109,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "حساب مالي/مخزني (أولوية مقترحة P0)",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5035,7 +5125,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "حساب مالي/مخزني (أولوية مقترحة P0)",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5051,7 +5141,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "حساب مالي/مخزني (أولوية مقترحة P0)",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5067,7 +5157,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "حساب مالي/مخزني (أولوية مقترحة P0)",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5083,7 +5173,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "حساب مالي/مخزني (أولوية مقترحة P0)",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5099,7 +5189,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "حساب مالي/مخزني (أولوية مقترحة P0)",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5115,7 +5205,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "حساب مالي/مخزني (أولوية مقترحة P0)",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5131,7 +5221,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "حساب مالي/مخزني (أولوية مقترحة P0)",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5147,7 +5237,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "حساب مالي/مخزني (أولوية مقترحة P0)",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5163,7 +5253,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "حساب مالي/مخزني (أولوية مقترحة P0)",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5179,7 +5269,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "حساب مالي/مخزني (أولوية مقترحة P0)",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5195,7 +5285,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "سلامة البيانات (P0 مقترح)",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5211,7 +5301,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "سلامة البيانات (P0 مقترح)",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5227,7 +5317,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5243,7 +5333,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5259,7 +5349,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5275,7 +5365,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5291,7 +5381,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5307,7 +5397,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5323,7 +5413,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5339,7 +5429,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5355,7 +5445,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "حساب مالي/مخزني (أولوية مقترحة P0)",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5371,7 +5461,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5387,7 +5477,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5403,7 +5493,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5419,7 +5509,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5435,7 +5525,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5451,7 +5541,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5467,7 +5557,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5483,7 +5573,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5499,7 +5589,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5515,7 +5605,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5531,7 +5621,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "سلامة البيانات (P0 مقترح)",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5547,7 +5637,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "سلامة البيانات (P0 مقترح)",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5563,7 +5653,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "سلامة البيانات (P0 مقترح)",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5579,7 +5669,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5595,7 +5685,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5611,7 +5701,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5627,7 +5717,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5643,7 +5733,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "حساب مالي/مخزني (أولوية مقترحة P0)",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5659,7 +5749,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5675,7 +5765,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5691,7 +5781,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5707,7 +5797,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5723,7 +5813,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5739,7 +5829,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5755,7 +5845,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5771,7 +5861,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5787,7 +5877,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5803,7 +5893,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5819,7 +5909,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "حساب مالي/مخزني (أولوية مقترحة P0)",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5835,7 +5925,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "حساب مالي/مخزني (أولوية مقترحة P0)",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5851,7 +5941,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5867,7 +5957,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5883,7 +5973,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5899,7 +5989,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5915,7 +6005,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5931,7 +6021,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "حساب مالي/مخزني (أولوية مقترحة P0)",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5947,7 +6037,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5963,7 +6053,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5979,7 +6069,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -5995,7 +6085,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -6011,7 +6101,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -6027,7 +6117,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -6043,7 +6133,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -6059,7 +6149,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -6075,7 +6165,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "حساب مالي/مخزني (أولوية مقترحة P0)",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -6091,7 +6181,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "حساب مالي/مخزني (أولوية مقترحة P0)",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -6107,7 +6197,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "حساب مالي/مخزني (أولوية مقترحة P0)",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -6123,7 +6213,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "حساب مالي/مخزني (أولوية مقترحة P0)",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -6139,7 +6229,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "حساب مالي/مخزني (أولوية مقترحة P0)",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -6155,7 +6245,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "حساب مالي/مخزني (أولوية مقترحة P0)",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -6171,7 +6261,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "حساب مالي/مخزني (أولوية مقترحة P0)",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -6187,7 +6277,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -6203,7 +6293,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "حساب مالي/مخزني (أولوية مقترحة P0)",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -6219,7 +6309,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "حساب مالي/مخزني (أولوية مقترحة P0)",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -6235,7 +6325,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -6251,7 +6341,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -6267,7 +6357,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -6283,7 +6373,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "سلامة البيانات (P0 مقترح)",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -6299,7 +6389,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "سلامة البيانات (P0 مقترح)",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -6315,7 +6405,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "سلامة البيانات (P0 مقترح)",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -6331,7 +6421,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -6347,7 +6437,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -6363,7 +6453,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -6379,7 +6469,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -6395,7 +6485,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -6411,7 +6501,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -6427,7 +6517,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -6443,7 +6533,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -6459,7 +6549,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -6475,7 +6565,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -6491,7 +6581,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -6507,7 +6597,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "سلامة البيانات (P0 مقترح)",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -6523,7 +6613,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -6539,7 +6629,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "حساب مالي/مخزني (أولوية مقترحة P0)",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -6555,7 +6645,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -6571,7 +6661,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -6587,7 +6677,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -6603,7 +6693,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -6619,7 +6709,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -6635,7 +6725,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -6651,7 +6741,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -6667,7 +6757,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -6683,7 +6773,7 @@
    "tests": [],
    "target": "legacy",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -6699,7 +6789,7 @@
    "tests": [],
    "target": "server (ADR-016)",
    "notes": "السيرفر هو المرجع",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -6715,7 +6805,7 @@
    "tests": [],
    "target": "server",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -6731,7 +6821,7 @@
    "tests": [],
    "target": "server",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -6747,7 +6837,7 @@
    "tests": [],
    "target": "server",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -6763,7 +6853,7 @@
    "tests": [],
    "target": "server",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -6779,7 +6869,7 @@
    "tests": [],
    "target": "server",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -6795,7 +6885,7 @@
    "tests": [],
    "target": "server",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -6811,7 +6901,7 @@
    "tests": [],
    "target": "server",
    "notes": "",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -6830,7 +6920,7 @@
    ],
    "target": "legacy",
    "notes": "حساب مالي بتستخدمه المعادلات المرجعية (اتضافت من legacy-runner)",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -6849,7 +6939,7 @@
    ],
    "target": "legacy",
    "notes": "حساب مالي بتستخدمه المعادلات المرجعية (اتضافت من legacy-runner)",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -6868,7 +6958,7 @@
    ],
    "target": "legacy",
    "notes": "حساب مالي بتستخدمه المعادلات المرجعية (اتضافت من legacy-runner)",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -6887,7 +6977,7 @@
    ],
    "target": "legacy",
    "notes": "حساب مالي بتستخدمه المعادلات المرجعية (اتضافت من legacy-runner)",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -6906,7 +6996,7 @@
    ],
    "target": "legacy",
    "notes": "حساب مالي بتستخدمه المعادلات المرجعية (اتضافت من legacy-runner)",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -6925,7 +7015,7 @@
    ],
    "target": "legacy",
    "notes": "حساب مالي بتستخدمه المعادلات المرجعية (اتضافت من legacy-runner)",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -6944,7 +7034,7 @@
    ],
    "target": "legacy",
    "notes": "حساب مالي بتستخدمه المعادلات المرجعية (اتضافت من legacy-runner)",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -6963,7 +7053,7 @@
    ],
    "target": "legacy",
    "notes": "حساب مالي بتستخدمه المعادلات المرجعية (اتضافت من legacy-runner)",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -6982,7 +7072,7 @@
    ],
    "target": "legacy",
    "notes": "حساب مالي بتستخدمه المعادلات المرجعية (اتضافت من legacy-runner)",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -7001,7 +7091,7 @@
    ],
    "target": "legacy",
    "notes": "حساب مالي بتستخدمه المعادلات المرجعية (اتضافت من legacy-runner)",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -7017,7 +7107,7 @@
    "tests": [],
    "target": "يتراجع: صلاحيات السيرفر بدل PIN",
    "notes": "الفئة: auth",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -7033,7 +7123,7 @@
    "tests": [],
    "target": "POST /api/backups",
    "notes": "الفئة: backup",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -7049,7 +7139,7 @@
    "tests": [],
    "target": "POST /api/admin/attachments/cleanup (dry-run)",
    "notes": "الفئة: attach",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -7065,7 +7155,7 @@
    "tests": [],
    "target": "لا ينطبق",
    "notes": "الفئة: remove",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -7081,7 +7171,7 @@
    "tests": [],
    "target": "DELETE /api/attachments/:id",
    "notes": "الفئة: attach",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -7097,7 +7187,7 @@
    "tests": [],
    "target": "POST /api/archive (ZIP stream)",
    "notes": "الفئة: pdf",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -7113,7 +7203,7 @@
    "tests": [],
    "target": "xlsx في المتصفح",
    "notes": "الفئة: browser",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -7129,7 +7219,7 @@
    "tests": [],
    "target": "GET /api/health (version)",
    "notes": "الفئة: data",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -7145,7 +7235,7 @@
    "tests": [],
    "target": "لا ينطبق",
    "notes": "الفئة: remove",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -7161,7 +7251,7 @@
    "tests": [],
    "target": "لا ينطبق",
    "notes": "الفئة: remove",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -7177,7 +7267,7 @@
    "tests": [],
    "target": "لا ينطبق (النسخ على السيرفر)",
    "notes": "الفئة: remove",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -7193,7 +7283,7 @@
    "tests": [],
    "target": "لا ينطبق (السيرفر هو القفل)",
    "notes": "الفئة: remove",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -7209,7 +7299,7 @@
    "tests": [],
    "target": "POST /api/users (السيرفر يشفّر)",
    "notes": "الفئة: auth",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -7225,7 +7315,7 @@
    "tests": [],
    "target": "xlsx في المتصفح",
    "notes": "الفئة: browser",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -7241,7 +7331,7 @@
    "tests": [],
    "target": "لا ينطبق",
    "notes": "الفئة: remove",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -7257,7 +7347,7 @@
    "tests": [],
    "target": "GET /api/bootstrap",
    "notes": "الفئة: data",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -7273,7 +7363,7 @@
    "tests": [],
    "target": "GET /api/attachments/:id (signed URL)",
    "notes": "الفئة: attach",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -7289,7 +7379,7 @@
    "tests": [],
    "target": "window.open",
    "notes": "الفئة: browser",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -7305,7 +7395,7 @@
    "tests": [],
    "target": "<input type=file>",
    "notes": "الفئة: browser",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -7321,7 +7411,7 @@
    "tests": [],
    "target": "لا ينطبق",
    "notes": "الفئة: remove",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -7337,7 +7427,7 @@
    "tests": [],
    "target": "input file + POST /api/attachments",
    "notes": "الفئة: attach",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -7353,7 +7443,7 @@
    "tests": [],
    "target": "لا ينطبق",
    "notes": "الفئة: remove",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -7369,7 +7459,7 @@
    "tests": [],
    "target": "لا ينطبق",
    "notes": "الفئة: remove",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -7385,7 +7475,7 @@
    "tests": [],
    "target": "لا updater في الويب",
    "notes": "الفئة: remove",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -7401,7 +7491,7 @@
    "tests": [],
    "target": "GET /api/attachments/:id",
    "notes": "الفئة: attach",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -7417,7 +7507,7 @@
    "tests": [],
    "target": "لا ينطبق",
    "notes": "الفئة: remove",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -7433,7 +7523,7 @@
    "tests": [],
    "target": "لا ينطبق",
    "notes": "الفئة: remove",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -7449,7 +7539,7 @@
    "tests": [],
    "target": "POST /api/backups (سبب)",
    "notes": "الفئة: backup",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -7465,7 +7555,7 @@
    "tests": [],
    "target": "POST /api/attachments",
    "notes": "الفئة: attach",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -7481,7 +7571,7 @@
    "tests": [],
    "target": "POST /api/sync (diff)",
    "notes": "الفئة: data",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -7497,7 +7587,7 @@
    "tests": [],
    "target": "fetch keepalive / sendBeacon → /api/sync",
    "notes": "الفئة: data",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -7513,7 +7603,7 @@
    "tests": [],
    "target": "Blob + download",
    "notes": "الفئة: browser",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -7529,7 +7619,7 @@
    "tests": [],
    "target": "POST /api/pdf",
    "notes": "الفئة: pdf",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -7545,7 +7635,7 @@
    "tests": [],
    "target": "POST /api/pdf",
    "notes": "الفئة: pdf",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -7561,7 +7651,7 @@
    "tests": [],
    "target": "كاميرا / رفع PDF",
    "notes": "الفئة: attach",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -7577,7 +7667,7 @@
    "tests": [],
    "target": "كاميرا / رفع PDF",
    "notes": "الفئة: attach",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -7593,7 +7683,7 @@
    "tests": [],
    "target": "وضع الشبكة القديم يتلغى",
    "notes": "الفئة: remove",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -7609,7 +7699,7 @@
    "tests": [],
    "target": "يتلغى",
    "notes": "الفئة: remove",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -7625,7 +7715,7 @@
    "tests": [],
    "target": "يتلغى",
    "notes": "الفئة: remove",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -7641,7 +7731,7 @@
    "tests": [],
    "target": "لا ينطبق",
    "notes": "الفئة: remove",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -7657,7 +7747,7 @@
    "tests": [],
    "target": "POST /api/backups (أدمن)",
    "notes": "الفئة: backup",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -7673,7 +7763,7 @@
    "tests": [],
    "target": "POST /api/auth/login",
    "notes": "الفئة: auth",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },
   {
@@ -7689,7 +7779,7 @@
    "tests": [],
    "target": "—",
    "notes": "منفّذ ومختبر (بيانات اختبار)، مش متفعّل",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "recorded"
   },
   {
@@ -7705,7 +7795,7 @@
    "tests": [],
    "target": "—",
    "notes": "منفّذ، **من غير نسب** (Policy C)",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "recorded"
   },
   {
@@ -7721,7 +7811,7 @@
    "tests": [],
    "target": "—",
    "notes": "منفّذ، مسودات بس",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "recorded"
   },
   {
@@ -7737,7 +7827,7 @@
    "tests": [],
    "target": "—",
    "notes": "منفّذ",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "recorded"
   },
   {
@@ -7753,7 +7843,7 @@
    "tests": [],
    "target": "—",
    "notes": "مش متنفّذ (B-36…B-38)",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "recorded"
   },
   {
@@ -7769,7 +7859,7 @@
    "tests": [],
    "target": "—",
    "notes": "مش متنفّذ (B-39)",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "recorded"
   },
   {
@@ -7785,7 +7875,7 @@
    "tests": [],
    "target": "—",
    "notes": "مش متنفّذ (B-40، B-41)",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "recorded"
   },
   {
@@ -7801,7 +7891,7 @@
    "tests": [],
    "target": "—",
    "notes": "المرحلة 10",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "recorded"
   },
   {
@@ -7817,7 +7907,7 @@
    "tests": [],
    "target": "—",
    "notes": "الأساس منفّذ",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "recorded"
   },
   {
@@ -7836,7 +7926,7 @@
    "aliases": [
     "S-1"
    ],
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "recorded"
   },
   {
@@ -7855,7 +7945,7 @@
    "aliases": [
     "S-2"
    ],
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "recorded"
   },
   {
@@ -7874,7 +7964,7 @@
    "aliases": [
     "S-3"
    ],
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "recorded"
   },
   {
@@ -7893,7 +7983,7 @@
    "aliases": [
     "S-4"
    ],
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "recorded"
   },
   {
@@ -7912,7 +8002,7 @@
    "aliases": [
     "S-5"
    ],
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "recorded"
   },
   {
@@ -7931,7 +8021,7 @@
    "aliases": [
     "S-6"
    ],
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "recorded"
   },
   {
@@ -7950,7 +8040,7 @@
    "aliases": [
     "S-7"
    ],
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "recorded"
   },
   {
@@ -7969,7 +8059,7 @@
    "aliases": [
     "S-8"
    ],
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "recorded"
   },
   {
@@ -7985,7 +8075,7 @@
    "tests": [],
    "target": "server/infra",
    "notes": "ADR-011، ADR-023",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "recorded"
   },
   {
@@ -8001,7 +8091,7 @@
    "tests": [],
    "target": "server/infra",
    "notes": "ADR-013، 01 §3.4",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "recorded"
   },
   {
@@ -8017,7 +8107,7 @@
    "tests": [],
    "target": "server/infra",
    "notes": "ADR-012، Policy D",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "recorded"
   },
   {
@@ -8033,7 +8123,7 @@
    "tests": [],
    "target": "server/infra",
    "notes": "03 §21.3",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "recorded"
   },
   {
@@ -8049,7 +8139,7 @@
    "tests": [],
    "target": "server/infra",
    "notes": "ADR-018",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "recorded"
   },
   {
@@ -8065,7 +8155,7 @@
    "tests": [],
    "target": "server/infra",
    "notes": "Policy E، ADR-020",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "recorded"
   },
   {
@@ -8081,7 +8171,7 @@
    "tests": [],
    "target": "server/infra",
    "notes": "ADR-016",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "recorded"
   },
   {
@@ -8097,7 +8187,7 @@
    "tests": [],
    "target": "server/infra",
    "notes": "ADR-007، ADR-014، 01 §4",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "recorded"
   },
   {
@@ -8113,7 +8203,7 @@
    "tests": [],
    "target": "server/infra",
    "notes": "02 Phase 4",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "recorded"
   },
   {
@@ -8129,7 +8219,7 @@
    "tests": [],
    "target": "server/infra",
    "notes": "04 §4.3",
-   "priorityStatus": "proposed",
+   "priorityStatus": "approved (DEC-0085)",
    "status": "recorded"
   }
  ]
