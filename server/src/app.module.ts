@@ -17,6 +17,7 @@ import { NumberingModule } from './numbering/numbering.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { ApprovalsModule } from './approvals/approvals.module';
 import { PartiesModule } from './parties/parties.module';
+import { ReferenceModule } from './reference/reference.module';
 import { FinanceRulesModule } from './finance-rules/finance-rules.module';
 import { StockModule } from './stock/stock.module';
 import { WarehousesModule } from './warehouses/warehouses.module';
@@ -60,7 +61,7 @@ import { HistoryModule } from './history/history.module';
     NumberingModule,
     NotificationsModule,
     ApprovalsModule,
-    HistoryModule, PartiesModule, FinanceRulesModule, StockModule, WarehousesModule,
+    HistoryModule, PartiesModule, ReferenceModule, FinanceRulesModule, StockModule, WarehousesModule,
   ],
 })
 export class AppModule {}

@@ -4826,6 +4826,57 @@
     ]
    }
   },
+  "/api/v1/reference": {
+   "get": {
+    "description": "قراءة بس، لأي مستخدم مسجّل (نفس صلاحية القوايم في الواجهة القديمة). الكتابة من الواجهة القديمة.",
+    "operationId": "ReferenceController_list",
+    "parameters": [],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "القوايم المرجعية المشتركة (المفاتيح والأعداد)",
+    "tags": [
+     "v1 reference data"
+    ]
+   }
+  },
+  "/api/v1/reference/{key}": {
+   "get": {
+    "description": "نفس شكل القايمة في الواجهة القديمة (DATA.<key>). المفتاح لازم يكون من النوع lookup في كتالوج البيانات، وغير كده 404.",
+    "operationId": "ReferenceController_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "key",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "محتوى قايمة مرجعية",
+    "tags": [
+     "v1 reference data"
+    ]
+   }
+  },
   "/api/v1/stock/adjustments": {
    "get": {
     "operationId": "StockController_list",

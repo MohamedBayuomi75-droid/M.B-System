@@ -1,7 +1,7 @@
 # مصفوفة التتبّع (خطة v1.4.5 — المرحلة 3)
 
 > **مولَّد** بـ `node tools/discovery/build-traceability.js` من `requirements-registry.json` + ملفات الاختبار. ماتعدّلش الملف باليد.
-> **الاختبارات** بتتلاقى بالبحث عن اسم الدالة أو الصفحة في `tests-merge/` و`tests-web/` و`tools/formulas/` و`server/test/` (98 ملف). ده **دليل إن الاختبار بيلمس العنصر**، مش إثبات إنه بيغطي كل حالاته.
+> **الاختبارات** بتتلاقى بالبحث عن اسم الدالة أو الصفحة في `tests-merge/` و`tests-web/` و`tools/formulas/` و`server/test/` (99 ملف). ده **دليل إن الاختبار بيلمس العنصر**، مش إثبات إنه بيغطي كل حالاته.
 > **الحالات** (`02` §20): Implemented ≠ Verified ≠ Accepted. **مفيش حاجة هنا Accepted**: القبول بيكون لكل موديول ببوابة.
 > **الأولويات مقترحة.**
 
@@ -160,7 +160,7 @@
 | LEG-0019 | page | العملاء والمشاريع | صفحة «الضمانات» (clients.guarantees) | renderer/modules/clients/guarantees.js:176 | legacy /legacy/ | phase5.js، phase6.js | Verified (باختبار) | DEC-0029 (B-29)، DEC-0035 (B-35) |
 | LEG-0020 | page | العملاء والمشاريع | صفحة «المقارنة» (clients.comparison) | renderer/modules/clients/comparison.js:62 | legacy /legacy/ | phase11.js، phase12.js، phase14.js | Verified (باختبار) | DEC-0029 (B-29)، DEC-0035 (B-35) |
 | LEG-0021 | page | العملاء والمشاريع | صفحة «CRM» (clients.crm) | renderer/modules/clients/pages-crm.js:40 | legacy /legacy/ | phase61.js | Verified (باختبار) | DEC-0029 (B-29)، DEC-0035 (B-35) |
-| LEG-0022 | page | الموردون | صفحة «الموردون» (ledger.suppliers) | renderer/modules/ledger/pages-suppliers.js:3 | angular /suppliers | phase60.js، phase61.js، phase16.js، phase17.js، phase21.js، app-e2e.js (+3) | Implemented (اتنقل) | DEC-0029 (B-29) |
+| LEG-0022 | page | الموردون | صفحة «الموردون» (ledger.suppliers) | renderer/modules/ledger/pages-suppliers.js:3 | angular /suppliers | phase60.js، phase61.js، phase16.js، phase17.js، phase21.js، app-e2e.js (+4) | Implemented (اتنقل) | DEC-0029 (B-29) |
 | LEG-0023 | page | الموردون | صفحة «الفواتير» (ledger.invoices) | renderer/modules/ledger/pages-invoices.js:35 | legacy /legacy/ | phase16.js، phase17.js، phase21.js، phase62.js، app-e2e.js، attachments.e2e-spec.ts (+5) | Verified (باختبار) | DEC-0029 (B-29) |
 | LEG-0024 | page | الموردون | صفحة «إشعارات الخصم» (ledger.quarterly) | renderer/modules/ledger/pages-quarterly.js:39 | legacy /legacy/ | phase61.js | Verified (باختبار) | DEC-0029 (B-29) |
 | LEG-0025 | page | الموردون | صفحة «المرتجعات» (ledger.returns) | renderer/modules/ledger/pages-invoices.js:35 | legacy /legacy/ | phase61.js | Verified (باختبار) | DEC-0029 (B-29) |
@@ -181,7 +181,7 @@
 | LEG-0040 | page | الأرشيف | صفحة «أرشيف الموردين» (ledger.archive) | renderer/modules/ledger/pages-archive.js:215 | legacy /legacy/ | phase61.js | Verified (باختبار) | DEC-0061 (B-61) |
 | LEG-0041 | page | الأرشيف | صفحة «أرشيف العملاء والمشاريع» (clients.archive) | renderer/modules/clients/pages-archive.js:36 | legacy /legacy/ | phase8.js | Verified (باختبار) | DEC-0061 (B-61) |
 | LEG-0042 | page | الإعدادات | صفحة «الإعدادات العامة» (backup) | renderer/core/pages-backup.js:5 | legacy /legacy/ | phase10.js، phase29.js، phase32.js، phase34.js، phase35.js، phase36.js (+3) | Verified (باختبار) | DEC-0035 (B-35) |
-| LEG-0043 | page | الإعدادات | صفحة «المستخدمون» (users) | renderer/core/pages-users.js:16 | legacy /legacy/ | phase61.js، pages-smoke.js، phase10.js، phase11.js، phase12.js، phase13.js (+72) | Verified (باختبار) | DEC-0035 (B-35) |
+| LEG-0043 | page | الإعدادات | صفحة «المستخدمون» (users) | renderer/core/pages-users.js:16 | legacy /legacy/ | phase61.js، pages-smoke.js، phase10.js، phase11.js، phase12.js، phase13.js (+73) | Verified (باختبار) | DEC-0035 (B-35) |
 | LEG-0044 | page | الإعدادات | صفحة «الاقتراحات» (ledger.categories) | renderer/modules/ledger/pages-categories.js:4 | legacy /legacy/ | phase61.js | Verified (باختبار) | DEC-0035 (B-35) |
 | LEG-0045 | page | (خارج القايمة) | صفحة «clients.dashboard» (clients.dashboard) — اسم بديل لـ dashboard | renderer/modules/hr/pages-dashboard.js:28 | legacy /legacy/ | phase20.js | Verified (باختبار) | — |
 | LEG-0046 | page | (خارج القايمة) | صفحة «fuel» (fuel) — اسم بديل لـ equipment | renderer/modules/hr/pages-equipment.js:32 | legacy /legacy/ | phase61.js، phase18.js، phase26.js، legacy-runner.js، reference.js | Verified (باختبار) | — |
