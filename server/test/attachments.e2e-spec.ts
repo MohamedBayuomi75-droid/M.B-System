@@ -1,4 +1,6 @@
 import { adminToken, bearer, createTestApp, newUser, sync, TestApp } from './app';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { docx, pdf, png, xlsx } from '../src/files/file-fixtures.spec-helper';
 
 /** المرحلة 2 — S-5: رفع/تنزيل المرفقات بالفحص وصلاحية السجل المالك. */
@@ -44,7 +46,20 @@ describe('attachments security (phase 2)', () => {
     expect(d.headers['x-content-type-options']).toBe('nosniff');
   });
 
+  it('B-78 (a): permission-only encrypted PDF is accepted and stored byte-for-byte; open-password and AES-256 PDFs are refused', async () => {
+    const fx = (n: string) => readFileSync(join(__dirname, 'fixtures/pdf', n));
+    const r = await upload(admin, 'ledger.invoices', 'inv1', fx('rc4-128.pdf'), 'مشفّر-صلاحيات.pdf');
+    expect(r.status).toBe(201);
+    const d = await t.http().get(`/api/attachments/${r.body.id}/content`).set(bearer(admin)).buffer(true).parse((res, cb) => { const c: Buffer[] = []; res.on('data', (x: Buffer) => c.push(x)); res.on('end', () => cb(null, Buffer.concat(c))); });
+    expect(Buffer.compare(d.body as Buffer, fx('rc4-128.pdf'))).toBe(0); // الأصل زي ما هو (الفك في الذاكرة للفحص بس)
+    for (const [n, code] of [['user-password.pdf', 'PDF_PASSWORD'], ['aes-256.pdf', 'PDF_ENCRYPTION_UNSUPPORTED'], ['js-aes-128-objstm.pdf', 'PDF_ACTIVE_CONTENT']]) {
+      const x = await upload(admin, 'ledger.invoices', 'inv1', fx(n), n);
+      expect([n, x.status, x.body.code]).toEqual([n, 400, code]);
+    }
+  });
+
   it('rejects disguised, active or oversized files with a reason code', async () => {
+    const [{ n: before }] = await t.ds.query(`SELECT count(*)::int AS n FROM audit_log WHERE action = 'attachment.rejected'`);
     const cases: Array<[Buffer, string, string]> = [
       [Buffer.from('MZ fake executable'), 'invoice.pdf', 'TYPE_NOT_ALLOWED'],
       [png(), 'photo.pdf', 'EXTENSION_MISMATCH'],
@@ -57,7 +72,7 @@ describe('attachments security (phase 2)', () => {
       expect([r.status, r.body.code]).toEqual([400, code]);
     }
     const [{ n }] = await t.ds.query(`SELECT count(*)::int AS n FROM audit_log WHERE action = 'attachment.rejected'`);
-    expect(n).toBe(cases.length);
+    expect(n - before).toBe(cases.length);
   });
 
   it('size limit enforced before the file is stored (413)', async () => {

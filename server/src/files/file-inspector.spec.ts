@@ -33,7 +33,7 @@ describe('file inspector (S-5 / B-59)', () => {
     expect(code(inspectFile(pdf('/AA << /O << /S /J#61vaScript >> >>'), 'a.pdf'))).toBe('PDF_ACTIVE_CONTENT');
     expect(code(inspectFile(pdf('/OpenAction << /S /Launch /F (cmd.exe) >>'), 'a.pdf'))).toBe('PDF_ACTIVE_CONTENT');
     expect(code(inspectFile(pdf('/Names << /EmbeddedFiles 3 0 R >>'), 'a.pdf'))).toBe('PDF_ACTIVE_CONTENT');
-    expect(code(inspectFile(pdf('/Encrypt 5 0 R'), 'a.pdf'))).toBe('PDF_ENCRYPTED');
+    expect(code(inspectFile(pdf('/Encrypt 5 0 R'), 'a.pdf'))).toBe('PDF_UNREADABLE'); // تشفير من غير قاموسه = مرفوض (fail-closed). الحالات الحقيقية في pdf-scan.spec.ts
     expect(code(inspectFile(Buffer.from('%PDF-1.4\n1 0 obj << >> endobj\n'), 'a.pdf'))).toBe('PDF_TRUNCATED');
     expect(code(inspectFile(pdf('/OpenAction [3 0 R /Fit]'), 'a.pdf'))).toBe('OK'); // فتح على صفحة = عادي
   });

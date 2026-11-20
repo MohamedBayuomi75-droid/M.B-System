@@ -1,5 +1,6 @@
 import { createHash } from 'node:crypto';
 import { inflateRawSync } from 'node:zlib';
+import { scanPdf } from './pdf-scan';
 
 /**
  * فاحص الملفات المرفوعة (المرحلة 2 — S-5، القرار B-59):
@@ -76,11 +77,12 @@ const PDF_FORBIDDEN: Array<[RegExp, string]> = [
   [/\/ImportData\b/, 'استيراد بيانات'],
 ];
 function checkPdf(b: Buffer): InspectResult | null {
-  // أسماء PDF ممكن تتكتب بـ #xx (مثلًا /J#61vaScript) — نفكها قبل الفحص
-  const text = b.toString('latin1').replace(/#([0-9A-Fa-f]{2})/g, (_, h: string) => String.fromCharCode(parseInt(h, 16)));
-  for (const [re, label] of PDF_FORBIDDEN) if (re.test(text)) return fail('PDF_ACTIVE_CONTENT', `ملف PDF يحتوي على محتوى نشط غير مسموح (${label})`);
-  if (/\/Encrypt\b/.test(text)) return fail('PDF_ENCRYPTED', 'ملف PDF مشفّر — لا يمكن فحص محتواه');
-  if (!text.slice(-2048).includes('%%EOF')) return fail('PDF_TRUNCATED', 'ملف PDF غير مكتمل أو تالف');
+  if (!b.toString('latin1', Math.max(0, b.length - 2048)).includes('%%EOF')) return fail('PDF_TRUNCATED', 'ملف PDF غير مكتمل أو تالف');
+  // النص اللي بيتفحص = الملف + محتوى الـ object streams بعد فك الضغط، وبعد فك التشفير لو التشفير بيقيّد الصلاحيات بس (B-78 أ).
+  // كلمة سر فتح فعلية، أو AES-256، أو أي حاجة مش مفهومة ← رفض بكود واضح (fail-closed). الأسماء بـ #xx بتتفك جوه scanPdf.
+  const scan = scanPdf(b);
+  if (!scan.ok) return fail(scan.code, scan.message);
+  for (const [re, label] of PDF_FORBIDDEN) if (re.test(scan.text)) return fail('PDF_ACTIVE_CONTENT', `ملف PDF يحتوي على محتوى نشط غير مسموح (${label})`);
   return null;
 }
 
