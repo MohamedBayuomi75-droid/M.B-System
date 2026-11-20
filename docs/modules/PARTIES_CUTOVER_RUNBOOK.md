@@ -41,7 +41,7 @@ Cut parties reconcile > out\phase6\R0b.json
 docker compose -p $P -f $F exec backup /opt/backup/backup-full.sh
 docker compose -p $P -f $F exec backup /opt/backup/restore-test.sh
 ```
-**المتوقع:** الاتنين `ok` في `backup-log.jsonl`. سجّل **وقت النسخة** (`at` بتاع آخر `full`): ده اللي بيتكتب في `--confirm-backup`.
+**المتوقع:** الاتنين `ok` في `backup-log.jsonl`. سجّل **وقت النسخة** (`at` بتاع آخر سطر `"kind":"base"` بحالة `ok`، لأن `backup-full.sh` بيسجّل النسخة الكاملة كده): ده اللي بيتكتب في `--confirm-backup`. لو اتكتب وقت غلط، الأمر بيرفض وبيطبع الوقت الصح.
 
 ## 4. التنفيذ
 ```powershell
@@ -92,3 +92,4 @@ Cut parties reconcile > out\phase6\R2.json
 | `R1 ≠ R0` | `rollback` فورًا (§6)، وبعدين `reconcile` وقارن بـ R0، ووقّف وسجّل |
 | الواجهة القديمة فيها خطأ فوق الجداول | `rollback` (§6) ووقّف وسجّل الخطأ |
 | `rollback` فشل | مفيش حاجة اتغيّرت (معاملة واحدة). الحل الأخير: استعادة النسخة الكاملة من §6 (`restore.sh`)، ده **بيئة معزولة** |
+| `مفيش نسخة كاملة ناجحة في السجل` / `مفيش اختبار استعادة ناجح بعد آخر نسخة كاملة` | الأمر رفض قبل ما يتصل بالقاعدة، ومفيش حاجة اتغيّرت. شغّل `backup-full.sh` وبعده `restore-test.sh` (§3) وأعد المحاولة. **ممنوع تعديل `backup-log.jsonl` باليد** |
