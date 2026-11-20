@@ -48,4 +48,21 @@ describe('6.2-B warehouses API', () => {
 
   scenario('before cutover (records)', false);
   scenario('after cutover (tables)', true);
+
+  it('7.1 (legacy parity): warehouse code LOC-NN by default or given, unique; name/notes editable with rev, code fixed; legacy UI sees it', async () => {
+    const all = (await t.http().get(W).set(bearer(viewer))).body.locations as { id: string }[];
+    const a = (await t.http().post(`${W}/locations`).set(bearer(keeper)).send({ name: 'مخزن الكود' })).body;
+    expect(a.id).toMatch(/^LOC-\d{2,}$/);
+    expect(all.map((l) => l.id)).not.toContain(a.id);
+    const b = (await t.http().post(`${W}/locations`).set(bearer(keeper)).send({ name: 'مخزن بكود', code: 'MAIN-1' })).body;
+    expect(b.id).toBe('MAIN-1');
+    expect((await t.http().post(`${W}/locations`).set(bearer(keeper)).send({ name: 'تكرار', code: 'MAIN-1' })).body.code).toBe('DUPLICATE_CODE');
+    expect((await t.http().patch(`${W}/locations/${b.id}`).set(bearer(viewer)).send({ rev: b.rev, name: 'x' })).status).toBe(403);
+    const e = await t.http().patch(`${W}/locations/${b.id}`).set(bearer(keeper)).send({ rev: b.rev, name: 'المخزن الرئيسي', notes: 'الدور الأرضي' });
+    expect([e.status, e.body.id, e.body.name, e.body.notes]).toEqual([200, 'MAIN-1', 'المخزن الرئيسي', 'الدور الأرضي']);
+    // rev قديم على حقل نصي: آخر كتابة بتكسب (نفس قاعدة التعارض في الطبقة الانتقالية — الحقول المحمية بس بترجّع 409)
+    expect((await t.http().patch(`${W}/locations/nope`).set(bearer(keeper)).send({ rev: 1, name: 'x' })).status).toBe(404);
+    const legacy = (await bootstrap(t, admin)).data.warehouses.locations.find((l: { id: string }) => l.id === 'MAIN-1');
+    expect([legacy.name, legacy.notes]).toEqual(['المخزن الرئيسي', 'الدور الأرضي']);
+  });
 });

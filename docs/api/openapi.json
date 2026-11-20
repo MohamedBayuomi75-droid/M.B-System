@@ -733,6 +733,10 @@
    },
    "CreateLocationDto": {
     "properties": {
+     "code": {
+      "description": "كود المخزن (= المعرّف). فاضي = LOC-NN بنفس صيغة الواجهة القديمة (pages-home.js openWhLocationModal)",
+      "type": "string"
+     },
      "name": {
       "type": "string"
      },
@@ -2172,6 +2176,23 @@
      },
      "unit": {
       "type": "string"
+     }
+    },
+    "required": [
+     "rev"
+    ],
+    "type": "object"
+   },
+   "UpdateLocationDto": {
+    "properties": {
+     "name": {
+      "type": "string"
+     },
+     "notes": {
+      "type": "string"
+     },
+     "rev": {
+      "type": "number"
      }
     },
     "required": [
@@ -5337,6 +5358,45 @@
       "bearer": []
      }
     ],
+    "tags": [
+     "v1 warehouses"
+    ]
+   }
+  },
+  "/api/v1/warehouses/locations/{id}": {
+   "patch": {
+    "operationId": "WarehousesController_updateLocation",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/UpdateLocationDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "تعديل اسم المخزن وملاحظاته (الكود ثابت، rev إلزامي)",
     "tags": [
      "v1 warehouses"
     ]

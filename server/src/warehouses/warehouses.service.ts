@@ -3,7 +3,7 @@ import { randomBytes } from 'node:crypto';
 import type { AuthUser } from '../auth/auth.types';
 import { hasPagePermission } from '../authz/effective-permissions';
 import { DataService } from '../data/data.service';
-import { CreateItemDto, CreateLocationDto, TransferDto, UpdateItemDto } from './warehouses.dto';
+import { CreateItemDto, CreateLocationDto, TransferDto, UpdateItemDto, UpdateLocationDto } from './warehouses.dto';
 import { Rec, WarehousesRepository } from './warehouses.repository';
 
 const s = (v: unknown) => (v == null ? '' : String(v));
@@ -93,8 +93,22 @@ export class WarehousesService {
   async createLocation(u: AuthUser, dto: CreateLocationDto) {
     this.assert(u, 'add');
     if (!dto.name.trim()) throw new BadRequestException({ statusCode: 400, code: 'NAME_REQUIRED', message: 'اسم المخزن مطلوب' });
-    const id = WarehousesService.newId('loc');
+    const existing = new Set((await this.repo.all('warehouses.locations')).map((l) => l.id));
+    let id = dto.code?.trim() ?? '';
+    if (id && existing.has(id)) throw new ConflictException({ statusCode: 409, code: 'DUPLICATE_CODE', message: 'كود المخزن مستخدم' });
+    // الكود الافتراضي زي الواجهة القديمة: LOC- + (عدد المخازن + 1) بخانتين (openWhLocationModal)، وأول رقم فاضي لو اتاخد
+    for (let n = existing.size + 1; !id || existing.has(id); n++) id = `LOC-${String(n).padStart(2, '0')}`;
     await this.write(u, 'warehouses.locations', id, 0, { id, name: dto.name.trim(), notes: dto.notes?.trim() ?? '' });
+    return (await this.overview(u)).locations.find((l) => l.id === id);
+  }
+
+  async updateLocation(u: AuthUser, id: string, dto: UpdateLocationDto) {
+    this.assert(u, 'edit');
+    if (!(await this.repo.one('warehouses.locations', id))) throw new NotFoundException({ statusCode: 404, code: 'NOT_FOUND', message: 'المخزن غير موجود' });
+    if (dto.name !== undefined && !dto.name.trim()) throw new BadRequestException({ statusCode: 400, code: 'NAME_REQUIRED', message: 'اسم المخزن مطلوب' });
+    const set: Record<string, unknown> = {};
+    for (const k of ['name', 'notes'] as const) if (dto[k] !== undefined) set[k] = s(dto[k]).trim();
+    if (Object.keys(set).length) await this.write(u, 'warehouses.locations', id, dto.rev, set);
     return (await this.overview(u)).locations.find((l) => l.id === id);
   }
 
