@@ -1207,7 +1207,7 @@
 |---|---|---|---|
 | النوافذ | 63 | 10 | 53 |
 | التصدير والطباعة | 37 | 5 | 32 |
-| كتابة البيانات | 16 | 0 | 16 |
+| كتابة البيانات | 20 | 0 | 20 |
 
 <details><summary>القائمة الكاملة للنوافذ والتصدير والكتابة اللي ماتوصلّهاش من زرار ظاهر</summary>
 
@@ -1314,5 +1314,9 @@
 | LEG-0277 | export/print | تصدير/طباعة printBankStatement | renderer/modules/ledger/statement.js |
 | LEG-0278 | modal | نافذة openWhItemModal | renderer/modules/warehouses/pages-home.js:203 |
 | LEG-0279 | modal | نافذة openWhLocationModal | renderer/modules/warehouses/pages-home.js:237 |
+| LEG-0341 | data-write | كتابة بيانات clSaveCustomers | renderer/modules/clients/helpers.js:327 |
+| LEG-0342 | data-write | كتابة بيانات clUpsertCustomer | renderer/modules/clients/helpers.js:333 |
+| LEG-0343 | data-write | كتابة بيانات clDeleteCustomer | renderer/modules/clients/helpers.js:352 |
+| LEG-0344 | data-write | كتابة بيانات clNextCustomerCode | renderer/modules/clients/helpers.js:24 |
 
 </details>

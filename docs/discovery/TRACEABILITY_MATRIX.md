@@ -9,22 +9,22 @@
 | النوع | العدد | ليه اختبار بيلمسه | اتنقل للنظام الجديد |
 |---|---|---|---|
 | page | 54 | 54 (100%) | 4 |
-| calc | 120 | 38 (32%) | 0 |
-| data-write | 16 | 2 (13%) | 0 |
+| calc | 120 | 40 (33%) | 0 |
+| data-write | 20 | 6 (30%) | 0 |
 | modal | 63 | 21 (33%) | 0 |
 | export/print | 37 | 5 (14%) | 0 |
 | permission | 8 | 0 (0%) | 8 |
 | electron-capability | 42 | 6 (14%) | 0 |
-| **الإجمالي** | **340** | **126 (37%)** | **12** |
+| **الإجمالي** | **344** | **132 (38%)** | **12** |
 
 ## 2. التغطية حسب الموديول (LEG)
 | الموديول | العدد | منها P0 (مقترح) | ليه اختبار | اتنقل | قرارات مفتوحة بتمنعه |
 |---|---|---|---|---|---|
 | مشترك (core) | 97 | 10 | 30 (31%) | 0 | — |
 | الموارد البشرية | 69 | 21 | 19 (28%) | 0 | DEC-0045 (B-45)، DEC-0046 (B-46)، DEC-0047 (B-47)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0076 (B-76)، DEC-0042 (B-42) |
-| الموردون | 54 | 18 | 13 (24%) | 1 | DEC-0029 (B-29) |
+| الموردون | 54 | 18 | 15 (28%) | 1 | DEC-0029 (B-29) |
 | ديسكتوب | 42 | 15 | 6 (14%) | 0 | — |
-| العملاء والمشاريع | 34 | 7 | 24 (71%) | 2 | DEC-0029 (B-29)، DEC-0035 (B-35) |
+| العملاء والمشاريع | 38 | 11 | 28 (74%) | 2 | DEC-0029 (B-29)، DEC-0035 (B-35) |
 | الإعدادات | 11 | 1 | 3 (27%) | 8 | DEC-0035 (B-35) |
 | (خارج القايمة) | 10 | 0 | 10 (100%) | 0 | — |
 | المخازن | 7 | 2 | 5 (71%) | 1 | DEC-0077 (B-77) |
@@ -35,7 +35,7 @@
 | مهامي | 1 | 0 | 1 (100%) | 0 | — |
 | حركة الموارد | 1 | 0 | 1 (100%) | 0 | DEC-0045 (B-45)، DEC-0046 (B-46)، DEC-0047 (B-47)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0076 (B-76)، DEC-0042 (B-42) |
 
-## 3. ⚠️ عناصر P0 (مقترحة) من غير أي اختبار بيلمسها — 53
+## 3. ⚠️ عناصر P0 (مقترحة) من غير أي اختبار بيلمسها — 51
 دي أولوية لاختبارات القبول قبل نقل موديولاتها (`05` §18.4).
 | ID | النوع | الموديول | العنصر | الدليل |
 |---|---|---|---|---|
@@ -67,9 +67,7 @@
 | LEG-0215 | calc | الموارد البشرية | دالة حساب repDuesFull | renderer/modules/hr/pages-reports.js:365 |
 | LEG-0226 | calc | الموارد البشرية | دالة حساب duesEntityKind | renderer/modules/hr/pages-worker-dues.js:12 |
 | LEG-0227 | calc | الموارد البشرية | دالة حساب duesListForKind | renderer/modules/hr/pages-worker-dues.js:17 |
-| LEG-0233 | calc | الموردون | دالة حساب normalizeTaxId | renderer/modules/ledger/excel-import.js:240 |
 | LEG-0243 | calc | الموردون | دالة حساب fixInvoiceCalculations | renderer/modules/ledger/helpers.js:169 |
-| LEG-0244 | calc | الموردون | دالة حساب lgExtraFieldsSummary | renderer/modules/ledger/helpers.js:492 |
 | LEG-0247 | calc | الموردون | دالة حساب getInvoiceDueDate | renderer/modules/ledger/helpers.js:720 |
 | LEG-0248 | calc | الموردون | دالة حساب getOverdueInvoices | renderer/modules/ledger/helpers.js:734 |
 | LEG-0250 | calc | الموردون | دالة حساب maybeShowOverdueAlert | renderer/modules/ledger/helpers.js:2031 |
@@ -373,7 +371,7 @@
 | LEG-0230 | calc | الموارد البشرية | دالة حساب projectStatementSectionsHtml | renderer/modules/hr/project-statement.js:177 | legacy |  | Verified (جرد ثابت بس) | DEC-0045 (B-45)، DEC-0046 (B-46)، DEC-0047 (B-47)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0076 (B-76)، DEC-0042 (B-42) |
 | LEG-0231 | modal | الموردون | نافذة openGlobalValidationModal | renderer/modules/ledger/app.js:567 | legacy |  | Verified (جرد ثابت بس) | DEC-0029 (B-29) |
 | LEG-0232 | calc | الموردون | دالة حساب refreshOpenStatements | renderer/modules/ledger/app.js:773 | legacy |  | Verified (جرد ثابت بس) | DEC-0029 (B-29) |
-| LEG-0233 | calc | الموردون | دالة حساب normalizeTaxId | renderer/modules/ledger/excel-import.js:240 | legacy |  | Verified (جرد ثابت بس) | DEC-0029 (B-29) |
+| LEG-0233 | calc | الموردون | دالة حساب normalizeTaxId | renderer/modules/ledger/excel-import.js:240 | legacy | phase63.js | Verified (باختبار) | DEC-0029 (B-29) |
 | LEG-0234 | export/print | الموردون | تصدير/طباعة exportCategoriesExcel | renderer/modules/ledger/exports.js | legacy |  | Verified (جرد ثابت بس) | DEC-0029 (B-29) |
 | LEG-0235 | export/print | الموردون | تصدير/طباعة exportSuppliersCsv | renderer/modules/ledger/exports.js | legacy |  | Verified (جرد ثابت بس) | DEC-0029 (B-29) |
 | LEG-0236 | export/print | الموردون | تصدير/طباعة exportAllInvoicesCsv | renderer/modules/ledger/exports.js | legacy |  | Verified (جرد ثابت بس) | DEC-0029 (B-29) |
@@ -384,7 +382,7 @@
 | LEG-0241 | export/print | الموردون | تصدير/طباعة exportQuarterNoticesPdf | renderer/modules/ledger/exports.js | legacy |  | Verified (جرد ثابت بس) | DEC-0029 (B-29) |
 | LEG-0242 | calc | الموردون | دالة حساب previewInvoiceCalculationFixes | renderer/modules/ledger/helpers.js:143 | legacy | legacy-runner.js | Verified (باختبار) | DEC-0029 (B-29) |
 | LEG-0243 | calc | الموردون | دالة حساب fixInvoiceCalculations | renderer/modules/ledger/helpers.js:169 | legacy |  | Verified (جرد ثابت بس) | DEC-0029 (B-29) |
-| LEG-0244 | calc | الموردون | دالة حساب lgExtraFieldsSummary | renderer/modules/ledger/helpers.js:492 | legacy |  | Verified (جرد ثابت بس) | DEC-0029 (B-29) |
+| LEG-0244 | calc | الموردون | دالة حساب lgExtraFieldsSummary | renderer/modules/ledger/helpers.js:492 | legacy | phase63.js | Verified (باختبار) | DEC-0029 (B-29) |
 | LEG-0245 | calc | الموردون | دالة حساب supplierBalance | renderer/modules/ledger/helpers.js:576 | legacy | phase61.js، legacy-runner.js، reference.js، target-diff.js | Verified (باختبار) | DEC-0029 (B-29) |
 | LEG-0246 | calc | الموردون | دالة حساب invoiceRemaining | renderer/modules/ledger/helpers.js:590 | legacy | legacy-runner.js، reference.js | Verified (باختبار) | DEC-0029 (B-29) |
 | LEG-0247 | calc | الموردون | دالة حساب getInvoiceDueDate | renderer/modules/ledger/helpers.js:720 | legacy |  | Verified (جرد ثابت بس) | DEC-0029 (B-29) |
@@ -481,3 +479,7 @@
 | LEG-0338 | electron-capability | ديسكتوب | قدرة ديسكتوب setDataDir | preload.js (app:setDataDir) | لا ينطبق |  | Verified (جرد ثابت بس) | — |
 | LEG-0339 | electron-capability | ديسكتوب | قدرة ديسكتوب snapshotData | preload.js (data:snapshot) | POST /api/backups (أدمن) |  | Verified (جرد ثابت بس) | — |
 | LEG-0340 | electron-capability | ديسكتوب | قدرة ديسكتوب verifyPassword | preload.js (auth:verifyPassword) | POST /api/auth/login |  | Verified (جرد ثابت بس) | — |
+| LEG-0341 | data-write | العملاء والمشاريع | كتابة بيانات clSaveCustomers | renderer/modules/clients/helpers.js:327 | legacy | phase63.js | Verified (باختبار) | DEC-0029 (B-29)، DEC-0035 (B-35) |
+| LEG-0342 | data-write | العملاء والمشاريع | كتابة بيانات clUpsertCustomer | renderer/modules/clients/helpers.js:333 | legacy | phase12.js، phase63.js | Verified (باختبار) | DEC-0029 (B-29)، DEC-0035 (B-35) |
+| LEG-0343 | data-write | العملاء والمشاريع | كتابة بيانات clDeleteCustomer | renderer/modules/clients/helpers.js:352 | legacy | phase2.js، phase63.js | Verified (باختبار) | DEC-0029 (B-29)، DEC-0035 (B-35) |
+| LEG-0344 | data-write | العملاء والمشاريع | كتابة بيانات clNextCustomerCode | renderer/modules/clients/helpers.js:24 | legacy | phase63.js | Verified (باختبار) | DEC-0029 (B-29)، DEC-0035 (B-35) |

@@ -44,7 +44,7 @@ jobs:
         run: node tools/web/build-web.js --check
       - name: Generated discovery docs are up to date
         run: |
-          for t in build-registry build-functional-inventory build-data-dictionary build-formula-catalogue build-electron-capabilities build-traceability; do
+          for t in build-registry build-functional-inventory build-data-dictionary build-formula-catalogue build-electron-capabilities build-traceability build-parties-parity; do
             node tools/discovery/$t.js --check
           done
       - name: Server lint

@@ -88,6 +88,21 @@ for (const [file, v] of Object.entries(inv.perFile)) {
     add({ key: `electron:${n}`, prefix: 'LEG', classification: 'LEGACY-PRESERVE', kind: 'electron-capability', title: `قدرة ديسكتوب ${n}${ex ? '' : ' (مستخدمة ومش معرّفة في preload)'}`, module: 'ديسكتوب', priority: /attach|backup|data/.test(cat) ? 'P0' : 'P1', evidence: ex ? `preload.js (${ex.channel})` : 'renderer/ (من غير تعريف)', tests: [], target: rep, notes: `الفئة: ${cat}` });
   }
 }
+// دوال كتابة بيانات اكتشفها قبول الموديولات (المرحلة 6 فما بعد) — الجرد الثابت بيلقط الحفظ بالاسم بس
+{
+  const EXTRA_WRITES = [
+    ['renderer/modules/clients/helpers.js', 'clSaveCustomers', 'الموديول التجريبي (المرحلة 6)'],
+    ['renderer/modules/clients/helpers.js', 'clUpsertCustomer', 'الموديول التجريبي (المرحلة 6)'],
+    ['renderer/modules/clients/helpers.js', 'clDeleteCustomer', 'الموديول التجريبي (المرحلة 6)'],
+    ['renderer/modules/clients/helpers.js', 'clNextCustomerCode', 'الموديول التجريبي (المرحلة 6) — ترقيم'],
+  ];
+  for (const [file, fn, why] of EXTRA_WRITES) {
+    const src = read(file);
+    const i = src.search(new RegExp(`function\\s+${fn}\\s*\\(`));
+    if (i < 0) continue;
+    add({ key: `save:${file}#${fn}`, prefix: 'LEG', classification: 'LEGACY-PRESERVE', kind: 'data-write', title: `كتابة بيانات ${fn}`, module: moduleOfFile(file), priority: 'P0', evidence: `${file}:${src.slice(0, i).split('\n').length}`, tests: [], target: 'legacy', notes: `سلامة البيانات (P0) — ${why}` });
+  }
+}
 // الصلاحيات: المصفوفة + قوالب الأدوار
 const perms = read('renderer/core/permissions.js');
 add({ key: 'perm:page-matrix', prefix: 'LEG', classification: 'LEGACY-PRESERVE', kind: 'permission', title: 'مصفوفة صلاحيات الصفحات (عرض/إضافة/تعديل/حذف لكل صفحة)', module: 'الإعدادات', priority: 'P0', evidence: 'renderer/core/permissions.js', tests: [], target: 'server (ADR-016)', notes: 'السيرفر هو المرجع' });

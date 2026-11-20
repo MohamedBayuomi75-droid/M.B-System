@@ -7,14 +7,14 @@
 ## الملخص
 | البادئة | التصنيف | العدد |
 |---|---|---|
-| `LEG-` | LEGACY-PRESERVE | 340 |
+| `LEG-` | LEGACY-PRESERVE | 344 |
 | `CHG-` | APPROVED-CHANGE | 14 |
 | `TECH-` | TECHNICAL | 18 |
 | `NEW-` | NEW-REQUIREMENT | 9 |
 | `DEC-` | OPEN-DECISION (المفتوح والمحسوم) | 90 (مفتوح: 41) |
-| **الإجمالي** | | **471** |
+| **الإجمالي** | | **475** |
 
-**عناصر LEG حسب النوع:** page 54 · calc 120 · data-write 16 · modal 63 · export/print 37 · permission 8 · electron-capability 42
+**عناصر LEG حسب النوع:** page 54 · calc 120 · data-write 20 · modal 63 · export/print 37 · permission 8 · electron-capability 42
 
 ## القدرات القديمة (LEG)
 | ID | النوع | الموديول | الوصف | الأولوية (مقترحة) | الدليل | المكان المستهدف | الاختبارات | الحالة | ملاحظات |
@@ -359,6 +359,10 @@
 | LEG-0338 | electron-capability | ديسكتوب | قدرة ديسكتوب setDataDir | P1 | preload.js (app:setDataDir) | لا ينطبق |  | verified-static | الفئة: remove |
 | LEG-0339 | electron-capability | ديسكتوب | قدرة ديسكتوب snapshotData | P0 | preload.js (data:snapshot) | POST /api/backups (أدمن) |  | verified-static | الفئة: backup |
 | LEG-0340 | electron-capability | ديسكتوب | قدرة ديسكتوب verifyPassword | P1 | preload.js (auth:verifyPassword) | POST /api/auth/login |  | verified-static | الفئة: auth |
+| LEG-0341 | data-write | العملاء والمشاريع | كتابة بيانات clSaveCustomers | P0 | renderer/modules/clients/helpers.js:327 | legacy |  | verified-static | سلامة البيانات (P0) — الموديول التجريبي (المرحلة 6) |
+| LEG-0342 | data-write | العملاء والمشاريع | كتابة بيانات clUpsertCustomer | P0 | renderer/modules/clients/helpers.js:333 | legacy |  | verified-static | سلامة البيانات (P0) — الموديول التجريبي (المرحلة 6) |
+| LEG-0343 | data-write | العملاء والمشاريع | كتابة بيانات clDeleteCustomer | P0 | renderer/modules/clients/helpers.js:352 | legacy |  | verified-static | سلامة البيانات (P0) — الموديول التجريبي (المرحلة 6) |
+| LEG-0344 | data-write | العملاء والمشاريع | كتابة بيانات clNextCustomerCode | P0 | renderer/modules/clients/helpers.js:24 | legacy |  | verified-static | سلامة البيانات (P0) — الموديول التجريبي (المرحلة 6) — ترقيم |
 
 ## التغييرات المعتمدة (CHG)
 | ID | النوع | الموديول | الوصف | الأولوية (مقترحة) | الدليل | المكان المستهدف | الاختبارات | الحالة | ملاحظات |

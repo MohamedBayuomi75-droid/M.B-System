@@ -73,6 +73,11 @@ const { ok, eq, summary, baseUser } = require('./lib');
   if (WEB) eq(await persisted(() => clCustomers().map((c) => c.id).sort()), ['cA', 'cB', 'cX'], 'الويب: نفس العملاء بعد إعادة التحميل (الترتيب لوحده مابيتزامنش — فرق معروف)');
   else eq(await persisted(() => window.__saved.clients.customers.map((c) => c.id)), ['cX', 'cB', 'cA'], 'الملف: الترتيب المبعوت هو اللي اتحفظ');
 
+  console.log('[6] بيانات المورد الأساسية: تطبيع الرقم الضريبي والاسم (مطابقة الاستيراد)، وملخص الخانات المخصصة');
+  eq(await page.evaluate(() => [normalizeTaxId(' 123-456/789 '), normalizeTaxId('AB_12\\3'), normalizeTaxId(null), normalizeTaxId('_')]), ['123456789', 'ab123', '', ''], 'normalizeTaxId: بيشيل المسافات والشرطات والفواصل، وبيصغّر الحروف ("_" = فاضي)');
+  eq(await page.evaluate(() => [normalizeSupplierName('  شركة  النور  '), normalizeSupplierName('مـحـمـد'), normalizeSupplierName('ACME Co')]), ['شركة النور', 'محمد', 'acme co'], 'normalizeSupplierName: مسافات زيادة، والكشيدة، وحالة الحروف');
+  eq(await page.evaluate(() => [lgExtraFieldsSummary([{ label: 'المندوب', value: 'سعيد' }, { label: 'المنطقة', value: 'الجيزة' }]), lgExtraFieldsSummary([]), lgExtraFieldsSummary(null)]), ['المندوب: سعيد | المنطقة: الجيزة', '', ''], 'lgExtraFieldsSummary: «العنوان: القيمة» مفصولين بـ |');
+
   eq(errors, [], 'no JS errors');
   await browser.close();
   summary();
