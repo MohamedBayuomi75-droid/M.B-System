@@ -125,7 +125,8 @@
    "tests": [
     "phase16.js",
     "phase20.js",
-    "phase38.js"
+    "phase38.js",
+    "phase61.js"
    ]
   },
   {
@@ -137,7 +138,9 @@
    "renderFn": "renderClientsTasksPage",
    "aliasOf": null,
    "definedAt": "renderer/modules/clients/pages-tasks.js:38",
-   "tests": []
+   "tests": [
+    "phase61.js"
+   ]
   },
   {
    "key": "hrHome",
@@ -147,7 +150,7 @@
    "inPermissionMatrix": false,
    "renderFn": "renderHrHomePage",
    "aliasOf": null,
-   "definedAt": "renderer/core/boards.js:160",
+   "definedAt": "renderer/core/boards.js:172",
    "tests": [
     "phase22.js"
    ]
@@ -232,7 +235,8 @@
     "phase50.js",
     "phase51.js",
     "phase52.js",
-    "phase53.js"
+    "phase53.js",
+    "phase61.js"
    ]
   },
   {
@@ -276,7 +280,8 @@
     "phase42.js",
     "phase44.js",
     "phase53.js",
-    "phase54.js"
+    "phase54.js",
+    "phase61.js"
    ]
   },
   {
@@ -288,7 +293,9 @@
    "renderFn": "renderAttendancePage",
    "aliasOf": null,
    "definedAt": "renderer/modules/hr/pages-attendance.js:19",
-   "tests": []
+   "tests": [
+    "phase61.js"
+   ]
   },
   {
    "key": "workerAttendance",
@@ -336,7 +343,9 @@
    "renderFn": "renderPerformancePage",
    "aliasOf": null,
    "definedAt": "renderer/modules/hr/pages-ops.js:540",
-   "tests": []
+   "tests": [
+    "phase61.js"
+   ]
   },
   {
    "key": "clients.customers",
@@ -478,7 +487,9 @@
    "renderFn": "renderClientsCrmPage",
    "aliasOf": null,
    "definedAt": "renderer/modules/clients/pages-crm.js:40",
-   "tests": []
+   "tests": [
+    "phase61.js"
+   ]
   },
   {
    "key": "ledger.suppliers",
@@ -489,7 +500,10 @@
    "renderFn": "renderSuppliersPage",
    "aliasOf": null,
    "definedAt": "renderer/modules/ledger/pages-suppliers.js:3",
-   "tests": []
+   "tests": [
+    "phase60.js",
+    "phase61.js"
+   ]
   },
   {
    "key": "ledger.invoices",
@@ -513,7 +527,9 @@
    "renderFn": "renderQuarterlyPage",
    "aliasOf": null,
    "definedAt": "renderer/modules/ledger/pages-quarterly.js:39",
-   "tests": []
+   "tests": [
+    "phase61.js"
+   ]
   },
   {
    "key": "ledger.returns",
@@ -524,7 +540,9 @@
    "renderFn": "renderInvoicesPage",
    "aliasOf": null,
    "definedAt": "renderer/modules/ledger/pages-invoices.js:35",
-   "tests": []
+   "tests": [
+    "phase61.js"
+   ]
   },
   {
    "key": "warehouses.home",
@@ -535,7 +553,9 @@
    "renderFn": "renderWarehousesHomePage",
    "aliasOf": null,
    "definedAt": "renderer/modules/warehouses/pages-home.js:6",
-   "tests": []
+   "tests": [
+    "phase61.js"
+   ]
   },
   {
    "key": "warehouses.reports",
@@ -546,7 +566,9 @@
    "renderFn": "renderWarehousesReportsPage",
    "aliasOf": null,
    "definedAt": "renderer/modules/warehouses/pages-reports.js:2",
-   "tests": []
+   "tests": [
+    "phase61.js"
+   ]
   },
   {
    "key": "transfers",
@@ -557,7 +579,9 @@
    "renderFn": "renderTransfersPage",
    "aliasOf": null,
    "definedAt": "renderer/modules/hr/pages-ops.js:336",
-   "tests": []
+   "tests": [
+    "phase61.js"
+   ]
   },
   {
    "key": "workerDues",
@@ -568,7 +592,9 @@
    "renderFn": "renderWorkerDuesPage",
    "aliasOf": null,
    "definedAt": "renderer/modules/hr/pages-worker-dues.js:79",
-   "tests": []
+   "tests": [
+    "phase61.js"
+   ]
   },
   {
    "key": "ledger.payments",
@@ -579,7 +605,9 @@
    "renderFn": "renderPaymentsPage",
    "aliasOf": null,
    "definedAt": "renderer/modules/ledger/pages-payments.js:33",
-   "tests": []
+   "tests": [
+    "phase61.js"
+   ]
   },
   {
    "key": "expenses",
@@ -593,7 +621,8 @@
    "tests": [
     "phase17.js",
     "phase26.js",
-    "phase53.js"
+    "phase53.js",
+    "phase59.js"
    ]
   },
   {
@@ -606,7 +635,8 @@
    "aliasOf": null,
    "definedAt": "renderer/modules/hr/pages-costs.js:98",
    "tests": [
-    "phase17.js"
+    "phase17.js",
+    "phase59.js"
    ]
   },
   {
@@ -632,7 +662,9 @@
    "renderFn": "renderClientsAccountsPage",
    "aliasOf": null,
    "definedAt": "renderer/modules/clients/pages-accounts.js:73",
-   "tests": []
+   "tests": [
+    "phase61.js"
+   ]
   },
   {
    "key": "reports",
@@ -656,7 +688,9 @@
    "renderFn": "renderClientsReportsPage",
    "aliasOf": null,
    "definedAt": "renderer/modules/clients/pages-reports.js:4",
-   "tests": []
+   "tests": [
+    "phase61.js"
+   ]
   },
   {
    "key": "ledger.reports",
@@ -667,7 +701,9 @@
    "renderFn": "lgRenderReportsPage",
    "aliasOf": null,
    "definedAt": "renderer/modules/ledger/pages-reports.js:25",
-   "tests": []
+   "tests": [
+    "phase61.js"
+   ]
   },
   {
    "key": "accounts.reports",
@@ -678,7 +714,9 @@
    "renderFn": "renderAccountsReportsPage",
    "aliasOf": null,
    "definedAt": "renderer/modules/accounts/pages-reports.js:2",
-   "tests": []
+   "tests": [
+    "phase61.js"
+   ]
   },
   {
    "key": "archive",
@@ -690,7 +728,8 @@
    "aliasOf": null,
    "definedAt": "renderer/core/pages-archive.js:54",
    "tests": [
-    "phase22.js"
+    "phase22.js",
+    "phase61.js"
    ]
   },
   {
@@ -702,7 +741,9 @@
    "renderFn": "lgRenderArchivePage",
    "aliasOf": null,
    "definedAt": "renderer/modules/ledger/pages-archive.js:215",
-   "tests": []
+   "tests": [
+    "phase61.js"
+   ]
   },
   {
    "key": "clients.archive",
@@ -746,7 +787,9 @@
    "renderFn": "renderUsersPage",
    "aliasOf": null,
    "definedAt": "renderer/core/pages-users.js:16",
-   "tests": []
+   "tests": [
+    "phase61.js"
+   ]
   },
   {
    "key": "ledger.categories",
@@ -757,7 +800,9 @@
    "renderFn": "renderCategoriesPage",
    "aliasOf": null,
    "definedAt": "renderer/modules/ledger/pages-categories.js:4",
-   "tests": []
+   "tests": [
+    "phase61.js"
+   ]
   },
   {
    "key": "clients.dashboard",
@@ -781,7 +826,9 @@
    "renderFn": "renderEquipmentPage",
    "aliasOf": "equipment",
    "definedAt": "renderer/modules/hr/pages-equipment.js:32",
-   "tests": []
+   "tests": [
+    "phase61.js"
+   ]
   },
   {
    "key": "documents",
@@ -792,7 +839,9 @@
    "renderFn": "renderArchivePage",
    "aliasOf": "archive",
    "definedAt": "renderer/core/pages-archive.js:54",
-   "tests": []
+   "tests": [
+    "phase61.js"
+   ]
   },
   {
    "key": "assistant",
@@ -803,7 +852,9 @@
    "renderFn": "renderDashboardPage",
    "aliasOf": "dashboard",
    "definedAt": "renderer/modules/hr/pages-dashboard.js:28",
-   "tests": []
+   "tests": [
+    "phase61.js"
+   ]
   },
   {
    "key": "departments",
@@ -813,7 +864,7 @@
    "inPermissionMatrix": true,
    "renderFn": "renderHrHomePage",
    "aliasOf": null,
-   "definedAt": "renderer/core/boards.js:160",
+   "definedAt": "renderer/core/boards.js:172",
    "tests": [
     "phase22.js",
     "phase39.js"
@@ -828,7 +879,9 @@
    "renderFn": "renderWorkerDuesPage",
    "aliasOf": "workerDues",
    "definedAt": "renderer/modules/hr/pages-worker-dues.js:79",
-   "tests": []
+   "tests": [
+    "phase61.js"
+   ]
   },
   {
    "key": "employeeDetail",
@@ -839,7 +892,9 @@
    "renderFn": "renderEmployeeDetailPage",
    "aliasOf": null,
    "definedAt": "renderer/modules/hr/pages-employee-detail.js:1",
-   "tests": []
+   "tests": [
+    "phase61.js"
+   ]
   },
   {
    "key": "personDetail",
@@ -850,7 +905,9 @@
    "renderFn": "renderPersonDetailPage",
    "aliasOf": null,
    "definedAt": "renderer/modules/hr/pages-person-detail.js:238",
-   "tests": []
+   "tests": [
+    "phase61.js"
+   ]
   },
   {
    "key": "ledger.dashboard",
@@ -861,7 +918,9 @@
    "renderFn": "renderLedgerPage",
    "aliasOf": "dashboard",
    "definedAt": "renderer/modules/ledger/glue.js:41",
-   "tests": []
+   "tests": [
+    "phase61.js"
+   ]
   },
   {
    "key": "general.overview",
@@ -872,7 +931,9 @@
    "renderFn": "renderDashboardPage",
    "aliasOf": "dashboard",
    "definedAt": "renderer/modules/hr/pages-dashboard.js:28",
-   "tests": []
+   "tests": [
+    "phase61.js"
+   ]
   }
  ],
  "perFile": {
@@ -961,7 +1022,7 @@
    }
   },
   "renderer/core/boards.js": {
-   "lines": 261,
+   "lines": 273,
    "functions": 18,
    "pages": [
     "renderHrHomePage"
@@ -5297,13 +5358,13 @@
  },
  "totals": {
   "files": 83,
-  "lines": 46312,
+  "lines": 46324,
   "functions": 1411,
   "modals": 63,
   "buttonsWithId": 449,
   "calcFns": 110,
   "pages": 54,
   "navPages": 44,
-  "testFiles": 58
+  "testFiles": 62
  }
 }
