@@ -9,6 +9,7 @@
 | `FUNCTIONAL_INVENTORY.md` + `page-discovery.json` | جرد كل صفحة: الأفعال، والجداول، والخانات، والنوافذ، واللقطات | `discover-pages.js` ثم `build-functional-inventory.js` |
 | `visual-baseline/` | لقطات: 54 صفحة ديسكتوب (1366×768)، و44 موبايل (390×844)، و53 نافذة | `discover-pages.js` |
 | `visual-baseline-ci/` | نفس اللقطات **على أجهزة GitHub** (خطوط مختلفة)، والـ CI بيقارن بيها إلزاميًا (DEC-0089). بتتولّد بتعديل `visual-baseline-ci/REQUEST` + push | `.github/workflows/visual-baseline-ci.yml` |
+| `app-baseline/` + `app-baseline-ci/` | لقطات الواجهة الجديدة `/app/` (10: الصفحات، ونماذج تعديل وإضافة الموردين والعملاء) على بيانات مُركّبة — المرحلة 6، البند 6.4. المقارنة: `visual-compare.js --app` (بيئة التطوير) و`--app --baseline docs/discovery/app-baseline-ci` (الـ CI) | `capture-app.js` (ونسخة الـ CI بنفس الـ workflow) |
 | `DESIGN_TOKENS.md` + `tokens.json` | الألوان والخطوط والمقاسات والحواف والظلال والشكل المحسوب | `extract-design-tokens.js` |
 | `DATA_DICTIONARY.md` | مسارات DATA، والترحيلات، والحقول، وجداول السيرفر | `build-data-dictionary.js` |
 | `FORMULA_CATALOGUE.md` | المعادلات الـ 71 ودوالها وقواعدها ومكتبة B-20 | `build-formula-catalogue.js` |

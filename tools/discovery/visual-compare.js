@@ -8,6 +8,8 @@
 //   --tolerance    أقصى فرق مقبول في أي قناة لون للبكسل الواحد (0–255)
 //   --max-ratio    أقصى نسبة بكسلات مختلفة مقبولة في اللقطة الواحدة (الافتراضي 0.0005 = 0.05%)
 //   --skip-capture استخدم لقطات موجودة في --out بدل التصوير من جديد
+//   --app          الواجهة الجديدة /app/ بدل القديمة (capture-app.js، سيرفر اختبار + قاعدة مؤقتة)، وخط الأساس الافتراضي
+//                  docs/discovery/app-baseline (المرحلة 6، البند 6.4). محتاج build للسيرفر والواجهة + PostgreSQL.
 // كود الخروج: 0 لو كل اللقطات في الحدود، 1 لو فيه فروق أو لقطات ناقصة/زيادة.
 'use strict';
 const fs = require('fs');
@@ -18,7 +20,8 @@ const { spawnSync } = require('child_process');
 const ROOT = path.resolve(__dirname, '../..');
 // --baseline <dir>: خط أساس تاني (مثلًا docs/discovery/visual-baseline-ci لبيئة الـ CI — DEC-0089)
 const bArg = process.argv.indexOf('--baseline');
-const BASE = bArg > 0 ? path.resolve(process.argv[bArg + 1]) : path.join(ROOT, 'docs/discovery/visual-baseline');
+const APP = process.argv.includes('--app');
+const BASE = bArg > 0 ? path.resolve(process.argv[bArg + 1]) : path.join(ROOT, APP ? 'docs/discovery/app-baseline' : 'docs/discovery/visual-baseline');
 
 const arg = (name, def) => { const i = process.argv.indexOf(name); return i > 0 ? process.argv[i + 1] : def; };
 const OUT = path.resolve(arg('--out', fs.mkdtempSync(path.join(os.tmpdir(), 'visual-'))));
@@ -84,7 +87,9 @@ function compare(a, b) {
 (function main() {
   if (!SKIP) {
     console.log(`capturing into ${OUT} …`);
-    const r = spawnSync(process.execPath, [path.join(__dirname, 'discover-pages.js'), '--out', OUT], { stdio: 'inherit' });
+    const r = APP
+      ? spawnSync(process.execPath, [path.join(__dirname, 'capture-app.js'), '--out', path.join(OUT, 'visual-baseline', 'app')], { stdio: 'inherit' })
+      : spawnSync(process.execPath, [path.join(__dirname, 'discover-pages.js'), '--out', OUT], { stdio: 'inherit' });
     if (r.status !== 0) { console.error('capture failed'); process.exit(1); }
   }
   const NEW = path.join(OUT, 'visual-baseline');

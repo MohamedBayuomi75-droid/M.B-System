@@ -1,5 +1,6 @@
 // لقطات الواجهة الجديدة (/app/) فوق سيرفر اختبار حقيقي (قاعدة مؤقتة، بيانات مُركّبة) — خطة v1.4.5 المرحلة 4، البند 4.5.
-// الاستخدام: node tools/discovery/capture-app.js --out <dir>
+// المرحلة 6 (البند 6.4): خط الأساس البصري لشاشات الموديول التجريبي — الموردين والعملاء فيها بيانات مُركّبة، ونموذج التعديل والإضافة مفتوح.
+// الاستخدام: node tools/discovery/capture-app.js --out <dir>   (والمقارنة: node tools/discovery/visual-compare.js --app)
 // المتطلبات: npm --prefix server run build && npm --prefix frontend run build + PostgreSQL التطوير (55432).
 'use strict';
 const fs = require('fs');
@@ -19,6 +20,17 @@ const PAGES = [['home', '/app/'], ['projects', '/app/projects'], ['suppliers', '
   const api = async (m, p, b, t) => { const r = await fetch(srv.base + p, { method: m, headers: { 'content-type': 'application/json', ...(t ? { authorization: 'Bearer ' + t } : {}) }, body: b ? JSON.stringify(b) : undefined }); return r.json().catch(() => null); };
   let r = await api('POST', '/api/auth/login', { username: 'admin', password: ADMIN_INIT });
   await api('POST', '/api/auth/change-password', { newPassword: ADMIN_PW }, r.accessToken);
+  // بيانات مُركّبة ثابتة (من غير أي بيانات حقيقية)، عشان الشاشات تتصوّر بقوايم ونماذج مليانة
+  const t = (await api('POST', '/api/auth/login', { username: 'admin', password: ADMIN_PW })).accessToken;
+  for (const s of [
+    { name: 'شركة النور للتوريدات', taxId: '100200300', commercialReg: '55123', businessNature: 'توريد مواد', phone: '01000000001', email: 'nour@example.com', address: 'القاهرة' },
+    { name: 'مؤسسة الأمل', taxId: '400500600', businessNature: 'نقل', phone: '01000000002' },
+    { name: 'ACME Supplies', taxId: '700800900', email: 'acme@example.com' },
+  ]) await api('POST', '/api/v1/suppliers', s, t);
+  for (const c of [
+    { name: 'شركة الشروق للمقاولات', code: 'CUS-0001', phone: '0220000001', email: 'shorouk@example.com', city: 'الجيزة', category: 'شركات', taxId: '111222333' },
+    { name: 'تامر حسن', code: 'CUS-0002', phone: '01100000003', city: 'القاهرة' },
+  ]) await api('POST', '/api/v1/customers', c, t);
   const browser = await chromium.launch({ args: ['--no-sandbox'] });
   try {
     const ctx = await browser.newContext({ viewport: { width: 1366, height: 768 }, locale: 'ar-EG' });
@@ -34,6 +46,19 @@ const PAGES = [['home', '/app/'], ['projects', '/app/projects'], ['suppliers', '
       await page.waitForTimeout(400);
       await page.screenshot({ path: path.join(OUT, `${name}.png`), animations: 'disabled', caret: 'hide' });
     }
-    console.log(`app screenshots: ${PAGES.length + 1} → ${OUT}`);
+    // النماذج: تعديل أول سجل، وإضافة جديد (الموردين والعملاء)
+    const shot = async (name) => { await page.waitForTimeout(400); await page.screenshot({ path: path.join(OUT, `${name}.png`), animations: 'disabled', caret: 'hide' }); };
+    let n = PAGES.length + 1;
+    for (const [pfx, url] of [['sup', '/app/suppliers'], ['cus', '/app/customers']]) {
+      const name = pfx === 'sup' ? 'suppliers' : 'customers';
+      await page.goto(srv.base + url); await page.waitForLoadState('networkidle');
+      await page.click(`#${pfx}List li[data-id] >> nth=0`); await page.waitForSelector(`#${pfx}Form`);
+      await page.evaluate(() => document.activeElement && document.activeElement.blur());
+      await shot(`${name}-edit`); n++;
+      await page.click(`#${pfx}New`); await page.waitForSelector(`#${pfx}Form`);
+      await page.evaluate(() => document.activeElement && document.activeElement.blur());
+      await shot(`${name}-new`); n++;
+    }
+    console.log(`app screenshots: ${n} → ${OUT}`);
   } finally { await browser.close(); await srv.stop?.(); process.exit(0); }
 })().catch((e) => { console.error('FAIL', e); process.exit(1); });
