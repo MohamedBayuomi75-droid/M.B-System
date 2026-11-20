@@ -60,7 +60,7 @@
 ## 6. الأدلة
 - **مصفوفة الحقول:** `docs/modules/PARTIES_FIELD_PARITY.md` (مولَّدة، ومتشيّكة في الـ CI).
 - **اختبارات القبول:** `tests-merge/phase63.js`، و`server/test/parties.e2e-spec.ts`، و`server/test/cutover.e2e-spec.ts`، و`tests-web/app-e2e.js` [6c].
-- **خط الأساس البصري:** `docs/discovery/app-baseline/app/` (التطوير) و`docs/discovery/app-baseline-ci/app/` (الـ CI): الصفحات ونماذج تعديل وإضافة الموردين والعملاء.
+- **خط الأساس البصري:** `docs/discovery/app-baseline/app/` (التطوير) و`docs/discovery/app-baseline-ci/app/` (الـ CI، آخر توليد `ea48444` بعد DEC-0091/0092): الصفحات ونماذج تعديل وإضافة الموردين والعملاء.
 - **UAT:** `docs/modules/PARTIES_UAT.md` (بتنفّذه إنت).
 
 ## 7. تقييم الجاهزية (البند 6.7، `02` §5) — **قبل البروفة والـ UAT**
