@@ -6,7 +6,7 @@
   "TECH": 19,
   "NEW": 10,
   "CHG": 15,
-  "DEC": 96
+  "DEC": 97
  },
  "entries": [
   {
@@ -2201,6 +2201,24 @@
    "classification": "OPEN-DECISION",
    "kind": "decision",
    "title": "بوابة المرحلة 6: الموردين والعملاء Accepted كموديول تجريبي، وطريقة النقل والرجوع (الدليل + reconcile) معتمدة للمرحلة 13",
+   "module": "قرارات",
+   "priority": "—",
+   "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",
+   "tests": [],
+   "target": "—",
+   "notes": "محسوم",
+   "aliases": [],
+   "decisionStatus": "resolved",
+   "priorityStatus": "—",
+   "status": "resolved"
+  },
+  {
+   "id": "DEC-0096",
+   "key": "decision:DEC-0096",
+   "prefix": "DEC",
+   "classification": "OPEN-DECISION",
+   "kind": "decision",
+   "title": "بوابة المرحلة 5: الأساسيات المشتركة Accepted (الصلاحيات، والتدقيق، والمرفقات مع B-78 أ، والإشعارات، والإصدارات، ومحرك الاعتمادات من غير سياسة حقيقية، والترقيم N",
    "module": "قرارات",
    "priority": "—",
    "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",
