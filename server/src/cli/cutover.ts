@@ -19,7 +19,8 @@ function backupGate(): void {
   const log = arg('backup-log'); const confirm = arg('confirm-backup');
   if (!log) throw new Error('--backup-log مطلوب (BACKUP_DIR/backup-log.jsonl)');
   const events = readFileSync(log, 'utf8').split('\n').filter(Boolean).map((l) => JSON.parse(l) as { at: string; kind: string; status: string });
-  const full = events.filter((e) => e.kind === 'full' && e.status === 'ok').at(-1);
+  // backup-full.sh بيسجّل النسخة الكاملة (pg_basebackup + pg_verifybackup) بالنوع "base" — و"full" مقبول للتوافق
+  const full = events.filter((e) => (e.kind === 'base' || e.kind === 'full') && e.status === 'ok').at(-1);
   if (!full) throw new Error('مفيش نسخة كاملة ناجحة في السجل');
   const restore = events.filter((e) => e.kind === 'restore-test' && e.status === 'ok' && e.at > full.at).at(-1);
   if (!restore) throw new Error(`مفيش اختبار استعادة ناجح بعد آخر نسخة كاملة (${full.at}) — شغّل restore-test.sh الأول`);
