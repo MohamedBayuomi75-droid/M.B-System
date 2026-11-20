@@ -19,6 +19,10 @@ export class WarehousesRepository {
       ORDER BY created_at DESC, id DESC LIMIT $2`, [itemId, limit]);
   }
   /** الأرصدة (صنف × مخزن) بنفس دالة B-50 في قاعدة البيانات — المحجوز والمتاح كمان */
+  /** عدد الحركات الحية كلها (كارت «حركات» في الواجهة القديمة بيعدّها كلها، مش آخر 300) */
+  async movementsCount(): Promise<number> {
+    return (await this.ds.query(`SELECT count(*)::int AS n FROM legacy_records WHERE collection = 'warehouses.movements' AND deleted_at IS NULL`))[0].n;
+  }
   balances(): Promise<{ item_id: string; location_id: string; balance: string; reserved: string }[]> {
     return this.ds.query(`WITH pairs AS (
         SELECT DISTINCT data->>'itemId' AS item_id, coalesce(data->>'locationId', '') AS location_id FROM legacy_records WHERE collection = 'warehouses.movements' AND deleted_at IS NULL

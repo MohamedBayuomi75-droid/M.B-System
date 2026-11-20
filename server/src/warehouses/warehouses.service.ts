@@ -50,10 +50,11 @@ export class WarehousesService {
 
   async overview(u: AuthUser) {
     this.assert(u, 'view');
-    const [items, locations, bal] = await Promise.all([this.repo.all('warehouses.items'), this.repo.all('warehouses.locations'), this.repo.balances()]);
+    const [items, locations, bal, movementsCount] = await Promise.all([this.repo.all('warehouses.items'), this.repo.all('warehouses.locations'), this.repo.balances(), this.repo.movementsCount()]);
     const byItem = new Map<string, { locationId: string; balance: string; reserved: string }[]>();
     for (const b of bal) byItem.set(b.item_id, [...(byItem.get(b.item_id) ?? []), { locationId: b.location_id, balance: b.balance, reserved: b.reserved }]);
     return {
+      movementsCount,
       locations: locations.map((l) => ({ id: l.id, name: s(l.data.name), notes: s(l.data.notes), rev: l.rev })),
       items: items.map((i) => {
         const per = byItem.get(i.id) ?? [];

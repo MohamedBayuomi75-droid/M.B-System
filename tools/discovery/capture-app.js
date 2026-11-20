@@ -31,6 +31,15 @@ const PAGES = [['home', '/app/'], ['projects', '/app/projects'], ['suppliers', '
     { name: 'شركة الشروق للمقاولات', code: 'CUS-0001', phone: '0220000001', email: 'shorouk@example.com', city: 'الجيزة', category: 'شركات', taxId: '111222333', extraFields: [{ label: 'المنطقة', value: 'أكتوبر' }] },
     { name: 'تامر حسن', code: 'CUS-0002', phone: '01100000003', city: 'القاهرة' },
   ]) await api('POST', '/api/v1/customers', c, t);
+  // المخازن (الحزمة 7.1): مخزنين، و3 أصناف، واستلام (بنفس طريق الواجهة القديمة: /api/sync)، وتحويل من الـ API — بيانات مُركّبة
+  for (const [code, name] of [['LOC-01', 'المخزن الرئيسي'], ['LOC-02', 'مخزن الموقع']]) await api('POST', '/api/v1/warehouses/locations', { name, code }, t);
+  const items = [];
+  for (const it of [{ name: 'أسمنت', unit: 'شيكارة', category: 'خامات', minQty: '10' }, { name: 'حديد تسليح', unit: 'طن', category: 'خامات', minQty: '5' }, { name: 'رمل', unit: 'م3', minQty: '2' }]) items.push(await api('POST', '/api/v1/warehouses/items', it, t));
+  await api('POST', '/api/sync', { changes: [
+    { collection: 'warehouses.movements', id: 'MV-0001', op: 'upsert', baseRev: 0, set: { id: 'MV-0001', type: 'in', itemId: items[0].id, qty: 30, locationId: 'LOC-01', date: '2026-11-01', notes: '' } },
+    { collection: 'warehouses.movements', id: 'MV-0002', op: 'upsert', baseRev: 0, set: { id: 'MV-0002', type: 'in', itemId: items[1].id, qty: 4.5, locationId: 'LOC-01', date: '2026-11-02', notes: '' } },
+  ] }, t);
+  await api('POST', '/api/v1/warehouses/transfers', { itemId: items[0].id, fromLocationId: 'LOC-01', toLocationId: 'LOC-02', qty: '7', date: '2026-11-03' }, t);
   const browser = await chromium.launch({ args: ['--no-sandbox'] });
   try {
     const ctx = await browser.newContext({ viewport: { width: 1366, height: 768 }, locale: 'ar-EG' });
@@ -55,6 +64,10 @@ const PAGES = [['home', '/app/'], ['projects', '/app/projects'], ['suppliers', '
       ['suppliers-new', '/app/suppliers', '#supNew', '#modalOverlay'],
       ['customers-edit', '/app/customers', '#cusList .btn-edit-cust >> nth=0', '#appModal'],
       ['customers-new', '/app/customers', '#cusNew', '#appModal'],
+      ['warehouses-items', '/app/warehouses', '#whTabs [data-tab="items"]', '#whItemsList'],
+      ['warehouses-moves', '/app/warehouses', '#whTabs [data-tab="moves"]', '#whMoves tr[data-id]'],
+      ['warehouses-locations', '/app/warehouses', '#whTabs [data-tab="locations"]', '#whLocations tr[data-id]'],
+      ['warehouses-transfer', '/app/warehouses', '#btnWhTransfer', '#appModal'],
     ];
     for (const [name, url, click, wait] of steps) {
       await page.goto(srv.base + url); await page.waitForLoadState('networkidle');

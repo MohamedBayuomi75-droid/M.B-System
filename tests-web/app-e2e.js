@@ -318,25 +318,47 @@ async function login(page, username, password) {
     await A.page.waitForSelector('#whItems');
     const loc = async (name) => (await api('POST', '/api/v1/warehouses/locations', { name }, adminTok)).body.id;
     const L1 = await loc('مخزن واجهة 1'), L2 = await loc('مخزن واجهة 2');
-    await A.page.click('text=الأصناف');
-    await A.page.fill('#whItemForm input[name="iname"]', 'صنف واجهة');
-    await A.page.click('#whItemSave');
-    await A.page.waitForFunction(() => [...document.querySelectorAll('#whItems tr')].some((r) => r.textContent.includes('صنف واجهة')));
+    // بشكل الواجهة القديمة (DEC-0097): تبويبات wh-tab، والإضافة والتعديل في نوافذ
+    ok(!!(await A.page.$('.page #whTabs .wh-tab[data-tab="stock"]')) && !!(await A.page.$('#whStats .stat-card')), 'legacy layout: tabs + KPI cards');
+    await A.page.click('#whTabs [data-tab="items"]');
+    await A.page.click('#btnWhAddItem'); await A.page.waitForSelector('#appModal');
+    await A.page.fill('#whModalForm [data-field="name"]', 'صنف واجهة'); await A.page.fill('#whModalForm [data-field="category"]', 'خامات');
+    await A.page.click('#whModalSave');
+    await A.page.waitForFunction(() => !document.getElementById('appModal') && [...document.querySelectorAll('#whItemsList tr')].some((r) => r.textContent.includes('صنف واجهة')));
     const ov = await api('GET', '/api/v1/warehouses', null, adminTok);
     const it = ov.body.items.find((x) => x.name === 'صنف واجهة');
-    ok(/^ITM-\d{4}$/.test(it.code), 'item created from the new screen (server code)');
+    ok(/^ITM-\d{4}$/.test(it.code), 'item created from the item modal (server code, legacy format)');
     await api('POST', '/api/sync', { changes: [{ collection: 'warehouses.movements', id: 'ui-rcv', op: 'upsert', baseRev: 0, set: { id: 'ui-rcv', type: 'in', itemId: it.id, qty: 5, locationId: L1 } }] }, adminTok);
     const tr = await api('POST', '/api/v1/warehouses/transfers', { itemId: it.id, fromLocationId: L1, toLocationId: L2, qty: '6' }, adminTok);
     eq([tr.status, tr.body.code], [409, 'NEGATIVE_STOCK'], 'transfer above availability refused by the server (B-50)');
-    eq((await api('POST', '/api/v1/warehouses/transfers', { itemId: it.id, fromLocationId: L1, toLocationId: L2, qty: '2' }, adminTok)).status, 201, 'valid transfer');
+    // التحويل من الشاشة (نافذة «تحويل بين مخازن»): الأكبر من المتاح بيتمنع قبل الإرسال، والصحيح بياخد كود MV-NNNN
     await A.page.reload(); await A.page.waitForSelector(`#whItems tr[data-id="${it.id}"]`);
+    await A.page.click('#btnWhTransfer'); await A.page.waitForSelector('#appModal');
+    await A.page.selectOption('#whModalForm [data-field="itemId"]', it.id);
+    await A.page.selectOption('#whModalForm [data-field="fromLocationId"]', L1); await A.page.selectOption('#whModalForm [data-field="toLocationId"]', L2);
+    await A.page.fill('#whModalForm [data-field="qty"]', '6'); await A.page.click('#whModalSave');
+    await A.page.waitForFunction(() => (document.getElementById('appToast')?.textContent || '').includes('الرصيد غير كافٍ'));
+    ok(!!(await A.page.$('#appModal')), 'over-availability transfer blocked in the modal (legacy toast)');
+    await A.page.fill('#whModalForm [data-field="qty"]', '2');
+    const [pt] = await Promise.all([A.page.waitForResponse((r) => r.url().endsWith('/api/v1/warehouses/transfers') && r.request().method() === 'POST'), A.page.click('#whModalSave')]);
+    eq(pt.status(), 201, 'valid transfer from the screen');
+    ok(/^MV-\d{4}$/.test((await pt.json()).id), 'transfer code in the legacy format (MV-NNNN)');
+    await A.page.waitForSelector('#whMoves tr[data-id]');
+    await A.page.click('#whTabs [data-tab="stock"]');
     eq(await A.page.getAttribute(`#whItems tr[data-id="${it.id}"] td[data-total]`, 'data-total'), '5', 'total unchanged by a transfer');
+    // تعديل المخزن من نافذته: الاسم يتغيّر والكود ثابت
+    await A.page.click('#whTabs [data-tab="locations"]');
+    await A.page.click(`#whLocations .btn-edit-loc[data-id="${L2}"]`); await A.page.waitForSelector('#appModal');
+    ok(await A.page.$eval('#whModalForm [data-field="code"]', (i) => i.readOnly), 'warehouse code read-only on edit (legacy)');
+    await A.page.fill('#whModalForm [data-field="name"]', 'مخزن واجهة معدّل'); await A.page.click('#whModalSave');
+    await A.page.waitForFunction((id) => document.querySelector(`#whLocations tr[data-id="${id}"]`)?.textContent.includes('مخزن واجهة معدّل'), L2);
+    ok(true, 'warehouse renamed from the modal');
     // التسوية: مسار اختبار بمعتمد واحد (مستخدم تاني)
     eq((await api('POST', '/api/v1/approvals/config/document-types', { code: 'stock-adjustment', name: 'تسوية مخزنية', module: 'warehouses.home' }, adminTok)).status, 201, 'test doc type');
     const apr = await api('POST', '/api/users', { username: 'app_adj_approver', password: PW, role: 'viewer' }, adminTok);
     eq((await api('POST', '/api/v1/approvals/config/workflows', { documentType: 'stock-adjustment', levels: [{ mode: 'ANY', approvers: [{ type: 'USER', ref: apr.body.id }] }] }, adminTok)).status, 201, 'test workflow');
     const adj = await api('POST', '/api/v1/stock/adjustments', { kind: 'increase', itemId: it.id, locationId: L1, qty: '1.5', reason: 'تسوية من اختبار الواجهة' }, adminTok);
-    await A.page.reload(); await A.page.click('text=التسويات');
+    await A.page.reload(); await A.page.click('#whTabs [data-tab="adjustments"]');
     await A.page.waitForSelector(`#whAdjs tr[data-id="${adj.body.id}"][data-status="draft"]`);
     await A.page.click(`#whAdjs tr[data-id="${adj.body.id}"] [data-act="submit"]`);
     await A.page.waitForSelector(`#whAdjs tr[data-id="${adj.body.id}"][data-status="submitted"]`);
@@ -345,7 +367,7 @@ async function login(page, username, password) {
     const reqId = (await api('GET', `/api/v1/stock/adjustments/${adj.body.id}`, null, adminTok)).body.approvalRequestId;
     const r = await fetch(srv.base + `/api/v1/approvals/requests/${reqId}/approve`, { method: 'POST', headers: { 'content-type': 'application/json', authorization: 'Bearer ' + t2, 'idempotency-key': 'app-e2e-adj-' + Date.now() }, body: '{}' });
     eq(r.status, 200, 'approved by a different user');
-    await A.page.reload(); await A.page.click('text=التسويات');
+    await A.page.reload(); await A.page.click('#whTabs [data-tab="adjustments"]');
     await A.page.waitForSelector(`#whAdjs tr[data-id="${adj.body.id}"][data-status="posted"]`);
     ok(true, 'auto-posted after the last approval');
     eq((await api('GET', '/api/v1/warehouses', null, adminTok)).body.items.find((x) => x.id === it.id).total, '6.5', 'balance includes the posted adjustment only after posting');
