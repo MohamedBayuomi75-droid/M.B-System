@@ -1,0 +1,166 @@
+# CI (خطة v1.4.5 — المرحلة 4، البند 4.1): كل اختبارات المشروع مع كل push وPR.
+# مفيش أسرار ولا نشر هنا. القواعد المؤقتة بتتعمل جوه خدمة PostgreSQL بتاعة التشغيل وبتتمسح معاه.
+# نفس منفذ وبيانات بيئة التطوير (docker/docker-compose.dev.yml) عشان الاختبارات تشتغل من غير أي إعداد.
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: '22'
+  PLAYWRIGHT_VERSION: '1.63.0'
+
+jobs:
+  # (1) فحوص سريعة: البنية، والأمان، والمستندات المولَّدة، والسيرفر unit، والواجهة الجديدة
+  static:
+    name: Static checks, server unit, frontend
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: |
+            server/package-lock.json
+            frontend/package-lock.json
+      - run: npm --prefix server ci
+      - run: npm --prefix frontend ci
+      - name: Project structure
+        run: node tools/check-structure.js
+      - name: Security and Excel tests
+        run: node tools/test-security.js
+      - name: Web build is up to date
+        run: node tools/web/build-web.js --check
+      - name: Generated discovery docs are up to date
+        run: |
+          for t in build-registry build-functional-inventory build-data-dictionary build-formula-catalogue build-electron-capabilities build-traceability; do
+            node tools/discovery/$t.js --check
+          done
+      - name: Server lint
+        run: npm --prefix server run lint
+      - name: Server build
+        run: npm --prefix server run build
+      - name: Server unit tests
+        run: npm --prefix server run test:unit
+      - name: Frontend tests
+        run: npm --prefix frontend test -- --watch=false
+      - name: Frontend build
+        run: npm --prefix frontend run build
+
+  # (2) السيرفر e2e فوق PostgreSQL حقيقي
+  server-e2e:
+    name: Server e2e (PostgreSQL)
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: unified
+          POSTGRES_PASSWORD: devpass
+          POSTGRES_DB: unified
+        ports:
+          - 55432:5432
+        options: >-
+          --health-cmd "pg_isready -U unified" --health-interval 5s --health-timeout 5s --health-retries 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: server/package-lock.json
+      - run: npm --prefix server ci
+      - name: Server e2e tests
+        run: npm --prefix server run test:e2e
+
+  # (3) المتصفح: الواجهة القديمة في أوضاعها التلاتة + اختبارات الويب والواجهة الجديدة والأمان والمعادلات
+  browser:
+    name: Browser (${{ matrix.suite }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        suite: [ui-file, ui-web, ui-cutover, web-app-security]
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: unified
+          POSTGRES_PASSWORD: devpass
+          POSTGRES_DB: unified
+        ports:
+          - 55432:5432
+        options: >-
+          --health-cmd "pg_isready -U unified" --health-interval 5s --health-timeout 5s --health-retries 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: |
+            server/package-lock.json
+            frontend/package-lock.json
+      - run: npm --prefix server ci
+      - run: npm --prefix server run build
+      - name: Frontend build (for /app/)
+        if: matrix.suite == 'web-app-security'
+        run: npm --prefix frontend ci && npm --prefix frontend run build
+      # الاختبارات بتعمل require('playwright') من أي مكان (زي بيئة التطوير): نسخة ثابتة متثبّتة global
+      - name: Playwright ${{ env.PLAYWRIGHT_VERSION }} + Chromium
+        run: |
+          npm install -g playwright@${PLAYWRIGHT_VERSION}
+          npx -y playwright@${PLAYWRIGHT_VERSION} install --with-deps chromium
+          echo "NODE_PATH=$(npm root -g)" >> "$GITHUB_ENV"
+      - name: Legacy UI — file mode
+        if: matrix.suite == 'ui-file'
+        run: node tests-merge/run-all.js
+      - name: Legacy UI — web mode (records layer)
+        if: matrix.suite == 'ui-web'
+        run: node tests-merge/run-all.js
+        env:
+          WEB_MODE: '1'
+      - name: Legacy UI — web mode over relational tables (parties, warehouses)
+        if: matrix.suite == 'ui-cutover'
+        run: node tests-merge/run-all.js
+        env:
+          WEB_MODE: '1'
+          WEB_CUTOVER: parties,warehouses
+      - name: Web e2e (multi-browser session, 2FA, headers)
+        if: matrix.suite == 'web-app-security'
+        run: node tests-web/web-e2e.js
+      - name: New UI e2e (/app/)
+        if: matrix.suite == 'web-app-security'
+        run: node tests-web/app-e2e.js
+      - name: XSS probe
+        if: matrix.suite == 'web-app-security'
+        run: node tools/security/xss-probe.js
+      - name: Formulas — legacy vs independent reference
+        if: matrix.suite == 'web-app-security'
+        run: node tools/formulas/compare.js
+      # المقارنة البصرية: تقرير بس في الـ CI لحد اعتماد خط أساس من بيئة الـ CI (قرار المرحلة 4، البند و)
+      - name: Visual comparison with the baseline (report only)
+        if: matrix.suite == 'web-app-security'
+        continue-on-error: true
+        run: node tools/discovery/visual-compare.js --out "$RUNNER_TEMP/visual"
+      - name: Upload visual comparison report
+        if: matrix.suite == 'web-app-security' && always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-comparison
+          path: ${{ runner.temp }}/visual
+          if-no-files-found: ignore
+          retention-days: 14

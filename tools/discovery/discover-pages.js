@@ -8,7 +8,7 @@
 //   docs/discovery/visual-baseline/desktop/<page>.png      (1366×768، الصفحة كاملة)
 //   docs/discovery/visual-baseline/dialogs/<page>__<n>.png (النوافذ)
 //   docs/discovery/visual-baseline/mobile/<page>.png       (390×844، صفحات القايمة)
-// التشغيل: node tools/discovery/discover-pages.js   (NO_SHOTS=1: الجرد من غير لقطات)
+// التشغيل: node tools/discovery/discover-pages.js   (NO_SHOTS=1: الجرد من غير لقطات؛ --out <dir>: مجلد مخرجات تاني)
 // ممنوع تشغيله على بيانات حقيقية والمخرجات جوه المستودع.
 'use strict';
 const fs = require('fs');
@@ -18,7 +18,9 @@ const { openFileApp } = require(path.join(ROOT, 'tests-merge/harness'));
 const { baseUser } = require(path.join(ROOT, 'tests-merge/lib'));
 const { buildSeed } = require(path.join(ROOT, 'tools/security/xss-seed'));
 
-const OUT = path.join(ROOT, 'docs/discovery');
+// --out <dir>: كل المخرجات (اللقطات + page-discovery.json) في مجلد تاني، من غير ما تلمس خط الأساس (للمقارنة البصرية)
+const outArg = process.argv.indexOf('--out');
+const OUT = outArg > 0 ? path.resolve(process.argv[outArg + 1]) : path.join(ROOT, 'docs/discovery');
 const VB = path.join(OUT, 'visual-baseline');
 const SHOTS = process.env.NO_SHOTS !== '1';
 const FIXED_TIME = new Date('2026-03-15T09:00:00Z'); // تاريخ ثابت عشان «اليوم» والتنبيهات تتكرر
@@ -44,6 +46,8 @@ const safeName = (k) => k.replace(/[^\w.-]+/g, '_');
   const { browser, page, errors } = await openFileApp(seed);
   page.on('dialog', (d) => d.dismiss().catch(() => {}));
   page.on('popup', (p) => p.close().catch(() => {}));
+  // اختبار سلبي للمقارنة البصرية بس: CSS بيتحقن في الصفحة (مش في ملفات المستودع)
+  if (process.env.INJECT_CSS) await page.addStyleTag({ content: process.env.INJECT_CSS });
   await page.clock.install({ time: FIXED_TIME });
   await page.clock.pauseAt(FIXED_TIME);
   await page.setViewportSize(DESKTOP);
@@ -103,10 +107,10 @@ const safeName = (k) => k.replace(/[^\w.-]+/g, '_');
     const landedOn = await page.evaluate(() => (typeof currentPage !== 'undefined' ? currentPage : null));
     const info = await scan('page');
     if (SHOTS) {
-      await page.screenshot({ path: path.join(VB, 'desktop', safeName(key) + '.png'), fullPage: true });
+      await page.screenshot({ path: path.join(VB, 'desktop', safeName(key) + '.png'), fullPage: true, animations: 'disabled', caret: 'hide' });
       if (p.inNavigation) {
         await page.setViewportSize(MOBILE); await settle();
-        await page.screenshot({ path: path.join(VB, 'mobile', safeName(key) + '.png') });
+        await page.screenshot({ path: path.join(VB, 'mobile', safeName(key) + '.png'), animations: 'disabled', caret: 'hide' });
         await page.setViewportSize(DESKTOP); await go(key); await settle();
       }
     }
@@ -138,7 +142,7 @@ const safeName = (k) => k.replace(/[^\w.-]+/g, '_');
       if (!open) { dialogs.push({ opener: openers[i].slice(0, 80), opened: false }); continue; }
       const d = await scan('modal');
       const shot = `${safeName(key)}__${i + 1}.png`;
-      if (SHOTS) await page.screenshot({ path: path.join(VB, 'dialogs', shot) });
+      if (SHOTS) await page.screenshot({ path: path.join(VB, 'dialogs', shot), animations: 'disabled', caret: 'hide' });
       dialogs.push({ opener: openers[i].slice(0, 80), opened: true, ...d, screenshot: SHOTS ? `visual-baseline/dialogs/${shot}` : null });
       await page.evaluate(() => { try { closeModal(); } catch (e) {} });
     }
@@ -157,6 +161,7 @@ const safeName = (k) => k.replace(/[^\w.-]+/g, '_');
     fixedTime: FIXED_TIME.toISOString(), viewports: { desktop: DESKTOP, mobile: MOBILE }, maxDialogsPerPage: MAX_DIALOGS,
     chrome, pages: out, jsErrors: errors,
   };
+  fs.mkdirSync(OUT, { recursive: true });
   fs.writeFileSync(path.join(OUT, 'page-discovery.json'), JSON.stringify(res, null, 1) + '\n');
   const nd = out.reduce((n, p) => n + p.dialogs.filter((d) => d.opened).length, 0);
   console.log(`\n${out.length} pages, ${nd} dialogs opened, ${out.filter((p) => p.threw || p.jsErrors).length} pages with errors, ${errors.length} js errors`);
