@@ -11,8 +11,8 @@
 | `CHG-` | APPROVED-CHANGE | 14 |
 | `TECH-` | TECHNICAL | 18 |
 | `NEW-` | NEW-REQUIREMENT | 9 |
-| `DEC-` | OPEN-DECISION (المفتوح والمحسوم) | 87 (مفتوح: 41) |
-| **الإجمالي** | | **468** |
+| `DEC-` | OPEN-DECISION (المفتوح والمحسوم) | 90 (مفتوح: 41) |
+| **الإجمالي** | | **471** |
 
 **عناصر LEG حسب النوع:** page 54 · calc 120 · data-write 16 · modal 63 · export/print 37 · permission 8 · electron-capability 42
 
@@ -503,4 +503,7 @@
 | DEC-0085 | decision | قرارات | قاعدة الأولويات معتمدة: P0 للحساب المالي والمخزني وكتابة البيانات وسلامة البيانات، والباقي P1 (`REQUIREMENTS_REGISTRY.md`) | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
 | DEC-0086 | decision | قرارات | اختبارات القبول للعناصر P0 اللي مالهاش اختبار (53 عنصر، `TRACEABILITY_MATRIX.md` §3) شرط قبل نقل الموديول بتاعها، مش شغل منفصل دلوقتي | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
 | DEC-0087 | decision | قرارات | الخطوة الجاية: المرحلة 4 (الناقص من الأساس: CI، والمقارنة البصرية، والـ ADRs الناقصة، وOpenAPI) قبل القبول الرسمي للموديول التجريبي (المرحلة 6) | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
+| DEC-0088 | decision | قرارات | اعتماد ADR-029 لـ ADR-033 كما هم: الإصدار في المسار + عقد OpenAPI متتبّع، والمهام الخلفية بطابور فوق PostgreSQL، والمراقبة بالتدريج + بريد عند الأعطال، وDocker  | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
+| DEC-0089 | decision | قرارات | خط أساس بصري خاص بالـ CI (`docs/discovery/visual-baseline-ci/`) بيتولّد على أجهزة GitHub ويتراجع، وبعدها المقارنة البصرية إلزامية في الـ CI كمان | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
+| DEC-0090 | decision | قرارات | الخطوة الجاية: المرحلة 6 — القبول الرسمي للموردين والعملاء كموديول تجريبي (UAT، وبروفة نقل ورجوع على نسخة البيانات الحقيقية، واختبارات P0 حسب DEC-0086) | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
 

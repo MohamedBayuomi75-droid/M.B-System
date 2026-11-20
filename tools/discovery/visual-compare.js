@@ -3,7 +3,7 @@
 // وبيقارن كل لقطة بخط الأساس (docs/discovery/visual-baseline/) بكسل ببكسل مع سماحية في اللون.
 // من غير أي مكتبة: قارئ/كاتب PNG بسيط بـ zlib المدمجة (8-bit RGB/RGBA، من غير interlace — شكل لقطات Chromium).
 //
-// التشغيل: node tools/discovery/visual-compare.js [--out <dir>] [--tolerance 24] [--max-ratio 0] [--skip-capture]
+// التشغيل: node tools/discovery/visual-compare.js [--out <dir>] [--baseline <dir>] [--tolerance 24] [--max-ratio 0.0005] [--skip-capture]
 //   --out          مجلد التقرير واللقطات الجديدة (الافتراضي: مجلد مؤقت)
 //   --tolerance    أقصى فرق مقبول في أي قناة لون للبكسل الواحد (0–255)
 //   --max-ratio    أقصى نسبة بكسلات مختلفة مقبولة في اللقطة الواحدة (الافتراضي 0.0005 = 0.05%)
@@ -16,7 +16,9 @@ const path = require('path');
 const zlib = require('zlib');
 const { spawnSync } = require('child_process');
 const ROOT = path.resolve(__dirname, '../..');
-const BASE = path.join(ROOT, 'docs/discovery/visual-baseline');
+// --baseline <dir>: خط أساس تاني (مثلًا docs/discovery/visual-baseline-ci لبيئة الـ CI — DEC-0089)
+const bArg = process.argv.indexOf('--baseline');
+const BASE = bArg > 0 ? path.resolve(process.argv[bArg + 1]) : path.join(ROOT, 'docs/discovery/visual-baseline');
 
 const arg = (name, def) => { const i = process.argv.indexOf(name); return i > 0 ? process.argv[i + 1] : def; };
 const OUT = path.resolve(arg('--out', fs.mkdtempSync(path.join(os.tmpdir(), 'visual-'))));
