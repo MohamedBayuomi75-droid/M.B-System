@@ -6,7 +6,7 @@
   "TECH": 19,
   "NEW": 10,
   "CHG": 15,
-  "DEC": 94
+  "DEC": 95
  },
  "entries": [
   {
@@ -2165,6 +2165,24 @@
    "classification": "OPEN-DECISION",
    "kind": "decision",
    "title": "تطابق شكل `/app/` مع الواجهة القديمة (ملاحظة الـ UAT): (أ) تطابق كامل للإطار والشاشتين (مقترح، وده طلب الخطة) · (ب) الشاشتين بس، والإطار بعدين · (ج) اعتماد الشك",
+   "module": "قرارات",
+   "priority": "—",
+   "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",
+   "tests": [],
+   "target": "—",
+   "notes": "محسوم",
+   "aliases": [],
+   "decisionStatus": "resolved",
+   "priorityStatus": "—",
+   "status": "resolved"
+  },
+  {
+   "id": "DEC-0094",
+   "key": "decision:DEC-0094",
+   "prefix": "DEC",
+   "classification": "OPEN-DECISION",
+   "kind": "decision",
+   "title": "نطاق الـ UAT اليدوي للموديول التجريبي: المستخدم نفّذ UAT الشكل والقراءة (G1–G3، G6، G7، G9، G11) ونتيجته «تمام». سيناريوهات الكتابة (G4، G5، G8، G10) مااتحفظش م",
    "module": "قرارات",
    "priority": "—",
    "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",
