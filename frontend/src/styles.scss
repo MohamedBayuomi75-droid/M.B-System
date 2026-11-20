@@ -1,33 +1,92 @@
-// Angular Material (M3) — ألوان النظام الحالي (أخضر غامق) + خط الواجهة الحالية (مفيش خطوط من الإنترنت)
+// Angular Material (M3) — ثيم من الهوية البصرية للواجهة الحالية (docs/discovery/DESIGN_TOKENS.md، خطة v1.4.5 المرحلة 4 البند 4.5)
+// + خط الواجهة الحالية (مفيش خطوط من الإنترنت).
 @use '@angular/material' as mat;
 @use 'material-symbols/outlined';
 
+// ألوان الهوية (نفس متغيّرات renderer/styles/style.css)
+$paper: #F6F1E4;
+$paper-2: #EFE7D3;
+$ink: #2B2A25;
+$ink-soft: #6B6555;
+$ledger-green: #1B4332;
+$ledger-green-2: #2D6A4F;
+$gold: #B08A2E;
+$gold-soft: #D9B65C;
+$debt: #9B2C2C;
+$credit: #2D6A4F;
+$line: #D8CDAF;
+$card: #FFFDF7;
+
 html {
   height: 100%;
+  // الأساس: palettes جاهزة عشان الدرجات المشتقة (hover/disabled…)، وبعدين الألوان الأساسية بتتبدّل بقيم الهوية بالظبط
   @include mat.theme((
-    color: (primary: mat.$green-palette, tertiary: mat.$cyan-palette),
+    color: (primary: mat.$green-palette, tertiary: mat.$orange-palette),
     typography: ('Segoe UI', Tahoma, Arial, 'Noto Sans Arabic', sans-serif),
     density: 0,
   ));
+  @include mat.theme-overrides((
+    primary: $ledger-green,
+    on-primary: #fff,
+    primary-container: #EAF3EC,
+    on-primary-container: $ledger-green,
+    secondary: $ledger-green-2,
+    on-secondary: #fff,
+    secondary-container: #EEF5F0,
+    on-secondary-container: $ledger-green,
+    tertiary: $gold,
+    on-tertiary: #fff,
+    tertiary-container: #F6EDD5,
+    on-tertiary-container: #5A4510,
+    error: $debt,
+    on-error: #fff,
+    background: $paper,
+    on-background: $ink,
+    surface: $paper,
+    on-surface: $ink,
+    on-surface-variant: $ink-soft,
+    surface-container-lowest: $card,
+    surface-container-low: $card,
+    surface-container: #FAF6EA,
+    surface-container-high: $paper-2,
+    surface-container-highest: $paper-2,
+    outline: $line,
+    outline-variant: $line,
+  ));
+
+  // ألوان مالية ليها معنى (مدين/دائن) + الذهبي — للاستخدام في الشاشات
+  --erp-ledger-green: #{$ledger-green};
+  --erp-gold: #{$gold};
+  --erp-gold-soft: #{$gold-soft};
+  --erp-debt: #{$debt};
+  --erp-credit: #{$credit};
+  --erp-line: #{$line};
+  --erp-card: #{$card};
+  --erp-ink-soft: #{$ink-soft};
 }
 body { color-scheme: light; background: var(--mat-sys-surface); color: var(--mat-sys-on-surface); font: var(--mat-sys-body-medium); margin: 0; height: 100%; }
 
-.auth-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: #eef3ef; padding: 16px; box-sizing: border-box; }
+.auth-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--mat-sys-surface); padding: 16px; box-sizing: border-box; }
 .auth-card { width: 100%; max-width: 420px; }
 .auth-card form { display: flex; flex-direction: column; gap: 4px; margin-top: 12px; }
-.err { min-height: 20px; color: #b42318; font-size: 13px; white-space: pre-line; }
-.secret { font-family: ui-monospace, Consolas, monospace; font-size: 17px; letter-spacing: 1px; background: #f4f1e8; border: 1px dashed #b9b29c; border-radius: 8px; padding: 10px 12px; margin: 0 0 14px; text-align: center; word-break: break-all; user-select: all; }
-.topbar { background: #1b4332; color: #fff; }
+.err { min-height: 20px; color: var(--erp-debt); font-size: 13px; white-space: pre-line; }
+.secret { font-family: ui-monospace, Consolas, monospace; font-size: 17px; letter-spacing: 1px; background: var(--mat-sys-surface-container); border: 1px dashed var(--erp-line); border-radius: 8px; padding: 10px 12px; margin: 0 0 14px; text-align: center; word-break: break-all; user-select: all; }
+// الشريط العلوي: M3 بيحط خلفية الـ toolbar بمتغيّر خاص بيه (background العادية مالهاش أثر)
+.topbar { --mat-toolbar-container-background-color: var(--erp-ledger-green); --mat-toolbar-container-text-color: #fff; background: var(--erp-ledger-green); color: #fff; }
 .topbar .brand { font-weight: 800; }
 .topbar .spacer { flex: 1; }
 .topbar .who { font-size: 14px; margin-inline-end: 8px; }
-.topbar a, .topbar button { color: #fff !important; }
+.topbar a, .topbar button, .topbar .mat-icon { color: #fff !important; }
 .body { height: calc(100vh - 64px); }
 .nav { width: 250px; }
-.nav .active { background: #e3efe6; }
+.nav .active { background: var(--mat-sys-primary-container); }
+// أيقونة آخر عنصر القايمة (فتح في الواجهة الحالية): خانة الـ meta بتاخد خط النص، فالأيقونة كانت بتظهر كنص «open_in_new»
+.mat-icon[matListItemMeta], .mat-mdc-list-item-meta.mat-icon { font-family: 'Material Symbols Outlined' !important; font-size: 18px; width: 18px; height: 18px; color: var(--erp-ink-soft); }
 .content { padding: 20px; }
-.muted { color: #6b6555; font-weight: 400; font-size: 13px; }
+.muted { color: var(--erp-ink-soft); font-weight: 400; font-size: 13px; }
 .num { direction: ltr; text-align: start; font-variant-numeric: tabular-nums; }
+.debt { color: var(--erp-debt); }
+.credit { color: var(--erp-credit); }
 .search { width: 320px; max-width: 100%; }
 .note { max-width: 760px; }
 @media (max-width: 720px) { .nav { width: 200px; } .content { padding: 12px; } }
