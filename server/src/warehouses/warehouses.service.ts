@@ -19,6 +19,14 @@ function qtyNumber(q: string): number {
  * المخازن (6.2-ب): الأصناف والمخازن والأرصدة والتحويل. القواعد = قواعد الواجهة الحالية + B-50 (من قاعدة البيانات).
  * مفيش أي حساب تكلفة هنا (B-20). الكتابة بتمر بنفس طبقة السجلات (نسخة واحدة قابلة للكتابة، والبث والتدقيق والتعارض شغالين).
  */
+/** عمود «ملاحظات» في جدول الأرصدة القديم — whItemNotesIssues (renderer/core/alerts-center.js:305). مقارنة بالدالة القديمة: tests-merge/phase65.js */
+export function itemIssues(it: Record<string, unknown>, total: string): string[] {
+  const out: string[] = []; const min = Number(it.minQty) || 0;
+  if (!it.category) out.push('ناقص: التصنيف');
+  if (min) { const q = Number(total); if (q <= 0) out.push('نفد من المخزون'); else if (q <= min) out.push('تحت حد الطلب'); }
+  return out;
+}
+
 @Injectable()
 export class WarehousesService {
   constructor(private readonly repo: WarehousesRepository, private readonly data: DataService) {}
@@ -49,8 +57,9 @@ export class WarehousesService {
       locations: locations.map((l) => ({ id: l.id, name: s(l.data.name), notes: s(l.data.notes), rev: l.rev })),
       items: items.map((i) => {
         const per = byItem.get(i.id) ?? [];
+        const total = per.reduce((a, b) => a + Number(b.balance), 0).toString();
         return { id: i.id, code: s(i.data.code), name: s(i.data.name), unit: s(i.data.unit), category: s(i.data.category), minQty: num(i.data.minQty), notes: s(i.data.notes),
-          avgCost: num(i.data.avgCost), lastCost: num(i.data.lastCost), rev: i.rev, balances: per, total: per.reduce((a, b) => a + Number(b.balance), 0).toString() };
+          avgCost: num(i.data.avgCost), lastCost: num(i.data.lastCost), rev: i.rev, balances: per, total, issues: itemIssues(i.data, total) };
       }).sort((a, b) => a.name.localeCompare(b.name, 'ar')),
     };
   }
@@ -66,6 +75,15 @@ export class WarehousesService {
     const prefix = s(st.itemPrefix) || 'ITM-';
     let max = 0;
     for (const i of items) { const m = s(i.data.code).match(/(\d+)\s*$/); if (m) max = Math.max(max, parseInt(m[1], 10) || 0); }
+    return prefix + String(max + 1).padStart(4, '0');
+  }
+
+  /** whNextMovementId — renderer/modules/warehouses/helpers.js:19 (نفس whNextCode: أكبر رقم في آخر المعرّف + 1، بأربع خانات) */
+  private async nextMovementId(): Promise<string> {
+    const [moves, st] = await Promise.all([this.repo.movements(null, 1_000_000), this.repo.settings()]);
+    const prefix = s(st.movementPrefix) || 'MV-';
+    let max = 0;
+    for (const m of moves as Rec[]) { const x = s(m.id).match(/(\d+)\s*$/); if (x) max = Math.max(max, parseInt(x[1], 10) || 0); }
     return prefix + String(max + 1).padStart(4, '0');
   }
 
@@ -118,9 +136,17 @@ export class WarehousesService {
     if (dto.fromLocationId === dto.toLocationId) throw new BadRequestException({ statusCode: 400, code: 'BAD_TRANSFER', message: 'اختر مخزناً مختلفاً للتحويل' });
     if (!(await this.repo.one('warehouses.items', dto.itemId))) throw new BadRequestException({ statusCode: 400, code: 'UNKNOWN_ITEM', message: 'الصنف غير موجود' });
     for (const l of [dto.fromLocationId, dto.toLocationId]) if (!(await this.repo.one('warehouses.locations', l))) throw new BadRequestException({ statusCode: 400, code: 'UNKNOWN_LOCATION', message: 'المخزن غير موجود' });
-    const id = WarehousesService.newId('mv');
-    await this.write(u, 'warehouses.movements', id, 0, { id, type: 'transfer', itemId: dto.itemId, qty: qtyNumber(dto.qty), locationId: dto.fromLocationId, toLocationId: dto.toLocationId,
-      date: dto.date ?? new Date().toISOString().slice(0, 10), notes: dto.notes?.trim() ?? '' });
-    return { id };
+    // كود الحركة بنفس صيغة الواجهة القديمة (MV-NNNN). لو طلبين اتزامنوا على نفس الرقم، التاني بيرفض بتعارض فبنعيد الحساب (لحد 3 مرات)
+    for (let attempt = 0; ; attempt++) {
+      const id = await this.nextMovementId();
+      try {
+        await this.write(u, 'warehouses.movements', id, 0, { id, type: 'transfer', itemId: dto.itemId, qty: qtyNumber(dto.qty), locationId: dto.fromLocationId, toLocationId: dto.toLocationId,
+          date: dto.date ?? new Date().toISOString().slice(0, 10), notes: dto.notes?.trim() ?? '' });
+        return { id };
+      } catch (e) {
+        const code = (e as { response?: { code?: string } }).response?.code;
+        if (code !== 'CONFLICT' || attempt >= 2) throw e;
+      }
+    }
   }
 }

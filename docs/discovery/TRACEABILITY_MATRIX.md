@@ -1,7 +1,7 @@
 # مصفوفة التتبّع (خطة v1.4.5 — المرحلة 3)
 
 > **مولَّد** بـ `node tools/discovery/build-traceability.js` من `requirements-registry.json` + ملفات الاختبار. ماتعدّلش الملف باليد.
-> **الاختبارات** بتتلاقى بالبحث عن اسم الدالة أو الصفحة في `tests-merge/` و`tests-web/` و`tools/formulas/` و`server/test/` (99 ملف). ده **دليل إن الاختبار بيلمس العنصر**، مش إثبات إنه بيغطي كل حالاته.
+> **الاختبارات** بتتلاقى بالبحث عن اسم الدالة أو الصفحة في `tests-merge/` و`tests-web/` و`tools/formulas/` و`server/test/` (100 ملف). ده **دليل إن الاختبار بيلمس العنصر**، مش إثبات إنه بيغطي كل حالاته.
 > **الحالات** (`02` §20): Implemented ≠ Verified ≠ Accepted. **مفيش حاجة هنا Accepted**: القبول بيكون لكل موديول ببوابة.
 > **الأولويات مقترحة.**
 
@@ -166,7 +166,7 @@
 | LEG-0025 | page | الموردون | صفحة «المرتجعات» (ledger.returns) | renderer/modules/ledger/pages-invoices.js:35 | legacy /legacy/ | phase61.js | Verified (باختبار) | DEC-0029 (B-29) |
 | LEG-0026 | page | المخازن | صفحة «المخازن» (warehouses.home) | renderer/modules/warehouses/pages-home.js:6 | angular /warehouses | phase61.js، app-e2e.js، stock-adjustments.e2e-spec.ts | Implemented (اتنقل) | DEC-0077 (B-77) |
 | LEG-0027 | page | المخازن | صفحة «تقارير المخازن» (warehouses.reports) | renderer/modules/warehouses/pages-reports.js:2 | legacy /legacy/ | phase61.js | Verified (باختبار) | DEC-0077 (B-77) |
-| LEG-0028 | page | حركة الموارد | صفحة «حركة الموارد» (transfers) | renderer/modules/hr/pages-ops.js:336 | legacy /legacy/ | phase61.js، app-e2e.js، stock.e2e-spec.ts، warehouses.e2e-spec.ts | Verified (باختبار) | DEC-0045 (B-45)، DEC-0046 (B-46)، DEC-0047 (B-47)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0076 (B-76)، DEC-0042 (B-42) |
+| LEG-0028 | page | حركة الموارد | صفحة «حركة الموارد» (transfers) | renderer/modules/hr/pages-ops.js:336 | legacy /legacy/ | phase61.js، phase65.js، app-e2e.js، stock.e2e-spec.ts، warehouses.e2e-spec.ts | Verified (باختبار) | DEC-0045 (B-45)، DEC-0046 (B-46)، DEC-0047 (B-47)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0076 (B-76)، DEC-0042 (B-42) |
 | LEG-0029 | page | الحسابات | صفحة «المستحقات» (workerDues) | renderer/modules/hr/pages-worker-dues.js:79 | legacy /legacy/ | phase61.js | Verified (باختبار) | DEC-0013 (B-13)، DEC-0014 (B-14)، DEC-0015 (B-15)، DEC-0016 (B-16)، DEC-0027 (B-27) |
 | LEG-0030 | page | الحسابات | صفحة «الدفعات» (ledger.payments) | renderer/modules/ledger/pages-payments.js:33 | legacy /legacy/ | phase61.js، phase21.js، parties.e2e-spec.ts | Verified (باختبار) | DEC-0013 (B-13)، DEC-0014 (B-14)، DEC-0015 (B-15)، DEC-0016 (B-16)، DEC-0027 (B-27) |
 | LEG-0031 | page | الحسابات | صفحة «مصاريف شاملة» (expenses) | renderer/modules/hr/pages-ops.js:1244 | legacy /legacy/ | phase17.js، phase26.js، phase53.js، phase59.js، phase18.js، phase19.js (+7) | Verified (باختبار) | DEC-0013 (B-13)، DEC-0014 (B-14)، DEC-0015 (B-15)، DEC-0016 (B-16)، DEC-0027 (B-27) |
@@ -181,7 +181,7 @@
 | LEG-0040 | page | الأرشيف | صفحة «أرشيف الموردين» (ledger.archive) | renderer/modules/ledger/pages-archive.js:215 | legacy /legacy/ | phase61.js | Verified (باختبار) | DEC-0061 (B-61) |
 | LEG-0041 | page | الأرشيف | صفحة «أرشيف العملاء والمشاريع» (clients.archive) | renderer/modules/clients/pages-archive.js:36 | legacy /legacy/ | phase8.js | Verified (باختبار) | DEC-0061 (B-61) |
 | LEG-0042 | page | الإعدادات | صفحة «الإعدادات العامة» (backup) | renderer/core/pages-backup.js:5 | legacy /legacy/ | phase10.js، phase29.js، phase32.js، phase34.js، phase35.js، phase36.js (+3) | Verified (باختبار) | DEC-0035 (B-35) |
-| LEG-0043 | page | الإعدادات | صفحة «المستخدمون» (users) | renderer/core/pages-users.js:16 | legacy /legacy/ | phase61.js، pages-smoke.js، phase10.js، phase11.js، phase12.js، phase13.js (+73) | Verified (باختبار) | DEC-0035 (B-35) |
+| LEG-0043 | page | الإعدادات | صفحة «المستخدمون» (users) | renderer/core/pages-users.js:16 | legacy /legacy/ | phase61.js، pages-smoke.js، phase10.js، phase11.js، phase12.js، phase13.js (+74) | Verified (باختبار) | DEC-0035 (B-35) |
 | LEG-0044 | page | الإعدادات | صفحة «الاقتراحات» (ledger.categories) | renderer/modules/ledger/pages-categories.js:4 | legacy /legacy/ | phase61.js | Verified (باختبار) | DEC-0035 (B-35) |
 | LEG-0045 | page | (خارج القايمة) | صفحة «clients.dashboard» (clients.dashboard) — اسم بديل لـ dashboard | renderer/modules/hr/pages-dashboard.js:28 | legacy /legacy/ | phase20.js | Verified (باختبار) | — |
 | LEG-0046 | page | (خارج القايمة) | صفحة «fuel» (fuel) — اسم بديل لـ equipment | renderer/modules/hr/pages-equipment.js:32 | legacy /legacy/ | phase61.js، phase18.js، phase26.js، legacy-runner.js، reference.js | Verified (باختبار) | — |
@@ -435,7 +435,7 @@
 | LEG-0294 | calc | الموردون | دالة حساب openingBalanceFor | renderer/modules/ledger/statement.js:43 | legacy | phase59.js، compare.js، legacy-runner.js، reference.js | Verified (باختبار) | DEC-0029 (B-29) |
 | LEG-0295 | calc | الموردون | دالة حساب roundMoney | renderer/modules/ledger/helpers.js:208 | legacy | phase59.js، compare.js، legacy-runner.js، reference.js | Verified (باختبار) | DEC-0029 (B-29) |
 | LEG-0296 | calc | مشترك (core) | دالة حساب supervisorOwnDue | renderer/core/helpers.js:2066 | legacy | phase59.js، compare.js، legacy-runner.js | Verified (باختبار) | — |
-| LEG-0297 | calc | المخازن | دالة حساب whStockQty | renderer/modules/warehouses/helpers.js:27 | legacy | phase59.js، compare.js، legacy-runner.js، reference.js | Verified (باختبار) | DEC-0077 (B-77) |
+| LEG-0297 | calc | المخازن | دالة حساب whStockQty | renderer/modules/warehouses/helpers.js:27 | legacy | phase59.js، compare.js، phase65.js، legacy-runner.js، reference.js | Verified (باختبار) | DEC-0077 (B-77) |
 | LEG-0298 | calc | المخازن | دالة حساب whStockValue | renderer/modules/warehouses/helpers.js:48 | legacy | phase59.js، compare.js، legacy-runner.js، reference.js | Verified (باختبار) | DEC-0077 (B-77) |
 | LEG-0299 | electron-capability | ديسكتوب | قدرة ديسكتوب askPin | preload.js (app:askPin) | يتراجع: صلاحيات السيرفر بدل PIN |  | Verified (جرد ثابت بس) | — |
 | LEG-0300 | electron-capability | ديسكتوب | قدرة ديسكتوب backupNow | preload.js (backup:runNow) | POST /api/backups |  | Verified (جرد ثابت بس) | — |
