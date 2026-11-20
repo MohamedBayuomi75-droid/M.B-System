@@ -1207,7 +1207,7 @@
 |---|---|---|---|
 | النوافذ | 63 | 10 | 53 |
 | التصدير والطباعة | 37 | 5 | 32 |
-| كتابة البيانات | 20 | 0 | 20 |
+| كتابة البيانات | 26 | 0 | 26 |
 
 <details><summary>القائمة الكاملة للنوافذ والتصدير والكتابة اللي ماتوصلّهاش من زرار ظاهر</summary>
 
@@ -1318,5 +1318,11 @@
 | LEG-0342 | data-write | كتابة بيانات clUpsertCustomer | renderer/modules/clients/helpers.js:333 |
 | LEG-0343 | data-write | كتابة بيانات clDeleteCustomer | renderer/modules/clients/helpers.js:352 |
 | LEG-0344 | data-write | كتابة بيانات clNextCustomerCode | renderer/modules/clients/helpers.js:24 |
+| LEG-0345 | data-write | كتابة بيانات whUpsertItem | renderer/modules/warehouses/helpers.js:56 |
+| LEG-0346 | data-write | كتابة بيانات whDeleteItem | renderer/modules/warehouses/helpers.js:63 |
+| LEG-0347 | data-write | كتابة بيانات whUpsertLocation | renderer/modules/warehouses/helpers.js:67 |
+| LEG-0348 | data-write | كتابة بيانات whAddMovement | renderer/modules/warehouses/helpers.js:74 |
+| LEG-0349 | data-write | كتابة بيانات whNextItemCode | renderer/modules/warehouses/helpers.js:18 |
+| LEG-0350 | data-write | كتابة بيانات whNextMovementId | renderer/modules/warehouses/helpers.js:19 |
 
 </details>

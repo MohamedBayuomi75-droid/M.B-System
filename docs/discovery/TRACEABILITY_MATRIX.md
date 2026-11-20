@@ -1,7 +1,7 @@
 # مصفوفة التتبّع (خطة v1.4.5 — المرحلة 3)
 
 > **مولَّد** بـ `node tools/discovery/build-traceability.js` من `requirements-registry.json` + ملفات الاختبار. ماتعدّلش الملف باليد.
-> **الاختبارات** بتتلاقى بالبحث عن اسم الدالة أو الصفحة في `tests-merge/` و`tests-web/` و`tools/formulas/` و`server/test/` (100 ملف). ده **دليل إن الاختبار بيلمس العنصر**، مش إثبات إنه بيغطي كل حالاته.
+> **الاختبارات** بتتلاقى بالبحث عن اسم الدالة أو الصفحة في `tests-merge/` و`tests-web/` و`tools/formulas/` و`server/test/` (101 ملف). ده **دليل إن الاختبار بيلمس العنصر**، مش إثبات إنه بيغطي كل حالاته.
 > **الحالات** (`02` §20): Implemented ≠ Verified ≠ Accepted. **مفيش حاجة هنا Accepted**: القبول بيكون لكل موديول ببوابة.
 > **الأولويات مقترحة.**
 
@@ -10,12 +10,12 @@
 |---|---|---|---|
 | page | 54 | 54 (100%) | 4 |
 | calc | 120 | 40 (33%) | 0 |
-| data-write | 20 | 6 (30%) | 0 |
+| data-write | 26 | 12 (46%) | 0 |
 | modal | 63 | 21 (33%) | 0 |
 | export/print | 37 | 5 (14%) | 0 |
 | permission | 8 | 0 (0%) | 8 |
 | electron-capability | 42 | 6 (14%) | 0 |
-| **الإجمالي** | **344** | **132 (38%)** | **12** |
+| **الإجمالي** | **350** | **138 (39%)** | **12** |
 
 ## 2. التغطية حسب الموديول (LEG)
 | الموديول | العدد | منها P0 (مقترح) | ليه اختبار | اتنقل | قرارات مفتوحة بتمنعه |
@@ -25,9 +25,9 @@
 | الموردون | 54 | 18 | 15 (28%) | 1 | DEC-0029 (B-29) |
 | ديسكتوب | 42 | 15 | 6 (14%) | 0 | — |
 | العملاء والمشاريع | 38 | 11 | 28 (74%) | 2 | DEC-0029 (B-29)، DEC-0035 (B-35) |
+| المخازن | 13 | 8 | 11 (85%) | 1 | DEC-0077 (B-77) |
 | الإعدادات | 11 | 1 | 3 (27%) | 8 | DEC-0035 (B-35) |
 | (خارج القايمة) | 10 | 0 | 10 (100%) | 0 | — |
-| المخازن | 7 | 2 | 5 (71%) | 1 | DEC-0077 (B-77) |
 | الحسابات | 6 | 0 | 6 (100%) | 0 | DEC-0013 (B-13)، DEC-0014 (B-14)، DEC-0015 (B-15)، DEC-0016 (B-16)، DEC-0027 (B-27) |
 | التقارير | 4 | 0 | 4 (100%) | 0 | — |
 | الأرشيف | 3 | 0 | 3 (100%) | 0 | DEC-0061 (B-61) |
@@ -181,7 +181,7 @@
 | LEG-0040 | page | الأرشيف | صفحة «أرشيف الموردين» (ledger.archive) | renderer/modules/ledger/pages-archive.js:215 | legacy /legacy/ | phase61.js | Verified (باختبار) | DEC-0061 (B-61) |
 | LEG-0041 | page | الأرشيف | صفحة «أرشيف العملاء والمشاريع» (clients.archive) | renderer/modules/clients/pages-archive.js:36 | legacy /legacy/ | phase8.js | Verified (باختبار) | DEC-0061 (B-61) |
 | LEG-0042 | page | الإعدادات | صفحة «الإعدادات العامة» (backup) | renderer/core/pages-backup.js:5 | legacy /legacy/ | phase10.js، phase29.js، phase32.js، phase34.js، phase35.js، phase36.js (+3) | Verified (باختبار) | DEC-0035 (B-35) |
-| LEG-0043 | page | الإعدادات | صفحة «المستخدمون» (users) | renderer/core/pages-users.js:16 | legacy /legacy/ | phase61.js، pages-smoke.js، phase10.js، phase11.js، phase12.js، phase13.js (+74) | Verified (باختبار) | DEC-0035 (B-35) |
+| LEG-0043 | page | الإعدادات | صفحة «المستخدمون» (users) | renderer/core/pages-users.js:16 | legacy /legacy/ | phase61.js، pages-smoke.js، phase10.js، phase11.js، phase12.js، phase13.js (+75) | Verified (باختبار) | DEC-0035 (B-35) |
 | LEG-0044 | page | الإعدادات | صفحة «الاقتراحات» (ledger.categories) | renderer/modules/ledger/pages-categories.js:4 | legacy /legacy/ | phase61.js | Verified (باختبار) | DEC-0035 (B-35) |
 | LEG-0045 | page | (خارج القايمة) | صفحة «clients.dashboard» (clients.dashboard) — اسم بديل لـ dashboard | renderer/modules/hr/pages-dashboard.js:28 | legacy /legacy/ | phase20.js | Verified (باختبار) | — |
 | LEG-0046 | page | (خارج القايمة) | صفحة «fuel» (fuel) — اسم بديل لـ equipment | renderer/modules/hr/pages-equipment.js:32 | legacy /legacy/ | phase61.js، phase18.js، phase26.js، legacy-runner.js، reference.js | Verified (باختبار) | — |
@@ -435,7 +435,7 @@
 | LEG-0294 | calc | الموردون | دالة حساب openingBalanceFor | renderer/modules/ledger/statement.js:43 | legacy | phase59.js، compare.js، legacy-runner.js، reference.js | Verified (باختبار) | DEC-0029 (B-29) |
 | LEG-0295 | calc | الموردون | دالة حساب roundMoney | renderer/modules/ledger/helpers.js:208 | legacy | phase59.js، compare.js، legacy-runner.js، reference.js | Verified (باختبار) | DEC-0029 (B-29) |
 | LEG-0296 | calc | مشترك (core) | دالة حساب supervisorOwnDue | renderer/core/helpers.js:2066 | legacy | phase59.js، compare.js، legacy-runner.js | Verified (باختبار) | — |
-| LEG-0297 | calc | المخازن | دالة حساب whStockQty | renderer/modules/warehouses/helpers.js:27 | legacy | phase59.js، compare.js، phase65.js، legacy-runner.js، reference.js | Verified (باختبار) | DEC-0077 (B-77) |
+| LEG-0297 | calc | المخازن | دالة حساب whStockQty | renderer/modules/warehouses/helpers.js:27 | legacy | phase59.js، compare.js، phase65.js، phase66.js، legacy-runner.js، reference.js | Verified (باختبار) | DEC-0077 (B-77) |
 | LEG-0298 | calc | المخازن | دالة حساب whStockValue | renderer/modules/warehouses/helpers.js:48 | legacy | phase59.js، compare.js، legacy-runner.js، reference.js | Verified (باختبار) | DEC-0077 (B-77) |
 | LEG-0299 | electron-capability | ديسكتوب | قدرة ديسكتوب askPin | preload.js (app:askPin) | يتراجع: صلاحيات السيرفر بدل PIN |  | Verified (جرد ثابت بس) | — |
 | LEG-0300 | electron-capability | ديسكتوب | قدرة ديسكتوب backupNow | preload.js (backup:runNow) | POST /api/backups |  | Verified (جرد ثابت بس) | — |
@@ -483,3 +483,9 @@
 | LEG-0342 | data-write | العملاء والمشاريع | كتابة بيانات clUpsertCustomer | renderer/modules/clients/helpers.js:333 | legacy | phase12.js، phase63.js | Verified (باختبار) | DEC-0029 (B-29)، DEC-0035 (B-35) |
 | LEG-0343 | data-write | العملاء والمشاريع | كتابة بيانات clDeleteCustomer | renderer/modules/clients/helpers.js:352 | legacy | phase2.js، phase63.js | Verified (باختبار) | DEC-0029 (B-29)، DEC-0035 (B-35) |
 | LEG-0344 | data-write | العملاء والمشاريع | كتابة بيانات clNextCustomerCode | renderer/modules/clients/helpers.js:24 | legacy | phase63.js | Verified (باختبار) | DEC-0029 (B-29)، DEC-0035 (B-35) |
+| LEG-0345 | data-write | المخازن | كتابة بيانات whUpsertItem | renderer/modules/warehouses/helpers.js:56 | legacy | phase66.js | Verified (باختبار) | DEC-0077 (B-77) |
+| LEG-0346 | data-write | المخازن | كتابة بيانات whDeleteItem | renderer/modules/warehouses/helpers.js:63 | legacy | phase66.js | Verified (باختبار) | DEC-0077 (B-77) |
+| LEG-0347 | data-write | المخازن | كتابة بيانات whUpsertLocation | renderer/modules/warehouses/helpers.js:67 | legacy | phase66.js | Verified (باختبار) | DEC-0077 (B-77) |
+| LEG-0348 | data-write | المخازن | كتابة بيانات whAddMovement | renderer/modules/warehouses/helpers.js:74 | legacy | phase17.js، phase66.js | Verified (باختبار) | DEC-0077 (B-77) |
+| LEG-0349 | data-write | المخازن | كتابة بيانات whNextItemCode | renderer/modules/warehouses/helpers.js:18 | legacy | phase66.js | Verified (باختبار) | DEC-0077 (B-77) |
+| LEG-0350 | data-write | المخازن | كتابة بيانات whNextMovementId | renderer/modules/warehouses/helpers.js:19 | legacy | phase65.js، phase66.js | Verified (باختبار) | DEC-0077 (B-77) |

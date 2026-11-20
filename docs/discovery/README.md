@@ -37,7 +37,7 @@ node tools/discovery/build-traceability.js
 **التحقق إن كل حاجة محدّثة** (بيفشل لو أي ملف محتاج يتولّد تاني):
 
 ```bash
-for t in build-registry build-functional-inventory build-data-dictionary build-formula-catalogue build-electron-capabilities build-traceability build-parties-parity; do node tools/discovery/$t.js --check || exit 1; done
+for t in build-registry build-functional-inventory build-data-dictionary build-formula-catalogue build-electron-capabilities build-traceability build-parties-parity build-warehouses-parity; do node tools/discovery/$t.js --check || exit 1; done
 ```
 
 ## قواعد

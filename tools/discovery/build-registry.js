@@ -95,6 +95,12 @@ for (const [file, v] of Object.entries(inv.perFile)) {
     ['renderer/modules/clients/helpers.js', 'clUpsertCustomer', 'الموديول التجريبي (المرحلة 6)'],
     ['renderer/modules/clients/helpers.js', 'clDeleteCustomer', 'الموديول التجريبي (المرحلة 6)'],
     ['renderer/modules/clients/helpers.js', 'clNextCustomerCode', 'الموديول التجريبي (المرحلة 6) — ترقيم'],
+    ['renderer/modules/warehouses/helpers.js', 'whUpsertItem', 'المخازن (المرحلة 7، الحزمة 7.1)'],
+    ['renderer/modules/warehouses/helpers.js', 'whDeleteItem', 'المخازن (المرحلة 7، الحزمة 7.1)'],
+    ['renderer/modules/warehouses/helpers.js', 'whUpsertLocation', 'المخازن (المرحلة 7، الحزمة 7.1)'],
+    ['renderer/modules/warehouses/helpers.js', 'whAddMovement', 'المخازن (المرحلة 7، الحزمة 7.1) — الحركة ومعها تحديث التكلفة'],
+    ['renderer/modules/warehouses/helpers.js', 'whNextItemCode', 'المخازن (المرحلة 7، الحزمة 7.1) — ترقيم'],
+    ['renderer/modules/warehouses/helpers.js', 'whNextMovementId', 'المخازن (المرحلة 7، الحزمة 7.1) — ترقيم'],
   ];
   for (const [file, fn, why] of EXTRA_WRITES) {
     const src = read(file);

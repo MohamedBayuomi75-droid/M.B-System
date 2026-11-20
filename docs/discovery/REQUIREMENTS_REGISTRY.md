@@ -7,14 +7,14 @@
 ## الملخص
 | البادئة | التصنيف | العدد |
 |---|---|---|
-| `LEG-` | LEGACY-PRESERVE | 344 |
+| `LEG-` | LEGACY-PRESERVE | 350 |
 | `CHG-` | APPROVED-CHANGE | 14 |
 | `TECH-` | TECHNICAL | 18 |
 | `NEW-` | NEW-REQUIREMENT | 9 |
-| `DEC-` | OPEN-DECISION (المفتوح والمحسوم) | 96 (مفتوح: 41) |
-| **الإجمالي** | | **481** |
+| `DEC-` | OPEN-DECISION (المفتوح والمحسوم) | 97 (مفتوح: 41) |
+| **الإجمالي** | | **488** |
 
-**عناصر LEG حسب النوع:** page 54 · calc 120 · data-write 20 · modal 63 · export/print 37 · permission 8 · electron-capability 42
+**عناصر LEG حسب النوع:** page 54 · calc 120 · data-write 26 · modal 63 · export/print 37 · permission 8 · electron-capability 42
 
 ## القدرات القديمة (LEG)
 | ID | النوع | الموديول | الوصف | الأولوية (مقترحة) | الدليل | المكان المستهدف | الاختبارات | الحالة | ملاحظات |
@@ -363,6 +363,12 @@
 | LEG-0342 | data-write | العملاء والمشاريع | كتابة بيانات clUpsertCustomer | P0 | renderer/modules/clients/helpers.js:333 | legacy |  | verified-static | سلامة البيانات (P0) — الموديول التجريبي (المرحلة 6) |
 | LEG-0343 | data-write | العملاء والمشاريع | كتابة بيانات clDeleteCustomer | P0 | renderer/modules/clients/helpers.js:352 | legacy |  | verified-static | سلامة البيانات (P0) — الموديول التجريبي (المرحلة 6) |
 | LEG-0344 | data-write | العملاء والمشاريع | كتابة بيانات clNextCustomerCode | P0 | renderer/modules/clients/helpers.js:24 | legacy |  | verified-static | سلامة البيانات (P0) — الموديول التجريبي (المرحلة 6) — ترقيم |
+| LEG-0345 | data-write | المخازن | كتابة بيانات whUpsertItem | P0 | renderer/modules/warehouses/helpers.js:56 | legacy |  | verified-static | سلامة البيانات (P0) — المخازن (المرحلة 7، الحزمة 7.1) |
+| LEG-0346 | data-write | المخازن | كتابة بيانات whDeleteItem | P0 | renderer/modules/warehouses/helpers.js:63 | legacy |  | verified-static | سلامة البيانات (P0) — المخازن (المرحلة 7، الحزمة 7.1) |
+| LEG-0347 | data-write | المخازن | كتابة بيانات whUpsertLocation | P0 | renderer/modules/warehouses/helpers.js:67 | legacy |  | verified-static | سلامة البيانات (P0) — المخازن (المرحلة 7، الحزمة 7.1) |
+| LEG-0348 | data-write | المخازن | كتابة بيانات whAddMovement | P0 | renderer/modules/warehouses/helpers.js:74 | legacy |  | verified-static | سلامة البيانات (P0) — المخازن (المرحلة 7، الحزمة 7.1) — الحركة ومعها تحديث التكلفة |
+| LEG-0349 | data-write | المخازن | كتابة بيانات whNextItemCode | P0 | renderer/modules/warehouses/helpers.js:18 | legacy |  | verified-static | سلامة البيانات (P0) — المخازن (المرحلة 7، الحزمة 7.1) — ترقيم |
+| LEG-0350 | data-write | المخازن | كتابة بيانات whNextMovementId | P0 | renderer/modules/warehouses/helpers.js:19 | legacy |  | verified-static | سلامة البيانات (P0) — المخازن (المرحلة 7، الحزمة 7.1) — ترقيم |
 
 ## التغييرات المعتمدة (CHG)
 | ID | النوع | الموديول | الوصف | الأولوية (مقترحة) | الدليل | المكان المستهدف | الاختبارات | الحالة | ملاحظات |
@@ -516,4 +522,5 @@
 | DEC-0094 | decision | قرارات | نطاق الـ UAT اليدوي للموديول التجريبي: المستخدم نفّذ UAT الشكل والقراءة (G1–G3، G6، G7، G9، G11) ونتيجته «تمام». سيناريوهات الكتابة (G4، G5، G8، G10) مااتحفظش م | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
 | DEC-0095 | decision | قرارات | بوابة المرحلة 6: الموردين والعملاء Accepted كموديول تجريبي، وطريقة النقل والرجوع (الدليل + reconcile) معتمدة للمرحلة 13 | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
 | DEC-0096 | decision | قرارات | بوابة المرحلة 5: الأساسيات المشتركة Accepted (الصلاحيات، والتدقيق، والمرفقات مع B-78 أ، والإشعارات، والإصدارات، ومحرك الاعتمادات من غير سياسة حقيقية، والترقيم N | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
+| DEC-0097 | decision | قرارات | المرحلة 7، الحزمة 7.1 = المخازن: الشاشة بشكل الواجهة القديمة، والتتبّع، ومصفوفة الحقول، واختبارات P0، وUAT، وبروفة نقل ورجوع. B-77 متأجل لحد ما يبقى فيه أصناف ف | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
 
