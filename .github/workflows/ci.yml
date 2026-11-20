@@ -154,11 +154,11 @@ jobs:
       - name: Formulas — legacy vs independent reference
         if: matrix.suite == 'web-app-security'
         run: node tools/formulas/compare.js
-      # المقارنة البصرية: تقرير بس في الـ CI لحد اعتماد خط أساس من بيئة الـ CI (قرار المرحلة 4، البند و)
-      - name: Visual comparison with the baseline (report only)
+      # المقارنة البصرية: إلزامية على خط أساس بيئة الـ CI (DEC-0089). اللقطات بتتأثر بخطوط الجهاز، فالـ CI ليه خط أساس خاص
+      # (docs/discovery/visual-baseline-ci، بيتولّد بـ visual-baseline-ci.yml)، وبيئة التطوير ليها docs/discovery/visual-baseline.
+      - name: Visual comparison with the CI baseline
         if: matrix.suite == 'web-app-security'
-        continue-on-error: true
-        run: node tools/discovery/visual-compare.js --out "$RUNNER_TEMP/visual"
+        run: node tools/discovery/visual-compare.js --baseline docs/discovery/visual-baseline-ci --out "$RUNNER_TEMP/visual"
       - name: Upload visual comparison report
         if: matrix.suite == 'web-app-security' && always()
         uses: actions/upload-artifact@v4
