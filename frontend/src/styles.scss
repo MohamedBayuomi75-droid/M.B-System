@@ -89,4 +89,13 @@ body { color-scheme: light; background: var(--mat-sys-surface); color: var(--mat
 .credit { color: var(--erp-credit); }
 .search { width: 320px; max-width: 100%; }
 .note { max-width: 760px; }
+// الموردين والعملاء (المرحلة 6، DEC-0092): القايمة جنب النموذج، والسجل المختار متعلّم، وصفوف الخانات المخصصة وجهات الاتصال
+.split { display: grid; grid-template-columns: minmax(220px, 300px) 1fr; gap: 20px; align-items: start; margin-top: 8px; }
+.list { list-style: none; margin: 0; padding: 4px; border: 1px solid var(--erp-line); border-radius: 12px; background: var(--mat-sys-surface-container-lowest); max-height: calc(100vh - 260px); overflow: auto; }
+.list li { padding: 8px 12px; border-radius: 8px; cursor: pointer; line-height: 1.5; }
+.list li[data-id]:hover { background: var(--mat-sys-surface-container); }
+.list li.selected { background: var(--mat-sys-primary-container); color: var(--mat-sys-on-primary-container); font-weight: 600; }
+.kv-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.kv-row mat-form-field { flex: 1 1 180px; }
+@media (max-width: 900px) { .split { grid-template-columns: 1fr; } .list { max-height: 240px; } }
 @media (max-width: 720px) { .nav { width: 200px; } .content { padding: 12px; } }

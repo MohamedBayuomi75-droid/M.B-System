@@ -204,11 +204,18 @@ async function login(page, username, password) {
     ok((await A.page.textContent('#supError')).includes('الرقم الضريبي'), 'server validation shown (short tax id)');
     await A.page.fill('#supForm [data-field="taxId"]', '123456789');
     await A.page.fill('#supForm [data-field="openingBalance"]', '-750.25');
+    // الخانات المخصصة (DEC-0091): خانة بقيمة بتتحفظ، والفاضية القيمة بتتشال (زي collectExtraFields في الواجهة القديمة)
+    await A.page.click('#supAddExtra'); await A.page.click('#supAddExtra');
+    await A.page.fill('[data-extra="0"] input[name="xl0"]', 'المندوب'); await A.page.fill('[data-extra="0"] input[name="xv0"]', 'سعيد');
+    await A.page.fill('[data-extra="1"] input[name="xl1"]', 'فاضية');
     await A.page.click('#supSave');
-    await A.page.waitForFunction(() => /٧٥٠٫٢٥|750\.25/.test(document.querySelector('#supOpening')?.textContent || ''));
+    await A.page.waitForFunction(() => /^-750\.25/.test(document.querySelector('#supForm [data-field="openingBalance"]')?.value || '') && document.querySelectorAll('#supExtra [data-extra]').length === 1);
+    await A.page.waitForSelector('#supList li.selected');
+    ok(await A.page.$eval('#supList li.selected', (li) => li.textContent.includes('مورد اختبار الواجهة')), 'saved supplier is the selected list item (DEC-0092)');
     const b = await api('GET', '/api/bootstrap', null, adminTok);
     const legacy = b.body.data.ledger.suppliers.find((x) => x.name === 'مورد اختبار الواجهة');
     eq(legacy && [legacy.taxId, legacy.openingBalance, legacy.attachments], ['123456789', -750.25, []], 'legacy sees the supplier with the same field types');
+    eq(legacy && legacy.extraFields, [{ label: 'المندوب', value: 'سعيد' }], 'custom fields from the new screen reach the legacy record (DEC-0091)');
     await A.page.fill('#supSearch', 'اختبار الواجهه');
     await A.page.waitForFunction(() => document.querySelectorAll('#supList li[data-id]').length === 1);
     ok(true, 'Arabic-normalized search');
@@ -223,12 +230,16 @@ async function login(page, username, password) {
     await A.page.click('#cusAddContact');
     await A.page.fill('[data-contact="0"] input[name="cn0"]', 'م. اختبار');
     await A.page.fill('[data-contact="0"] input[name="cp0"]', '0100');
+    await A.page.click('#cusAddExtra');
+    await A.page.fill('#cusExtra [data-extra="0"] input[name="xl0"]', 'المنطقة'); await A.page.fill('#cusExtra [data-extra="0"] input[name="xv0"]', 'الجيزة');
     const [pr] = await Promise.all([A.page.waitForResponse((r) => r.url().includes('/api/v1/customers/') && r.request().method() === 'PATCH'), A.page.click('#cusSave')]);
     eq(pr.status(), 200, 'customer with a contact saved');
     const b2 = await api('GET', '/api/bootstrap', null, adminTok);
     const c = b2.body.data.clients.customers.find((x) => x.name === 'عميل اختبار الواجهة');
     eq(c && [c.status, Array.isArray(c.contracts), typeof c.createdAt], ['active', true, 'string'], 'legacy customer shape');
     eq(c && c.contacts.map((k) => [k.name, k.title, k.phone, k.email]), [['م. اختبار', '', '0100', '']], 'contacts edited in the new screen reach the legacy record');
+    eq(c && c.extraFields, [{ label: 'المنطقة', value: 'الجيزة' }], 'customer custom fields reach the legacy record (DEC-0091)');
+    ok((await A.page.textContent('#cusStatus')).includes('نشط'), 'customer status shown read-only, like the full screen');
     const nav = await A.page.$$eval('#nav a', (as) => as.map((x) => [x.textContent.trim(), x.getAttribute('href') || '']));
     ok(nav.some(([t, h]) => t.includes('الموردين') && !t.includes('الكاملة') && h.endsWith('/suppliers')) && nav.some(([t, h]) => t.includes('الموردين — الشاشة الكاملة') && h.includes('/legacy/')), 'cutover: suppliers → new screen, full legacy screen still reachable');
   }

@@ -23,12 +23,12 @@ const PAGES = [['home', '/app/'], ['projects', '/app/projects'], ['suppliers', '
   // بيانات مُركّبة ثابتة (من غير أي بيانات حقيقية)، عشان الشاشات تتصوّر بقوايم ونماذج مليانة
   const t = (await api('POST', '/api/auth/login', { username: 'admin', password: ADMIN_PW })).accessToken;
   for (const s of [
-    { name: 'شركة النور للتوريدات', taxId: '100200300', commercialReg: '55123', businessNature: 'توريد مواد', phone: '01000000001', email: 'nour@example.com', address: 'القاهرة' },
+    { name: 'شركة النور للتوريدات', taxId: '100200300', commercialReg: '55123', businessNature: 'توريد مواد', phone: '01000000001', email: 'nour@example.com', address: 'القاهرة', extraFields: [{ label: 'المندوب', value: 'سعيد' }] },
     { name: 'مؤسسة الأمل', taxId: '400500600', businessNature: 'نقل', phone: '01000000002' },
     { name: 'ACME Supplies', taxId: '700800900', email: 'acme@example.com' },
   ]) await api('POST', '/api/v1/suppliers', s, t);
   for (const c of [
-    { name: 'شركة الشروق للمقاولات', code: 'CUS-0001', phone: '0220000001', email: 'shorouk@example.com', city: 'الجيزة', category: 'شركات', taxId: '111222333' },
+    { name: 'شركة الشروق للمقاولات', code: 'CUS-0001', phone: '0220000001', email: 'shorouk@example.com', city: 'الجيزة', category: 'شركات', taxId: '111222333', extraFields: [{ label: 'المنطقة', value: 'أكتوبر' }] },
     { name: 'تامر حسن', code: 'CUS-0002', phone: '01100000003', city: 'القاهرة' },
   ]) await api('POST', '/api/v1/customers', c, t);
   const browser = await chromium.launch({ args: ['--no-sandbox'] });

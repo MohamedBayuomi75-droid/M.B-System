@@ -6,13 +6,16 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { firstValueFrom } from 'rxjs';
-import { formatMoney } from '../core/money';
 import { legacyUrl } from '../core/page-routes';
 import { errorMessage, SessionService } from '../core/session.service';
 
-export interface Supplier { id: string; name: string; taxId: string; commercialReg: string; businessNature: string; openingBalance: string; openingBalanceDate: string; phone: string; email: string; address: string; bankAccount: string; iban: string; notes: string; invoicesCount: number; paymentsCount: number; attachmentsCount: number; rev: number }
+export interface ExtraField { label: string; value: string }
+export interface Supplier { extraFields: ExtraField[]; id: string; name: string; taxId: string; commercialReg: string; businessNature: string; openingBalance: string; openingBalanceDate: string; phone: string; email: string; address: string; bankAccount: string; iban: string; notes: string; invoicesCount: number; paymentsCount: number; attachmentsCount: number; rev: number }
 const FIELDS: [keyof Supplier, string][] = [['name', 'اسم المورد *'], ['taxId', 'الرقم الضريبي'], ['commercialReg', 'السجل التجاري'], ['businessNature', 'طبيعة النشاط'], ['openingBalance', 'الرصيد الافتتاحي'], ['openingBalanceDate', 'تاريخ الرصيد الافتتاحي'], ['phone', 'الهاتف'], ['email', 'البريد'], ['address', 'العنوان'], ['bankAccount', 'الحساب البنكي'], ['iban', 'IBAN'], ['notes', 'ملاحظات']];
 
+const copy = (s: Supplier): Partial<Supplier> => ({ ...s, extraFields: (s.extraFields ?? []).map((x) => ({ ...x })) });
+/** الخانات المخصصة زي الواجهة القديمة (ledger/helpers.js collectExtraFields): الخانة الفاضية القيمة مابتتحفظش، والاسم الفاضي = «خانة» */
+export const extraForSave = (xs: ExtraField[]) => xs.map((x) => ({ label: x.label.trim() || 'خانة', value: x.value.trim() })).filter((x) => x.value);
 /** المرحلة 6.1 (تجريبي): بيانات الموردين الأساسية — الأرصدة والفواتير وكشف الحساب والحذف في الشاشة الكاملة */
 @Component({
   selector: 'app-suppliers',
@@ -34,9 +37,20 @@ const FIELDS: [keyof Supplier, string][] = [['name', 'اسم المورد *'], [
         <form id="supForm" (ngSubmit)="save()">
           @for (fd of fields; track fd[0]) {
             <mat-form-field appearance="outline"><mat-label>{{ fd[1] }}</mat-label>
-              <input matInput [name]="fd[0]" [attr.data-field]="fd[0]" [(ngModel)]="$any(f)[fd[0]]" [readonly]="!canSave()" [type]="fd[0] === 'openingBalanceDate' ? 'date' : 'text'" [attr.dir]="fd[0] === 'openingBalance' ? 'ltr' : null" /></mat-form-field>
+              <input matInput [name]="fd[0]" [attr.data-field]="fd[0]" [(ngModel)]="$any(f)[fd[0]]" [readonly]="!canSave()" [attr.dir]="fd[0] === 'openingBalance' || fd[0] === 'openingBalanceDate' ? 'ltr' : null" [placeholder]="fd[0] === 'openingBalanceDate' ? 'YYYY-MM-DD' : ''" /></mat-form-field>
           }
-          @if (f.id) { <p class="muted">الرصيد الافتتاحي: <span class="num" id="supOpening">{{ money(f.openingBalance) }}</span> · <a [href]="legacy('ledger.suppliers')">الأرصدة والفواتير وكشف الحساب والحذف في الشاشة الكاملة</a></p> }
+          <h3>خانات مخصصة</h3>
+          <div id="supExtra">
+            @for (x of f.extraFields ?? []; track $index; let i = $index) {
+              <div class="kv-row" [attr.data-extra]="i">
+                <mat-form-field appearance="outline"><mat-label>اسم الخانة</mat-label><input matInput [name]="'xl' + i" [(ngModel)]="x.label" [readonly]="!canSave()" /></mat-form-field>
+                <mat-form-field appearance="outline"><mat-label>القيمة</mat-label><input matInput [name]="'xv' + i" [(ngModel)]="x.value" [readonly]="!canSave()" /></mat-form-field>
+                @if (canSave()) { <button mat-button type="button" (click)="f.extraFields!.splice(i, 1)" aria-label="حذف الخانة">✕</button> }
+              </div>
+            }
+            @if (canSave()) { <button mat-button type="button" id="supAddExtra" (click)="(f.extraFields = f.extraFields ?? []).push({ label: '', value: '' })">+ خانة مخصصة</button> }
+          </div>
+          @if (f.id) { <p class="muted"><a [href]="legacy('ledger.suppliers')">الأرصدة والفواتير وكشف الحساب والحذف في الشاشة الكاملة</a></p> }
           @if (canSave()) { <button mat-flat-button type="submit" id="supSave" [disabled]="busy()">حفظ</button> }
         </form>
       }
@@ -48,7 +62,7 @@ export class SuppliersPage implements OnInit {
   readonly items = signal<Supplier[]>([]); readonly form = signal<Partial<Supplier> | null>(null);
   readonly loading = signal(false); readonly busy = signal(false); readonly error = signal('');
   readonly fields = FIELDS; readonly canAdd = this.session.can('ledger.suppliers', 'add'); readonly canEdit = this.session.can('ledger.suppliers', 'edit');
-  q = ''; money = formatMoney; legacy = legacyUrl;
+  q = ''; legacy = legacyUrl;
   ngOnInit() { void this.load(); }
   canSave() { return this.form()?.id ? this.canEdit : this.canAdd; }
   async load() {
@@ -56,17 +70,18 @@ export class SuppliersPage implements OnInit {
     try { this.items.set((await firstValueFrom(this.http.get<{ items: Supplier[] }>('/api/v1/suppliers', { params: new HttpParams().set('q', this.q.trim()) }))).items); }
     catch (e) { this.error.set(errorMessage(e, 'تعذر تحميل الموردين')); } finally { this.loading.set(false); }
   }
-  open(s: Supplier) { this.error.set(''); this.form.set({ ...s }); }
-  startNew() { this.error.set(''); this.form.set({ name: '' }); }
+  open(s: Supplier) { this.error.set(''); this.form.set(copy(s)); }
+  startNew() { this.error.set(''); this.form.set({ name: '', extraFields: [] }); }
   async save() {
     const f = this.form(); if (!f) return;
     const body: Record<string, unknown> = {};
     for (const [k] of FIELDS) if (f[k] !== undefined && (k !== 'openingBalance' || String(f[k]).trim() !== '')) body[k] = String(f[k]);
+    if (f.extraFields) body['extraFields'] = extraForSave(f.extraFields);
     this.busy.set(true); this.error.set('');
     try {
       const r = f.id ? await firstValueFrom(this.http.patch<Supplier>(`/api/v1/suppliers/${f.id}`, { ...body, rev: f.rev }))
         : await firstValueFrom(this.http.post<Supplier>('/api/v1/suppliers', body));
-      this.form.set({ ...r }); await this.load();
+      this.form.set(copy(r)); await this.load();
     } catch (e) { this.error.set(errorMessage(e, 'تعذر الحفظ')); } finally { this.busy.set(false); }
   }
 }
