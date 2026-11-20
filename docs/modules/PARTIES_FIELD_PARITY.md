@@ -38,14 +38,14 @@
 | الحقل القديم | النوع (من البيانات الحقيقية) | مكانه في القاعدة | في الشاشة الجديدة |
 |---|---|---|---|
 | `address` | string | عمود `address` | ✅ |
-| `boqs` | array | `legacy_extra` (مصفوفة بتخص موديول تاني — بتتنقل معاه) | — |
+| `boqs` | array | `legacy_extra` (مصفوفة بتخص موديول تاني — بتتنقل معاه) | ✅ |
 | `category` | string | عمود `category` | ✅ |
 | `city` | string | عمود `city` | ✅ |
 | `code` | string | عمود `code` | ✅ |
 | `collections` | array | `legacy_extra` (مصفوفة بتخص موديول تاني — بتتنقل معاه) | — |
 | `comms` | array | `legacy_extra` (مصفوفة بتخص موديول تاني — بتتنقل معاه) | — |
 | `contacts` | array | جدول `customer_contacts` (صف لكل جهة اتصال) | ✅ |
-| `contracts` | array | `legacy_extra` (مصفوفة بتخص موديول تاني — بتتنقل معاه) | — |
+| `contracts` | array | `legacy_extra` (مصفوفة بتخص موديول تاني — بتتنقل معاه) | ✅ |
 | `createdAt` | string | `created_at` | — |
 | `department` | string | عمود `department` | ✅ |
 | `docs` | array | `legacy_extra` (مصفوفة بتخص موديول تاني — بتتنقل معاه) | — |
@@ -53,18 +53,18 @@
 | `extraFields` | array | عمود `extra_fields` | ✅ |
 | `guarantees` | array | `legacy_extra` (مصفوفة بتخص موديول تاني — بتتنقل معاه) | — |
 | `id` | string | المفتاح الأساسي `id` | ✅ |
-| `invoices` | array | `legacy_extra` (مصفوفة بتخص موديول تاني — بتتنقل معاه) | — |
+| `invoices` | array | `legacy_extra` (مصفوفة بتخص موديول تاني — بتتنقل معاه) | ✅ |
 | `ledger` | array | `legacy_extra` (مصفوفة بتخص موديول تاني — بتتنقل معاه) | — |
 | `name` | string | عمود `name` | ✅ |
 | `notes` | string | عمود `notes` | ✅ |
 | `openingBalance` | number | عمود `opening_balance` | ✅ |
 | `opportunities` | array | `legacy_extra` (مصفوفة بتخص موديول تاني — بتتنقل معاه) | — |
 | `phone` | string | عمود `phone` | ✅ |
-| `projects` | array | `legacy_extra` (مصفوفة بتخص موديول تاني — بتتنقل معاه) | — |
+| `projects` | array | `legacy_extra` (مصفوفة بتخص موديول تاني — بتتنقل معاه) | ✅ |
 | `status` | string (active) | عمود `status` | ✅ |
 | `taxId` | string | عمود `tax_id` | ✅ |
 | `updatedAt` | string | `updated_at` | — |
-| `workSurveys` | array | `legacy_extra` (مصفوفة بتخص موديول تاني — بتتنقل معاه) | — |
+| `workSurveys` | array | `legacy_extra` (مصفوفة بتخص موديول تاني — بتتنقل معاه) | ✅ |
 
 ## الخلاصة (P6-B)
 - **كل حقل ليه مكان**: عمود، أو جدول تابع، أو `legacy_extra`. ومفيش حقل بيضيع، لأن أمر الكتابة في الجداول بيحط أي مفتاح مش معروف في `legacy_extra` (`p - ARRAY[...]`)، واختبار التكافؤ في أمر النقل بيقارن كل سجل بعد النقل (`cutover … dry-run`).
