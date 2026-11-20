@@ -47,6 +47,7 @@ jobs:
           for t in build-registry build-functional-inventory build-data-dictionary build-formula-catalogue build-electron-capabilities build-traceability build-parties-parity; do
             node tools/discovery/$t.js --check
           done
+          node tools/ui/build-legacy-skin.js --check
       - name: Server lint
         run: npm --prefix server run lint
       - name: Server build

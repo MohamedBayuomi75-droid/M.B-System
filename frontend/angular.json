@@ -30,6 +30,7 @@
               }
             ],
             "styles": [
+              "src/legacy-skin.css",
               "src/styles.scss"
             ],
             "baseHref": "/app/"

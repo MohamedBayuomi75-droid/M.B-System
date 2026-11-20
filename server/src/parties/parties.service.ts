@@ -4,7 +4,7 @@ import type { AuthUser } from '../auth/auth.types';
 import { hasPagePermission } from '../authz/effective-permissions';
 import { Money } from '../common/money';
 import { DataService } from '../data/data.service';
-import { canRead, hiddenFields } from '../data/policy';
+import { canRead, hiddenFields, inProjectScope } from '../data/policy';
 import { CreateCustomerDto, CreateSupplierDto, UpdateCustomerDto, UpdateSupplierDto } from './parties.dto';
 import { CUSTOMERS, PartiesRepository, PartyRow, SUPPLIERS } from './parties.repository';
 
@@ -33,6 +33,38 @@ export function moneyToLegacyNumber(s: string): number {
   return Number(fixed);
 }
 
+/** نفس clNormName (renderer/modules/clients/helpers.js:44) — ربط المشاريع القديمة بالعميل بالاسم */
+export const clNormName = (s: unknown) => String(s ?? '').replace(/[\u064B-\u0652\u0640]/g, '').replace(/[أإآ]/g, 'ا').replace(/ى/g, 'ي').replace(/ة/g, 'ه')
+  .replace(/\s+/g, ' ').trim().toLowerCase();
+/** تاريخ النهارده بتوقيت القاهرة (نفس todayISO في الواجهة القديمة: renderer/core/helpers.js:132) */
+export const cairoTodayIso = (now = new Date()) => new Intl.DateTimeFormat('en-CA', { timeZone: 'Africa/Cairo', year: 'numeric', month: '2-digit', day: '2-digit' }).format(now);
+const daysUntil = (today: string, iso: unknown): number | null => {
+  if (!iso) return null;
+  const b = Date.parse(`${String(iso)}T00:00:00Z`); if (Number.isNaN(b)) return null;
+  return Math.round((b - Date.parse(`${today}T00:00:00Z`)) / 86400000);
+};
+/**
+ * ملخص العميل لجدول العملاء (DEC-0093: نفس أعمدة الشاشة القديمة) — عرض بس، من نفس البيانات ونفس القواعد:
+ * clProjectsOfCustomer/clProjectBelongsTo (helpers.js:60)، وأطوال المصفوفات، وcustomerNotesIssues (core/alerts-center.js:263)
+ * بحالة الضمان الفعلية clGuaranteeEffStatus (guarantees.js:26). مقارنة بالدوال القديمة نفسها: tests-merge/phase64.js.
+ */
+export function customerSummary(c: Json, id: string, projects: Json[], today: string) {
+  const belongs = (p: Json) => (p.customerId ? p.customerId === id : !!(p.customerName || p.customer) && clNormName(p.customerName || p.customer) === clNormName(c.name));
+  const len = (k: string) => (Array.isArray(c[k]) ? (c[k] as unknown[]).length : 0);
+  const projectsCount = projects.filter(belongs).length;
+  const notes: string[] = [];
+  if (!c.phone) notes.push('ناقص: رقم الهاتف');
+  if (!len('contracts')) notes.push('لا يوجد عقد');
+  if (!projectsCount) notes.push('لا توجد مشاريع');
+  for (const g of (Array.isArray(c.guarantees) ? c.guarantees : []) as Json[]) {
+    const st = String(g.status || 'ساري');
+    const eff = (st === 'ساري' || st === 'قيد التجديد') && g.expiryDate && String(g.expiryDate) < today ? 'منتهي' : st;
+    const d = daysUntil(today, g.expiryDate);
+    if ((eff === 'ساري' || eff === 'قيد التجديد') && d != null && d <= 30) notes.push('ضمان ' + String(g.letterNo || g.id) + (d < 0 ? ' منتهي' : ' ينتهي بعد ' + d + ' يوم'));
+  }
+  return { counts: { projects: projectsCount, contracts: len('contracts'), invoices: len('invoices'), workSurveys: len('workSurveys'), boqs: len('boqs') }, notes };
+}
+
 /**
  * الموردين والعملاء — بيانات أساسية (المرحلة 6.1). القواعد هنا = قواعد الواجهة الحالية بالملف والسطر
  * (docs/modules/PARTIES_MODULE.md)، مفيش قاعدة جديدة. الكتابة عن طريق DataService.sync بنفس شكل السجل القديم.
@@ -55,7 +87,12 @@ export class PartiesService {
       invoicesCount: counts?.invoices ?? 0, paymentsCount: counts?.payments ?? 0, rev: r.rev, updatedAt: r.updated_at,
     };
   }
-  private customerDto(user: AuthUser, r: PartyRow) {
+  /** المشاريع اللي المستخدم يشوفها (نفس DATA.projects في الواجهة القديمة: صلاحية القراءة + نطاق المشاريع) */
+  private async visibleProjects(user: AuthUser): Promise<Json[]> {
+    if (!canRead(user, 'projects')) return [];
+    return (await this.repo.all('projects')).map((r) => ({ ...r.data, id: r.id })).filter((p) => inProjectScope(user, 'projects', p));
+  }
+  private customerDto(user: AuthUser, r: PartyRow, projects?: Json[], today?: string) {
     const d = r.data; const hidden = hiddenFields(user, CUSTOMERS);
     return {
       id: r.id, code: str(d.code), name: str(d.name), phone: str(d.phone), email: str(d.email), city: str(d.city), category: str(d.category),
@@ -63,6 +100,7 @@ export class PartiesService {
       openingBalance: hidden.includes('openingBalance') ? null : moneyOut(d.openingBalance),
       contacts: Array.isArray(d.contacts) ? d.contacts : [], extraFields: Array.isArray(d.extraFields) ? d.extraFields : [],
       createdAt: str(d.createdAt), updatedAt: str(d.updatedAt), rev: r.rev,
+      ...(projects ? customerSummary(d, r.id, projects, today ?? cairoTodayIso()) : {}),
     };
   }
   private static match(q: string | undefined, fields: unknown[]) {
@@ -87,9 +125,10 @@ export class PartiesService {
   }
   async listCustomers(user: AuthUser, q?: string) {
     this.assertRead(user, CUSTOMERS);
-    const rows = await this.repo.all(CUSTOMERS);
+    const [rows, projects] = await Promise.all([this.repo.all(CUSTOMERS), this.visibleProjects(user)]);
+    const today = cairoTodayIso();
     const items = rows.filter((r) => PartiesService.match(q, [r.data.name, r.data.code, r.data.phone, r.data.email, r.data.city, r.data.taxId]))
-      .map((r) => this.customerDto(user, r)).sort((a, b) => a.name.localeCompare(b.name, 'ar'));
+      .map((r) => this.customerDto(user, r, projects, today)).sort((a, b) => a.name.localeCompare(b.name, 'ar'));
     return { items, total: items.length, all: rows.length };
   }
   async getCustomer(user: AuthUser, id: string) {
