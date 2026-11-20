@@ -69,7 +69,7 @@
 
 ## 4. الدليل
 - **لقطات جنب بعض بعد التنفيذ:** `docs/reports/v1.4.5/phase6-visual/`.
-- **خط الأساس:** `docs/discovery/app-baseline/app/` و`app-baseline-ci/app/`.
+- **خط الأساس:** `docs/discovery/app-baseline/app/` و`app-baseline-ci/app/` (توليد الـ CI بعد DEC-0093: `28913f3`).
 - **الاختبارات:** `tests-web/app-e2e.js` [6c] (الشكل والسلوك) 85/85، و`tests-merge/phase64.js` (أعداد الجدول = الدوال القديمة، 3 أوضاع).
 
 ## 5. الخيارات اللي اتعرضت (DEC-0093) — للتاريخ
