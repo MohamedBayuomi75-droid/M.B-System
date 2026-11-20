@@ -7,14 +7,14 @@
 ## الملخص
 | البادئة | التصنيف | العدد |
 |---|---|---|
-| `LEG-` | LEGACY-PRESERVE | 288 |
+| `LEG-` | LEGACY-PRESERVE | 340 |
 | `CHG-` | APPROVED-CHANGE | 14 |
 | `TECH-` | TECHNICAL | 18 |
 | `NEW-` | NEW-REQUIREMENT | 9 |
 | `DEC-` | OPEN-DECISION (المفتوح والمحسوم) | 82 (مفتوح: 41) |
-| **الإجمالي** | | **411** |
+| **الإجمالي** | | **463** |
 
-**عناصر LEG حسب النوع:** page 54 · calc 110 · data-write 16 · modal 63 · export/print 37 · permission 8
+**عناصر LEG حسب النوع:** page 54 · calc 120 · data-write 16 · modal 63 · export/print 37 · permission 8 · electron-capability 42
 
 ## القدرات القديمة (LEG)
 | ID | النوع | الموديول | الوصف | الأولوية (مقترحة) | الدليل | المكان المستهدف | الاختبارات | الحالة | ملاحظات |
@@ -307,6 +307,58 @@
 | LEG-0286 | permission | الإعدادات | قالب دور clientsSales | P1 | renderer/core/permissions.js | server |  | verified-static |  |
 | LEG-0287 | permission | الإعدادات | قالب دور clientsAccounts | P1 | renderer/core/permissions.js | server |  | verified-static |  |
 | LEG-0288 | permission | الإعدادات | قالب دور clientsProjects | P1 | renderer/core/permissions.js | server |  | verified-static |  |
+| LEG-0289 | calc | core | دالة حساب attendanceNetPay | P0 | renderer/core/helpers.js:286 | legacy | tests-merge/phase59.js، tools/formulas/compare.js | verified-static | حساب مالي بتستخدمه المعادلات المرجعية (اتضافت من legacy-runner) |
+| LEG-0290 | calc | clients | دالة حساب clInvNet | P0 | renderer/modules/clients/pages-invoices.js:6 | legacy | tests-merge/phase59.js، tools/formulas/compare.js | verified-static | حساب مالي بتستخدمه المعادلات المرجعية (اتضافت من legacy-runner) |
+| LEG-0291 | calc | clients | دالة حساب clVoApprovedSum | P0 | renderer/modules/clients/change-orders.js:8 | legacy | tests-merge/phase59.js، tools/formulas/compare.js | verified-static | حساب مالي بتستخدمه المعادلات المرجعية (اتضافت من legacy-runner) |
+| LEG-0292 | calc | core | دالة حساب equipmentDailyCost | P0 | renderer/core/helpers.js:7778 | legacy | tests-merge/phase59.js، tools/formulas/compare.js | verified-static | حساب مالي بتستخدمه المعادلات المرجعية (اتضافت من legacy-runner) |
+| LEG-0293 | calc | ledger | دالة حساب noticeAmountsFor | P0 | renderer/modules/ledger/helpers.js:606 | legacy | tests-merge/phase59.js، tools/formulas/compare.js | verified-static | حساب مالي بتستخدمه المعادلات المرجعية (اتضافت من legacy-runner) |
+| LEG-0294 | calc | ledger | دالة حساب openingBalanceFor | P0 | renderer/modules/ledger/statement.js:43 | legacy | tests-merge/phase59.js، tools/formulas/compare.js | verified-static | حساب مالي بتستخدمه المعادلات المرجعية (اتضافت من legacy-runner) |
+| LEG-0295 | calc | ledger | دالة حساب roundMoney | P0 | renderer/modules/ledger/helpers.js:208 | legacy | tests-merge/phase59.js، tools/formulas/compare.js | verified-static | حساب مالي بتستخدمه المعادلات المرجعية (اتضافت من legacy-runner) |
+| LEG-0296 | calc | core | دالة حساب supervisorOwnDue | P0 | renderer/core/helpers.js:2066 | legacy | tests-merge/phase59.js، tools/formulas/compare.js | verified-static | حساب مالي بتستخدمه المعادلات المرجعية (اتضافت من legacy-runner) |
+| LEG-0297 | calc | warehouses | دالة حساب whStockQty | P0 | renderer/modules/warehouses/helpers.js:27 | legacy | tests-merge/phase59.js، tools/formulas/compare.js | verified-static | حساب مالي بتستخدمه المعادلات المرجعية (اتضافت من legacy-runner) |
+| LEG-0298 | calc | warehouses | دالة حساب whStockValue | P0 | renderer/modules/warehouses/helpers.js:48 | legacy | tests-merge/phase59.js، tools/formulas/compare.js | verified-static | حساب مالي بتستخدمه المعادلات المرجعية (اتضافت من legacy-runner) |
+| LEG-0299 | electron-capability | ديسكتوب | قدرة ديسكتوب askPin | P1 | preload.js (app:askPin) | يتراجع: صلاحيات السيرفر بدل PIN |  | verified-static | الفئة: auth |
+| LEG-0300 | electron-capability | ديسكتوب | قدرة ديسكتوب backupNow | P0 | preload.js (backup:runNow) | POST /api/backups |  | verified-static | الفئة: backup |
+| LEG-0301 | electron-capability | ديسكتوب | قدرة ديسكتوب cleanupOrphans | P0 | preload.js (storage:cleanupOrphans) | POST /api/admin/attachments/cleanup (dry-run) |  | verified-static | الفئة: attach |
+| LEG-0302 | electron-capability | ديسكتوب | قدرة ديسكتوب clearExtraBackupDir | P1 | preload.js (backup:clearExtraDir) | لا ينطبق |  | verified-static | الفئة: remove |
+| LEG-0303 | electron-capability | ديسكتوب | قدرة ديسكتوب deleteAttachment | P0 | preload.js (attachment:delete) | DELETE /api/attachments/:id |  | verified-static | الفئة: attach |
+| LEG-0304 | electron-capability | ديسكتوب | قدرة ديسكتوب exportArchive | P1 | preload.js (archive:export) | POST /api/archive (ZIP stream) |  | verified-static | الفئة: pdf |
+| LEG-0305 | electron-capability | ديسكتوب | قدرة ديسكتوب exportExcel | P1 | preload.js (excel:export) | xlsx في المتصفح |  | verified-static | الفئة: browser |
+| LEG-0306 | electron-capability | ديسكتوب | قدرة ديسكتوب getAppVersion | P0 | preload.js (app:getVersion) | GET /api/health (version) |  | verified-static | الفئة: data |
+| LEG-0307 | electron-capability | ديسكتوب | قدرة ديسكتوب getDataPath | P1 | preload.js (app:dataPath) | لا ينطبق |  | verified-static | الفئة: remove |
+| LEG-0308 | electron-capability | ديسكتوب | قدرة ديسكتوب getDefaultDataPath | P1 | preload.js (app:getDefaultDataPath) | لا ينطبق |  | verified-static | الفئة: remove |
+| LEG-0309 | electron-capability | ديسكتوب | قدرة ديسكتوب getExtraBackupDir | P1 | preload.js (backup:getExtraDir) | لا ينطبق (النسخ على السيرفر) |  | verified-static | الفئة: remove |
+| LEG-0310 | electron-capability | ديسكتوب | قدرة ديسكتوب getLockInfo | P1 | preload.js (app:lockInfo) | لا ينطبق (السيرفر هو القفل) |  | verified-static | الفئة: remove |
+| LEG-0311 | electron-capability | ديسكتوب | قدرة ديسكتوب hashPassword | P1 | preload.js (auth:hashPassword) | POST /api/users (السيرفر يشفّر) |  | verified-static | الفئة: auth |
+| LEG-0312 | electron-capability | ديسكتوب | قدرة ديسكتوب importExcel | P1 | preload.js (excel:import) | xlsx في المتصفح |  | verified-static | الفئة: browser |
+| LEG-0313 | electron-capability | ديسكتوب | قدرة ديسكتوب inspectUpdate | P1 | preload.js (app:inspectUpdate) | لا ينطبق |  | verified-static | الفئة: remove |
+| LEG-0314 | electron-capability | ديسكتوب | قدرة ديسكتوب loadData | P0 | preload.js (data:load) | GET /api/bootstrap |  | verified-static | الفئة: data |
+| LEG-0315 | electron-capability | ديسكتوب | قدرة ديسكتوب openAttachment | P0 | preload.js (attachment:open) | GET /api/attachments/:id (signed URL) |  | verified-static | الفئة: attach |
+| LEG-0316 | electron-capability | ديسكتوب | قدرة ديسكتوب openExternalLink | P1 | preload.js (open-external-url) | window.open |  | verified-static | الفئة: browser |
+| LEG-0317 | electron-capability | ديسكتوب | قدرة ديسكتوب openFile | P1 | preload.js (file:open) | <input type=file> |  | verified-static | الفئة: browser |
+| LEG-0318 | electron-capability | ديسكتوب | قدرة ديسكتوب openWindowsScanApp | P1 | preload.js (scan:openWindowsScanApp) | لا ينطبق |  | verified-static | الفئة: remove |
+| LEG-0319 | electron-capability | ديسكتوب | قدرة ديسكتوب pickAttachments | P0 | preload.js (attachment:pick) | input file + POST /api/attachments |  | verified-static | الفئة: attach |
+| LEG-0320 | electron-capability | ديسكتوب | قدرة ديسكتوب pickDataDir | P1 | preload.js (app:pickDataDir) | لا ينطبق |  | verified-static | الفئة: remove |
+| LEG-0321 | electron-capability | ديسكتوب | قدرة ديسكتوب pickExtraBackupDir | P1 | preload.js (backup:pickExtraDir) | لا ينطبق |  | verified-static | الفئة: remove |
+| LEG-0322 | electron-capability | ديسكتوب | قدرة ديسكتوب pickInstaller | P1 | preload.js (app:pickInstaller) | لا updater في الويب |  | verified-static | الفئة: remove |
+| LEG-0323 | electron-capability | ديسكتوب | قدرة ديسكتوب readAttachmentDataUrl | P0 | preload.js (attachment:readDataUrl) | GET /api/attachments/:id |  | verified-static | الفئة: attach |
+| LEG-0324 | electron-capability | ديسكتوب | قدرة ديسكتوب resetDataDir | P1 | preload.js (app:resetDataDir) | لا ينطبق |  | verified-static | الفئة: remove |
+| LEG-0325 | electron-capability | ديسكتوب | قدرة ديسكتوب runInstaller | P1 | preload.js (app:runInstaller) | لا ينطبق |  | verified-static | الفئة: remove |
+| LEG-0326 | electron-capability | ديسكتوب | قدرة ديسكتوب safetyBackup (مستخدمة ومش معرّفة في preload) | P0 | renderer/ (من غير تعريف) | POST /api/backups (سبب) |  | verified-static | الفئة: backup |
+| LEG-0327 | electron-capability | ديسكتوب | قدرة ديسكتوب saveAttachmentBuffer | P0 | preload.js (attachment:saveBuffer) | POST /api/attachments |  | verified-static | الفئة: attach |
+| LEG-0328 | electron-capability | ديسكتوب | قدرة ديسكتوب saveData | P0 | preload.js (data:save) | POST /api/sync (diff) |  | verified-static | الفئة: data |
+| LEG-0329 | electron-capability | ديسكتوب | قدرة ديسكتوب saveDataSync | P0 | preload.js (data:saveSync) | fetch keepalive / sendBeacon → /api/sync |  | verified-static | الفئة: data |
+| LEG-0330 | electron-capability | ديسكتوب | قدرة ديسكتوب saveFile | P1 | preload.js (file:save) | Blob + download |  | verified-static | الفئة: browser |
+| LEG-0331 | electron-capability | ديسكتوب | قدرة ديسكتوب savePdf | P1 | preload.js (pdf:save) | POST /api/pdf |  | verified-static | الفئة: pdf |
+| LEG-0332 | electron-capability | ديسكتوب | قدرة ديسكتوب savePdfHtml | P1 | preload.js (pdf:saveHtml) | POST /api/pdf |  | verified-static | الفئة: pdf |
+| LEG-0333 | electron-capability | ديسكتوب | قدرة ديسكتوب scanAttachment (مستخدمة ومش معرّفة في preload) | P0 | renderer/ (من غير تعريف) | كاميرا / رفع PDF |  | verified-static | الفئة: attach |
+| LEG-0334 | electron-capability | ديسكتوب | قدرة ديسكتوب scanWindows | P0 | preload.js (scan:windows) | كاميرا / رفع PDF |  | verified-static | الفئة: attach |
+| LEG-0335 | electron-capability | ديسكتوب | قدرة ديسكتوب serverStart | P1 | preload.js (server:start) | وضع الشبكة القديم يتلغى |  | verified-static | الفئة: remove |
+| LEG-0336 | electron-capability | ديسكتوب | قدرة ديسكتوب serverStatus | P1 | preload.js (server:status) | يتلغى |  | verified-static | الفئة: remove |
+| LEG-0337 | electron-capability | ديسكتوب | قدرة ديسكتوب serverStop | P1 | preload.js (server:stop) | يتلغى |  | verified-static | الفئة: remove |
+| LEG-0338 | electron-capability | ديسكتوب | قدرة ديسكتوب setDataDir | P1 | preload.js (app:setDataDir) | لا ينطبق |  | verified-static | الفئة: remove |
+| LEG-0339 | electron-capability | ديسكتوب | قدرة ديسكتوب snapshotData | P0 | preload.js (data:snapshot) | POST /api/backups (أدمن) |  | verified-static | الفئة: backup |
+| LEG-0340 | electron-capability | ديسكتوب | قدرة ديسكتوب verifyPassword | P1 | preload.js (auth:verifyPassword) | POST /api/auth/login |  | verified-static | الفئة: auth |
 
 ## التغييرات المعتمدة (CHG)
 | ID | النوع | الموديول | الوصف | الأولوية (مقترحة) | الدليل | المكان المستهدف | الاختبارات | الحالة | ملاحظات |

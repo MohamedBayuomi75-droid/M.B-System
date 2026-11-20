@@ -61,6 +61,32 @@ for (const [file, v] of Object.entries(inv.perFile)) {
     add({ key: `save:${file}#${s}`, prefix: 'LEG', classification: 'LEGACY-PRESERVE', kind: 'data-write', title: `كتابة بيانات ${s}`, module: mod, priority: 'P0', evidence: file, tests: [], target: 'legacy', notes: 'سلامة البيانات (P0 مقترح)' });
   }
 }
+// دوال حساب بتستخدمها المعادلات المالية (tools/formulas/legacy-runner.js) والجرد الثابت فوّتها (بيتعرّف على دوال الحساب من الاسم)
+{
+  const runner = read('tools/formulas/legacy-runner.js');
+  const inPage = runner.slice(runner.indexOf('function inPage'), runner.indexOf('async function runLegacy'));
+  const known = new Set(items.filter((x) => x.kind === 'calc').map((x) => x.key.split('#')[1]));
+  const NOT_FN = new Set(['put', 'String', 'Number', 'Math', 'forEach', 'map', 'filter', 'add', 'has', 'get', 'set', 'trim', 'from', 'keys', 'Set', 'Map', 'round', 'JSON', 'stringify', 'parse', 'slice', 'push', 'Boolean', 'inPage', 'Promise', 'setTimeout']);
+  const files = Object.keys(inv.perFile);
+  const srcOf = Object.fromEntries(files.map((f) => [f, read(f)]));
+  for (const f of [...new Set([...inPage.matchAll(/([A-Za-z_$][\w$]*)\s*\(/g)].map((m) => m[1]))].sort()) {
+    if (known.has(f) || NOT_FN.has(f)) continue;
+    const file = files.find((x) => new RegExp(`function\\s+${f}\\s*\\(`).test(srcOf[x]));
+    if (!file) continue; // مش دالة في الواجهة القديمة
+    const line = srcOf[file].slice(0, srcOf[file].search(new RegExp(`function\\s+${f}\\s*\\(`))).split('\n').length;
+    add({ key: `calc:${file}#${f}`, prefix: 'LEG', classification: 'LEGACY-PRESERVE', kind: 'calc', title: `دالة حساب ${f}`, module: moduleOfFile(file), priority: 'P0', evidence: `${file}:${line}`, tests: ['tests-merge/phase59.js', 'tools/formulas/compare.js'], target: 'legacy', notes: 'حساب مالي بتستخدمه المعادلات المرجعية (اتضافت من legacy-runner)' });
+  }
+}
+// قدرات الديسكتوب (window.desktopApi في preload.js) — مصفوفة البدائل: ELECTRON_CAPABILITIES.md
+{
+  const dinv = JSON.parse(read('docs/web/desktop-api-inventory.json'));
+  const names = [...dinv.exposed.map((e) => e.name), ...(dinv.missing || [])].filter((v, i, a) => a.indexOf(v) === i).sort();
+  for (const n of names) {
+    const ex = dinv.exposed.find((e) => e.name === n);
+    const [cat, rep] = (dinv.web || {})[n] || ['—', '—'];
+    add({ key: `electron:${n}`, prefix: 'LEG', classification: 'LEGACY-PRESERVE', kind: 'electron-capability', title: `قدرة ديسكتوب ${n}${ex ? '' : ' (مستخدمة ومش معرّفة في preload)'}`, module: 'ديسكتوب', priority: /attach|backup|data/.test(cat) ? 'P0' : 'P1', evidence: ex ? `preload.js (${ex.channel})` : 'renderer/ (من غير تعريف)', tests: [], target: rep, notes: `الفئة: ${cat}` });
+  }
+}
 // الصلاحيات: المصفوفة + قوالب الأدوار
 const perms = read('renderer/core/permissions.js');
 add({ key: 'perm:page-matrix', prefix: 'LEG', classification: 'LEGACY-PRESERVE', kind: 'permission', title: 'مصفوفة صلاحيات الصفحات (عرض/إضافة/تعديل/حذف لكل صفحة)', module: 'الإعدادات', priority: 'P0', evidence: 'renderer/core/permissions.js', tests: [], target: 'server (ADR-016)', notes: 'السيرفر هو المرجع' });
@@ -219,6 +245,12 @@ ${Object.keys(fTitles).sort().map((f) => `| ${f} | ${esc(fTitles[f])} | ${(fToTr
 | القديم | الاسم الجديد | الوصف |
 |---|---|---|
 ${awdF.map(([f, t]) => `| ${f} | AWD-${f} | ${esc(t)} |`).join('\n')}
+
+## F-xx في \`FINANCIAL_FORMULAS_REVIEW.md\` (مراجعة معادلات المدير المالي) — ⚠️ تالت استخدام لنفس البادئة
+دي **أبواب في مراجعة المعادلات** مش متطلبات، وبيتشار ليها بالاسم \`FFR-F-xx\`. المعادلة المقابلة في مكتبة B-20 والقواعد المعتمدة في \`FORMULA_CATALOGUE.md\`.
+| القديم | الاسم الجديد | الموضوع |
+|---|---|---|
+${[...read('docs/FINANCIAL_FORMULAS_REVIEW.md').matchAll(/^## (F-\d+) (.+)$/gm)].map((m) => `| ${m[1]} | FFR-${m[1]} | ${esc(m[2])} |`).join('\n')}
 
 ## S-x (بنود الأمان والتشغيل) ← TECH-
 | القديم | الجديد |

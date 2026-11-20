@@ -143,6 +143,26 @@
 | F-14 | AWD-F-14 | مستخدم بلا صلاحية على مشروع المستند |
 | F-15 | AWD-F-15 | سحب بعد صدور قرار |
 
+## F-xx في `FINANCIAL_FORMULAS_REVIEW.md` (مراجعة معادلات المدير المالي) — ⚠️ تالت استخدام لنفس البادئة
+دي **أبواب في مراجعة المعادلات** مش متطلبات، وبيتشار ليها بالاسم `FFR-F-xx`. المعادلة المقابلة في مكتبة B-20 والقواعد المعتمدة في `FORMULA_CATALOGUE.md`.
+| القديم | الاسم الجديد | الموضوع |
+|---|---|---|
+| F-01 | FFR-F-01 | فاتورة مشتريات من مورد (Supplier Purchase Invoice) |
+| F-02 | FFR-F-02 | فاتورة مبيعات لعميل (Customer Sales Invoice) |
+| F-03 | FFR-F-03 | مستخلص عميل (Customer Progress Certificate) — TR-11 معتمد |
+| F-04 | FFR-F-04 | مستخلص مقاول باطن (Subcontractor Progress Certificate) |
+| F-05 | FFR-F-05 | رصيد المورد (Supplier Account Balance) — TR-04/05/06 معتمدة |
+| F-06 | FFR-F-06 | رصيد العميل (Customer Account Balance) |
+| F-07 | FFR-F-07 | رواتب الموظفين (Employee Payroll) |
+| F-08 | FFR-F-08 | مستحقات العمالة اليومية (Daily Worker Dues) — TR-07/08 معتمدة |
+| F-09 | FFR-F-09 | تكلفة الاستلام المخزني (Inventory Receipt Costing) — B-49 / TR-13 معتمدة |
+| F-10 | FFR-F-10 | تكلفة الصرف المخزني (Inventory Issue Costing) — TR-13 معتمدة |
+| F-11 | FFR-F-11 | تكلفة تشغيل المعدات (Equipment Operating Cost) |
+| F-12 | FFR-F-12 | التكلفة الفعلية للمشروع (Project Actual Cost) — TR-10 معتمدة |
+| F-13 | FFR-F-13 | ربحية المشروع (Project Profitability) |
+| F-14 | FFR-F-14 | أرصدة الخزائن والبنوك (Treasury and Bank Balances) — B-52 معتمد للمرحلة 2 |
+| F-15 | FFR-F-15 | القيد المزدوج (Double-Entry Accounting) |
+
 ## S-x (بنود الأمان والتشغيل) ← TECH-
 | القديم | الجديد |
 |---|---|
