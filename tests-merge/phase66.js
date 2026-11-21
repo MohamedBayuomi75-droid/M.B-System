@@ -71,6 +71,21 @@ const { ok, eq, summary, baseUser } = require('./lib');
   eq(await page.evaluate(() => whItems().map((x) => x.id).sort()), ['i1', 'i9'], 'اتشال');
   ok(await persisted((m) => !((m === 'saved' ? window.__saved.warehouses : warehousesData()).items || []).some((x) => x.id === 'i2')), 'الحذف اتحفظ' + (WEB ? ' على السيرفر' : ''));
 
+  console.log('[6] صلاحيات صفحة المخازن (UAT 7.1 H13): مستخدم عرض بس مايشوفش أزرار الإضافة والتعديل والحذف، والإجراء نفسه بيترفض برسالة');
+  const view = await page.evaluate(() => {
+    const orig = window.getUserPerms;
+    window.getUserPerms = () => ({ pages: { 'warehouses.home': { view: true, add: false, edit: false, delete: false } } });
+    const ids = (tab) => { whFilters.tab = tab; goToPage('warehouses.home'); return ['btnWhIn', 'btnWhOut', 'btnWhTransfer', 'btnWhAddItem', 'btnWhAddLoc'].filter((id) => document.getElementById(id)).concat([...document.querySelectorAll('.btn-edit-item, .btn-del-item, .btn-edit-loc')].map((b) => b.className.split(' ').pop())); };
+    const shown = { stock: ids('stock'), items: ids('items'), locations: ids('locations') };
+    openWhItemModal(); const modalOpened = !!document.getElementById('appModal');
+    const toast = (document.getElementById('appToast') || {}).textContent || '';
+    window.getUserPerms = orig; whFilters.tab = 'items'; goToPage('warehouses.home');
+    return { shown, modalOpened, toast, adminSees: !!document.getElementById('btnWhAddItem') };
+  });
+  eq(view.shown, { stock: [], items: [], locations: [] }, 'مفيش أزرار إضافة/تعديل/حذف لمستخدم عرض بس');
+  eq([view.modalOpened, /صلاحية إضافة/.test(view.toast)], [false, true], 'فتح نافذة الإضافة بيترفض برسالة');
+  ok(view.adminSees, 'الأدمن لسه بيشوف الأزرار');
+
   eq(errors, [], 'no JS errors');
   await browser.close();
   summary();

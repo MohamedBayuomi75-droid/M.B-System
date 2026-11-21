@@ -6,7 +6,7 @@
   "TECH": 19,
   "NEW": 10,
   "CHG": 15,
-  "DEC": 98
+  "DEC": 101
  },
  "entries": [
   {
@@ -2247,6 +2247,60 @@
    "decisionStatus": "resolved",
    "priorityStatus": "—",
    "status": "resolved"
+  },
+  {
+   "id": "DEC-0098",
+   "key": "decision:DEC-0098",
+   "prefix": "DEC",
+   "classification": "OPEN-DECISION",
+   "kind": "decision",
+   "title": "UAT الحزمة 7.1 اتنفّذ آليًا (جلسة Claude على اللابتوب بالمتصفح، بطلب المستخدم، ببيانات اصطناعية على النسخة المعزولة)، والمستخدم وافق على النتيجة (10 نجح، و2 بمل",
+   "module": "قرارات",
+   "priority": "—",
+   "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",
+   "tests": [],
+   "target": "—",
+   "notes": "محسوم",
+   "aliases": [],
+   "decisionStatus": "resolved",
+   "priorityStatus": "—",
+   "status": "resolved"
+  },
+  {
+   "id": "DEC-0099",
+   "key": "decision:DEC-0099",
+   "prefix": "DEC",
+   "classification": "OPEN-DECISION",
+   "kind": "decision",
+   "title": "تعديل في الواجهة القديمة (صفحة المخازن) بطلب المستخدم: الأزرار والإجراءات بقت بتحترم صلاحيات الصفحة (زي الموردين والعملاء) بدل `readOnlyMode` بس (UAT H13). ومعا",
+   "module": "قرارات",
+   "priority": "—",
+   "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",
+   "tests": [],
+   "target": "—",
+   "notes": "محسوم",
+   "aliases": [],
+   "decisionStatus": "resolved",
+   "priorityStatus": "—",
+   "status": "resolved"
+  },
+  {
+   "id": "DEC-0100",
+   "key": "decision:DEC-0100",
+   "prefix": "DEC",
+   "classification": "OPEN-DECISION",
+   "kind": "decision",
+   "title": "مسار اعتماد التسويات المخزنية للتشغيل الفعلي (B-51): نوع المستند `stock-adjustment` ومستويات الاعتماد بالمعتمدين الحقيقيين (مسؤول المخازن، والمحاسب المختص، والم",
+   "module": "قرارات",
+   "priority": "—",
+   "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",
+   "tests": [],
+   "target": "—",
+   "notes": "مفتوح",
+   "aliases": [],
+   "decisionStatus": "open",
+   "priorityStatus": "—",
+   "status": "open"
   },
   {
    "id": "LEG-0001",

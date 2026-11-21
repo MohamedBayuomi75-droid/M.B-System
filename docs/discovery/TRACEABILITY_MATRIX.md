@@ -164,7 +164,7 @@
 | LEG-0023 | page | الموردون | صفحة «الفواتير» (ledger.invoices) | renderer/modules/ledger/pages-invoices.js:35 | legacy /legacy/ | phase16.js، phase17.js، phase21.js، phase62.js، app-e2e.js، attachments.e2e-spec.ts (+5) | Verified (باختبار) | DEC-0029 (B-29) |
 | LEG-0024 | page | الموردون | صفحة «إشعارات الخصم» (ledger.quarterly) | renderer/modules/ledger/pages-quarterly.js:39 | legacy /legacy/ | phase61.js | Verified (باختبار) | DEC-0029 (B-29) |
 | LEG-0025 | page | الموردون | صفحة «المرتجعات» (ledger.returns) | renderer/modules/ledger/pages-invoices.js:35 | legacy /legacy/ | phase61.js | Verified (باختبار) | DEC-0029 (B-29) |
-| LEG-0026 | page | المخازن | صفحة «المخازن» (warehouses.home) | renderer/modules/warehouses/pages-home.js:6 | angular /warehouses | phase61.js، app-e2e.js، stock-adjustments.e2e-spec.ts | Implemented (اتنقل) | DEC-0077 (B-77) |
+| LEG-0026 | page | المخازن | صفحة «المخازن» (warehouses.home) | renderer/modules/warehouses/pages-home.js:6 | angular /warehouses | phase61.js، phase66.js، app-e2e.js، stock-adjustments.e2e-spec.ts | Implemented (اتنقل) | DEC-0077 (B-77) |
 | LEG-0027 | page | المخازن | صفحة «تقارير المخازن» (warehouses.reports) | renderer/modules/warehouses/pages-reports.js:2 | legacy /legacy/ | phase61.js | Verified (باختبار) | DEC-0077 (B-77) |
 | LEG-0028 | page | حركة الموارد | صفحة «حركة الموارد» (transfers) | renderer/modules/hr/pages-ops.js:336 | legacy /legacy/ | phase61.js، phase65.js، app-e2e.js، stock.e2e-spec.ts، warehouses.e2e-spec.ts | Verified (باختبار) | DEC-0045 (B-45)، DEC-0046 (B-46)، DEC-0047 (B-47)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0076 (B-76)، DEC-0042 (B-42) |
 | LEG-0029 | page | الحسابات | صفحة «المستحقات» (workerDues) | renderer/modules/hr/pages-worker-dues.js:79 | legacy /legacy/ | phase61.js | Verified (باختبار) | DEC-0013 (B-13)، DEC-0014 (B-14)، DEC-0015 (B-15)، DEC-0016 (B-16)، DEC-0027 (B-27) |
@@ -416,7 +416,7 @@
 | LEG-0275 | calc | الموردون | دالة حساب buildAccountStatementHtml | renderer/modules/ledger/statement.js:61 | legacy |  | Verified (جرد ثابت بس) | DEC-0029 (B-29) |
 | LEG-0276 | calc | الموردون | دالة حساب printBankStatement | renderer/modules/ledger/statement.js:140 | legacy |  | Verified (جرد ثابت بس) | DEC-0029 (B-29) |
 | LEG-0277 | export/print | الموردون | تصدير/طباعة printBankStatement | renderer/modules/ledger/statement.js | legacy |  | Verified (جرد ثابت بس) | DEC-0029 (B-29) |
-| LEG-0278 | modal | المخازن | نافذة openWhItemModal | renderer/modules/warehouses/pages-home.js:203 | legacy | phase38.js | Verified (باختبار) | DEC-0077 (B-77) |
+| LEG-0278 | modal | المخازن | نافذة openWhItemModal | renderer/modules/warehouses/pages-home.js:203 | legacy | phase38.js، phase66.js | Verified (باختبار) | DEC-0077 (B-77) |
 | LEG-0279 | modal | المخازن | نافذة openWhLocationModal | renderer/modules/warehouses/pages-home.js:237 | legacy |  | Verified (جرد ثابت بس) | DEC-0077 (B-77) |
 | LEG-0280 | modal | المخازن | نافذة openWhMovementModal | renderer/modules/warehouses/pages-home.js:260 | legacy |  | Verified (جرد ثابت بس) | DEC-0077 (B-77) |
 | LEG-0281 | permission | الإعدادات | مصفوفة صلاحيات الصفحات (عرض/إضافة/تعديل/حذف لكل صفحة) | renderer/core/permissions.js | server (ADR-016) |  | Implemented (اتنقل) | DEC-0035 (B-35) |
