@@ -214,7 +214,9 @@ export class WarehousesPage implements OnInit {
   readonly itemRows = this.stockRows;
   readonly moveRows = computed(() => {
     this.tick(); this.page();
-    return this.moves().filter((m) => (!this.loc || m.locationId === this.loc || m.toLocationId === this.loc) && matches(this.q, [m.id, m.type, m.itemId, this.itemName(m.itemId), m.project, m.supplierInvoiceId, m.notes]))
+    // نفس ترتيب الواجهة القديمة (pages-home.js): التاريخ تنازلي، واللي في نفس اليوم بترتيب الإنشاء (الأقدم الأول).
+    // الـ API بيرجّع الأحدث إنشاءً الأول، فبنقلب القايمة لترتيب الإنشاء قبل الترتيب الثابت (UAT 7.1 H1).
+    return this.moves().slice().reverse().filter((m) => (!this.loc || m.locationId === this.loc || m.toLocationId === this.loc) && matches(this.q, [m.id, m.type, m.itemId, this.itemName(m.itemId), m.project, m.supplierInvoiceId, m.notes]))
       .sort((a, b) => String(b.date ?? '').localeCompare(String(a.date ?? '')));
   });
   pages(total: number) { return Math.max(1, Math.ceil(total / PAGE_SIZE)); }
