@@ -5388,6 +5388,26 @@
     ]
    }
   },
+  "/api/v1/supplier-invoices/options": {
+   "get": {
+    "operationId": "SupplierInvoicesController_options",
+    "parameters": [],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "اختيارات النافذة والفلاتر (الموردين، والتصنيفات، والمشاريع، والأكواد، والطبيعة، ونوع الخصم، وخانات العرض)",
+    "tags": [
+     "v1 supplier-invoices"
+    ]
+   }
+  },
   "/api/v1/supplier-invoices/{id}": {
    "get": {
     "operationId": "SupplierInvoicesController_get",
