@@ -11,8 +11,8 @@
 | `CHG-` | APPROVED-CHANGE | 14 |
 | `TECH-` | TECHNICAL | 18 |
 | `NEW-` | NEW-REQUIREMENT | 9 |
-| `DEC-` | OPEN-DECISION (المفتوح والمحسوم) | 100 (مفتوح: 42) |
-| **الإجمالي** | | **491** |
+| `DEC-` | OPEN-DECISION (المفتوح والمحسوم) | 106 (مفتوح: 40) |
+| **الإجمالي** | | **497** |
 
 **عناصر LEG حسب النوع:** page 54 · calc 120 · data-write 26 · modal 63 · export/print 37 · permission 8 · electron-capability 42
 
@@ -452,9 +452,9 @@
 | DEC-0024 | decision | قرارات | متطلبات التقارير الضريبية الدورية وشكلها | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | open | مفتوح · الأسماء القديمة: B-24 |
 | DEC-0025 | decision | قرارات | كم خانة عشرية للمبالغ؟ وما طريقة التقريب؟ | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم · الأسماء القديمة: B-25 |
 | DEC-0026 | decision | قرارات | كم خانة عشرية للكميات والأسعار؟ | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم · الأسماء القديمة: B-26 |
-| DEC-0027 | decision | قرارات | هل تتعامل الشركة بعملات غير الجنيه؟ (العملة الآن مكتوبة ثابتة في الكود) | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | open | مفتوح · الأسماء القديمة: B-27 |
+| DEC-0027 | decision | قرارات | هل تتعامل الشركة بعملات غير الجنيه؟ (العملة الآن مكتوبة ثابتة في الكود) | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم · الأسماء القديمة: B-27 |
 | DEC-0028 | decision | قرارات | هل فروق التقريب عند ترحيل البيانات القديمة مقبولة؟ | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم · الأسماء القديمة: B-28 |
-| DEC-0029 | decision | قرارات | نطاق تسلسل كل نوع مستند (عام/سنوي/لكل مشروع) وشكل الرقم | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | open | مفتوح · الأسماء القديمة: B-29 |
+| DEC-0029 | decision | قرارات | نطاق تسلسل كل نوع مستند (عام/سنوي/لكل مشروع) وشكل الرقم | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم · الأسماء القديمة: B-29 |
 | DEC-0030 | decision | قرارات | هل يُشترط تسلسل بلا فجوات؟ | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم · الأسماء القديمة: B-30 |
 | DEC-0031 | decision | قرارات | هل رقم فاتورة المورد يجب أن يكون فريدًا لكل مورد؟ (يوجد الآن 11 رقمًا مكررًا لدى نفس المورد) — وهل هذه الحالات تكرار فعلي؟ | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم · الأسماء القديمة: B-31 |
 | DEC-0032 | decision | قرارات | هيكل مراكز التكلفة؟ وهل المشروع نفسه مركز تكلفة أم بُعد مستقل؟ | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم · الأسماء القديمة: B-32 |
@@ -526,4 +526,10 @@
 | DEC-0098 | decision | قرارات | UAT الحزمة 7.1 اتنفّذ آليًا (جلسة Claude على اللابتوب بالمتصفح، بطلب المستخدم، ببيانات اصطناعية على النسخة المعزولة)، والمستخدم وافق على النتيجة (10 نجح، و2 بمل | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
 | DEC-0099 | decision | قرارات | تعديل في الواجهة القديمة (صفحة المخازن) بطلب المستخدم: الأزرار والإجراءات بقت بتحترم صلاحيات الصفحة (زي الموردين والعملاء) بدل `readOnlyMode` بس (UAT H13). ومعا | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
 | DEC-0100 | decision | قرارات | مسار اعتماد التسويات المخزنية للتشغيل الفعلي (B-51): نوع المستند `stock-adjustment` ومستويات الاعتماد بالمعتمدين الحقيقيين (مسؤول المخازن، والمحاسب المختص، والم | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | open | مفتوح |
+| DEC-0101 | decision | قرارات | بوابة الحزمة 7.1: المخازن Accepted (من غير التكلفة والتقييم: B-20 وB-77)، وطريقة النقل والرجوع نفس المعتمدة | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
+| DEC-0102 | decision | قرارات | B-27: جنيه مصري بس. مفيش أعمدة عملة ولا أسعار صرف. لو ظهرت عملة تانية بعدين، بتبقى تغيير بقرار منفصل | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
+| DEC-0103 | decision | قرارات | B-29: الترقيم: رقم داخلي لفاتورة المورد (بالإضافة لرقم المورد)، وتسلسل سنوي لكل نوع مستند (فاتورة، ومرتجع، ودفعة)، والبادئات من الإعدادات، وأرقام الدفعات القديم | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
+| DEC-0104 | decision | قرارات | عقود الواجهة مع المحاسبة: أحداث append-only بمفتاح idempotency (`supplier-invoice.posted/cancelled`، و`supplier-return.posted`، و`supplier-payment.posted/revers | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
+| DEC-0105 | decision | قرارات | الأرصدة الافتتاحية: قبل التشغيل الفعلي، تقرير مطابقة لكل مورد (الرصيد الحالي، والرصيد بالقاعدة المعتمدة F-05، والفرق وسببه)، والمدير المالي بيعتمده كأرصدة افتتا | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
+| DEC-0106 | decision | قرارات | نطاق الحزمة 7.2: فواتير ومرتجعات الموردين بس. الدفعات والتخصيص في الحزمة 7.3 | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
 

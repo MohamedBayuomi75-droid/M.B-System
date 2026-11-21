@@ -6,7 +6,7 @@
   "TECH": 19,
   "NEW": 10,
   "CHG": 15,
-  "DEC": 101
+  "DEC": 107
  },
  "entries": [
   {
@@ -870,13 +870,13 @@
    "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",
    "tests": [],
    "target": "—",
-   "notes": "مفتوح",
+   "notes": "محسوم",
    "aliases": [
     "B-27"
    ],
-   "decisionStatus": "open",
+   "decisionStatus": "resolved",
    "priorityStatus": "—",
-   "status": "open"
+   "status": "resolved"
   },
   {
    "id": "DEC-0028",
@@ -910,13 +910,13 @@
    "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",
    "tests": [],
    "target": "—",
-   "notes": "مفتوح",
+   "notes": "محسوم",
    "aliases": [
     "B-29"
    ],
-   "decisionStatus": "open",
+   "decisionStatus": "resolved",
    "priorityStatus": "—",
-   "status": "open"
+   "status": "resolved"
   },
   {
    "id": "DEC-0030",
@@ -2301,6 +2301,114 @@
    "decisionStatus": "open",
    "priorityStatus": "—",
    "status": "open"
+  },
+  {
+   "id": "DEC-0101",
+   "key": "decision:DEC-0101",
+   "prefix": "DEC",
+   "classification": "OPEN-DECISION",
+   "kind": "decision",
+   "title": "بوابة الحزمة 7.1: المخازن Accepted (من غير التكلفة والتقييم: B-20 وB-77)، وطريقة النقل والرجوع نفس المعتمدة",
+   "module": "قرارات",
+   "priority": "—",
+   "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",
+   "tests": [],
+   "target": "—",
+   "notes": "محسوم",
+   "aliases": [],
+   "decisionStatus": "resolved",
+   "priorityStatus": "—",
+   "status": "resolved"
+  },
+  {
+   "id": "DEC-0102",
+   "key": "decision:DEC-0102",
+   "prefix": "DEC",
+   "classification": "OPEN-DECISION",
+   "kind": "decision",
+   "title": "B-27: جنيه مصري بس. مفيش أعمدة عملة ولا أسعار صرف. لو ظهرت عملة تانية بعدين، بتبقى تغيير بقرار منفصل",
+   "module": "قرارات",
+   "priority": "—",
+   "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",
+   "tests": [],
+   "target": "—",
+   "notes": "محسوم",
+   "aliases": [],
+   "decisionStatus": "resolved",
+   "priorityStatus": "—",
+   "status": "resolved"
+  },
+  {
+   "id": "DEC-0103",
+   "key": "decision:DEC-0103",
+   "prefix": "DEC",
+   "classification": "OPEN-DECISION",
+   "kind": "decision",
+   "title": "B-29: الترقيم: رقم داخلي لفاتورة المورد (بالإضافة لرقم المورد)، وتسلسل سنوي لكل نوع مستند (فاتورة، ومرتجع، ودفعة)، والبادئات من الإعدادات، وأرقام الدفعات القديم",
+   "module": "قرارات",
+   "priority": "—",
+   "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",
+   "tests": [],
+   "target": "—",
+   "notes": "محسوم",
+   "aliases": [],
+   "decisionStatus": "resolved",
+   "priorityStatus": "—",
+   "status": "resolved"
+  },
+  {
+   "id": "DEC-0104",
+   "key": "decision:DEC-0104",
+   "prefix": "DEC",
+   "classification": "OPEN-DECISION",
+   "kind": "decision",
+   "title": "عقود الواجهة مع المحاسبة: أحداث append-only بمفتاح idempotency (`supplier-invoice.posted/cancelled`، و`supplier-return.posted`، و`supplier-payment.posted/revers",
+   "module": "قرارات",
+   "priority": "—",
+   "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",
+   "tests": [],
+   "target": "—",
+   "notes": "محسوم",
+   "aliases": [],
+   "decisionStatus": "resolved",
+   "priorityStatus": "—",
+   "status": "resolved"
+  },
+  {
+   "id": "DEC-0105",
+   "key": "decision:DEC-0105",
+   "prefix": "DEC",
+   "classification": "OPEN-DECISION",
+   "kind": "decision",
+   "title": "الأرصدة الافتتاحية: قبل التشغيل الفعلي، تقرير مطابقة لكل مورد (الرصيد الحالي، والرصيد بالقاعدة المعتمدة F-05، والفرق وسببه)، والمدير المالي بيعتمده كأرصدة افتتا",
+   "module": "قرارات",
+   "priority": "—",
+   "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",
+   "tests": [],
+   "target": "—",
+   "notes": "محسوم",
+   "aliases": [],
+   "decisionStatus": "resolved",
+   "priorityStatus": "—",
+   "status": "resolved"
+  },
+  {
+   "id": "DEC-0106",
+   "key": "decision:DEC-0106",
+   "prefix": "DEC",
+   "classification": "OPEN-DECISION",
+   "kind": "decision",
+   "title": "نطاق الحزمة 7.2: فواتير ومرتجعات الموردين بس. الدفعات والتخصيص في الحزمة 7.3",
+   "module": "قرارات",
+   "priority": "—",
+   "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",
+   "tests": [],
+   "target": "—",
+   "notes": "محسوم",
+   "aliases": [],
+   "decisionStatus": "resolved",
+   "priorityStatus": "—",
+   "status": "resolved"
   },
   {
    "id": "LEG-0001",
