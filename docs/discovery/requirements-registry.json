@@ -6,7 +6,7 @@
   "TECH": 19,
   "NEW": 10,
   "CHG": 15,
-  "DEC": 107
+  "DEC": 108
  },
  "entries": [
   {
@@ -2399,6 +2399,24 @@
    "classification": "OPEN-DECISION",
    "kind": "decision",
    "title": "نطاق الحزمة 7.2: فواتير ومرتجعات الموردين بس. الدفعات والتخصيص في الحزمة 7.3",
+   "module": "قرارات",
+   "priority": "—",
+   "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",
+   "tests": [],
+   "target": "—",
+   "notes": "محسوم",
+   "aliases": [],
+   "decisionStatus": "resolved",
+   "priorityStatus": "—",
+   "status": "resolved"
+  },
+  {
+   "id": "DEC-0107",
+   "key": "decision:DEC-0107",
+   "prefix": "DEC",
+   "classification": "OPEN-DECISION",
+   "kind": "decision",
+   "title": "معادلة فاتورة المورد الانتقالية (B-20): بتتنقل للسيرفر زي الواجهة الحالية بالظبط: المبالغ يدوي، `الإجمالي = الأساسي + ق.م + الدمغة`، و`الصافي = الإجمالي − المحج",
    "module": "قرارات",
    "priority": "—",
    "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",

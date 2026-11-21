@@ -11,8 +11,8 @@
 | `CHG-` | APPROVED-CHANGE | 14 |
 | `TECH-` | TECHNICAL | 18 |
 | `NEW-` | NEW-REQUIREMENT | 9 |
-| `DEC-` | OPEN-DECISION (المفتوح والمحسوم) | 106 (مفتوح: 40) |
-| **الإجمالي** | | **497** |
+| `DEC-` | OPEN-DECISION (المفتوح والمحسوم) | 107 (مفتوح: 40) |
+| **الإجمالي** | | **498** |
 
 **عناصر LEG حسب النوع:** page 54 · calc 120 · data-write 26 · modal 63 · export/print 37 · permission 8 · electron-capability 42
 
@@ -532,4 +532,5 @@
 | DEC-0104 | decision | قرارات | عقود الواجهة مع المحاسبة: أحداث append-only بمفتاح idempotency (`supplier-invoice.posted/cancelled`، و`supplier-return.posted`، و`supplier-payment.posted/revers | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
 | DEC-0105 | decision | قرارات | الأرصدة الافتتاحية: قبل التشغيل الفعلي، تقرير مطابقة لكل مورد (الرصيد الحالي، والرصيد بالقاعدة المعتمدة F-05، والفرق وسببه)، والمدير المالي بيعتمده كأرصدة افتتا | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
 | DEC-0106 | decision | قرارات | نطاق الحزمة 7.2: فواتير ومرتجعات الموردين بس. الدفعات والتخصيص في الحزمة 7.3 | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
+| DEC-0107 | decision | قرارات | معادلة فاتورة المورد الانتقالية (B-20): بتتنقل للسيرفر زي الواجهة الحالية بالظبط: المبالغ يدوي، `الإجمالي = الأساسي + ق.م + الدمغة`، و`الصافي = الإجمالي − المحج | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
 
