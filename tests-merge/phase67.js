@@ -1,7 +1,7 @@
 // المرحلة 7 (الحزمة 7.2 — فواتير ومرتجعات الموردين): اختبارات قبول لعناصر P0 في الواجهة القديمة من غير اختبار (DEC-0086):
 // saveInvoiceData (LEG-0269)، وfixInvoiceCalculations (LEG-0243)، وpreviewInvoiceCalculationFixes (LEG-0242)، وrecalcLinkedOriginal،
 // وgetInvoiceDueDate (LEG-0247)، وgetOverdueInvoices (LEG-0248)، وroundMoney (LEG-0295)، وapplyReturnLinkEffects (LEG-0351)،
-// والعناصر المساعدة في نفس الموديول: addDaysToIsoDate، وmaybeShowOverdueAlert، وsaveCustomLinkedItem/deleteCustomLinkedItem (ربط بنود الفاتورة)، وpfSummaryHtml.
+// وصفحتي الفواتير والمرتجعات والحذف مع الاستعادة (confirmAndSoftDeleteInvoice)، وقواعد الإدخال والتكرار (validateInvoiceFields، وisSameInvoice)، والعناصر المساعدة في نفس الموديول: addDaysToIsoDate، وmaybeShowOverdueAlert، وsaveCustomLinkedItem/deleteCustomLinkedItem (ربط بنود الفاتورة)، وpfSummaryHtml.
 // القيم المتوقعة = السلوك الحالي (LEGACY-PRESERVE) والمعادلة الانتقالية المعتمدة (DEC-0107): الإجمالي = الأساسي + ق.م + الدمغة، والصافي = الإجمالي − المحجوز.
 // بيشتغل في وضع الملف والويب (WEB_MODE=1) وفوق الجداول.
 const { openApp, WEB } = require('./harness');
@@ -86,6 +86,42 @@ const { ok, eq, summary, baseUser } = require('./lib');
   eq(await page.evaluate(() => { const r = saveCustomLinkedItem({ desc: 'بند', supplierCode: 'SC1', supplierId: 's1' }); const noSup = saveCustomLinkedItem({ desc: 'بند' }); const has = linkedItemsForSupplier('s1').length; deleteCustomLinkedItem(r.id); return [!!r && /^li_/.test(r.id), noSup, has, linkedItemsForSupplier('s1').length]; }), [true, null, 1, 0],
     'بند الربط لازم مورد، وبيتضاف وبيتمسح');
   ok(await page.evaluate(() => /^<p [^>]*>س<\/p>$/.test(pfSummaryHtml('س'))), 'pfSummaryHtml بيلف النص في فقرة');
+
+  console.log('[6] validateInvoiceFields وisSameInvoice (قواعد الإدخال والتكرار اللي السيرفر لازم يطبّقها)');
+  eq(await page.evaluate(() => {
+    const b = { supplierId: 's1', invoiceNo: 'X', date: '2026-01-10', baseValue: 100, vat: 14, stampDuty: 0, withheld: 0, discountRate: '' };
+    const v = (o) => validateInvoiceFields(Object.assign({}, b, o));
+    return [v({}).length, v({ supplierId: '' })[0], v({ invoiceNo: ' ' })[0], v({ date: '' })[0], v({ baseValue: 0 })[0], v({ baseValue: 0, isReturn: true }).length,
+      v({ vat: -1 })[0], v({ withheld: 114.001 })[0], v({ withheld: 114.0001 }).length, v({ dueDate: '2026-01-09' })[0], v({ discountRate: '101' })[0], v({ discountRate: '0' }).length];
+  }), [0, 'المورد مطلوب', 'رقم الفاتورة مطلوب', 'تاريخ التعامل مطلوب', 'القيمة الإجمالية للتعامل يجب أن تكون أكبر من صفر', 0,
+    'الضريبة لا يمكن أن تكون سالبة', 'المبلغ المخصوم أكبر من إجمالي الفاتورة', 0, 'تاريخ الاستحقاق لا يمكن أن يكون قبل تاريخ الفاتورة', 'نسبة الخصم يجب أن تكون بين 0 و 100', 0],
+    'قواعد الإدخال: المورد والرقم والتاريخ إلزامي، والقيمة > 0 إلا للمرتجع، ومفيش سالب، والمخصوم ≤ الإجمالي (بسماحية 0.0001)، والاستحقاق مش قبل التاريخ، والنسبة 0–100');
+  eq(await page.evaluate(() => {
+    const a = DATA.ledger.invoices.find((i) => i.id === 'a4');
+    return [isSameInvoice(a, Object.assign({}, a, { id: 'z', invoiceNo: ' A4 ', notes: 'مختلف' })), isSameInvoice(a, Object.assign({}, a, { vat: 141 })), isSameInvoice(a, Object.assign({}, a, { isReturn: true }))];
+  }), [true, false, false], 'التكرار = تطابق كل الأعمدة (الرقم من غير حالة أحرف ومسافات، والملاحظات مش داخلة)، مش الرقم بس');
+
+  console.log('[7] صفحتي «كل الفواتير» و«المرتجعات»: الكروت (المرتجع بيخصم)، والشارات، والحذف مع الاستعادة في 5 ثواني');
+  const cards = () => page.evaluate(() => [...document.querySelectorAll('.stats-row .stat-card .num')].map((x) => x.innerText.trim()));
+  await page.evaluate(() => goToPage('ledger.invoices')); await page.waitForTimeout(300);
+  const invCards = await cards();
+  const wantInv = await page.evaluate(() => { const r = DATA.ledger.invoices.filter((i) => !i.isReturn); return [String(r.length), fmt(r.reduce((a, b) => a + Number(b.totalInvoice || 0), 0)), fmt(r.reduce((a, b) => a + Number(b.netInvoice || 0), 0))]; });
+  eq([invCards[0], invCards[1], invCards[5]], wantInv, 'الفواتير: العدد وإجمالي القيمة والصافي = الفواتير غير المرتجعة');
+  ok(await page.evaluate(() => { const tr = document.querySelector('tr[data-viewinv="a1"]'); return !!tr && tr.innerText.includes('إشعار بعد مرتجع'); }), 'شارة «إشعار بعد مرتجع» على a1');
+  ok(await page.evaluate(() => !!document.getElementById('invFilterOverdue') && !!document.getElementById('openAddInvoiceModalBtnGlobal')), 'زرار «متأخرة فقط» و«إضافة فاتورة» في صفحة الفواتير');
+  await page.evaluate(() => goToPage('ledger.returns')); await page.waitForTimeout(300);
+  const retCards = await cards();
+  eq([retCards[0], retCards[5]], await page.evaluate(() => { const r = DATA.ledger.invoices.filter((i) => i.isReturn); return [String(r.length), fmt(-r.reduce((a, b) => a + Number(b.netInvoice || 0), 0))]; }), 'المرتجعات: العدد، والصافي بالسالب');
+  ok(await page.evaluate(() => !document.getElementById('invFilterOverdue') && !document.getElementById('openAddInvoiceModalBtnGlobal') && !!document.getElementById('openAddReturnModalBtn')), 'صفحة المرتجعات: من غير «متأخرة» ولا «إضافة فاتورة»، وفيها «إضافة مرتجع»');
+  // حذف المرتجع R1 ← الأصل a1 بيتعاد حسابه، والاستعادة بترجّعه
+  const r1 = await page.evaluate(() => DATA.ledger.invoices.find((i) => i.invoiceNo === 'R1').id);
+  n = await page.evaluate(() => window.__saveCount);
+  await page.evaluate((id) => { confirmAndSoftDeleteInvoice(id); }, r1);
+  await page.click('#appDlgOk'); await saved(n);
+  eq(await page.evaluate((id) => [DATA.ledger.invoices.some((i) => i.id === id), !!DATA.ledger.invoices.find((i) => i.id === 'a1').postReturnWht], r1), [false, false], 'الحذف بيشيل المرتجع فعلًا (مش أرشيف)، وa1 رجعت من غير «إشعار بعد مرتجع»');
+  n = await page.evaluate(() => window.__saveCount);
+  await page.click('#undoToastBtn'); await saved(n);
+  eq(await page.evaluate((id) => [DATA.ledger.invoices.some((i) => i.id === id), !!DATA.ledger.invoices.find((i) => i.id === 'a1').postReturnWht], r1), [true, true], '«استعادة» بترجّع المرتجع وأثره');
 
   ok(await persisted((m) => { const l = (m === 'saved' ? window.__saved.ledger : DATA.ledger).invoices || []; const a1 = l.find((i) => i.id === 'a1'); return l.some((i) => i.invoiceNo === 'N1' && i.notes === 'تعديل') && a1 && !a1.cancelled && a1.postReturnWht === true; }), 'كله اتحفظ' + (WEB ? ' على السيرفر (بعد إعادة التحميل)' : ''));
 
