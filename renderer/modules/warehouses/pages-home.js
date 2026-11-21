@@ -11,7 +11,17 @@ function renderWarehousesHomePage(){
   return renderWhStockTab();
 }
 
+// صلاحيات صفحة المخازن (نفس طريقة الموردين/العملاء): الأزرار مابتظهرش لمستخدم مالوش الصلاحية،
+// والإجراء نفسه بيرفض برسالة — بدل ما النافذة تفتح والحفظ يضيع من غير ما يعرف (UAT 7.1 H13).
+function whPerm(action){ return typeof hasPagePermission !== 'function' || hasPagePermission('warehouses.home', action); }
+function whDenied(action){
+  if(whPerm(action)) return false;
+  const msg = { add: '🔒 ماعندكش صلاحية إضافة في المخازن', edit: '🔒 ماعندكش صلاحية تعديل في المخازن', delete: '🔒 ماعندكش صلاحية حذف في المخازن' };
+  showToast(msg[action] || '🔒 ماعندكش صلاحية'); return true;
+}
+
 function whTabsHtml(active){
+  const canAdd = whPerm('add');
   const tabs = [
     ['stock', 'الأرصدة'],
     ['items', 'الأصناف'],
@@ -22,9 +32,9 @@ function whTabsHtml(active){
     tabs.map(function(t){
       return '<button type="button" class="btn ' + (active === t[0] ? 'btn-primary' : 'btn-outline') + ' btn-sm wh-tab" data-tab="' + t[0] + '">' + t[1] + '</button>';
     }).join('') +
-    (active === 'moves' || active === 'stock' ? '<button type="button" class="btn btn-primary btn-sm" id="btnWhIn" ' + (readOnlyMode ? 'disabled' : '') + ' style="margin-right:auto;">+ استلام</button><button type="button" class="btn btn-outline btn-sm" id="btnWhOut" ' + (readOnlyMode ? 'disabled' : '') + '>+ صرف</button><button type="button" class="btn btn-outline btn-sm" id="btnWhTransfer" ' + (readOnlyMode ? 'disabled' : '') + '>+ تحويل</button>' : '') +
-    (active === 'items' ? '<button type="button" class="btn btn-primary btn-sm" id="btnWhAddItem" ' + (readOnlyMode ? 'disabled' : '') + ' style="margin-right:auto;">+ صنف</button>' : '') +
-    (active === 'locations' ? '<button type="button" class="btn btn-primary btn-sm" id="btnWhAddLoc" ' + (readOnlyMode ? 'disabled' : '') + ' style="margin-right:auto;">+ مخزن</button>' : '') +
+    (canAdd && (active === 'moves' || active === 'stock') ? '<button type="button" class="btn btn-primary btn-sm" id="btnWhIn" ' + (readOnlyMode ? 'disabled' : '') + ' style="margin-right:auto;">+ استلام</button><button type="button" class="btn btn-outline btn-sm" id="btnWhOut" ' + (readOnlyMode ? 'disabled' : '') + '>+ صرف</button><button type="button" class="btn btn-outline btn-sm" id="btnWhTransfer" ' + (readOnlyMode ? 'disabled' : '') + '>+ تحويل</button>' : '') +
+    (canAdd && active === 'items' ? '<button type="button" class="btn btn-primary btn-sm" id="btnWhAddItem" ' + (readOnlyMode ? 'disabled' : '') + ' style="margin-right:auto;">+ صنف</button>' : '') +
+    (canAdd && active === 'locations' ? '<button type="button" class="btn btn-primary btn-sm" id="btnWhAddLoc" ' + (readOnlyMode ? 'disabled' : '') + ' style="margin-right:auto;">+ مخزن</button>' : '') +
   '</div>';
 }
 
@@ -99,7 +109,7 @@ function renderWhItemsTab(){
         <tbody>
           ${pg.pageRows.length ? pg.pageRows.map(function(it){
             return '<tr><td>' + escapeHtml(it.code || '') + '</td><td><strong>' + escapeHtml(it.name || '') + '</strong></td><td>' + escapeHtml(it.unit || '') + '</td><td>' + escapeHtml(it.category || '—') + '</td><td>' + (it.minQty != null ? it.minQty : '—') + '</td><td>' + fmtMoney(it.avgCost || it.lastCost || 0) + '</td>' +
-              '<td style="white-space:nowrap;"><button type="button" class="icon-btn btn-edit-item" data-id="' + it.id + '">✏️</button> <button type="button" class="icon-btn icon-del btn-del-item" data-id="' + it.id + '"' + (readOnlyMode ? ' disabled' : '') + '>🗑️</button></td></tr>';
+              '<td style="white-space:nowrap;">' + (whPerm('edit') ? '<button type="button" class="icon-btn btn-edit-item" data-id="' + it.id + '">✏️</button>' : '') + (whPerm('delete') ? ' <button type="button" class="icon-btn icon-del btn-del-item" data-id="' + it.id + '"' + (readOnlyMode ? ' disabled' : '') + '>🗑️</button>' : '') + '</td></tr>';
           }).join('') : '<tr><td colspan="7" style="text-align:center;color:var(--ink-soft);padding:24px;">لا أصناف</td></tr>'}
         </tbody>
       </table></div>
@@ -159,7 +169,7 @@ function renderWhLocationsTab(){
         <tbody>
           ${list.length ? list.map(function(L){
             return '<tr><td>' + escapeHtml(L.id) + '</td><td><strong>' + escapeHtml(L.name) + '</strong></td><td>' + escapeHtml(L.notes || '') + '</td>' +
-              '<td><button type="button" class="icon-btn btn-edit-loc" data-id="' + L.id + '">✏️</button></td></tr>';
+              '<td>' + (whPerm('edit') ? '<button type="button" class="icon-btn btn-edit-loc" data-id="' + L.id + '">✏️</button>' : '') + '</td></tr>';
           }).join('') : '<tr><td colspan="4" style="text-align:center;color:var(--ink-soft);">لا مخازن</td></tr>'}
         </tbody>
       </table></div>
@@ -189,6 +199,7 @@ function initWarehousesHomeEvents(){
   document.querySelectorAll('.btn-del-item').forEach(function(b){
     b.addEventListener('click', function(){
       const id = b.getAttribute('data-id');
+      if(whDenied('delete')) return;
       (typeof confirmDelete === 'function' ? confirmDelete('حذف الصنف؟') : Promise.resolve(confirm('حذف؟'))).then(function(ok){
         if(!ok) return;
         whDeleteItem(id); showToast('تم الحذف'); rerenderCurrentPage();
@@ -201,6 +212,7 @@ function initWarehousesHomeEvents(){
 }
 
 function openWhItemModal(editId){
+  if(whDenied(editId ? 'edit' : 'add')) return;
   const it = editId ? whItemById(editId) : null;
   openModal(`
     <div class="modal-header"><h3>${it ? 'تعديل صنف' : 'صنف جديد'}</h3><button class="modal-close" onclick="closeModal()">×</button></div>
@@ -235,6 +247,7 @@ function openWhItemModal(editId){
 }
 
 function openWhLocationModal(editId){
+  if(whDenied(editId ? 'edit' : 'add')) return;
   const L = editId ? whLocationById(editId) : null;
   openModal(`
     <div class="modal-header"><h3>${L ? 'تعديل مخزن' : 'مخزن جديد'}</h3><button class="modal-close" onclick="closeModal()">×</button></div>
@@ -258,6 +271,7 @@ function openWhLocationModal(editId){
 }
 
 function openWhMovementModal(type){
+  if(whDenied('add')) return;
   if(!whItems().length){ showToast('أضف صنفاً أولاً'); return; }
   if(!whLocations().length){ showToast('أضف مخزناً أولاً'); return; }
   const today = (typeof todayISO === 'function') ? todayISO() : new Date().toISOString().slice(0, 10);
