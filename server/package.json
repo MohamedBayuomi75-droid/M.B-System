@@ -21,6 +21,7 @@
     "test:e2e": "jest --config jest.config.js --runInBand --selectProjects e2e",
     "cutover": "node dist/cli/cutover.js",
     "inspect-files": "node dist/cli/inspect-files.js",
+    "invoice-reconcile": "node dist/cli/invoice-reconcile.js",
     "taxes:drafts": "node dist/cli/tax-drafts.js",
     "formulas:drafts": "node dist/cli/formula-drafts.js"
   },

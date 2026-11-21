@@ -16,6 +16,12 @@ import { ListInvoicesQuery, SaveInvoiceDto, UpdateInvoiceDto } from './supplier-
 import { Rec, SupplierInvoicesRepository } from './supplier-invoices.repository';
 
 const COLL = 'ledger.invoices';
+/** state.js — نفس القوايم الثابتة في الواجهة القديمة */
+const CATEGORY_SUGGESTIONS = ['مصاريف', 'تكاليف', 'أصول ثابتة', 'مخزون / مشتريات'];
+const NATURE_OPTIONS = [{ code: '1', label: 'مقاولات' }, { code: '2', label: 'توريدات' }, { code: '3', label: 'مشتريات' }, { code: '4', label: 'خدمات' }, { code: '10', label: 'أعمال مهنية' }];
+const DISCOUNT_TYPE_OPTIONS = [{ code: '1', label: 'غير محدد' }, { code: '2', label: 'مردودات' }, { code: '3', label: 'رد تجاري' }, { code: '5', label: 'دفعات مقدمة' }, { code: '6', label: 'إعفاءات' }, { code: '7', label: 'مردودات دفعات' }, { code: '8', label: 'مردودات إعفاءات' }];
+/** rememberManyCodes (helpers.js:808): الحفظ القديم بيضيف الأكواد والأصناف الجديدة لقوايم الاقتراحات */
+const REMEMBER: [string, string][] = [['internalCode', 'ledger.customInternalCodes'], ['supplierItemCode', 'ledger.customSupplierItemCodes'], ['description', 'ledger.customItemNames'], ['itemDescription', 'ledger.customItemDescriptions']];
 const s = (v: unknown) => (v == null ? '' : String(v));
 const normNo = (v: unknown) => s(v).trim().toLowerCase();
 /** مبلغ (نص عشري) ← رقم JSON بنفس شكل الواجهة القديمة، بس لو بيتمثّل بالظبط (15 رقم) */
@@ -86,6 +92,37 @@ export class SupplierInvoicesService {
     };
   }
 
+  /**
+   * اختيارات النافذة والفلاتر — نفس مصادر القديم: allCategories/allProjects/allInternalCodes… (helpers.js:753)، وNATURE_OPTIONS/DISCOUNT_TYPE_OPTIONS (state.js)،
+   * وعدد خانات العرض (settings.moneyDecimals، الافتراضي 6 زي fmt القديم).
+   */
+  async options(u: AuthUser) {
+    this.assertView(u);
+    const keys = ['settings', 'ledger.hiddenSuggestions', 'ledger.customCategories', 'ledger.hiddenProjects', 'ledger.customProjects', 'ledger.customInternalCodes', 'ledger.customSupplierItemCodes', 'ledger.customItemNames', 'ledger.customItemDescriptions'];
+    const [d, invs, sups] = await Promise.all([this.repo.docs(keys), this.repo.all(COLL), this.repo.all('ledger.suppliers')]);
+    const arr = (k: string) => (Array.isArray(d.get(k)) ? (d.get(k) as unknown[]).map(s).filter(Boolean) : []);
+    const sortAr = (x: Set<string>) => [...x].sort((a, b) => a.localeCompare(b, 'ar'));
+    const hidden = new Set(arr('ledger.hiddenSuggestions'));
+    const cats = new Set(CATEGORY_SUGGESTIONS.filter((c) => !hidden.has(c)));
+    arr('ledger.customCategories').forEach((c) => cats.add(c));
+    invs.forEach((i) => { if (i.data.category) cats.add(s(i.data.category)); });
+    const hiddenP = new Set(arr('ledger.hiddenProjects'));
+    const projs = new Set<string>();
+    arr('ledger.customProjects').forEach((c) => { if (!hiddenP.has(c)) projs.add(c); });
+    invs.forEach((i) => { if (i.data.project && !hiddenP.has(s(i.data.project))) projs.add(s(i.data.project)); });
+    const lines = (key: string, list: string) => { const set = new Set(arr(list).map((x) => x.trim())); invs.forEach((i) => s(i.data[key]).split('\n').forEach((x) => { if (x.trim()) set.add(x.trim()); })); return [...set]; };
+    const md = (d.get('settings') as { moneyDecimals?: unknown } | undefined)?.moneyDecimals;
+    const n = Number(md);
+    return {
+      moneyDecimals: md === 'auto' ? 'auto' : md !== undefined && md !== '' && Number.isInteger(n) && n >= 0 && n <= 6 ? n : 6,
+      suppliers: sups.map((x) => ({ id: x.id, name: s(x.data.name), taxId: s(x.data.taxId), commercialReg: s(x.data.commercialReg) })).sort((a, b) => a.name.localeCompare(b.name, 'ar')),
+      categories: sortAr(cats), projects: sortAr(projs),
+      internalCodes: lines('internalCode', 'ledger.customInternalCodes'), supplierItemCodes: lines('supplierItemCode', 'ledger.customSupplierItemCodes'),
+      itemNames: lines('description', 'ledger.customItemNames'), itemDescriptions: lines('itemDescription', 'ledger.customItemDescriptions'),
+      natures: NATURE_OPTIONS, discountTypes: DISCOUNT_TYPE_OPTIONS,
+    };
+  }
+
   /** الفواتير الأصلية اللي ينفع المرتجع يتربط بيها (نفس قايمة النافذة القديمة: نفس المورد، مش مرتجع، مش ملغية) */
   async linkable(u: AuthUser, supplierId: string, keep?: string) {
     this.assertView(u);
@@ -117,7 +154,14 @@ export class SupplierInvoicesService {
 
     const events: PendingEvent[] = [];
     const change: RecordChangeDto = { collection: COLL, id, op: 'upsert', baseRev: editId ? (dto.rev ?? 0) : 0, set: fields } as RecordChangeDto;
-    await this.data.sync(u, { changes: [change] }, {
+    // الأكواد الجديدة (مش موجودة في القايمة) بس — arrayDelta بيضيف من غير ما يمسح حاجة
+    const lists = await this.repo.docs(REMEMBER.map((r) => r[1]));
+    const docs = REMEMBER.map(([field, key]) => {
+      const have = new Set(Array.isArray(lists.get(key)) ? (lists.get(key) as unknown[]).map(s) : []);
+      const add = [...new Set(s(fields[field]).split('\n').map((x) => x.trim()).filter((x) => x && !have.has(x)))];
+      return add.length ? { key, op: 'arrayDelta', baseRev: 0, add } : null;
+    }).filter(Boolean);
+    await this.data.sync(u, { changes: [change], docs } as never, {
         before: async (qr) => this.prepare(qr, u, id, editId, fields, events),
         after: async (qr, res) => {
           const c = res.conflicts[0];

@@ -20,7 +20,7 @@ async function newContext(tag) {
   await ctx.addInitScript(() => { window.__csp = []; document.addEventListener('securitypolicyviolation', (e) => window.__csp.push(e.disposition + ' ' + e.effectiveDirective + ' ' + e.blockedURI)); });
   const page = await ctx.newPage();
   page.on('pageerror', (e) => errors.push(`${tag} pageerror: ${e.message}`));
-  page.on('console', (m) => { if (m.type() === 'error' && !/status of (400|401|403|404)/.test(m.text())) errors.push(`${tag} console: ${m.text()}`); });
+  page.on('console', (m) => { if (m.type() === 'error' && !/status of (400|401|403|404|409)/.test(m.text())) errors.push(`${tag} console: ${m.text()}`); });
   return { ctx, page };
 }
 
@@ -403,6 +403,52 @@ async function login(page, username, password) {
     await T.ctx.close();
     const e = await api('POST', `/api/v1/finance/formulas/${f.code}/evaluate`, { date: '2026-06-01', inputs: { RecognizedRevenue: '200', RecognizedProjectCost: '150' } }, adminTok);
     eq(e.body.outputs, { GrossProfit: '50.0000', ProfitMargin: '25.0000' }, 'evaluation uses the approved version');
+  }
+
+  console.log('[6g] 7.2: supplier invoices screen — legacy layout, add via the modal (server formula + PI- number), linked return cancels the original, view modal (test data)');
+  {
+    await api('POST', '/api/sync', { changes: [{ collection: 'ledger.suppliers', id: 'si-ui-sup', op: 'upsert', baseRev: 0, set: { id: 'si-ui-sup', name: 'مورد شاشة الفواتير', taxId: '987', commercialReg: 'CR-1', openingBalance: 0, extraFields: [], attachments: [] } }] }, adminTok);
+    await A.page.goto(srv.base + '/app/supplier-invoices');
+    await A.page.waitForSelector('#invTable');
+    ok(!!(await A.page.$('.filters-row #invSearchBox')) && (await A.page.$$('#invStats .stat-card')).length === 6 && (await A.page.$$('#invTable thead th')).length === 17, 'legacy layout: filters row, 6 cards, 17 columns');
+    await A.page.click('#openAddInvoiceModalBtnGlobal'); await A.page.waitForSelector('#modalOverlay .modal.wide');
+    await A.page.selectOption('#inv_supplier', 'si-ui-sup');
+    eq(await A.page.inputValue('#inv_taxid_display'), '987', 'supplier tax id shown read-only');
+    await A.page.fill('#inv_number', 'UI-1'); await A.page.fill('#inv_date', '2026-05-01');
+    await A.page.fill('.inv-item-desc', 'أسمنت'); await A.page.fill('.inv-item-quantity', '10');
+    await A.page.click('#inv_addItemBtn'); await A.page.locator('.inv-item-desc').nth(1).fill('حديد');
+    await A.page.fill('#inv_baseValue', '1000'); await A.page.fill('#inv_vat', '140'); await A.page.fill('#inv_discountRate', '1');
+    eq(await A.page.inputValue('#inv_withheld'), '10', 'withheld suggested = base x rate (legacy suggestWithheld)');
+    ok((await A.page.inputValue('#inv_netInvoice')).startsWith('١,١٣٠'), 'net shown live (display only)');
+    const [pr] = await Promise.all([A.page.waitForResponse((r) => r.url().endsWith('/api/v1/supplier-invoices') && r.request().method() === 'POST'), A.page.click('#m_save')]);
+    eq(pr.status(), 201, 'saved from the modal (Idempotency-Key sent)');
+    const inv = await pr.json();
+    ok(/^PI-2026-\d{5}$/.test(inv.internalNo) && inv.netInvoice === 1130 && inv.description === 'أسمنت\nحديد' && inv.quantity === '10\n', 'server formula + internal number + item rows joined like the legacy modal', inv);
+    await A.page.waitForSelector(`#invTable tr[data-viewinv="${inv.id}"]`);
+    ok((await A.page.textContent(`#invTable tr[data-viewinv="${inv.id}"]`)).includes(inv.internalNo), 'row shows the supplier number and the internal number');
+    // B-31 من الشاشة: نفس الرقم لنفس المورد ← رسالة السيرفر في النافذة
+    await A.page.click('#openAddInvoiceModalBtnGlobal'); await A.page.waitForSelector('#modalOverlay');
+    await A.page.selectOption('#inv_supplier', 'si-ui-sup'); await A.page.fill('#inv_number', 'ui-1'); await A.page.fill('#inv_date', '2026-05-02'); await A.page.fill('#inv_baseValue', '5');
+    await A.page.click('#m_save'); await A.page.waitForSelector('#invError');
+    ok((await A.page.textContent('#invError')).includes('B-31'), 'duplicate supplier number refused (B-31) with the server message');
+    await A.page.click('#m_cancel');
+    // مرتجع كامل مربوط من صفحة المرتجعات ← الأصل ملغي (شارة «فاتورة ملغاة»)
+    await A.page.goto(srv.base + '/app/supplier-returns'); await A.page.waitForSelector('#invTable');
+    ok(!(await A.page.$('#invFilterOverdue')) && !(await A.page.$('#openAddInvoiceModalBtnGlobal')), 'returns page: no overdue filter, no add-invoice button (legacy)');
+    await A.page.click('#openAddReturnModalBtn'); await A.page.waitForSelector('#inv_linkedWrap');
+    await A.page.selectOption('#inv_supplier', 'si-ui-sup');
+    await A.page.waitForFunction((id) => !!document.querySelector(`#inv_linkedInvoice option[value="${id}"]`), inv.id);
+    await A.page.selectOption('#inv_linkedInvoice', inv.id);
+    await A.page.fill('#inv_number', 'UI-R1'); await A.page.fill('#inv_date', '2026-05-03'); await A.page.fill('#inv_baseValue', '1130');
+    ok((await A.page.textContent('#inv_linkedHint')).includes('مرتجع كامل'), 'linked hint: full return cancels the original');
+    const [rr] = await Promise.all([A.page.waitForResponse((r) => r.url().endsWith('/api/v1/supplier-invoices') && r.request().method() === 'POST'), A.page.click('#m_save')]);
+    eq([rr.status(), (await rr.json()).internalNo.slice(0, 3)], [201, 'PR-'], 'return saved with a PR- number');
+    await A.page.goto(srv.base + '/app/supplier-invoices'); await A.page.waitForSelector(`#invTable tr[data-viewinv="${inv.id}"]`);
+    ok((await A.page.textContent(`#invTable tr[data-viewinv="${inv.id}"]`)).includes('فاتورة ملغاة'), 'original shows «فاتورة ملغاة»');
+    await A.page.click(`#invTable tr[data-viewinv="${inv.id}"] [data-viewinv-btn]`); await A.page.waitForSelector('#invViewModal');
+    ok((await A.page.textContent('#invViewModal')).includes('المرتجعات المرتبطة (1)') && (await A.page.textContent('#invViewInternalNo')) === inv.internalNo, 'view modal: linked returns + internal number');
+    await A.page.click('#m_close_view');
+    eq((await api('GET', `/api/v1/supplier-invoices/${inv.id}`, null, adminTok)).body.events.map((e) => e.type), ['supplier-invoice.posted', 'supplier-invoice.cancelled'], 'outbox events: posted, then cancelled');
   }
 
   console.log('[7] logout ends the shared session; PWA service worker registers; no CSP violations');

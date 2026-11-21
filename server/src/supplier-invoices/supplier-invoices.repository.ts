@@ -14,6 +14,9 @@ export class SupplierInvoicesRepository {
   async one(collection: string, id: string, qr?: QueryRunner): Promise<Rec | null> {
     return (await (qr ?? this.ds).query(`SELECT id, data, rev FROM legacy_records WHERE collection = $1 AND id = $2 AND deleted_at IS NULL`, [collection, id]))[0] ?? null;
   }
+  async docs(keys: string[], qr?: QueryRunner): Promise<Map<string, unknown>> {
+    return new Map((await (qr ?? this.ds).query(`SELECT key, data FROM docs WHERE key = ANY($1::text[])`, [keys])).map((r: { key: string; data: unknown }) => [r.key, r.data]));
+  }
   events(aggregateId: string): Promise<{ event_type: string; idempotency_key: string; payload: Record<string, unknown> }[]> {
     return this.ds.query(`SELECT event_type, idempotency_key, payload FROM integration_events WHERE aggregate_type = 'supplier-invoice' AND aggregate_id = $1 ORDER BY seq`, [aggregateId]);
   }

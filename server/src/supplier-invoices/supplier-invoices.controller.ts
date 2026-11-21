@@ -14,6 +14,8 @@ export class SupplierInvoicesController {
   constructor(private readonly svc: SupplierInvoicesService) {}
   @Get() @ApiOperation({ summary: 'القايمة بنفس فلاتر وبحث وترتيب صفحة الفواتير القديمة + الكروت (المرتجع بيخصم)' })
   list(@CurrentUser() u: AuthUser, @Query() q: ListInvoicesQuery) { return this.svc.list(u, q); }
+  @Get('options') @ApiOperation({ summary: 'اختيارات النافذة والفلاتر (الموردين، والتصنيفات، والمشاريع، والأكواد، والطبيعة، ونوع الخصم، وخانات العرض)' })
+  options(@CurrentUser() u: AuthUser) { return this.svc.options(u); }
   @Get('linkable') @ApiOperation({ summary: 'الفواتير اللي ينفع المرتجع يتربط بيها (نفس المورد، مش مرتجع، مش ملغية)' })
   linkable(@CurrentUser() u: AuthUser, @Query('supplierId') supplierId: string, @Query('keep') keep?: string) { return this.svc.linkable(u, supplierId, keep); }
   @Get(':id') get(@CurrentUser() u: AuthUser, @Param('id') id: string) { return this.svc.get(u, id); }

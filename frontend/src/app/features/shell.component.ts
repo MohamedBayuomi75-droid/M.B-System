@@ -118,7 +118,8 @@ export class ShellComponent {
   /** القسم الحالي: القسم اللي فيه الصفحة المفتوحة */
   readonly current = computed(() => {
     const url = this.url(); const page = this.leaf().page;
-    return this.sections().find((s) => this.pagesOf(s).some((p) => (p.path && p.path === url) || (!!page && p.key === page && !!p.path)));
+    // الصفحة المفتوحة جوه القسم، حتى لو رابطها في القايمة لسه للواجهة القديمة (زي فواتير الموردين قبل قلب التوجيه — 7.2)
+    return this.sections().find((s) => this.pagesOf(s).some((p) => (p.path && p.path === url) || (!!page && p.key === page)));
   });
   readonly pagesRow = computed(() => { const s = this.current(); return s ? this.pagesOf(s) : []; });
   /** زر القسم: لو فيه صفحة Angular يفتح أول صفحة Angular فيه، وإلا لوحة القسم (أو صفحته الوحيدة) في الواجهة القديمة */

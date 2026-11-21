@@ -53,6 +53,13 @@ describe('7.2.4 supplier invoices API', () => {
     expect((await post(acc, { ...base, supplierId: 'sB', invoiceNo: `${x}-1` })).status).toBe(201); // مورد تاني: مسموح
     const b = await post(acc, { ...base, invoiceNo: `${x}-2`, baseValue: '500', vat: '70', stampDuty: '0', withheld: '0' });
     expect(Number(b.body.internalNo.slice(-5))).toBe(n1 + 2); // مفيش فجوات رغم الرفض
+    // الأكواد الجديدة اتضافت لقوايم الاقتراحات (rememberManyCodes)، والاختيارات بتطلع منها
+    const c = await post(acc, { ...base, invoiceNo: `${x}-codes`, internalCode: `IC-${x}\nIC-${x}2`, description: `صنف ${x}` });
+    expect(c.status).toBe(201);
+    const opts = (await t.http().get(`${P}/options`).set(bearer(viewer))).body;
+    expect(opts.internalCodes).toEqual(expect.arrayContaining([`IC-${x}`, `IC-${x}2`]));
+    expect(opts).toMatchObject({ moneyDecimals: 6, categories: expect.arrayContaining(['مصاريف', 'مواد']), projects: expect.arrayContaining(['م1']) });
+    expect((await bootstrap(t, admin)).data.ledger.customInternalCodes).toEqual(expect.arrayContaining([`IC-${x}`, `IC-${x}2`]));
     // مرتجع جزئي على a (عليها محجوز) ← postReturnWht. ونفس رقم المورد للمرتجع مسموح (س1)
     const r1 = await post(acc, { supplierId: 'sA', invoiceNo: `${x}-1`, date: '2026-03-10', isReturn: true, linkedInvoiceId: a.body.id, baseValue: '100', vat: '14' });
     expect(r1.status).toBe(201);
