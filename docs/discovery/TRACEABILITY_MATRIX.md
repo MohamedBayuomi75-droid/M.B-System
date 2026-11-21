@@ -1,7 +1,7 @@
 # مصفوفة التتبّع (خطة v1.4.5 — المرحلة 3)
 
 > **مولَّد** بـ `node tools/discovery/build-traceability.js` من `requirements-registry.json` + ملفات الاختبار. ماتعدّلش الملف باليد.
-> **الاختبارات** بتتلاقى بالبحث عن اسم الدالة أو الصفحة في `tests-merge/` و`tests-web/` و`tools/formulas/` و`server/test/` (101 ملف). ده **دليل إن الاختبار بيلمس العنصر**، مش إثبات إنه بيغطي كل حالاته.
+> **الاختبارات** بتتلاقى بالبحث عن اسم الدالة أو الصفحة في `tests-merge/` و`tests-web/` و`tools/formulas/` و`server/test/` (102 ملف). ده **دليل إن الاختبار بيلمس العنصر**، مش إثبات إنه بيغطي كل حالاته.
 > **الحالات** (`02` §20): Implemented ≠ Verified ≠ Accepted. **مفيش حاجة هنا Accepted**: القبول بيكون لكل موديول ببوابة.
 > **الأولويات مقترحة.**
 
@@ -9,20 +9,20 @@
 | النوع | العدد | ليه اختبار بيلمسه | اتنقل للنظام الجديد |
 |---|---|---|---|
 | page | 54 | 54 (100%) | 4 |
-| calc | 120 | 40 (33%) | 0 |
-| data-write | 26 | 12 (46%) | 0 |
+| calc | 120 | 46 (38%) | 0 |
+| data-write | 27 | 17 (63%) | 0 |
 | modal | 63 | 21 (33%) | 0 |
 | export/print | 37 | 5 (14%) | 0 |
 | permission | 8 | 0 (0%) | 8 |
 | electron-capability | 42 | 6 (14%) | 0 |
-| **الإجمالي** | **350** | **138 (39%)** | **12** |
+| **الإجمالي** | **351** | **149 (42%)** | **12** |
 
 ## 2. التغطية حسب الموديول (LEG)
 | الموديول | العدد | منها P0 (مقترح) | ليه اختبار | اتنقل | قرارات مفتوحة بتمنعه |
 |---|---|---|---|---|---|
 | مشترك (core) | 97 | 10 | 30 (31%) | 0 | — |
 | الموارد البشرية | 69 | 21 | 19 (28%) | 0 | DEC-0045 (B-45)، DEC-0046 (B-46)، DEC-0047 (B-47)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0076 (B-76)، DEC-0042 (B-42) |
-| الموردون | 54 | 18 | 15 (28%) | 1 | — |
+| الموردون | 55 | 19 | 26 (47%) | 1 | — |
 | ديسكتوب | 42 | 15 | 6 (14%) | 0 | — |
 | العملاء والمشاريع | 38 | 11 | 28 (74%) | 2 | DEC-0035 (B-35) |
 | المخازن | 13 | 8 | 11 (85%) | 1 | DEC-0077 (B-77) |
@@ -35,7 +35,7 @@
 | مهامي | 1 | 0 | 1 (100%) | 0 | — |
 | حركة الموارد | 1 | 0 | 1 (100%) | 0 | DEC-0045 (B-45)، DEC-0046 (B-46)، DEC-0047 (B-47)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0076 (B-76)، DEC-0042 (B-42) |
 
-## 3. ⚠️ عناصر P0 (مقترحة) من غير أي اختبار بيلمسها — 51
+## 3. ⚠️ عناصر P0 (مقترحة) من غير أي اختبار بيلمسها — 42
 دي أولوية لاختبارات القبول قبل نقل موديولاتها (`05` §18.4).
 | ID | النوع | الموديول | العنصر | الدليل |
 |---|---|---|---|---|
@@ -67,15 +67,6 @@
 | LEG-0215 | calc | الموارد البشرية | دالة حساب repDuesFull | renderer/modules/hr/pages-reports.js:365 |
 | LEG-0226 | calc | الموارد البشرية | دالة حساب duesEntityKind | renderer/modules/hr/pages-worker-dues.js:12 |
 | LEG-0227 | calc | الموارد البشرية | دالة حساب duesListForKind | renderer/modules/hr/pages-worker-dues.js:17 |
-| LEG-0243 | calc | الموردون | دالة حساب fixInvoiceCalculations | renderer/modules/ledger/helpers.js:169 |
-| LEG-0247 | calc | الموردون | دالة حساب getInvoiceDueDate | renderer/modules/ledger/helpers.js:720 |
-| LEG-0248 | calc | الموردون | دالة حساب getOverdueInvoices | renderer/modules/ledger/helpers.js:734 |
-| LEG-0250 | calc | الموردون | دالة حساب maybeShowOverdueAlert | renderer/modules/ledger/helpers.js:2031 |
-| LEG-0251 | calc | الموردون | دالة حساب pfSummaryHtml | renderer/modules/ledger/helpers.js:2265 |
-| LEG-0255 | data-write | الموردون | كتابة بيانات addDaysToIsoDate | renderer/modules/ledger/helpers.js |
-| LEG-0256 | data-write | الموردون | كتابة بيانات saveCustomLinkedItem | renderer/modules/ledger/helpers.js |
-| LEG-0257 | data-write | الموردون | كتابة بيانات deleteCustomLinkedItem | renderer/modules/ledger/helpers.js |
-| LEG-0269 | data-write | الموردون | كتابة بيانات saveInvoiceData | renderer/modules/ledger/modals.js |
 | LEG-0271 | calc | الموردون | دالة حساب archSummary | renderer/modules/ledger/pages-archive.js:138 |
 | LEG-0281 | permission | الإعدادات | مصفوفة صلاحيات الصفحات (عرض/إضافة/تعديل/حذف لكل صفحة) | renderer/core/permissions.js |
 | LEG-0300 | electron-capability | ديسكتوب | قدرة ديسكتوب backupNow | preload.js (backup:runNow) |
@@ -161,7 +152,7 @@
 | LEG-0020 | page | العملاء والمشاريع | صفحة «المقارنة» (clients.comparison) | renderer/modules/clients/comparison.js:62 | legacy /legacy/ | phase11.js، phase12.js، phase14.js | Verified (باختبار) | DEC-0035 (B-35) |
 | LEG-0021 | page | العملاء والمشاريع | صفحة «CRM» (clients.crm) | renderer/modules/clients/pages-crm.js:40 | legacy /legacy/ | phase61.js | Verified (باختبار) | DEC-0035 (B-35) |
 | LEG-0022 | page | الموردون | صفحة «الموردون» (ledger.suppliers) | renderer/modules/ledger/pages-suppliers.js:3 | angular /suppliers | phase60.js، phase61.js، phase16.js، phase17.js، phase21.js، app-e2e.js (+4) | Implemented (اتنقل) | — |
-| LEG-0023 | page | الموردون | صفحة «الفواتير» (ledger.invoices) | renderer/modules/ledger/pages-invoices.js:35 | legacy /legacy/ | phase16.js، phase17.js، phase21.js، phase62.js، app-e2e.js، attachments.e2e-spec.ts (+5) | Verified (باختبار) | — |
+| LEG-0023 | page | الموردون | صفحة «الفواتير» (ledger.invoices) | renderer/modules/ledger/pages-invoices.js:35 | legacy /legacy/ | phase16.js، phase17.js، phase21.js، phase62.js، phase67.js، app-e2e.js (+6) | Verified (باختبار) | — |
 | LEG-0024 | page | الموردون | صفحة «إشعارات الخصم» (ledger.quarterly) | renderer/modules/ledger/pages-quarterly.js:39 | legacy /legacy/ | phase61.js | Verified (باختبار) | — |
 | LEG-0025 | page | الموردون | صفحة «المرتجعات» (ledger.returns) | renderer/modules/ledger/pages-invoices.js:35 | legacy /legacy/ | phase61.js | Verified (باختبار) | — |
 | LEG-0026 | page | المخازن | صفحة «المخازن» (warehouses.home) | renderer/modules/warehouses/pages-home.js:6 | angular /warehouses | phase61.js، phase66.js، app-e2e.js، stock-adjustments.e2e-spec.ts | Implemented (اتنقل) | DEC-0077 (B-77) |
@@ -181,7 +172,7 @@
 | LEG-0040 | page | الأرشيف | صفحة «أرشيف الموردين» (ledger.archive) | renderer/modules/ledger/pages-archive.js:215 | legacy /legacy/ | phase61.js | Verified (باختبار) | DEC-0061 (B-61) |
 | LEG-0041 | page | الأرشيف | صفحة «أرشيف العملاء والمشاريع» (clients.archive) | renderer/modules/clients/pages-archive.js:36 | legacy /legacy/ | phase8.js | Verified (باختبار) | DEC-0061 (B-61) |
 | LEG-0042 | page | الإعدادات | صفحة «الإعدادات العامة» (backup) | renderer/core/pages-backup.js:5 | legacy /legacy/ | phase10.js، phase29.js، phase32.js، phase34.js، phase35.js، phase36.js (+3) | Verified (باختبار) | DEC-0035 (B-35) |
-| LEG-0043 | page | الإعدادات | صفحة «المستخدمون» (users) | renderer/core/pages-users.js:16 | legacy /legacy/ | phase61.js، pages-smoke.js، phase10.js، phase11.js، phase12.js، phase13.js (+75) | Verified (باختبار) | DEC-0035 (B-35) |
+| LEG-0043 | page | الإعدادات | صفحة «المستخدمون» (users) | renderer/core/pages-users.js:16 | legacy /legacy/ | phase61.js، pages-smoke.js، phase10.js، phase11.js، phase12.js، phase13.js (+76) | Verified (باختبار) | DEC-0035 (B-35) |
 | LEG-0044 | page | الإعدادات | صفحة «الاقتراحات» (ledger.categories) | renderer/modules/ledger/pages-categories.js:4 | legacy /legacy/ | phase61.js | Verified (باختبار) | DEC-0035 (B-35) |
 | LEG-0045 | page | (خارج القايمة) | صفحة «clients.dashboard» (clients.dashboard) — اسم بديل لـ dashboard | renderer/modules/hr/pages-dashboard.js:28 | legacy /legacy/ | phase20.js | Verified (باختبار) | — |
 | LEG-0046 | page | (خارج القايمة) | صفحة «fuel» (fuel) — اسم بديل لـ equipment | renderer/modules/hr/pages-equipment.js:32 | legacy /legacy/ | phase61.js، phase18.js، phase26.js، legacy-runner.js، reference.js | Verified (باختبار) | — |
@@ -380,22 +371,22 @@
 | LEG-0239 | export/print | الموردون | تصدير/طباعة exportVisibleQuarterNoticesPdf | renderer/modules/ledger/exports.js | legacy |  | Verified (جرد ثابت بس) | — |
 | LEG-0240 | export/print | الموردون | تصدير/طباعة exportSupplierDiscountNoticesPdf | renderer/modules/ledger/exports.js | legacy |  | Verified (جرد ثابت بس) | — |
 | LEG-0241 | export/print | الموردون | تصدير/طباعة exportQuarterNoticesPdf | renderer/modules/ledger/exports.js | legacy |  | Verified (جرد ثابت بس) | — |
-| LEG-0242 | calc | الموردون | دالة حساب previewInvoiceCalculationFixes | renderer/modules/ledger/helpers.js:143 | legacy | legacy-runner.js | Verified (باختبار) | — |
-| LEG-0243 | calc | الموردون | دالة حساب fixInvoiceCalculations | renderer/modules/ledger/helpers.js:169 | legacy |  | Verified (جرد ثابت بس) | — |
+| LEG-0242 | calc | الموردون | دالة حساب previewInvoiceCalculationFixes | renderer/modules/ledger/helpers.js:143 | legacy | phase67.js، legacy-runner.js | Verified (باختبار) | — |
+| LEG-0243 | calc | الموردون | دالة حساب fixInvoiceCalculations | renderer/modules/ledger/helpers.js:169 | legacy | phase67.js | Verified (باختبار) | — |
 | LEG-0244 | calc | الموردون | دالة حساب lgExtraFieldsSummary | renderer/modules/ledger/helpers.js:492 | legacy | phase63.js | Verified (باختبار) | — |
 | LEG-0245 | calc | الموردون | دالة حساب supplierBalance | renderer/modules/ledger/helpers.js:576 | legacy | phase61.js، legacy-runner.js، reference.js، target-diff.js | Verified (باختبار) | — |
 | LEG-0246 | calc | الموردون | دالة حساب invoiceRemaining | renderer/modules/ledger/helpers.js:590 | legacy | legacy-runner.js، reference.js | Verified (باختبار) | — |
-| LEG-0247 | calc | الموردون | دالة حساب getInvoiceDueDate | renderer/modules/ledger/helpers.js:720 | legacy |  | Verified (جرد ثابت بس) | — |
-| LEG-0248 | calc | الموردون | دالة حساب getOverdueInvoices | renderer/modules/ledger/helpers.js:734 | legacy |  | Verified (جرد ثابت بس) | — |
-| LEG-0249 | calc | الموردون | دالة حساب recalcLinkedOriginal | renderer/modules/ledger/helpers.js:1927 | legacy |  | Verified (جرد ثابت بس) | — |
-| LEG-0250 | calc | الموردون | دالة حساب maybeShowOverdueAlert | renderer/modules/ledger/helpers.js:2031 | legacy |  | Verified (جرد ثابت بس) | — |
-| LEG-0251 | calc | الموردون | دالة حساب pfSummaryHtml | renderer/modules/ledger/helpers.js:2265 | legacy |  | Verified (جرد ثابت بس) | — |
+| LEG-0247 | calc | الموردون | دالة حساب getInvoiceDueDate | renderer/modules/ledger/helpers.js:720 | legacy | phase67.js | Verified (باختبار) | — |
+| LEG-0248 | calc | الموردون | دالة حساب getOverdueInvoices | renderer/modules/ledger/helpers.js:734 | legacy | phase67.js | Verified (باختبار) | — |
+| LEG-0249 | calc | الموردون | دالة حساب recalcLinkedOriginal | renderer/modules/ledger/helpers.js:1927 | legacy | phase67.js | Verified (باختبار) | — |
+| LEG-0250 | calc | الموردون | دالة حساب maybeShowOverdueAlert | renderer/modules/ledger/helpers.js:2031 | legacy | phase67.js | Verified (باختبار) | — |
+| LEG-0251 | calc | الموردون | دالة حساب pfSummaryHtml | renderer/modules/ledger/helpers.js:2265 | legacy | phase67.js | Verified (باختبار) | — |
 | LEG-0252 | export/print | الموردون | تصدير/طباعة downloadFile | renderer/modules/ledger/helpers.js | legacy |  | Verified (جرد ثابت بس) | — |
 | LEG-0253 | export/print | الموردون | تصدير/طباعة exportExcelFile | renderer/modules/ledger/helpers.js | legacy | phase60.js | Verified (باختبار) | — |
 | LEG-0254 | export/print | الموردون | تصدير/طباعة printHtmlContent | renderer/modules/ledger/helpers.js | legacy |  | Verified (جرد ثابت بس) | — |
-| LEG-0255 | data-write | الموردون | كتابة بيانات addDaysToIsoDate | renderer/modules/ledger/helpers.js | legacy |  | Verified (جرد ثابت بس) | — |
-| LEG-0256 | data-write | الموردون | كتابة بيانات saveCustomLinkedItem | renderer/modules/ledger/helpers.js | legacy |  | Verified (جرد ثابت بس) | — |
-| LEG-0257 | data-write | الموردون | كتابة بيانات deleteCustomLinkedItem | renderer/modules/ledger/helpers.js | legacy |  | Verified (جرد ثابت بس) | — |
+| LEG-0255 | data-write | الموردون | كتابة بيانات addDaysToIsoDate | renderer/modules/ledger/helpers.js | legacy | phase67.js | Verified (باختبار) | — |
+| LEG-0256 | data-write | الموردون | كتابة بيانات saveCustomLinkedItem | renderer/modules/ledger/helpers.js | legacy | phase67.js | Verified (باختبار) | — |
+| LEG-0257 | data-write | الموردون | كتابة بيانات deleteCustomLinkedItem | renderer/modules/ledger/helpers.js | legacy | phase67.js | Verified (باختبار) | — |
 | LEG-0258 | modal | الموردون | نافذة openAddSupplierModal | renderer/modules/ledger/modals.js:9 | legacy | phase38.js | Verified (باختبار) | — |
 | LEG-0259 | modal | الموردون | نافذة openDeleteSupplierModal | renderer/modules/ledger/modals.js:136 | legacy |  | Verified (جرد ثابت بس) | — |
 | LEG-0260 | modal | الموردون | نافذة openPaymentModal | renderer/modules/ledger/modals.js:192 | legacy |  | Verified (جرد ثابت بس) | — |
@@ -407,7 +398,7 @@
 | LEG-0266 | calc | الموردون | دالة حساب printSupplierStatement | renderer/modules/ledger/modals.js:1446 | legacy |  | Verified (جرد ثابت بس) | — |
 | LEG-0267 | export/print | الموردون | تصدير/طباعة printSupplierStatementTab | renderer/modules/ledger/modals.js | legacy |  | Verified (جرد ثابت بس) | — |
 | LEG-0268 | export/print | الموردون | تصدير/طباعة printSupplierStatement | renderer/modules/ledger/modals.js | legacy |  | Verified (جرد ثابت بس) | — |
-| LEG-0269 | data-write | الموردون | كتابة بيانات saveInvoiceData | renderer/modules/ledger/modals.js | legacy |  | Verified (جرد ثابت بس) | — |
+| LEG-0269 | data-write | الموردون | كتابة بيانات saveInvoiceData | renderer/modules/ledger/modals.js | legacy | phase67.js | Verified (باختبار) | — |
 | LEG-0270 | modal | الموردون | نافذة openAddSupplierDocumentModal | renderer/modules/ledger/pages-archive.js:774 | legacy |  | Verified (جرد ثابت بس) | — |
 | LEG-0271 | calc | الموردون | دالة حساب archSummary | renderer/modules/ledger/pages-archive.js:138 | legacy |  | Verified (جرد ثابت بس) | — |
 | LEG-0272 | modal | الموردون | نافذة openLinkedItemModal | renderer/modules/ledger/pages-categories.js:231 | legacy |  | Verified (جرد ثابت بس) | — |
@@ -433,7 +424,7 @@
 | LEG-0292 | calc | مشترك (core) | دالة حساب equipmentDailyCost | renderer/core/helpers.js:7778 | legacy | phase59.js، compare.js، legacy-runner.js | Verified (باختبار) | — |
 | LEG-0293 | calc | الموردون | دالة حساب noticeAmountsFor | renderer/modules/ledger/helpers.js:606 | legacy | phase59.js، compare.js، legacy-runner.js | Verified (باختبار) | — |
 | LEG-0294 | calc | الموردون | دالة حساب openingBalanceFor | renderer/modules/ledger/statement.js:43 | legacy | phase59.js، compare.js، legacy-runner.js، reference.js | Verified (باختبار) | — |
-| LEG-0295 | calc | الموردون | دالة حساب roundMoney | renderer/modules/ledger/helpers.js:208 | legacy | phase59.js، compare.js، legacy-runner.js، reference.js | Verified (باختبار) | — |
+| LEG-0295 | calc | الموردون | دالة حساب roundMoney | renderer/modules/ledger/helpers.js:208 | legacy | phase59.js، compare.js، phase67.js، legacy-runner.js، reference.js | Verified (باختبار) | — |
 | LEG-0296 | calc | مشترك (core) | دالة حساب supervisorOwnDue | renderer/core/helpers.js:2066 | legacy | phase59.js، compare.js، legacy-runner.js | Verified (باختبار) | — |
 | LEG-0297 | calc | المخازن | دالة حساب whStockQty | renderer/modules/warehouses/helpers.js:27 | legacy | phase59.js، compare.js، phase65.js، phase66.js، legacy-runner.js، reference.js | Verified (باختبار) | DEC-0077 (B-77) |
 | LEG-0298 | calc | المخازن | دالة حساب whStockValue | renderer/modules/warehouses/helpers.js:48 | legacy | phase59.js، compare.js، legacy-runner.js، reference.js | Verified (باختبار) | DEC-0077 (B-77) |
@@ -489,3 +480,4 @@
 | LEG-0348 | data-write | المخازن | كتابة بيانات whAddMovement | renderer/modules/warehouses/helpers.js:74 | legacy | phase17.js، phase66.js | Verified (باختبار) | DEC-0077 (B-77) |
 | LEG-0349 | data-write | المخازن | كتابة بيانات whNextItemCode | renderer/modules/warehouses/helpers.js:18 | legacy | phase66.js | Verified (باختبار) | DEC-0077 (B-77) |
 | LEG-0350 | data-write | المخازن | كتابة بيانات whNextMovementId | renderer/modules/warehouses/helpers.js:19 | legacy | phase65.js، phase66.js | Verified (باختبار) | DEC-0077 (B-77) |
+| LEG-0351 | data-write | الموردون | كتابة بيانات applyReturnLinkEffects | renderer/modules/ledger/modals.js:1324 | legacy | phase67.js | Verified (باختبار) | — |

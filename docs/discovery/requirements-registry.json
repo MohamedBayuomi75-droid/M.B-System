@@ -2,11 +2,11 @@
  "generatedBy": "tools/discovery/build-registry.js",
  "plan": "v1.4.5 — 00 §3",
  "next": {
-  "LEG": 351,
+  "LEG": 352,
   "TECH": 19,
   "NEW": 10,
   "CHG": 15,
-  "DEC": 108
+  "DEC": 109
  },
  "entries": [
   {
@@ -2417,6 +2417,24 @@
    "classification": "OPEN-DECISION",
    "kind": "decision",
    "title": "معادلة فاتورة المورد الانتقالية (B-20): بتتنقل للسيرفر زي الواجهة الحالية بالظبط: المبالغ يدوي، `الإجمالي = الأساسي + ق.م + الدمغة`، و`الصافي = الإجمالي − المحج",
+   "module": "قرارات",
+   "priority": "—",
+   "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",
+   "tests": [],
+   "target": "—",
+   "notes": "محسوم",
+   "aliases": [],
+   "decisionStatus": "resolved",
+   "priorityStatus": "—",
+   "status": "resolved"
+  },
+  {
+   "id": "DEC-0108",
+   "key": "decision:DEC-0108",
+   "prefix": "DEC",
+   "classification": "OPEN-DECISION",
+   "kind": "decision",
+   "title": "نطاق الحزمة 7.2 معتمد: الفواتير القديمة من غير رقم داخلي (برقم المورد)، والرقم الداخلي `PI-`/`PR-` السنوي للجديد بس، والحذف لسلة الأرشيف يفضل في الواجهة القديمة",
    "module": "قرارات",
    "priority": "—",
    "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",
@@ -8283,6 +8301,22 @@
    "tests": [],
    "target": "legacy",
    "notes": "سلامة البيانات (P0) — المخازن (المرحلة 7، الحزمة 7.1) — ترقيم",
+   "priorityStatus": "approved (DEC-0085)",
+   "status": "verified-static"
+  },
+  {
+   "id": "LEG-0351",
+   "key": "save:renderer/modules/ledger/modals.js#applyReturnLinkEffects",
+   "prefix": "LEG",
+   "classification": "LEGACY-PRESERVE",
+   "kind": "data-write",
+   "title": "كتابة بيانات applyReturnLinkEffects",
+   "module": "الموردون",
+   "priority": "P0",
+   "evidence": "renderer/modules/ledger/modals.js:1324",
+   "tests": [],
+   "target": "legacy",
+   "notes": "سلامة البيانات (P0) — فواتير الموردين (المرحلة 7، الحزمة 7.2) — أثر المرتجع على الفاتورة الأصلية (الإلغاء وpostReturnWht)",
    "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
   },

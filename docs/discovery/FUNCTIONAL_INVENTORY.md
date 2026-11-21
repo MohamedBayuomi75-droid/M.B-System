@@ -1207,7 +1207,7 @@
 |---|---|---|---|
 | النوافذ | 63 | 10 | 53 |
 | التصدير والطباعة | 37 | 5 | 32 |
-| كتابة البيانات | 26 | 0 | 26 |
+| كتابة البيانات | 27 | 0 | 27 |
 
 <details><summary>القائمة الكاملة للنوافذ والتصدير والكتابة اللي ماتوصلّهاش من زرار ظاهر</summary>
 
@@ -1324,5 +1324,6 @@
 | LEG-0348 | data-write | كتابة بيانات whAddMovement | renderer/modules/warehouses/helpers.js:74 |
 | LEG-0349 | data-write | كتابة بيانات whNextItemCode | renderer/modules/warehouses/helpers.js:18 |
 | LEG-0350 | data-write | كتابة بيانات whNextMovementId | renderer/modules/warehouses/helpers.js:19 |
+| LEG-0351 | data-write | كتابة بيانات applyReturnLinkEffects | renderer/modules/ledger/modals.js:1324 |
 
 </details>

@@ -7,14 +7,14 @@
 ## الملخص
 | البادئة | التصنيف | العدد |
 |---|---|---|
-| `LEG-` | LEGACY-PRESERVE | 350 |
+| `LEG-` | LEGACY-PRESERVE | 351 |
 | `CHG-` | APPROVED-CHANGE | 14 |
 | `TECH-` | TECHNICAL | 18 |
 | `NEW-` | NEW-REQUIREMENT | 9 |
-| `DEC-` | OPEN-DECISION (المفتوح والمحسوم) | 107 (مفتوح: 40) |
-| **الإجمالي** | | **498** |
+| `DEC-` | OPEN-DECISION (المفتوح والمحسوم) | 108 (مفتوح: 40) |
+| **الإجمالي** | | **500** |
 
-**عناصر LEG حسب النوع:** page 54 · calc 120 · data-write 26 · modal 63 · export/print 37 · permission 8 · electron-capability 42
+**عناصر LEG حسب النوع:** page 54 · calc 120 · data-write 27 · modal 63 · export/print 37 · permission 8 · electron-capability 42
 
 ## القدرات القديمة (LEG)
 | ID | النوع | الموديول | الوصف | الأولوية (مقترحة) | الدليل | المكان المستهدف | الاختبارات | الحالة | ملاحظات |
@@ -369,6 +369,7 @@
 | LEG-0348 | data-write | المخازن | كتابة بيانات whAddMovement | P0 | renderer/modules/warehouses/helpers.js:74 | legacy |  | verified-static | سلامة البيانات (P0) — المخازن (المرحلة 7، الحزمة 7.1) — الحركة ومعها تحديث التكلفة |
 | LEG-0349 | data-write | المخازن | كتابة بيانات whNextItemCode | P0 | renderer/modules/warehouses/helpers.js:18 | legacy |  | verified-static | سلامة البيانات (P0) — المخازن (المرحلة 7، الحزمة 7.1) — ترقيم |
 | LEG-0350 | data-write | المخازن | كتابة بيانات whNextMovementId | P0 | renderer/modules/warehouses/helpers.js:19 | legacy |  | verified-static | سلامة البيانات (P0) — المخازن (المرحلة 7، الحزمة 7.1) — ترقيم |
+| LEG-0351 | data-write | الموردون | كتابة بيانات applyReturnLinkEffects | P0 | renderer/modules/ledger/modals.js:1324 | legacy |  | verified-static | سلامة البيانات (P0) — فواتير الموردين (المرحلة 7، الحزمة 7.2) — أثر المرتجع على الفاتورة الأصلية (الإلغاء وpostReturnWht) |
 
 ## التغييرات المعتمدة (CHG)
 | ID | النوع | الموديول | الوصف | الأولوية (مقترحة) | الدليل | المكان المستهدف | الاختبارات | الحالة | ملاحظات |
@@ -533,4 +534,5 @@
 | DEC-0105 | decision | قرارات | الأرصدة الافتتاحية: قبل التشغيل الفعلي، تقرير مطابقة لكل مورد (الرصيد الحالي، والرصيد بالقاعدة المعتمدة F-05، والفرق وسببه)، والمدير المالي بيعتمده كأرصدة افتتا | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
 | DEC-0106 | decision | قرارات | نطاق الحزمة 7.2: فواتير ومرتجعات الموردين بس. الدفعات والتخصيص في الحزمة 7.3 | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
 | DEC-0107 | decision | قرارات | معادلة فاتورة المورد الانتقالية (B-20): بتتنقل للسيرفر زي الواجهة الحالية بالظبط: المبالغ يدوي، `الإجمالي = الأساسي + ق.م + الدمغة`، و`الصافي = الإجمالي − المحج | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
+| DEC-0108 | decision | قرارات | نطاق الحزمة 7.2 معتمد: الفواتير القديمة من غير رقم داخلي (برقم المورد)، والرقم الداخلي `PI-`/`PR-` السنوي للجديد بس، والحذف لسلة الأرشيف يفضل في الواجهة القديمة | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
 
