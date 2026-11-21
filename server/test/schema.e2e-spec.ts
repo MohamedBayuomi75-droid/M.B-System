@@ -14,6 +14,8 @@ const LAYER1_TABLES = ['attachments', 'audit_log', 'changes', 'docs', 'records',
   'stock_reservations',
   // B-51 — فاضي
   'stock_adjustments',
+  // 7.2 — فاضية: النقل أمر تشغيل بموافقة، والأحداث بتتسجّل من الـ API بس
+  'supplier_invoices', 'integration_events',
   // 6.2-ب — فاضية: النقل بأمر تشغيل
   'wh_items', 'wh_locations', 'wh_movements',
   // B-20 — فاضية: المكتبة بتدخل كمسودات بأمر منفصل

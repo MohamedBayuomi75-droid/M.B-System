@@ -1,5 +1,6 @@
 import { DataSource } from 'typeorm';
 import { CutoverReport, cutoverModule, ModuleSpec, rollbackModule } from './module-cutover';
+import { SUPPLIER_INVOICE_COLUMNS } from '../migrations/1764800000000-SupplierInvoices';
 
 export type { CutoverReport } from './module-cutover';
 
@@ -40,7 +41,20 @@ export const WAREHOUSES: ModuleSpec = {
   clearTables: ['wh_movements', 'wh_items', 'wh_locations'],
 };
 
-export const MODULES: Record<string, ModuleSpec> = { parties: PARTIES, warehouses: WAREHOUSES };
+/**
+ * 7.2 — فواتير ومرتجعات الموردين. **مفيش أي تطبيع** (DEC-0107: القديم بقيمه): كل حقل نوعه مطابق بيروح عموده،
+ * واللي نوعه مختلف بيفضل في legacy_extra زي ما هو، والتقرير بيعدّه (untyped).
+ */
+export const SUPPLIER_INVOICES: ModuleSpec = {
+  label: 'supplier-invoices',
+  collections: [
+    { collection: 'ledger.invoices', table: 'supplier_invoices', write: 'legacy_write_supplier_invoice', read: 'supplier_invoice_to_legacy',
+      normalized: `(r.data || jsonb_build_object('id', r.id))`, typedKeys: SUPPLIER_INVOICE_COLUMNS.map(([, k]) => k) },
+  ],
+  clearTables: ['supplier_invoices'],
+};
+
+export const MODULES: Record<string, ModuleSpec> = { parties: PARTIES, warehouses: WAREHOUSES, 'supplier-invoices': SUPPLIER_INVOICES };
 
 export const partiesCutover = (ds: DataSource, by: string, mode: CutoverReport['mode']) => cutoverModule(ds, PARTIES, by, mode);
 export const partiesRollback = (ds: DataSource, by: string) => rollbackModule(ds, PARTIES, by);

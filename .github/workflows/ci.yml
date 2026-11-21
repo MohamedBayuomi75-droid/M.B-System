@@ -44,7 +44,7 @@ jobs:
         run: node tools/web/build-web.js --check
       - name: Generated discovery docs are up to date
         run: |
-          for t in build-registry build-functional-inventory build-data-dictionary build-formula-catalogue build-electron-capabilities build-traceability build-parties-parity build-warehouses-parity; do
+          for t in build-registry build-functional-inventory build-data-dictionary build-formula-catalogue build-electron-capabilities build-traceability build-parties-parity build-warehouses-parity build-supplier-invoices-parity; do
             node tools/discovery/$t.js --check
           done
           node tools/ui/build-legacy-skin.js --check
@@ -137,12 +137,12 @@ jobs:
         run: node tests-merge/run-all.js
         env:
           WEB_MODE: '1'
-      - name: Legacy UI — web mode over relational tables (parties, warehouses)
+      - name: Legacy UI — web mode over relational tables (parties, warehouses, supplier invoices)
         if: matrix.suite == 'ui-cutover'
         run: node tests-merge/run-all.js
         env:
           WEB_MODE: '1'
-          WEB_CUTOVER: parties,warehouses
+          WEB_CUTOVER: parties,warehouses,supplier-invoices
       - name: Web e2e (multi-browser session, 2FA, headers)
         if: matrix.suite == 'web-app-security'
         run: node tests-web/web-e2e.js

@@ -1868,6 +1868,103 @@
     ],
     "type": "object"
    },
+   "SaveInvoiceDto": {
+    "properties": {
+     "baseValue": {
+      "example": "1000.0000",
+      "type": "string"
+     },
+     "category": {
+      "type": "string"
+     },
+     "date": {
+      "example": "2026-11-21",
+      "type": "string"
+     },
+     "description": {
+      "description": "الأصناف (سطر لكل صنف، زي القديم)",
+      "type": "string"
+     },
+     "discountRate": {
+      "description": "نسبة الخصم % (نص، 0–100) — زي القديم",
+      "type": "string"
+     },
+     "discountType": {
+      "type": "string"
+     },
+     "dueDate": {
+      "description": "فاضي = التاريخ + 30 يوم (عرض). مالوش معنى للمرتجع",
+      "type": "string"
+     },
+     "internalCode": {
+      "type": "string"
+     },
+     "invoiceLink": {
+      "type": "string"
+     },
+     "invoiceNo": {
+      "description": "رقم فاتورة المورد (B-31: فريد لكل مورد في الجديد)",
+      "type": "string"
+     },
+     "isReturn": {
+      "description": "مرتجع؟",
+      "type": "boolean"
+     },
+     "itemDescription": {
+      "type": "string"
+     },
+     "linkedInvoiceId": {
+      "description": "المرتجع: الفاتورة الأصلية (فاضي = مرتجع مطلق)",
+      "type": "string"
+     },
+     "nature": {
+      "type": "string"
+     },
+     "notes": {
+      "type": "string"
+     },
+     "project": {
+      "type": "string"
+     },
+     "quantity": {
+      "type": "string"
+     },
+     "stampDuty": {
+      "type": "string"
+     },
+     "supplierId": {
+      "type": "string"
+     },
+     "supplierItemCode": {
+      "type": "string"
+     },
+     "unitPrice": {
+      "type": "string"
+     },
+     "vat": {
+      "type": "string"
+     },
+     "withheld": {
+      "description": "المبلغ المخصوم (مدخل)",
+      "type": "string"
+     },
+     "withheldStatus": {
+      "enum": [
+       "unpaid",
+       "paid"
+      ],
+      "type": "string"
+     }
+    },
+    "required": [
+     "supplierId",
+     "invoiceNo",
+     "date",
+     "isReturn",
+     "baseValue"
+    ],
+    "type": "object"
+   },
    "SubmitDto": {
     "properties": {
      "amount": {
@@ -2148,6 +2245,107 @@
      }
     },
     "required": [
+     "rev"
+    ],
+    "type": "object"
+   },
+   "UpdateInvoiceDto": {
+    "properties": {
+     "baseValue": {
+      "example": "1000.0000",
+      "type": "string"
+     },
+     "category": {
+      "type": "string"
+     },
+     "date": {
+      "example": "2026-11-21",
+      "type": "string"
+     },
+     "description": {
+      "description": "الأصناف (سطر لكل صنف، زي القديم)",
+      "type": "string"
+     },
+     "discountRate": {
+      "description": "نسبة الخصم % (نص، 0–100) — زي القديم",
+      "type": "string"
+     },
+     "discountType": {
+      "type": "string"
+     },
+     "dueDate": {
+      "description": "فاضي = التاريخ + 30 يوم (عرض). مالوش معنى للمرتجع",
+      "type": "string"
+     },
+     "internalCode": {
+      "type": "string"
+     },
+     "invoiceLink": {
+      "type": "string"
+     },
+     "invoiceNo": {
+      "description": "رقم فاتورة المورد (B-31: فريد لكل مورد في الجديد)",
+      "type": "string"
+     },
+     "isReturn": {
+      "description": "مرتجع؟",
+      "type": "boolean"
+     },
+     "itemDescription": {
+      "type": "string"
+     },
+     "linkedInvoiceId": {
+      "description": "المرتجع: الفاتورة الأصلية (فاضي = مرتجع مطلق)",
+      "type": "string"
+     },
+     "nature": {
+      "type": "string"
+     },
+     "notes": {
+      "type": "string"
+     },
+     "project": {
+      "type": "string"
+     },
+     "quantity": {
+      "type": "string"
+     },
+     "rev": {
+      "type": "number"
+     },
+     "stampDuty": {
+      "type": "string"
+     },
+     "supplierId": {
+      "type": "string"
+     },
+     "supplierItemCode": {
+      "type": "string"
+     },
+     "unitPrice": {
+      "type": "string"
+     },
+     "vat": {
+      "type": "string"
+     },
+     "withheld": {
+      "description": "المبلغ المخصوم (مدخل)",
+      "type": "string"
+     },
+     "withheldStatus": {
+      "enum": [
+       "unpaid",
+       "paid"
+      ],
+      "type": "string"
+     }
+    },
+    "required": [
+     "supplierId",
+     "invoiceNo",
+     "date",
+     "isReturn",
+     "baseValue",
      "rev"
     ],
     "type": "object"
@@ -5102,6 +5300,156 @@
     ],
     "tags": [
      "v1 stock adjustments"
+    ]
+   }
+  },
+  "/api/v1/supplier-invoices": {
+   "get": {
+    "operationId": "SupplierInvoicesController_list",
+    "parameters": [],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "القايمة بنفس فلاتر وبحث وترتيب صفحة الفواتير القديمة + الكروت (المرتجع بيخصم)",
+    "tags": [
+     "v1 supplier-invoices"
+    ]
+   },
+   "post": {
+    "operationId": "SupplierInvoicesController_create",
+    "parameters": [],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/SaveInvoiceDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "إضافة فاتورة أو مرتجع (Idempotency-Key إلزامي): المعادلة الانتقالية، ورقم داخلي PI-/PR-، وB-31، وأثر المرتجع، وحدث",
+    "tags": [
+     "v1 supplier-invoices"
+    ]
+   }
+  },
+  "/api/v1/supplier-invoices/linkable": {
+   "get": {
+    "operationId": "SupplierInvoicesController_linkable",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "supplierId",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "keep",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "الفواتير اللي ينفع المرتجع يتربط بيها (نفس المورد، مش مرتجع، مش ملغية)",
+    "tags": [
+     "v1 supplier-invoices"
+    ]
+   }
+  },
+  "/api/v1/supplier-invoices/{id}": {
+   "get": {
+    "operationId": "SupplierInvoicesController_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "tags": [
+     "v1 supplier-invoices"
+    ]
+   },
+   "patch": {
+    "operationId": "SupplierInvoicesController_update",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/UpdateInvoiceDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "تعديل (rev إلزامي). القديم بيفضل من غير رقم داخلي",
+    "tags": [
+     "v1 supplier-invoices"
     ]
    }
   },

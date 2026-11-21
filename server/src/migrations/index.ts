@@ -28,4 +28,6 @@ import { WarehousesCutover1764600000000 } from './1764600000000-WarehousesCutove
 
 import { FinancialFormulas1764700000000 } from './1764700000000-FinancialFormulas';
 
-export const MIGRATIONS: Function[] = [InitLayer11763200000000, RolesFk1763300000000, ChangesRealtime1763400000000, AuditProtection1763500000000, AttachmentsInDb1763600000000, TwoFactor1763700000000, Foundation1763800000000, ApprovalPolicy1763900000000, Parties1764000000000, PartiesCutover1764100000000, TaxEngine1764200000000, ContractualTerms1764300000000, StockGuard1764400000000, StockAdjustments1764500000000, WarehousesCutover1764600000000, FinancialFormulas1764700000000];
+import { SupplierInvoices1764800000000 } from './1764800000000-SupplierInvoices';
+
+export const MIGRATIONS: Function[] = [InitLayer11763200000000, RolesFk1763300000000, ChangesRealtime1763400000000, AuditProtection1763500000000, AttachmentsInDb1763600000000, TwoFactor1763700000000, Foundation1763800000000, ApprovalPolicy1763900000000, Parties1764000000000, PartiesCutover1764100000000, TaxEngine1764200000000, ContractualTerms1764300000000, StockGuard1764400000000, StockAdjustments1764500000000, WarehousesCutover1764600000000, FinancialFormulas1764700000000, SupplierInvoices1764800000000];

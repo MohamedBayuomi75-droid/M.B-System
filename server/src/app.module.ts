@@ -21,6 +21,7 @@ import { ReferenceModule } from './reference/reference.module';
 import { FinanceRulesModule } from './finance-rules/finance-rules.module';
 import { StockModule } from './stock/stock.module';
 import { WarehousesModule } from './warehouses/warehouses.module';
+import { SupplierInvoicesModule } from './supplier-invoices/supplier-invoices.module';
 import { HistoryModule } from './history/history.module';
 
 @Module({
@@ -61,7 +62,7 @@ import { HistoryModule } from './history/history.module';
     NumberingModule,
     NotificationsModule,
     ApprovalsModule,
-    HistoryModule, PartiesModule, ReferenceModule, FinanceRulesModule, StockModule, WarehousesModule,
+    HistoryModule, PartiesModule, ReferenceModule, FinanceRulesModule, StockModule, WarehousesModule, SupplierInvoicesModule,
   ],
 })
 export class AppModule {}

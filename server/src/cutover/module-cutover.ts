@@ -8,11 +8,15 @@ import { WRITE_LOCK_KEY } from '../data/data.service';
  * - تحقق تكافؤ لكل سجل: الشكل القديم (بعد التطبيع الموثّق للموديول) = الشكل الناتج من الجدول.
  * - القيود المؤجّلة (مثلًا B-50) بتتفحص في نهاية المعاملة على الحالة النهائية — مفيش تخطّي لأي قيد.
  */
-export interface CutoverCollection { collection: string; table: string; write: string; read: string; normalized: string; rounding?: { column: string; key: string } }
+export interface CutoverCollection {
+  collection: string; table: string; write: string; read: string; normalized: string; rounding?: { column: string; key: string };
+  /** حقول ليها أعمدة بنوع محدد: القيمة اللي نوعها مختلف بتفضل في legacy_extra — التقرير بيعدّها لكل حقل (أعداد بس) */
+  typedKeys?: string[];
+}
 export interface ModuleSpec { label: string; collections: CutoverCollection[]; clearTables: string[] }
 export interface CutoverReport {
   mode: 'dry-run' | 'execute'; at: string;
-  collections: { collection: string; migrated: number; rounding: { id: string; from: string; to: string }[] }[];
+  collections: { collection: string; migrated: number; rounding: { id: string; from: string; to: string }[]; untyped?: Record<string, number> }[];
 }
 
 async function migrateAll(qr: QueryRunner, spec: ModuleSpec, by: string, mode: CutoverReport['mode']): Promise<CutoverReport> {
@@ -38,7 +42,9 @@ async function migrateAll(qr: QueryRunner, spec: ModuleSpec, by: string, mode: C
     const rounding = p.rounding ? await qr.query(
       `SELECT r.id, r.data->>'${p.rounding.key}' AS "from", trim_scale(t.${p.rounding.column})::text AS "to" FROM records r JOIN ${p.table} t ON t.id = r.id
        WHERE r.collection = $1 AND r.deleted_at IS NULL AND coalesce(r.data->>'${p.rounding.key}','') <> '' AND (r.data->>'${p.rounding.key}')::numeric <> t.${p.rounding.column}`, [p.collection]) : [];
-    report.collections.push({ collection: p.collection, migrated: rows.length, rounding });
+    const untyped = p.typedKeys ? Object.fromEntries((await qr.query(
+      `SELECT k, count(*)::int AS n FROM ${p.table} t, unnest($1::text[]) AS k WHERE t.legacy_extra ? k GROUP BY k ORDER BY k`, [p.typedKeys])).map((x: { k: string; n: number }) => [x.k, x.n])) : undefined;
+    report.collections.push({ collection: p.collection, migrated: rows.length, rounding, ...(untyped ? { untyped } : {}) });
   }
   for (const c of report.collections) await qr.query(`INSERT INTO module_cutover (collection, cutover_by, report) VALUES ($1, $2, $3::jsonb)`, [c.collection, by, JSON.stringify(report)]);
   await qr.query(`INSERT INTO audit_log (username, action, entity, details) VALUES ($1, 'module.cutover', $2, $3::jsonb)`, [by, spec.label, JSON.stringify(report)]);
