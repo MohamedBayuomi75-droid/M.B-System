@@ -7,6 +7,7 @@
 //      ورفض التوزيع الأكبر من المبلغ، والتعديل (بيبدّل سجل واحد وبياخد أول فاتورة)
 //  [5] confirmAndSoftDeletePayment: حذف فعلي + «استعادة» 5 ثواني
 //  [6] صفحة الدفعات: الفلاتر والكروت، والدفعة من غير اتجاه بتتعرض «دائن»
+//  [7] صلاحيات الصفحة (UAT 7.3 K14): ✎ و«تعديل الدفعة» بيختفوا من غير صلاحية تعديل
 // بيشتغل في وضع الملف والويب (WEB_MODE=1) وفوق الجداول.
 const { openApp, WEB } = require('./harness');
 const { ok, eq, summary, baseUser } = require('./lib');
@@ -111,6 +112,21 @@ const { ok, eq, summary, baseUser } = require('./lib');
   ok(await page.evaluate(() => { const tr = document.querySelector('tr[data-viewpay="p3"]'); return !!tr && tr.innerText.includes('دائن — علينا له'); }), 'الدفعة من غير اتجاه بتتعرض «دائن — علينا له»');
   eq(await page.evaluate(() => { Object.assign(paymentsFilters, { direction: 'collect', link: '', sort: 'new' }); const a = getFilteredPayments().map((p) => p.id); Object.assign(paymentsFilters, { direction: '', link: 'general' }); const b = getFilteredPayments().length; Object.assign(paymentsFilters, { link: '' }); return [a, b]; }),
     [['p2', 'p1'], await page.evaluate(() => DATA.ledger.payments.filter((p) => !p.invoiceId).length)], 'فلتر «مدين» (التحصيل بس)، وفلتر «دفعة عامة»');
+
+  console.log('[7] صلاحيات صفحة الدفعات (UAT 7.3 K14): مستخدم عرض بس مايشوفش ✎ ولا ✕ ولا «إضافة»، ولا «تعديل الدفعة» في نافذة العرض');
+  const perm = await page.evaluate(() => {
+    const orig = window.getUserPerms;
+    window.getUserPerms = () => ({ pages: { 'ledger.payments': { view: true, add: false, edit: false, delete: false } } });
+    goToPage('ledger.payments');
+    const table = { edit: document.querySelectorAll('[data-editpay]').length, del: document.querySelectorAll('[data-delpay-global]').length, add: !!document.getElementById('openAddPaymentPageBtn') };
+    openViewPaymentModal('p1'); const viewEdit = !!document.getElementById('m_pay_edit'); try { closeModal(); } catch (e) { /* */ } document.querySelectorAll('#modalOverlay').forEach((o) => o.remove());
+    window.getUserPerms = orig; goToPage('ledger.payments');
+    const admin = { edit: document.querySelectorAll('[data-editpay]').length > 0, add: !!document.getElementById('openAddPaymentPageBtn') };
+    openViewPaymentModal('p1'); const adminViewEdit = !!document.getElementById('m_pay_edit'); document.querySelectorAll('#modalOverlay').forEach((o) => o.remove());
+    return { table, viewEdit, admin, adminViewEdit };
+  });
+  eq([perm.table, perm.viewEdit], [{ edit: 0, del: 0, add: false }, false], 'مفيش ✎ ولا ✕ ولا «إضافة» في الجدول، ولا «تعديل الدفعة» في نافذة العرض');
+  eq([perm.admin, perm.adminViewEdit], [{ edit: true, add: true }, true], 'الأدمن لسه بيشوف الأزرار');
 
   if (WEB) {
     await page.waitForFunction(() => !WebSync._state.saving, null, { timeout: 15000 });

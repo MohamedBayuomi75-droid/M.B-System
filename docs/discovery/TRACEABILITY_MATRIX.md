@@ -11,18 +11,18 @@
 | page | 54 | 54 (100%) | 6 |
 | calc | 120 | 46 (38%) | 0 |
 | data-write | 30 | 20 (67%) | 0 |
-| modal | 63 | 23 (37%) | 0 |
+| modal | 63 | 24 (38%) | 0 |
 | export/print | 37 | 5 (14%) | 0 |
 | permission | 8 | 0 (0%) | 8 |
 | electron-capability | 42 | 6 (14%) | 0 |
-| **الإجمالي** | **354** | **154 (44%)** | **14** |
+| **الإجمالي** | **354** | **155 (44%)** | **14** |
 
 ## 2. التغطية حسب الموديول (LEG)
 | الموديول | العدد | منها P0 (مقترح) | ليه اختبار | اتنقل | قرارات مفتوحة بتمنعه |
 |---|---|---|---|---|---|
 | مشترك (core) | 97 | 10 | 31 (32%) | 0 | — |
 | الموارد البشرية | 69 | 21 | 19 (28%) | 0 | DEC-0045 (B-45)، DEC-0046 (B-46)، DEC-0047 (B-47)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0076 (B-76)، DEC-0042 (B-42) |
-| الموردون | 58 | 22 | 30 (52%) | 3 | — |
+| الموردون | 58 | 22 | 31 (53%) | 3 | — |
 | ديسكتوب | 42 | 15 | 6 (14%) | 0 | — |
 | العملاء والمشاريع | 38 | 11 | 28 (74%) | 2 | DEC-0035 (B-35) |
 | المخازن | 13 | 8 | 11 (85%) | 1 | DEC-0077 (B-77) |
@@ -393,7 +393,7 @@
 | LEG-0261 | modal | الموردون | نافذة openAddEditInvoiceModal | renderer/modules/ledger/modals.js:660 | legacy |  | Verified (جرد ثابت بس) | — |
 | LEG-0262 | modal | الموردون | نافذة openDiscountNoticeModal | renderer/modules/ledger/modals.js:1410 | legacy |  | Verified (جرد ثابت بس) | — |
 | LEG-0263 | modal | الموردون | نافذة openViewInvoiceModal | renderer/modules/ledger/modals.js:1452 | legacy |  | Verified (جرد ثابت بس) | — |
-| LEG-0264 | modal | الموردون | نافذة openViewPaymentModal | renderer/modules/ledger/modals.js:1633 | legacy |  | Verified (جرد ثابت بس) | — |
+| LEG-0264 | modal | الموردون | نافذة openViewPaymentModal | renderer/modules/ledger/modals.js:1633 | legacy | phase69.js | Verified (باختبار) | — |
 | LEG-0265 | calc | الموردون | دالة حساب printSupplierStatementTab | renderer/modules/ledger/modals.js:1439 | legacy |  | Verified (جرد ثابت بس) | — |
 | LEG-0266 | calc | الموردون | دالة حساب printSupplierStatement | renderer/modules/ledger/modals.js:1446 | legacy |  | Verified (جرد ثابت بس) | — |
 | LEG-0267 | export/print | الموردون | تصدير/طباعة printSupplierStatementTab | renderer/modules/ledger/modals.js | legacy |  | Verified (جرد ثابت بس) | — |
