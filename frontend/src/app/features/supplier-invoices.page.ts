@@ -6,6 +6,7 @@ import { firstValueFrom } from 'rxjs';
 import { legacyUrl } from '../core/page-routes';
 import { errorMessage, SessionService } from '../core/session.service';
 import { LegacyToast } from './legacy-toast';
+import { fmtDate as legacyFmtDate, legacyFmt, plain, roundMoney, toLatin } from '../core/legacy-format';
 
 type Mode = 'invoices' | 'returns';
 interface Opt { code: string; label: string }
@@ -27,13 +28,6 @@ const MONTHS = ['يناير', 'فبراير', 'مارس', 'أبريل', 'ماي�
 const STATUS: [string, string][] = [['', 'كل الحالات'], ['paid', 'مسددة'], ['partial', 'مسددة جزئياً'], ['unpaid', 'غير مسددة'], ['overdue', 'متأخرة'], ['return', 'مرتجعات']];
 const SORTS: [string, string][] = [['new', 'الأحدث أولاً'], ['old', 'الأقدم أولاً'], ['amount_desc', 'الأعلى قيمة'], ['amount_asc', 'الأقل قيمة'], ['supplier', 'المورد'], ['no', 'رقم الفاتورة']];
 const EMPTY_FILTERS = { q: '', supplierId: '', category: '', project: '', year: '', month: '', from: '', to: '', overdueOnly: false, status: '', withheld: '', min: '', max: '', sort: 'new' };
-const AR = '٠١٢٣٤٥٦٧٨٩';
-const toAr = (s: string) => s.replace(/[0-9]/g, (d) => AR[+d]);
-const toLatin = (s: string) => String(s).replace(/[٠-٩]/g, (d) => String(AR.indexOf(d))).replace(/[۰-۹]/g, (d) => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d)));
-/** plainMoneyText (helpers.js): أرقام لاتينية من غير فواصل، للإرسال */
-const plain = (v: unknown) => toLatin(String(v ?? '').trim()).replace(/[‎‏‪-‮⁦-⁩]/g, '').replace(/[,٬\s]/g, '').replace(/٫/g, '.').replace(/−/g, '-');
-/** roundMoney القديم (Math.round) — للعرض بس، زي fmt */
-const roundMoney = (n: number, d = 6) => { const f = Math.pow(10, d); return Math.round((Number(n) || 0) * f) / f; };
 
 /**
  * فواتير ومرتجعات الموردين — بنفس شكل الواجهة القديمة (DEC-0093): renderer/modules/ledger/pages-invoices.js (renderInvoicesPage)
@@ -339,19 +333,10 @@ export class SupplierInvoicesPage implements OnInit {
   /** codeDescription (modals.js:190) */
   optLabel = (list: Opt[], code?: string) => { const o = list.find((x) => x.code === String(code)); return o ? `${o.code} — ${o.label}` : code ? String(code) : '-'; };
   /** lgFmtDate: يوم/شهر/سنة */
-  fmtDate = (v: string) => { const m = String(v || '').match(/^(\d{4})-(\d{2})-(\d{2})/); return m ? `${Number(m[3])}/${Number(m[2])}/${m[1]}` : v || ''; };
-  /** fmt (helpers.js:279): أرقام عربية بفاصلة آلاف، وعدد الخانات من الإعدادات (الافتراضي 6) */
-  fmt(n: unknown): string {
-    let num = roundMoney(Number(n) || 0, 6) || 0;
-    const mode = this.opts().moneyDecimals;
-    let txt: string;
-    if (mode === 'auto') { const raw = Math.abs(num).toFixed(6).replace(/\.0+$/, '').replace(/(\.\d*?)0+$/, '$1'); const fl = raw.includes('.') ? Math.max(2, raw.split('.')[1].length) : 0; txt = Math.abs(num).toFixed(fl); }
-    else txt = Math.abs(num).toFixed(mode);
-    if (Number(txt) === 0) num = 0;
-    const parts = txt.split('.');
-    const out = toAr(parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',') + (parts[1] !== undefined ? '.' + parts[1] : ''));
-    return num < 0 ? '⁦-' + out + '⁩' : out;
-  }
+  fmtDate = (v: string) => legacyFmtDate(v);
+  /** fmt (helpers.js:279) — مشترك في core/legacy-format.ts */
+  fmt(n: unknown): string { return legacyFmt(n, this.opts().moneyDecimals); }
+
   /** invoiceRowClass (helpers.js:2022) */
   rowClass(r: Inv) { return [r.isReturn ? 'row-return' : '', r.overdue ? 'row-overdue' : '', r.missing.length ? 'row-incomplete' : ''].filter(Boolean).join(' '); }
   /** زي القديم: زرار التعديل بصلاحية «تعديل» على صفحة الفواتير */

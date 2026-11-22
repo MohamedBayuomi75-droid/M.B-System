@@ -22,6 +22,7 @@
     "cutover": "node dist/cli/cutover.js",
     "inspect-files": "node dist/cli/inspect-files.js",
     "invoice-reconcile": "node dist/cli/invoice-reconcile.js",
+    "supplier-balances": "node dist/cli/supplier-balances.js",
     "taxes:drafts": "node dist/cli/tax-drafts.js",
     "formulas:drafts": "node dist/cli/formula-drafts.js"
   },

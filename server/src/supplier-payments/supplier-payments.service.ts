@@ -213,7 +213,9 @@ export class SupplierPaymentsService {
   async balances(u: AuthUser) {
     this.assert(u, 'view');
     const L = await this.ledger();
-    return L.sups.map((sp) => ({ supplierId: sp.id, name: s(sp.data.name), ...balanceDiff({ ...sp.data, id: sp.id }, L.inv(sp.id), L.pay(sp.id)) }))
+    // lastActivity: لترتيب «آخر نشاط» في شاشة الموردين (supplierListView القديمة: أحدث تاريخ فاتورة أو دفعة)
+    const last = (sid: string) => ([...L.inv(sid), ...L.pay(sid)] as Pay[]).reduce((m, x) => { const d = s(x.date).slice(0, 10); return d > m ? d : m; }, '');
+    return L.sups.map((sp) => ({ supplierId: sp.id, name: s(sp.data.name), lastActivity: last(sp.id), ...balanceDiff({ ...sp.data, id: sp.id }, L.inv(sp.id), L.pay(sp.id)) }))
       .sort((a, b) => a.name.localeCompare(b.name, 'ar'));
   }
 }

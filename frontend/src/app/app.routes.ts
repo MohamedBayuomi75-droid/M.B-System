@@ -19,6 +19,9 @@ export const routes: Routes = [
       // 7.2: فواتير ومرتجعات الموردين — التوجيه من القايمة اتقلب بموافقة البوابة (2026-11-22، page-routes)
       { path: 'supplier-invoices', canActivate: [pageGuard], data: { page: 'ledger.invoices', skin: 'legacy', bodyClass: 'module-ledger', mode: 'invoices' }, loadComponent: () => import('./features/supplier-invoices.page').then((m) => m.SupplierInvoicesPage), title: 'كل الفواتير' },
       { path: 'supplier-returns', canActivate: [pageGuard], data: { page: 'ledger.returns', skin: 'legacy', bodyClass: 'module-ledger', mode: 'returns' }, loadComponent: () => import('./features/supplier-invoices.page').then((m) => m.SupplierInvoicesPage), title: 'المرتجعات' },
+      // 7.3: الدفعات وكشف الحساب — التوجيه من القايمة لسه للواجهة القديمة لحد موافقة البوابة (الشاشات بالرابط للمقارنة والـ UAT)
+      { path: 'supplier-payments', canActivate: [pageGuard], data: { page: 'ledger.payments', skin: 'legacy', bodyClass: 'module-ledger' }, loadComponent: () => import('./features/supplier-payments.page').then((m) => m.SupplierPaymentsPage), title: 'الدفعات' },
+      { path: 'supplier-statement', canActivate: [pageGuard], data: { page: 'ledger.suppliers', skin: 'legacy', bodyClass: 'module-ledger' }, loadComponent: () => import('./features/supplier-statement.page').then((m) => m.SupplierStatementPage), title: 'كشف حساب المورد' },
       { path: 'warehouses', canActivate: [pageGuard], data: { page: 'warehouses.home', skin: 'legacy' }, loadComponent: () => import('./features/warehouses.page').then((m) => m.WarehousesPage), title: 'المخازن' },
       { path: 'formulas', canActivate: [financeRulesGuard], loadComponent: () => import('./features/formulas.page').then((m) => m.FormulasPage), title: 'إدارة القواعد المالية' },
       { path: 'taxes', canActivate: [financeRulesGuard], loadComponent: () => import('./features/taxes.page').then((m) => m.TaxesPage), title: 'الضرائب والاستقطاعات' },

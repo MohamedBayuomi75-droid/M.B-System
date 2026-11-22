@@ -454,6 +454,57 @@ async function login(page, username, password) {
     eq((await api('GET', `/api/v1/supplier-invoices/${inv.id}`, null, adminTok)).body.events.map((e) => e.type), ['supplier-invoice.posted', 'supplier-invoice.cancelled'], 'outbox events: posted, then cancelled');
   }
 
+  console.log('[6h] 7.3: payments screen (allocation, unclassified review), statement by F-05, supplier balance (test data)');
+  {
+    const up = (collection, id, set) => ({ collection, id, op: 'upsert', baseRev: 0, set: { id, ...set } });
+    await api('POST', '/api/sync', { changes: [
+      up('ledger.suppliers', 'pay-ui-sup', { name: 'مورد شاشة الدفعات', taxId: '321', commercialReg: 'CR-9', openingBalance: 1000, extraFields: [], attachments: [] }),
+      up('ledger.invoices', 'pay-ui-i1', { supplierId: 'pay-ui-sup', invoiceNo: 'PUI-1', date: '2026-02-01', baseValue: 1000, vat: 140, stampDuty: 0, withheld: 10, totalInvoice: 1140, netInvoice: 1130, isReturn: false, attachments: [], notes: '' }),
+      up('ledger.invoices', 'pay-ui-ic', { supplierId: 'pay-ui-sup', invoiceNo: 'PUI-C', date: '2026-02-02', baseValue: 500, vat: 0, stampDuty: 0, withheld: 0, totalInvoice: 500, netInvoice: 500, isReturn: false, cancelled: true, attachments: [], notes: '' }),
+      up('ledger.payments', 'pay-ui-u1', { paymentNo: 900, supplierId: 'pay-ui-sup', invoiceId: '', amount: 40, method: 'نقدي', date: '2026-02-03', transferRef: '', notes: 'غير مصنّفة', extraFields: [], attachments: [] }),
+    ] }, adminTok);
+    await A.page.goto(srv.base + '/app/supplier-payments');
+    await A.page.waitForSelector('#payTable');
+    ok(!!(await A.page.$('.filters-row #paymentsSearchBox')) && (await A.page.$$('#payStats .stat-card')).length === 2 && (await A.page.$$('#payTable thead th')).length === 10, 'legacy layout: filters row, 2 cards, 10 columns');
+    // دفعة موزّعة من النافذة: 700 على PUI-1 من 1000 ← سجلين بنفس الـ batch (الفاتورة + الباقي 300)
+    await A.page.click('#openAddPaymentPageBtn'); await A.page.waitForSelector('#m_pay_save');
+    await A.page.selectOption('#m_pay_supplier', 'pay-ui-sup');
+    eq(await A.page.inputValue('#m_pay_taxid'), '321', 'supplier tax id shown');
+    await A.page.waitForSelector('.m_pay_inv_cb[value="pay-ui-i1"]');
+    ok(!(await A.page.$('.m_pay_inv_cb[value="pay-ui-ic"]')), 'cancelled invoice not offered for allocation');
+    await A.page.fill('#m_pay_amount', '1000');
+    await A.page.check('.m_pay_inv_cb[value="pay-ui-i1"]');
+    eq(await A.page.inputValue('.m_pay_inv_amt[data-invid="pay-ui-i1"]'), '1130', 'checking an invoice pre-fills its remaining (legacy)');
+    await A.page.fill('.m_pay_inv_amt[data-invid="pay-ui-i1"]', '700');
+    ok((await A.page.textContent('#m_pay_allocHint')).includes('متبقي للتوزيع'), 'allocation hint: remainder');
+    const [pr] = await Promise.all([A.page.waitForResponse((r) => r.url().endsWith('/api/v1/supplier-payments') && r.request().method() === 'POST'), A.page.click('#m_pay_save')]);
+    eq(pr.status(), 201, 'saved from the modal (Idempotency-Key sent)');
+    const pay = await pr.json();
+    eq(pay.batch.map((b) => [b.invoiceId, b.amount]), [['pay-ui-i1', 700], ['', 300]], 'one record per invoice + the remainder, same batch');
+    ok(/^PV-2026-\d{5}$/.test(pay.internalNo), 'PV- internal number');
+    await A.page.waitForSelector(`#payTable tr[data-viewpay="${pay.id}"]`);
+    await A.page.click(`#payTable tr[data-viewpay="${pay.id}"] [data-viewpay-btn]`); await A.page.waitForSelector('#payViewModal');
+    ok((await A.page.textContent('#payViewBatch')).includes('2 بند'), 'view modal shows the allocated batch');
+    await A.page.click('#m_close_pay_view');
+    // الكشف بـ F-05 قبل المراجعة: 1000 + 1130 (الملغاة برا) − 1000 = 1130، والـ 40 غير المصنّفة برا الرصيد ومعاها علامة الفرق
+    await A.page.goto(srv.base + '/app/supplier-statement?supplierId=pay-ui-sup');
+    await A.page.waitForSelector('#stClosing');
+    ok((await A.page.textContent('#stClosing')).includes('١,١٣٠'), 'statement closing by F-05 (cancelled out, unclassified out)', await A.page.textContent('#stClosing'));
+    ok(!!(await A.page.$('#stDiffers')) && !!(await A.page.$('#stUnclassified')), 'difference banner + unclassified list');
+    eq(await A.page.$$eval('#stTable tr[data-type]', (rs) => rs.map((r) => r.getAttribute('data-type'))), ['invoice', 'pay', 'pay'], 'statement lines: invoice, the two payment records (no cancelled, no unclassified)');
+    // مراجعة غير المصنّفة: دفعة واحدة بزرارها (التأكيد بيتقبل)
+    await A.page.goto(srv.base + '/app/supplier-payments'); await A.page.waitForSelector('#payReviewBtn');
+    await A.page.click('#payReviewBtn'); await A.page.waitForSelector('#payReviewHint');
+    await Promise.all([A.page.waitForResponse((r) => r.url().endsWith('/api/v1/supplier-payments/pay-ui-u1/direction')), A.page.click('[data-classify-collect="pay-ui-u1"]')]);
+    eq((await api('GET', '/api/v1/supplier-payments/pay-ui-u1', null, adminTok)).body.direction, 'collect', 'unclassified payment classified one at a time (collect)');
+    // رصيد المورد في شاشة الموردين بـ F-05: 1130 + 40 (التحصيل بيتجمع) = 1170
+    await A.page.goto(srv.base + '/app/suppliers'); await A.page.waitForSelector('#supList [data-id="pay-ui-sup"]');
+    eq(await A.page.getAttribute('#supList [data-id="pay-ui-sup"] .s-balance', 'data-balance'), '1170.000000', 'supplier list shows the F-05 balance');
+    await A.page.selectOption('#supBalanceFilter', 'zero');
+    ok(!(await A.page.$('#supList [data-id="pay-ui-sup"]')), 'balance filter (paid off) hides a supplier with a balance');
+    await A.page.selectOption('#supBalanceFilter', '');
+  }
+
   console.log('[7] logout ends the shared session; PWA service worker registers; no CSP violations');
   {
     const reg = await A.page.waitForFunction(() => navigator.serviceWorker.getRegistration('/app/').then((r) => !!r), null, { timeout: 45000 }).then(() => true).catch(() => false);

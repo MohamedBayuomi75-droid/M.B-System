@@ -5,6 +5,7 @@ import { firstValueFrom } from 'rxjs';
 import { legacyUrl } from '../core/page-routes';
 import { errorMessage, SessionService } from '../core/session.service';
 import { LegacyToast } from './legacy-toast';
+import { legacyFmt } from '../core/legacy-format';
 
 export interface ExtraField { label: string; value: string }
 export interface Supplier { extraFields: ExtraField[]; id: string; name: string; taxId: string; commercialReg: string; businessNature: string; openingBalance: string; openingBalanceDate: string; phone: string; email: string; address: string; bankAccount: string; iban: string; notes: string; invoicesCount: number; paymentsCount: number; attachmentsCount: number; rev: number }
@@ -20,7 +21,7 @@ const copy = (s: Supplier): Form => ({ ...s, openingBalance: moneyInput(s.openin
 /**
  * الموردين — بنفس شكل الواجهة القديمة بالظبط (DEC-0093 أ): renderer/modules/ledger/pages-suppliers.js (renderSuppliersPage،
  * renderSupplierMain، renderInfoTab) ونافذة «إضافة مورد جديد» (modals.js:9)، بنفس الكلاسات من legacy-skin.css.
- * الرصيد وفلتره وترتيبه، والفواتير والدفعات وكشف الحساب، والتصدير والحذف والمرفقات: متأجلين لموديولاتهم (S3، S6، S7، S8)
+ * الرصيد وفلتره وترتيبه بقاعدة F-05 (7.3، DEC-0113)، وكشف الحساب في /app/supplier-statement. والفواتير والدفعات في تبويب المورد، والتصدير والحذف والمرفقات: متأجلين لموديولاتهم (S3، S6، S7، S8)
  * ومكانهم ظاهر وبيفتح الشاشة الكاملة القديمة.
  */
 @Component({
@@ -33,20 +34,24 @@ const copy = (s: Supplier): Form => ({ ...s, openingBalance: moneyInput(s.openin
           <h3>الموردون</h3>
           <input class="search-box" id="supSearch" placeholder="اسم، رقم ضريبي، سجل، هاتف، بريد..." autocomplete="off" [(ngModel)]="q" (ngModelChange)="load()" />
           <div style="display:flex;gap:6px;margin-top:8px;">
-            <select style="flex:1;min-width:0;font-size:12px;padding:5px 6px;" disabled title="فلتر الرصيد في الشاشة الكاملة (مع موديول الفواتير)"><option>كل الأرصدة</option></select>
-            <select style="flex:1;min-width:0;font-size:12px;padding:5px 6px;" disabled title="الترتيب بالرصيد وآخر نشاط في الشاشة الكاملة"><option>بالاسم</option></select>
+            <select id="supBalanceFilter" style="flex:1;min-width:0;font-size:12px;padding:5px 6px;" title="فلتر الرصيد (بقاعدة F-05)" [(ngModel)]="balFilter" (ngModelChange)="refreshView()">
+              <option value="">كل الأرصدة</option><option value="debt">علينا له (رصيد دائن)</option><option value="credit">له عندنا / مدفوع زيادة</option><option value="zero">مسدد (صفر)</option>
+            </select>
+            <select id="supSortMode" style="flex:1;min-width:0;font-size:12px;padding:5px 6px;" title="الترتيب" [(ngModel)]="sortMode" (ngModelChange)="refreshView()">
+              <option value="name">بالاسم</option><option value="balance_desc">الأعلى رصيداً</option><option value="balance_asc">الأقل رصيداً</option><option value="recent">آخر نشاط</option>
+            </select>
           </div>
           <div id="supListCount" style="font-size:11.5px;color:var(--ink-soft);margin-top:6px;">{{ countText() }}</div>
         </div>
         @if (canAdd) { <button class="add-supplier-btn" id="supNew" (click)="startNew()">+ إضافة مورد جديد</button> }
         <a class="btn btn-outline btn-sm" [href]="legacyFull" style="width:100%;margin-top:6px;justify-content:center;" title="التصدير من الشاشة الكاملة">تصدير الموردين (الظاهرين) Excel</a>
         <div id="supplierListWrap">
-          @if (items().length) {
+          @if (view().length) {
             <ul class="supplier-list" id="supList">
-              @for (s of items(); track s.id) {
+              @for (s of view(); track s.id) {
                 <li class="supplier-item" [class.active]="s.id === activeId()" [attr.data-id]="s.id" (click)="open(s)">
                   <span class="s-name">{{ s.name }}</span>
-                  <span class="s-balance zero" title="عدد الفواتير — الرصيد في الشاشة الكاملة">{{ s.invoicesCount }} فاتورة</span>
+                  <span class="s-balance" [class]="'s-balance ' + balCls(s.id)" [attr.data-balance]="bal(s.id)" [title]="balTitle(s.id)">{{ balText(s.id) }}</span>
                 </li>
               }
             </ul>
@@ -66,7 +71,8 @@ const copy = (s: Supplier): Form => ({ ...s, openingBalance: moneyInput(s.openin
                 @if (f.businessNature) { <span class="pill">{{ f.businessNature }}</span> }
               </div>
             </div>
-            <div class="balance-box"><div class="lbl">الرصيد</div><div class="val zero"><a [href]="legacyFull" style="font-size:13px;">في الشاشة الكاملة</a></div></div>
+            <div class="balance-box" id="supBalanceBox" [title]="balTitle(f.id ?? '')"><div class="lbl">{{ balLabel(f.id ?? '') }}</div><div class="val" [class]="'val ' + balCls(f.id ?? '')">{{ balText(f.id ?? '') }}</div>
+              @if (balances().get(f.id ?? '')?.differs) { <div style="font-size:11px;color:var(--gold);margin-top:2px;" id="supBalanceDiffers">⚠️ مختلف عن الطريقة الحالية</div> }</div>
             <div class="btn-row no-print">
               <a class="btn btn-outline btn-sm" [href]="legacyFull">حفظ PDF لكشف الحساب</a>
               <a class="btn btn-outline btn-sm" [href]="legacyFull">تصدير Excel</a>
@@ -77,7 +83,7 @@ const copy = (s: Supplier): Form => ({ ...s, openingBalance: moneyInput(s.openin
             <button class="tab-btn active" type="button">البيانات</button>
             <a class="tab-btn" [href]="legacyFull">الفواتير</a>
             <a class="tab-btn" [href]="legacyFull">الدفعات</a>
-            <a class="tab-btn" [href]="legacyFull">كشف الحساب</a>
+            <a class="tab-btn" [href]="'/app/supplier-statement?supplierId=' + (f.id ?? '')">كشف الحساب</a>
           </div>
           <form id="supForm" (ngSubmit)="save()">
             <div class="info-grid">
@@ -192,11 +198,45 @@ export class SuppliersPage implements OnInit {
   readonly showExtra = signal(false); readonly prompt = signal<{ target: Form; label: string } | null>(null);
   readonly busy = signal(false); readonly error = signal('');
   readonly activeId = computed(() => this.form()?.id ?? null);
-  readonly countText = computed(() => (this.items().length === this.all() ? `${this.all()} مورد` : `${this.items().length} من ${this.all()} مورد`));
+  readonly countText = computed(() => (this.view().length === this.all() ? `${this.all()} مورد` : `${this.view().length} من ${this.all()} مورد`));
+  // ---- الرصيد بقاعدة F-05 (7.3، DEC-0113 د-2) — نفس فلتر وترتيب supplierListView القديمة (pages-suppliers.js:43)
+  readonly balances = signal(new Map<string, { balance: string; legacyBalance: string; differs: boolean; lastActivity: string; reasons: Record<string, { count: number; amount: string }> }>());
+  private readonly balTick = signal(0);
+  balFilter = ''; sortMode = 'name';
+  refreshView() { this.balTick.update((n) => n + 1); }
+  readonly view = computed(() => {
+    this.balTick(); const b = this.balances();
+    const n = (id: string) => Number(b.get(id)?.balance ?? 0);
+    let rows = this.items().filter((x) => {
+      const v = n(x.id);
+      if (this.balFilter === 'debt') return v > 0.005;
+      if (this.balFilter === 'credit') return v < -0.005;
+      if (this.balFilter === 'zero') return Math.abs(v) <= 0.005;
+      return true;
+    });
+    const byName = (a: Supplier, c: Supplier) => a.name.localeCompare(c.name, 'ar');
+    rows = rows.slice();
+    if (this.sortMode === 'balance_desc') rows.sort((a, c) => n(c.id) - n(a.id) || byName(a, c));
+    else if (this.sortMode === 'balance_asc') rows.sort((a, c) => n(a.id) - n(c.id) || byName(a, c));
+    else if (this.sortMode === 'recent') rows.sort((a, c) => String(b.get(c.id)?.lastActivity ?? '').localeCompare(String(b.get(a.id)?.lastActivity ?? '')) || byName(a, c));
+    else rows.sort(byName);
+    return rows;
+  });
+  bal = (id: string) => this.balances().get(id)?.balance ?? '';
+  balCls = (id: string) => { const v = Number(this.bal(id) || 0); return v > 0 ? 'debt' : v < 0 ? 'credit' : 'zero'; };
+  balText = (id: string) => (this.bal(id) === '' ? '—' : legacyFmt(Math.abs(Number(this.bal(id)))));
+  balLabel = (id: string) => { const v = Number(this.bal(id) || 0); return v > 0 ? 'مستحق للمورد' : v < 0 ? 'رصيد زائد لصالحنا' : 'الحساب متزن'; };
+  balTitle = (id: string) => { const x = this.balances().get(id); return x ? `الرصيد بالقاعدة المعتمدة (F-05)${x.differs ? ` — بالطريقة الحالية: ${legacyFmt(Number(x.legacyBalance))}` : ''}` : ''; };
+  private async loadBalances() {
+    try {
+      const r = await firstValueFrom(this.http.get<{ supplierId: string; balance: string; legacyBalance: string; differs: boolean; lastActivity: string; reasons: Record<string, { count: number; amount: string }> }[]>('/api/v1/supplier-payments/balances'));
+      this.balances.set(new Map(r.map((x) => [x.supplierId, x])));
+    } catch { /* الرصيد بيفضل «—» لو مالوش صلاحية */ }
+  }
   readonly canAdd = this.session.can('ledger.suppliers', 'add'); readonly canEdit = this.session.can('ledger.suppliers', 'edit');
   readonly legacyFull = legacyUrl('ledger.suppliers');
   q = '';
-  ngOnInit() { void this.load(); }
+  ngOnInit() { void this.load(); void this.loadBalances(); }
   async load() {
     try {
       const r = await firstValueFrom(this.http.get<{ items: Supplier[]; all: number }>('/api/v1/suppliers', { params: new HttpParams().set('q', this.q.trim()) }));
