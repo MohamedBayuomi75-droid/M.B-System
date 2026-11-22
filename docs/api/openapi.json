@@ -1,6 +1,22 @@
 {
  "components": {
   "schemas": {
+   "AllocationDto": {
+    "properties": {
+     "amount": {
+      "example": "600.000000",
+      "type": "string"
+     },
+     "invoiceId": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "invoiceId",
+     "amount"
+    ],
+    "type": "object"
+   },
    "AppliedDocDto": {
     "properties": {
      "data": {
@@ -375,6 +391,25 @@
     ],
     "type": "object"
    },
+   "ClassifyPaymentDto": {
+    "properties": {
+     "direction": {
+      "enum": [
+       "pay",
+       "collect"
+      ],
+      "type": "string"
+     },
+     "rev": {
+      "type": "number"
+     }
+    },
+    "required": [
+     "rev",
+     "direction"
+    ],
+    "type": "object"
+   },
    "ComputeTaxesDto": {
     "properties": {
      "bases": {
@@ -746,6 +781,67 @@
     },
     "required": [
      "name"
+    ],
+    "type": "object"
+   },
+   "CreatePaymentDto": {
+    "properties": {
+     "allocations": {
+      "items": {
+       "$ref": "#/components/schemas/AllocationDto"
+      },
+      "type": "array"
+     },
+     "amount": {
+      "example": "1000.000000",
+      "type": "string"
+     },
+     "date": {
+      "example": "2026-11-22",
+      "type": "string"
+     },
+     "direction": {
+      "description": "دائن (سداد للمورد) أو مدين (تحصيل / عليه لنا)",
+      "enum": [
+       "pay",
+       "collect"
+      ],
+      "type": "string"
+     },
+     "extraFields": {
+      "items": {
+       "$ref": "#/components/schemas/ExtraFieldDto"
+      },
+      "type": "array"
+     },
+     "general": {
+      "description": "دفعة عامة (مقدمة / تحت الحساب) من غير ربط بفاتورة",
+      "type": "boolean"
+     },
+     "method": {
+      "enum": [
+       "نقدي",
+       "تحويل بنكي",
+       "شيك",
+       "أخرى"
+      ],
+      "type": "string"
+     },
+     "notes": {
+      "type": "string"
+     },
+     "supplierId": {
+      "type": "string"
+     },
+     "transferRef": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "supplierId",
+     "date",
+     "direction",
+     "amount"
     ],
     "type": "object"
    },
@@ -2395,6 +2491,62 @@
     },
     "required": [
      "rev"
+    ],
+    "type": "object"
+   },
+   "UpdatePaymentDto": {
+    "properties": {
+     "amount": {
+      "type": "string"
+     },
+     "date": {
+      "type": "string"
+     },
+     "direction": {
+      "enum": [
+       "pay",
+       "collect"
+      ],
+      "type": "string"
+     },
+     "extraFields": {
+      "items": {
+       "$ref": "#/components/schemas/ExtraFieldDto"
+      },
+      "type": "array"
+     },
+     "invoiceId": {
+      "description": "فاضي = دفعة عامة",
+      "type": "string"
+     },
+     "method": {
+      "enum": [
+       "نقدي",
+       "تحويل بنكي",
+       "شيك",
+       "أخرى"
+      ],
+      "type": "string"
+     },
+     "notes": {
+      "type": "string"
+     },
+     "rev": {
+      "type": "number"
+     },
+     "supplierId": {
+      "type": "string"
+     },
+     "transferRef": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "rev",
+     "supplierId",
+     "date",
+     "direction",
+     "amount"
     ],
     "type": "object"
    },
@@ -5470,6 +5622,264 @@
     "summary": "تعديل (rev إلزامي). القديم بيفضل من غير رقم داخلي",
     "tags": [
      "v1 supplier-invoices"
+    ]
+   }
+  },
+  "/api/v1/supplier-payments": {
+   "get": {
+    "operationId": "SupplierPaymentsController_list",
+    "parameters": [],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "القايمة بنفس فلاتر وبحث وترتيب صفحة الدفعات القديمة + الكارتين",
+    "tags": [
+     "v1 supplier-payments"
+    ]
+   },
+   "post": {
+    "operationId": "SupplierPaymentsController_create",
+    "parameters": [],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/CreatePaymentDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "إضافة دفعة (Idempotency-Key إلزامي): عامة أو موزّعة، ورقم PV- + paymentNo، وحدث",
+    "tags": [
+     "v1 supplier-payments"
+    ]
+   }
+  },
+  "/api/v1/supplier-payments/balances": {
+   "get": {
+    "operationId": "SupplierPaymentsController_balances",
+    "parameters": [],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "الرصيد لكل مورد: F-05 + الطريقة الحالية + الفرق وأسبابه (DEC-0105)",
+    "tags": [
+     "v1 supplier-payments"
+    ]
+   }
+  },
+  "/api/v1/supplier-payments/open-invoices": {
+   "get": {
+    "operationId": "SupplierPaymentsController_openInvoices",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "supplierId",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "keep",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "فواتير المورد اللي ليها باقي (للتوزيع)",
+    "tags": [
+     "v1 supplier-payments"
+    ]
+   }
+  },
+  "/api/v1/supplier-payments/statement/{supplierId}": {
+   "get": {
+    "operationId": "SupplierPaymentsController_statement",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "supplierId",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "كشف الحساب بقاعدة F-05 (نفس حركات الرصيد) + علامة الفرق عن الطريقة الحالية",
+    "tags": [
+     "v1 supplier-payments"
+    ]
+   }
+  },
+  "/api/v1/supplier-payments/unclassified": {
+   "get": {
+    "operationId": "SupplierPaymentsController_unclassified",
+    "parameters": [],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "الدفعات من غير اتجاه (B-53) — قايمة مراجعة",
+    "tags": [
+     "v1 supplier-payments"
+    ]
+   }
+  },
+  "/api/v1/supplier-payments/{id}": {
+   "get": {
+    "operationId": "SupplierPaymentsController_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "tags": [
+     "v1 supplier-payments"
+    ]
+   },
+   "patch": {
+    "operationId": "SupplierPaymentsController_update",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/UpdatePaymentDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "تعديل سجل واحد زي القديم (rev إلزامي)",
+    "tags": [
+     "v1 supplier-payments"
+    ]
+   }
+  },
+  "/api/v1/supplier-payments/{id}/direction": {
+   "patch": {
+    "operationId": "SupplierPaymentsController_classify",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ClassifyPaymentDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "تحديد اتجاه دفعة غير مصنّفة (دفعة واحدة كل مرة، B-53)",
+    "tags": [
+     "v1 supplier-payments"
     ]
    }
   },

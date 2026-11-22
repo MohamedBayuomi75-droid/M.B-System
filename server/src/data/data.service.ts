@@ -28,6 +28,7 @@ const RELATIONAL_WRITERS: Record<string, { fn: string; table: string }> = {
   'warehouses.items': { fn: 'legacy_write_wh_item', table: 'wh_items' },
   'warehouses.movements': { fn: 'legacy_write_wh_movement', table: 'wh_movements' },
   'ledger.invoices': { fn: 'legacy_write_supplier_invoice', table: 'supplier_invoices' },
+  'ledger.payments': { fn: 'legacy_write_supplier_payment', table: 'supplier_payments' },
 };
 /** أكواد PostgreSQL لرفض قيد (تفرّد/CHECK/قيمة) ← تعارض صريح بدل 500 */
 /** مجموعات عليها قيود قاعدة بيانات بتتفحص بعد الكتابة (B-50: الرصيد السالب) — الرفض بيرجع تعارض صريح ومابيوقفش باقي الدفعة */
@@ -151,11 +152,11 @@ export class DataService {
    */
   async sync(user: AuthUser, body: SyncRequestDto, opts: {
     trusted?: boolean;
-    before?: (qr: QueryRunner) => Promise<RecordChangeDto[] | void>;
+    before?: (qr: QueryRunner) => Promise<RecordChangeDto[] | { records?: RecordChangeDto[]; docs?: DocChangeDto[] } | void>;
     after?: (qr: QueryRunner, res: { applied: AppliedRecordDto[]; conflicts: ConflictRecordDto[] }) => Promise<void>;
   } = {}): Promise<SyncResponseDto> {
     const changes = body.changes ?? [];
-    const docChanges = body.docs ?? [];
+    const docChanges = [...(body.docs ?? [])];
     this.validateShape(changes, docChanges);
 
     const qr = this.ds.createQueryRunner();
@@ -164,7 +165,12 @@ export class DataService {
     try {
       await qr.query(`SELECT pg_advisory_xact_lock($1)`, [WRITE_LOCK_KEY]);
       const system = new Set<string>();
-      for (const c of (opts.before ? await opts.before(qr) : undefined) ?? []) { changes.push(c); system.add(`${c.collection}\u0000${c.id}`); }
+      const extra = opts.before ? await opts.before(qr) : undefined;
+      const extraRecords = Array.isArray(extra) ? extra : extra?.records ?? [];
+      for (const c of extraRecords) { changes.push(c); system.add(`${c.collection}\u0000${c.id}`); }
+      // مستندات مشتقة (system): مثلًا عدّاد أرقام الدفعات في الإعدادات (nextPaymentNo) — زي ما الواجهة القديمة بتحدّثه مع الحفظ
+      const systemDocs = new Set<string>();
+      for (const d of (Array.isArray(extra) ? [] : extra?.docs ?? [])) { docChanges.push(d); systemDocs.add(d.key); }
       const recordChanges = changes.filter((c) => c.collection !== 'auditLog');
       const auditChanges = changes.filter((c) => c.collection === 'auditLog');
 
@@ -189,8 +195,8 @@ export class DataService {
       const docRows = await this.lockDocs(qr, docChanges);
       const docPlans: DocPlan[] = [];
       for (const d of docChanges) {
-        if (SERVER_OWNED_DOCS.has(d.key)) { docPlans.push({ kind: 'ignored', d }); continue; }
-        if (!canWrite(user, d.key, 'edit')) { forbidden.push({ collection: '$doc', id: d.key, reason: 'FORBIDDEN' }); continue; }
+        if (SERVER_OWNED_DOCS.has(d.key) && !systemDocs.has(d.key)) { docPlans.push({ kind: 'ignored', d }); continue; }
+        if (!systemDocs.has(d.key) && !canWrite(user, d.key, 'edit')) { forbidden.push({ collection: '$doc', id: d.key, reason: 'FORBIDDEN' }); continue; }
         docPlans.push(await this.planDoc(qr, d, docRows.get(d.key) ?? null));
       }
       if (forbidden.length) {
