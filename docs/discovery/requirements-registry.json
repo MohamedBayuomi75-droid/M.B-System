@@ -6,7 +6,7 @@
   "TECH": 19,
   "NEW": 10,
   "CHG": 15,
-  "DEC": 109
+  "DEC": 111
  },
  "entries": [
   {
@@ -2445,6 +2445,42 @@
    "decisionStatus": "resolved",
    "priorityStatus": "—",
    "status": "resolved"
+  },
+  {
+   "id": "DEC-0109",
+   "key": "decision:DEC-0109",
+   "prefix": "DEC",
+   "classification": "OPEN-DECISION",
+   "kind": "decision",
+   "title": "التعارض في فواتير الموردين صريح لكل الحقول (حتى النصية زي الملاحظات والبيان): الحفظ بـ `rev` قديم على حقل اتعدّل من مستخدم تاني بيترفض 409 بنفس الرسالة، والحفظ ",
+   "module": "قرارات",
+   "priority": "—",
+   "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",
+   "tests": [],
+   "target": "—",
+   "notes": "محسوم",
+   "aliases": [],
+   "decisionStatus": "resolved",
+   "priorityStatus": "—",
+   "status": "resolved"
+  },
+  {
+   "id": "DEC-0110",
+   "key": "decision:DEC-0110",
+   "prefix": "DEC",
+   "classification": "OPEN-DECISION",
+   "kind": "decision",
+   "title": "UAT الحزمة 7.2 اتنفّذ آليًا (جلسة Claude على اللابتوب بالمتصفح، بطلب المستخدم، ببيانات اصطناعية على النسخة المعزولة): 14 نجح بعد إصلاح J11 (DEC-0109). سيناريوها",
+   "module": "قرارات",
+   "priority": "—",
+   "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",
+   "tests": [],
+   "target": "—",
+   "notes": "مفتوح",
+   "aliases": [],
+   "decisionStatus": "open",
+   "priorityStatus": "—",
+   "status": "open"
   },
   {
    "id": "LEG-0001",
