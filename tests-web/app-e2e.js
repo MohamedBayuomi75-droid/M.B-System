@@ -474,6 +474,7 @@ async function login(page, username, password) {
     ok(!(await A.page.$('.m_pay_inv_cb[value="pay-ui-ic"]')), 'cancelled invoice not offered for allocation');
     await A.page.fill('#m_pay_amount', '1000');
     await A.page.check('.m_pay_inv_cb[value="pay-ui-i1"]');
+    await A.page.waitForFunction(() => document.querySelector('.m_pay_inv_amt[data-invid="pay-ui-i1"]')?.value !== '', null, { timeout: 5000 }).catch(() => {});
     eq(await A.page.inputValue('.m_pay_inv_amt[data-invid="pay-ui-i1"]'), '1130', 'checking an invoice pre-fills its remaining (legacy)');
     await A.page.fill('.m_pay_inv_amt[data-invid="pay-ui-i1"]', '700');
     ok((await A.page.textContent('#m_pay_allocHint')).includes('متبقي للتوزيع'), 'allocation hint: remainder');

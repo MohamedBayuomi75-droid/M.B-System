@@ -3,6 +3,7 @@
 // ودفعة تحصيل ودفعة من غير اتجاه، عشان الفرق يبان جنب بعض.
 // التشغيل: node tools/discovery/compare-payments.js   (محتاج build للسيرفر والواجهة الجديدة + PostgreSQL للاختبار)
 // المخرج: docs/reports/v1.4.5/phase7-visual/payments-*.png
+// الكشف في القديمة تبويب «كشف الحساب» جوه صفحة المورد (activeSupplierTab = 'statement').
 'use strict';
 const fs = require('fs');
 const path = require('path');
@@ -45,7 +46,7 @@ const PAIRS = [['payments', 'page'], ['add', 'add'], ['statement', 'statement']]
     await page.evaluate((k) => {
       try { closeModal(); } catch (e) { /* مفيش نافذة */ }
       document.querySelectorAll('#modalOverlay').forEach((o) => o.remove());
-      if (k === 'statement') { statementFilters.supplierId = 's1'; statementFilters.from = ''; statementFilters.to = ''; lgCurrentPage = 'statement'; lgRender(); } else goToPage('ledger.payments');
+      if (k === 'statement') { goToPage('ledger.suppliers'); activeSupplierId = 's1'; activeSupplierTab = 'statement'; statementFilters.supplierId = 's1'; statementFilters.from = ''; statementFilters.to = ''; lgRerenderCurrentPage(); } else goToPage('ledger.payments');
     }, kind);
     await page.waitForTimeout(500);
     if (kind === 'add') { await page.click('#openAddPaymentPageBtn'); await page.waitForSelector('#m_pay_save'); }

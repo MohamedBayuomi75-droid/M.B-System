@@ -115,7 +115,7 @@ const EMPTY = { q: '', year: '', month: '', from: '', to: '', supplierId: '', me
           <div class="field">
             <label>الفواتير المرتبطة <span style="font-weight:400;color:var(--ink-soft);font-size:12px;">({{ e.id ? 'فاتورة واحدة — زي القديم' : 'اختيار متعدد' }})</span></label>
             <div id="m_pay_invoiceList" class="pay-inv-list" [style.opacity]="e.general ? '0.45' : '1'">
-              @for (i of open; track i.id) {
+              @for (i of open(); track i.id) {
                 <label class="pay-inv-row">
                   <input type="checkbox" class="m_pay_inv_cb" [value]="i.id" [(ngModel)]="i.checked" (ngModelChange)="onCheck(i)" [disabled]="e.general" />
                   <span class="pay-inv-no">{{ i.invoiceNo || '-' }}</span><span class="pay-inv-date">{{ fmtDate(i.date) }}</span><span class="pay-inv-remain">متبقي {{ fmt(i.remaining) }}</span>
@@ -187,7 +187,7 @@ export class SupplierPaymentsPage implements OnInit {
   readonly modal = signal<'edit' | 'view' | null>(null); readonly view = signal<Pay | null>(null);
   f = { ...EMPTY };
   e: any = {}; // eslint-disable-line @typescript-eslint/no-explicit-any -- نموذج النافذة بنفس خانات القديمة (نصوص)
-  open: OpenInv[] = [];
+  readonly open = signal<OpenInv[]>([]);
   private timer: ReturnType<typeof setTimeout> | null = null;
 
   readonly shown = computed(() => (this.review() ? this.rows().filter((p) => p.unclassified) : this.rows()));
@@ -225,26 +225,26 @@ export class SupplierPaymentsPage implements OnInit {
     this.e = p ? { id: p.id, rev: p.rev, paymentNo: p.paymentNo, supplierId: p.supplierId, date: p.date, direction: p.direction === 'collect' ? 'collect' : 'pay', method: p.method || 'نقدي', amount: String(p.amount ?? ''),
       general: !p.invoiceId, invoiceId: p.invoiceId || '', transferRef: p.transferRef || '', notes: p.notes || '', extraFields: Array.isArray(p.extraFields) ? p.extraFields.map((x) => ({ ...x })) : [], attachments: p.attachments ?? [] }
       : { supplierId: this.f.supplierId || '', date: new Date().toISOString().slice(0, 10), direction: 'pay', method: 'نقدي', amount: '', general: false, transferRef: '', notes: '', extraFields: [], attachments: [] };
-    this.error.set(''); this.open = []; this.modal.set('edit');
+    this.error.set(''); this.open.set([]); this.modal.set('edit');
     void this.loadOpen();
   }
   async openEditById(id: string) { try { this.openEdit(await firstValueFrom(this.http.get<Pay>(`/api/v1/supplier-payments/${id}`))); } catch (e) { this.error.set(errorMessage(e, 'تعذر فتح الدفعة')); } }
   async loadOpen() {
-    if (!this.e['supplierId']) { this.open = []; return; }
+    if (!this.e['supplierId']) { this.open.set([]); return; }
     let p = new HttpParams().set('supplierId', this.e['supplierId']); if (this.e['id']) p = p.set('keep', this.e['id']);
     try {
       const list = await firstValueFrom(this.http.get<OpenInv[]>('/api/v1/supplier-payments/open-invoices', { params: p }));
-      this.open = list.map((i) => (this.e['id'] && i.id === this.e['invoiceId'] ? { ...i, checked: true, amount: this.e['amount'] } : { ...i, checked: false, amount: '' }));
-    } catch { this.open = []; }
+      this.open.set(list.map((i) => (this.e['id'] && i.id === this.e['invoiceId'] ? { ...i, checked: true, amount: this.e['amount'] } : { ...i, checked: false, amount: '' })));
+    } catch { this.open.set([]); }
   }
   onCheck(i: OpenInv) { if (i.checked && !i.amount) i.amount = String(Number(i.remaining)); if (!i.checked) i.amount = ''; }
-  onGeneral() { if (this.e['general']) this.open.forEach((i) => { i.checked = false; i.amount = ''; }); }
+  onGeneral() { if (this.e['general']) this.open().forEach((i) => { i.checked = false; i.amount = ''; }); }
   /** updateAllocHint */
   hint(): [string, string | null] {
     if (this.e['general']) return ['دفعة عامة — لن تُخصم من فواتير محددة', 'var(--ink-soft)'];
     const total = Number(plain(this.e['amount'])) || 0;
     if (!total) return ['أدخل المبلغ الإجمالي ثم حدّد توزيعه على الفواتير', 'var(--ink-soft)'];
-    const allocated = this.open.filter((i) => i.checked).reduce((a, i) => a + (Number(plain(i.amount)) || 0), 0);
+    const allocated = this.open().filter((i) => i.checked).reduce((a, i) => a + (Number(plain(i.amount)) || 0), 0);
     const diff = total - allocated;
     if (Math.abs(diff) < 0.02) return [`✓ التوزيع مطابق للمبلغ الإجمالي (${this.fmt(total)})`, 'var(--ledger-green)'];
     if (diff > 0) return [`متبقي للتوزيع: ${this.fmt(diff)} (يمكن جعله دفعة عامة أو زيادته على فاتورة)`, 'var(--gold)'];
@@ -255,7 +255,7 @@ export class SupplierPaymentsPage implements OnInit {
     if (!e['supplierId']) { this.toast.show('اختر المورد'); return; }
     const amount = plain(e['amount']);
     if (!/^\d{1,14}(\.\d{1,6})?$/.test(amount) || !(Number(amount) > 0)) { this.toast.show('أدخل مبلغاً صحيحاً'); return; }
-    const checked = e['general'] ? [] : this.open.filter((i) => i.checked && Number(plain(i.amount)) > 0);
+    const checked = e['general'] ? [] : this.open().filter((i) => i.checked && Number(plain(i.amount)) > 0);
     const extraFields = (e['extraFields'] as { label: string; value: string }[]).map((x) => ({ label: x.label.trim() || 'خانة', value: x.value.trim() })).filter((x) => x.value);
     const common = { supplierId: e['supplierId'], date: e['date'], direction: e['direction'], method: e['method'], amount, transferRef: String(e['transferRef'] ?? '').trim(), notes: String(e['notes'] ?? '').trim(), extraFields };
     this.busy.set(true); this.error.set('');
