@@ -41,7 +41,7 @@ export class ProjectsService {
     items = items.sort((a, b) => String(a[key] ?? '').localeCompare(String(b[key] ?? ''), 'ar'));
     const total = items.length;
     const off = q.offset ?? 0;
-    return { items: items.slice(off, off + (q.limit ?? 100)), total, source: this.repo.source() };
+    return { items: items.slice(off, off + (q.limit ?? 100)), total, source: await this.repo.source() };
   }
 
   async get(user: AuthUser, id: string): Promise<ProjectDto> {

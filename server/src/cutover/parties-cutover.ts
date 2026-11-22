@@ -2,6 +2,7 @@ import { DataSource } from 'typeorm';
 import { CutoverReport, cutoverModule, ModuleSpec, rollbackModule } from './module-cutover';
 import { SUPPLIER_INVOICE_COLUMNS } from '../migrations/1764800000000-SupplierInvoices';
 import { SUPPLIER_PAYMENT_COLUMNS } from '../migrations/1765000000000-SupplierPayments';
+import { PROJECT_COLUMNS } from '../migrations/1765100000000-ProjectsCutover';
 
 export type { CutoverReport } from './module-cutover';
 
@@ -65,7 +66,17 @@ export const SUPPLIER_PAYMENTS: ModuleSpec = {
   clearTables: ['supplier_payments'],
 };
 
-export const MODULES: Record<string, ModuleSpec> = { parties: PARTIES, warehouses: WAREHOUSES, 'supplier-invoices': SUPPLIER_INVOICES, 'supplier-payments': SUPPLIER_PAYMENTS };
+/** 7.4 — المشروعات (DEC-0117). نفس طريقة الفواتير والدفعات: مفيش تطبيع، وحقول المسار بقيمها، واللي نوعه مختلف بيفضل في legacy_extra ويتعدّ */
+export const PROJECTS: ModuleSpec = {
+  label: 'projects',
+  collections: [
+    { collection: 'projects', table: 'projects', write: 'legacy_write_project', read: 'project_to_legacy',
+      normalized: `(r.data || jsonb_build_object('id', r.id))`, typedKeys: PROJECT_COLUMNS.map(([, k]) => k) },
+  ],
+  clearTables: ['projects'],
+};
+
+export const MODULES: Record<string, ModuleSpec> = { parties: PARTIES, warehouses: WAREHOUSES, 'supplier-invoices': SUPPLIER_INVOICES, 'supplier-payments': SUPPLIER_PAYMENTS, projects: PROJECTS };
 
 export const partiesCutover = (ds: DataSource, by: string, mode: CutoverReport['mode']) => cutoverModule(ds, PARTIES, by, mode);
 export const partiesRollback = (ds: DataSource, by: string) => rollbackModule(ds, PARTIES, by);

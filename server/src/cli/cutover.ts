@@ -8,7 +8,7 @@ import { checkBackupGate } from '../cutover/backup-gate';
 
 /**
  * أمر تشغيل نقل الموديول (MODULE_MIGRATION_PLAN §2 الخطوة 7 و§5). مش بيشتغل تلقائيًا مع الـ migrations.
- *   npm run cutover -- <parties|warehouses|supplier-invoices|supplier-payments> dry-run
+ *   npm run cutover -- <parties|warehouses|supplier-invoices|supplier-payments|projects> dry-run
  *   npm run cutover -- parties execute  --by <اسم المنفّذ> --backup-log <BACKUP_DIR/backup-log.jsonl> --confirm-backup <وقت آخر نسخة كاملة>
  *   npm run cutover -- parties rollback --by <اسم المنفّذ> --backup-log ... --confirm-backup ...
  *   npm run cutover -- parties reconcile   (قراءة بس: أعداد وبصمات للمطابقة قبل النقل وبعده وبعد الرجوع — مفيش قيم)

@@ -239,7 +239,7 @@ describe('phase 5 foundation', () => {
     });
   });
 
-  describe('projects: relational source + dry-run migration plan', () => {
+  describe('projects: source + dry-run migration plan', () => {
     beforeAll(async () => {
       expect((await sync(t, admin, { changes: [up('projects', 'tp1', { name: 'مشروع اختبار', code: 'T1', budget: 1000.12345 }), up('projects', 'tp2', { name: 'مشروع اختبار' }), up('expenses', 'te1', { project: 'مشروع اختبار', amount: 5 })] })).status).toBe(200);
     });
@@ -251,16 +251,8 @@ describe('phase 5 foundation', () => {
       const [{ n }] = await t.ds.query(`SELECT count(*)::int AS n FROM projects`);
       expect(n).toBe(0);
     });
-    it('default source is legacy records; PROJECTS_SOURCE=relational reads the table', async () => {
+    it('source is legacy records until the projects cutover (7.4.3 replaced PROJECTS_SOURCE)', async () => {
       expect((await t.http().get('/api/v1/projects').set(bearer(admin))).body.source).toBe('legacy-records');
-      await t.ds.query(`INSERT INTO projects (id, code, name, budget) VALUES ('rp1', 'R1', 'مشروع علائقي اختبار', 250.5)`);
-      process.env.PROJECTS_SOURCE = 'relational';
-      try {
-        const r = await t.http().get('/api/v1/projects').set(bearer(admin)).expect(200);
-        expect(r.body.source).toBe('relational');
-        expect(r.body.items.map((x: { id: string }) => x.id)).toEqual(['rp1']);
-        expect((await t.http().get('/api/v1/projects/rp1').set(bearer(admin))).body.budget).toBe('250.500000');
-      } finally { delete process.env.PROJECTS_SOURCE; await t.ds.query(`DELETE FROM projects`); }
     });
   });
 
