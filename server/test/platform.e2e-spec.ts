@@ -12,7 +12,7 @@ describe('platform (phase 4)', () => {
     admin = await adminToken(t);
     const r = await sync(t, admin, { changes: [
       up('projects', 'p1', { name: 'مشروع الشروق', code: 'PRJ-2', budget: 1250000.5, status: 'active', stageKey: 'exec' }),
-      up('projects', 'p2', { name: 'مشروع النيل', code: 'PRJ-1', budget: '2,000.00005', status: 'active' }),
+      up('projects', 'p2', { name: 'مشروع النيل', code: 'PRJ-1', budget: '2,000.0000005', status: 'active' }),
       up('projects', 'p3', { name: 'أرشيف', code: 'PRJ-3', status: 'مكتمل' }),
     ] });
     expect(r.status).toBe(200);
@@ -20,14 +20,14 @@ describe('platform (phase 4)', () => {
   afterAll(async () => t?.close());
 
   describe('GET /api/v1/projects (pilot, layered)', () => {
-    it('lists with money as 4-decimal strings (HALF_UP), sorted, with source marker', async () => {
+    it('lists with money as 6-decimal strings (HALF_UP, DEC-0112), sorted, with source marker', async () => {
       const r = await t.http().get('/api/v1/projects').set(bearer(admin)).expect(200);
       expect(r.body.source).toBe('legacy-records');
       expect(r.body.total).toBe(3);
       expect(r.body.items.map((p: { id: string }) => p.id)).toEqual(['p3', 'p1', 'p2']); // ترتيب أبجدي عربي
       const p1 = r.body.items.find((p: { id: string }) => p.id === 'p1');
       const p2 = r.body.items.find((p: { id: string }) => p.id === 'p2');
-      expect([p1.budget, p2.budget, r.body.items.find((p: { id: string }) => p.id === 'p3').budget]).toEqual(['1250000.5000', '2000.0001', null]);
+      expect([p1.budget, p2.budget, r.body.items.find((p: { id: string }) => p.id === 'p3').budget]).toEqual(['1250000.500000', '2000.000001', null]);
       expect(p1).toMatchObject({ code: 'PRJ-2', name: 'مشروع الشروق', status: 'active', stage: 'exec', rev: 1 });
     });
     it('filters, searches, paginates; validates query', async () => {

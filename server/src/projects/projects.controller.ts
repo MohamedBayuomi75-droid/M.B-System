@@ -13,7 +13,7 @@ export class ProjectsController {
   constructor(private readonly svc: ProjectsService) {}
 
   @Get()
-  @ApiOperation({ summary: 'المشروعات (قراءة) — موديول تجريبي للبنية الجديدة', description: 'نفس الصلاحيات ونطاق المشروع. المبالغ نصوص بأربع خانات.' })
+  @ApiOperation({ summary: 'المشروعات (قراءة) — موديول تجريبي للبنية الجديدة', description: 'نفس الصلاحيات ونطاق المشروع. المبالغ نصوص بست خانات.' })
   @ApiOkResponse({ type: ProjectListDto })
   list(@CurrentUser() user: AuthUser, @Query() q: ListProjectsQuery): Promise<ProjectListDto> {
     return this.svc.list(user, q);

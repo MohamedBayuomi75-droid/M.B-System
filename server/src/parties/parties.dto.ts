@@ -22,7 +22,7 @@ class SupplierFields {
   @ApiPropertyOptional() @IsOptional() @IsString() @MaxLength(50) taxId?: string;
   @ApiPropertyOptional() @IsOptional() @IsString() @MaxLength(50) commercialReg?: string;
   @ApiPropertyOptional() @IsOptional() @IsString() @MaxLength(100) businessNature?: string;
-  @ApiPropertyOptional({ example: '-1250.5', description: 'نص عشري (حتى 4 خانات، يقبل السالب)' }) @IsOptional() @IsMoneyString({ allowNegative: true }) openingBalance?: string;
+  @ApiPropertyOptional({ example: '-1250.5', description: 'نص عشري (حتى 6 خانات، يقبل السالب — DEC-0112)' }) @IsOptional() @IsMoneyString({ allowNegative: true }) openingBalance?: string;
   @ApiPropertyOptional({ example: '2026-01-01' }) @IsOptional() @Matches(DATE_OR_EMPTY) openingBalanceDate?: string;
   @ApiPropertyOptional() @IsOptional() @IsString() @MaxLength(50) phone?: string;
   @ApiPropertyOptional() @IsOptional() @IsString() @MaxLength(200) email?: string;

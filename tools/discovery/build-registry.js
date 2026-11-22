@@ -169,7 +169,7 @@ for (const m of sec.matchAll(/^\| *(S-\d+) *\| *([^|]+?) *\|/gm)) {
   add({ key: `tech:${m[1]}`, prefix: 'TECH', classification: 'TECHNICAL', kind: 'security/ops', title: m[2].replace(/\*\*/g, '').trim(), module: 'أمان وتشغيل', priority: 'P0', evidence: 'docs/SECURITY_AND_BACKUP_PLAN.md', tests: [], target: 'server/infra', notes: '', aliases: [m[1]] });
 }
 const TECH_CORE = [
-  ['tech:money-4dp-half-up', 'الحساب العشري: NUMERIC بأربع خانات وHALF_UP على الخادم (Money)', 'ADR-011، ADR-023', 'server/src/common/money.ts'],
+  ['tech:money-4dp-half-up', 'الحساب العشري: NUMERIC بست خانات (DEC-0112، كانت 4) وHALF_UP على الخادم (Money)', 'ADR-011، ADR-023', 'server/src/common/money.ts'],
   ['tech:no-gaps-numbering', 'ترقيم NO_GAPS داخل معاملة الخادم، والرقم المُصدر مابيتعادش حتى مع الإلغاء', 'ADR-013، 01 §3.4', 'server/src/numbering/'],
   ['tech:approved-not-posted', 'Approved ≠ Posted، والمرحّل مابيتعدّلش (التصحيح بمستند عكسي)', 'ADR-012، Policy D', 'server/src/approvals/'],
   ['tech:idempotency', 'Idempotency-Key للعمليات الحساسة', '03 §21.3', 'server/src/common/'],

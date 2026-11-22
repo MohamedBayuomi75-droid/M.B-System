@@ -28,7 +28,7 @@ describe('phase 6.1 suppliers & customers', () => {
     it('create via API → same record shape the legacy UI writes (modals.js:108)', async () => {
       const r = await t.http().post('/api/v1/suppliers').set(bearer(ledger)).send({ name: '  مورد اختبار حديد  ', taxId: '123456789', openingBalance: '-1250.5', openingBalanceDate: '2026-01-01', email: 'test@example.com' });
       expect(r.status).toBe(201);
-      expect(r.body).toMatchObject({ name: 'مورد اختبار حديد', openingBalance: '-1250.5000', invoicesCount: 0, rev: 1 });
+      expect(r.body).toMatchObject({ name: 'مورد اختبار حديد', openingBalance: '-1250.500000', invoicesCount: 0, rev: 1 });
       id = r.body.id;
       const b = await bootstrap(t, admin);
       const legacy = (b.data.ledger.suppliers as Record<string, unknown>[]).find((s) => s.id === id);
@@ -42,9 +42,9 @@ describe('phase 6.1 suppliers & customers', () => {
         [{ name: '   ' }, 400, 'NAME_REQUIRED'],
         [{ name: 'س', taxId: '1234' }, 400, 'TAX_ID_TOO_SHORT'],
         [{ name: 'س', email: 'not-an-email' }, 400, 'INVALID_EMAIL'],
-        [{ name: 'س', openingBalance: '1.12345' }, 400],
+        [{ name: 'س', openingBalance: '1.1234567' }, 400], // أكتر من 6 خانات (DEC-0112)
         [{ name: 'س', openingBalance: 100 }, 400],
-        [{ name: 'س', openingBalance: '12345678901234.1234' }, 422, 'PRECISION_LIMIT'],
+        [{ name: 'س', openingBalance: '12345678901234.123400' }, 422, 'PRECISION_LIMIT'],
       ];
       for (const [body, status, code] of cases) {
         const r = await t.http().post('/api/v1/suppliers').set(bearer(admin)).send(body);
@@ -54,19 +54,19 @@ describe('phase 6.1 suppliers & customers', () => {
 
     it('legacy writes are visible in the API and vice versa (parity)', async () => {
       expect((await sync(t, admin, { changes: [
-        up('ledger.suppliers', 'sup_legacy1', { id: 'sup_legacy1', name: 'أحمد للتوريدات', openingBalance: 2000.12345, phone: '0100', attachments: [{ id: 'a1' }] }),
+        up('ledger.suppliers', 'sup_legacy1', { id: 'sup_legacy1', name: 'أحمد للتوريدات', openingBalance: 2000.1234565, phone: '0100', attachments: [{ id: 'a1' }] }),
         up('ledger.invoices', 'inv_t1', { supplierId: 'sup_legacy1', invoiceNo: '1' }), up('ledger.invoices', 'inv_t2', { supplierId: 'sup_legacy1', invoiceNo: '2' }),
         up('ledger.payments', 'pay_t1', { supplierId: 'sup_legacy1', amount: 5 }),
       ] })).status).toBe(200);
       const g = await t.http().get('/api/v1/suppliers/sup_legacy1').set(bearer(viewer)).expect(200);
-      expect(g.body).toMatchObject({ name: 'أحمد للتوريدات', openingBalance: '2000.1235', attachmentsCount: 1, invoicesCount: 2, paymentsCount: 1 });
+      expect(g.body).toMatchObject({ name: 'أحمد للتوريدات', openingBalance: '2000.123457', attachmentsCount: 1, invoicesCount: 2, paymentsCount: 1 });
       const s = await t.http().get('/api/v1/suppliers?q=' + encodeURIComponent('احمد')).set(bearer(viewer)).expect(200);
       expect(s.body.items.map((x: { id: string }) => x.id)).toEqual(['sup_legacy1']);
 
       const p = await t.http().patch('/api/v1/suppliers/sup_legacy1').set(bearer(ledger)).send({ rev: g.body.rev, notes: 'ملاحظة من الواجهة الجديدة', iban: 'EG00' });
       expect(p.status).toBe(200);
       const legacy = ((await bootstrap(t, admin)).data.ledger.suppliers as Record<string, unknown>[]).find((x) => x.id === 'sup_legacy1')!;
-      expect(legacy).toMatchObject({ notes: 'ملاحظة من الواجهة الجديدة', iban: 'EG00', openingBalance: 2000.12345, attachments: [{ id: 'a1' }] });
+      expect(legacy).toMatchObject({ notes: 'ملاحظة من الواجهة الجديدة', iban: 'EG00', openingBalance: 2000.1234565, attachments: [{ id: 'a1' }] });
       const h = await t.http().get('/api/v1/history/ledger.suppliers/sup_legacy1').set(bearer(admin)).expect(200);
       expect(h.body.changes[0].fields).toEqual(expect.arrayContaining(['notes', 'iban']));
     });
@@ -100,7 +100,7 @@ describe('phase 6.1 suppliers & customers', () => {
       expect((await sync(t, admin, { changes: [up('clients.customers', 'cus_legacy1', { id: 'cus_legacy1', name: 'عميل قديم', code: 'CUS-0007', openingBalance: 300 })] })).status).toBe(200);
       const r = await t.http().post('/api/v1/customers').set(bearer(admin)).send({ name: 'شركة اختبار', openingBalance: '1500.25', contacts: [{ name: 'م. اختبار', phone: '0111' }, { name: '  ' }] });
       expect(r.status).toBe(201);
-      expect(r.body).toMatchObject({ code: 'CUS-0008', status: 'active', openingBalance: '1500.2500', contacts: [{ name: 'م. اختبار', title: '', phone: '0111', email: '' }] });
+      expect(r.body).toMatchObject({ code: 'CUS-0008', status: 'active', openingBalance: '1500.250000', contacts: [{ name: 'م. اختبار', title: '', phone: '0111', email: '' }] });
       const legacy = ((await bootstrap(t, admin)).data.clients.customers as Record<string, unknown>[]).find((c) => c.id === r.body.id)!;
       for (const k of ['contracts', 'invoices', 'collections', 'workSurveys', 'boqs', 'guarantees', 'ledger', 'comms', 'opportunities', 'projects', 'docs', 'attachments', 'extraFields']) expect(legacy[k]).toEqual([]);
       expect(legacy).toMatchObject({ openingBalance: 1500.25, code: 'CUS-0008' });
@@ -122,8 +122,8 @@ describe('phase 6.1 suppliers & customers', () => {
       const r = await t.http().post('/api/v1/customers').set(bearer(admin)).send({ name: 'س', openingBalance: '10.125' });
       expect([r.status, r.body.code]).toEqual([400, 'SCALE_LIMIT']);
       // القيمة الراجعة من الـ API (4 خانات) تترجع زي ما هي من غير خطأ
-      const ok = await t.http().post('/api/v1/customers').set(bearer(admin)).send({ name: 'س', openingBalance: '10.1200' });
-      expect([ok.status, ok.body.openingBalance]).toEqual([201, '10.1200']);
+      const ok = await t.http().post('/api/v1/customers').set(bearer(admin)).send({ name: 'س', openingBalance: '10.120000' });
+      expect([ok.status, ok.body.openingBalance]).toEqual([201, '10.120000']);
     });
 
     it('guarded opening balance: hidden from users without account pages and not writable by them', async () => {
@@ -151,7 +151,7 @@ describe('phase 6.1 suppliers & customers', () => {
       // قرار 2026-11-17: اسم المورد مش فريد → تنبيه بس، مش معوّق
       expect(p.body.warnings.supplierDuplicateNames).toEqual([['sup_legacy1', 'sup_dup']]);
       expect(p.body.blockers.supplierDuplicateNames).toBeUndefined();
-      expect(p.body.warnings.roundingChanges).toEqual([{ id: 'sup_legacy1', original: '2000.12345', migrated: '2000.1235', changed: true }]);
+      expect(p.body.warnings.roundingChanges).toEqual([{ id: 'sup_legacy1', original: '2000.1234565', migrated: '2000.123457', changed: true }]);
       const [{ n }] = await t.ds.query(`SELECT (SELECT count(*) FROM suppliers) + (SELECT count(*) FROM customers) AS n`);
       expect(Number(n)).toBe(0);
     });

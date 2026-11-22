@@ -1,16 +1,16 @@
 import Decimal from 'decimal.js';
 
 /**
- * Money — الحساب المالي على الخادم (ADR-023، القرارات B-25/B-70/B-28: NUMERIC بأربع خانات و HALF_UP للموجب والسالب).
+ * Money — الحساب المالي على الخادم (ADR-023، القرارات B-25/B-70/B-28: NUMERIC بست خانات و HALF_UP للموجب والسالب).
  *
  * القواعد:
  *  - المصدر دايمًا **نص عشري** (من PostgreSQL NUMERIC أو من الـ API) — JS `number` مرفوض كمدخل إلا من `fromNumberUnsafe`
  *    (للتحويل من البيانات القديمة بس، وبيستخدم أقصر تمثيل للرقم زي ما الإنسان كتبه).
  *  - الحساب الداخلي بدقة 40 رقم معنوي (مفيش فقد قبل التقريب الأخير).
- *  - التقريب للتخزين/الإخراج: 4 خانات، ROUND_HALF_UP (النص بعيد عن الصفر: 2.00005 ← 2.0001، −2.00005 ← −2.0001).
- *  - الإخراج للـ API: نص بأربع خانات ثابتة ("1250.5000") — مطابق لشكل NUMERIC(…,4) في PostgreSQL.
+ *  - التقريب للتخزين/الإخراج: 6 خانات (DEC-0112، كانت 4)، ROUND_HALF_UP (النص بعيد عن الصفر: 2.0000005 ← 2.000001).
+ *  - الإخراج للـ API: نص بست خانات ثابتة ("1250.500000") — مطابق لشكل NUMERIC(…,6) في PostgreSQL.
  */
-export const MONEY_SCALE = 4;
+export const MONEY_SCALE = 6; // DEC-0112 (2026-11-22): 6 خانات بدل 4 (تعديل B-25)، والتقريب HALF_UP زي ما هو
 const D = Decimal.clone({ precision: 40, rounding: Decimal.ROUND_HALF_UP, toExpNeg: -40, toExpPos: 40 });
 const DECIMAL_RE = /^[+-]?(\d+(\.\d*)?|\.\d+)$/;
 
@@ -69,7 +69,7 @@ export class Money {
   /** أكبر من صفر أو صفر */
   max0(): Money { return this.d.isNeg() ? Money.zero() : this; }
 
-  /** التقريب المعتمد: 4 خانات HALF_UP (أو عدد خانات تاني للعرض/الكميات) */
+  /** التقريب المعتمد: 6 خانات HALF_UP (DEC-0112) (أو عدد خانات تاني للعرض/الكميات) */
   round(scale = MONEY_SCALE): Money { return new Money(this.d.toDecimalPlaces(scale, Decimal.ROUND_HALF_UP)); }
 
   cmp(o: MoneyInput): -1 | 0 | 1 { return this.d.cmp(Money.of(o).d) as -1 | 0 | 1; }
@@ -77,14 +77,14 @@ export class Money {
   isZero(): boolean { return this.d.isZero(); }
   isNegative(): boolean { return this.d.isNeg() && !this.d.isZero(); }
 
-  /** نص بأربع خانات ثابتة (بعد التقريب) — شكل التخزين والـ API */
+  /** نص بست خانات ثابتة (بعد التقريب) — شكل التخزين والـ API */
   toFixed(scale = MONEY_SCALE): string { return this.d.toFixed(scale, Decimal.ROUND_HALF_UP); }
   /** نص من غير أصفار زيادة (للمقارنة والعرض المختصر) — من غير تقريب */
   toString(): string { return this.d.toFixed(); }
   toJSON(): string { return this.toFixed(); }
 }
 
-/** محوّل عمود TypeORM: NUMERIC (نص من pg) ↔ Money، والكتابة دايمًا بأربع خانات HALF_UP */
+/** محوّل عمود TypeORM: NUMERIC (نص من pg) ↔ Money، والكتابة دايمًا بست خانات HALF_UP */
 export const moneyColumnTransformer = {
   to: (v: Money | string | null | undefined): string | null => (v == null || v === '' ? null : Money.of(v as MoneyInput).toFixed()),
   from: (v: string | null): Money | null => (v == null ? null : Money.of(v)),

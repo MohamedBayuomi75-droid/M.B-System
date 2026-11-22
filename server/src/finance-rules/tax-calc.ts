@@ -2,7 +2,7 @@ import { Money } from '../common/money';
 
 /**
  * حاسبة الضرائب والاستقطاعات (B-21) — دالة صافية من غير قاعدة بيانات، بتشتغل على الإصدارات **المعتمدة** بس.
- * مفيش أي نسبة في الكود: كل الأرقام جاية من الإصدار. الدقة 4 خانات HALF_UP (B-25).
+ * مفيش أي نسبة في الكود: كل الأرقام جاية من الإصدار. الدقة 6 خانات HALF_UP (B-25).
  */
 export type TaxBase = 'NET_OF_DISCOUNT' | 'GROSS' | 'NET_PLUS_VAT' | 'TAXABLE_WAGE' | 'CONTRACT_VALUE';
 export interface Bracket { upTo: string | null; rate: string }

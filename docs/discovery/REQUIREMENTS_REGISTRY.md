@@ -11,7 +11,7 @@
 | `CHG-` | APPROVED-CHANGE | 14 |
 | `TECH-` | TECHNICAL | 18 |
 | `NEW-` | NEW-REQUIREMENT | 9 |
-| `DEC-` | OPEN-DECISION (المفتوح والمحسوم) | 112 (مفتوح: 41) |
+| `DEC-` | OPEN-DECISION (المفتوح والمحسوم) | 112 (مفتوح: 40) |
 | **الإجمالي** | | **504** |
 
 **عناصر LEG حسب النوع:** page 54 · calc 120 · data-write 27 · modal 63 · export/print 37 · permission 8 · electron-capability 42
@@ -400,7 +400,7 @@
 | TECH-0006 | security/ops | أمان وتشغيل | سجل التدقيق | P0 | docs/SECURITY_AND_BACKUP_PLAN.md | server/infra |  | recorded | الأسماء القديمة: S-6 |
 | TECH-0007 | security/ops | أمان وتشغيل | Backup & Restore | P0 | docs/SECURITY_AND_BACKUP_PLAN.md | server/infra |  | recorded | الأسماء القديمة: S-7 |
 | TECH-0008 | security/ops | أمان وتشغيل | تحديث `xlsx` + 2FA للإدارة | P0 | docs/SECURITY_AND_BACKUP_PLAN.md | server/infra |  | recorded | الأسماء القديمة: S-8 |
-| TECH-0009 | platform | المنصة | الحساب العشري: NUMERIC بأربع خانات وHALF_UP على الخادم (Money) | P0 | server/src/common/money.ts | server/infra |  | recorded | ADR-011، ADR-023 |
+| TECH-0009 | platform | المنصة | الحساب العشري: NUMERIC بست خانات (DEC-0112، كانت 4) وHALF_UP على الخادم (Money) | P0 | server/src/common/money.ts | server/infra |  | recorded | ADR-011، ADR-023 |
 | TECH-0010 | platform | المنصة | ترقيم NO_GAPS داخل معاملة الخادم، والرقم المُصدر مابيتعادش حتى مع الإلغاء | P0 | server/src/numbering/ | server/infra |  | recorded | ADR-013، 01 §3.4 |
 | TECH-0011 | platform | المنصة | Approved ≠ Posted، والمرحّل مابيتعدّلش (التصحيح بمستند عكسي) | P0 | server/src/approvals/ | server/infra |  | recorded | ADR-012، Policy D |
 | TECH-0012 | platform | المنصة | Idempotency-Key للعمليات الحساسة | P0 | server/src/common/ | server/infra |  | recorded | 03 §21.3 |
@@ -538,5 +538,5 @@
 | DEC-0109 | decision | قرارات | التعارض في فواتير الموردين صريح لكل الحقول (حتى النصية زي الملاحظات والبيان): الحفظ بـ `rev` قديم على حقل اتعدّل من مستخدم تاني بيترفض 409 بنفس الرسالة، والحفظ  | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
 | DEC-0110 | decision | قرارات | UAT الحزمة 7.2 اتنفّذ آليًا (جلسة Claude على اللابتوب بالمتصفح، بطلب المستخدم، ببيانات اصطناعية على النسخة المعزولة): 14 نجح بعد إصلاح J11 (DEC-0109). سيناريوها | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
 | DEC-0111 | decision | قرارات | فواتير ومرتجعات الموردين (الحزمة 7.2) Accepted، ومقترحات البوابة س1–س5 معتمدة: (1) المرتجع ينفع ياخد نفس رقم الفاتورة الأصلية، والتكرار ممنوع جوه كل نوع لوحده؛  | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
-| DEC-0112 | decision | قرارات | المبالغ لحد 6 خانات بدل 4 (طلب المستخدم بعد بوابة 7.2، بيغيّر B-25). النطاق والتقريب محتاجين تأكيد قبل التنفيذ | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | open | مفتوح |
+| DEC-0112 | decision | قرارات | المبالغ 6 خانات بدل 4 في النظام كله (تعديل B-25، طلب المستخدم بعد بوابة 7.2، والنطاق «كل المبالغ» بتأكيده). التقريب HALF_UP زي ما هو. أعمدة المبالغ `NUMERIC(20, | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
 

@@ -78,13 +78,13 @@ describe('phase 5 foundation', () => {
     });
 
     it('submitting with no workflow defined → 422 NO_WORKFLOW (no automatic approval)', async () => {
-      const r = await post(u.sub.token, '/api/v1/approvals/requests', { documentType: 'test-invoice', documentId: 'inv-1', amount: '500.0000' });
+      const r = await post(u.sub.token, '/api/v1/approvals/requests', { documentType: 'test-invoice', documentId: 'inv-1', amount: '500.000000' });
       expect([r.status, r.body.code]).toEqual([422, 'NO_WORKFLOW']);
     });
 
     it('ANY then ALL(role): snapshot, idempotency, notifications, final approval', async () => {
       const wf = await t.http().post('/api/v1/approvals/config/workflows').set(bearer(admin)).send({
-        documentType: 'test-invoice', amountFrom: '0.0000', amountTo: '1000.0000',
+        documentType: 'test-invoice', amountFrom: '0.000000', amountTo: '1000.000000',
         levels: [{ mode: 'ANY', approvers: [{ type: 'USER', ref: u.a1.id }, { type: 'USER', ref: u.a2.id }] }, { mode: 'ALL', approvers: [{ type: 'ROLE', ref: 'payroll' }] }],
       });
       expect(wf.status).toBe(201);
@@ -95,7 +95,7 @@ describe('phase 5 foundation', () => {
       const k1 = key();
       const s = await post(u.sub.token, '/api/v1/approvals/requests', { documentType: 'test-invoice', documentId: 'inv-1', amount: '500' }, k1);
       expect(s.status).toBe(201);
-      expect(s.body).toMatchObject({ status: 'Submitted', currentLevel: 1, amount: '500.0000', workflowVersion: 1, allowSelfApproval: false });
+      expect(s.body).toMatchObject({ status: 'Submitted', currentLevel: 1, amount: '500.000000', workflowVersion: 1, allowSelfApproval: false });
       reqId = s.body.id;
       const replay = await post(u.sub.token, '/api/v1/approvals/requests', { documentType: 'test-invoice', documentId: 'inv-1', amount: '500' }, k1);
       expect(replay.status).toBe(201);
@@ -107,7 +107,7 @@ describe('phase 5 foundation', () => {
       expect(n).toBe(1);
 
       // لقطة: مسار جديد بعد الإرسال مايأثرش على الطلب
-      await t.http().post('/api/v1/approvals/config/workflows').set(bearer(admin)).send({ documentType: 'test-invoice', amountFrom: '0.0000', amountTo: '1000.0000', allowSelfApproval: true, allowSameApproverAcrossLevels: true, sodExceptionRef: 'قرار إدارة اختباري رقم 1', levels: [{ mode: 'ANY', approvers: [{ type: 'USER', ref: u.a3.id }] }] }).expect(201);
+      await t.http().post('/api/v1/approvals/config/workflows').set(bearer(admin)).send({ documentType: 'test-invoice', amountFrom: '0.000000', amountTo: '1000.000000', allowSelfApproval: true, allowSameApproverAcrossLevels: true, sodExceptionRef: 'قرار إدارة اختباري رقم 1', levels: [{ mode: 'ANY', approvers: [{ type: 'USER', ref: u.a3.id }] }] }).expect(201);
       expect((await t.http().get('/api/v1/approvals/inbox').set(bearer(u.a3.token))).body).toHaveLength(0);
 
       const n1 = await t.http().get('/api/v1/notifications?unread=true').set(bearer(u.a1.token)).expect(200);
@@ -138,7 +138,7 @@ describe('phase 5 foundation', () => {
 
     it('N_OF_M + reject requires a reason', async () => {
       await t.http().post('/api/v1/approvals/config/workflows').set(bearer(admin)).send({
-        documentType: 'test-invoice', amountFrom: '1000.0001', allowSelfApproval: false, allowSameApproverAcrossLevels: false,
+        documentType: 'test-invoice', amountFrom: '1000.000100', allowSelfApproval: false, allowSameApproverAcrossLevels: false,
         levels: [{ mode: 'N_OF_M', requiredCount: 2, approvers: [{ type: 'USER', ref: u.a1.id }, { type: 'USER', ref: u.a2.id }, { type: 'USER', ref: u.a3.id }] }],
       }).expect(201);
       const s = await post(u.sub.token, '/api/v1/approvals/requests', { documentType: 'test-invoice', documentId: 'inv-big', amount: '25000.5' });
@@ -259,7 +259,7 @@ describe('phase 5 foundation', () => {
         const r = await t.http().get('/api/v1/projects').set(bearer(admin)).expect(200);
         expect(r.body.source).toBe('relational');
         expect(r.body.items.map((x: { id: string }) => x.id)).toEqual(['rp1']);
-        expect((await t.http().get('/api/v1/projects/rp1').set(bearer(admin))).body.budget).toBe('250.5000');
+        expect((await t.http().get('/api/v1/projects/rp1').set(bearer(admin))).body.budget).toBe('250.500000');
       } finally { delete process.env.PROJECTS_SOURCE; await t.ds.query(`DELETE FROM projects`); }
     });
   });

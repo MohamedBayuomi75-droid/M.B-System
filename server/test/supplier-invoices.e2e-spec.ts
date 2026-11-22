@@ -34,7 +34,7 @@ describe('7.2.4 supplier invoices API', () => {
   const scenario = (label: string, cut: boolean) => it(`${label}: formula, internal number, B-31, linked returns, events`, async () => {
     if (cut) { await cutoverModule(t.ds, PARTIES, 'test', 'execute'); await cutoverModule(t.ds, SUPPLIER_INVOICES, 'test', 'execute'); }
     const x = cut ? 'B' : 'A';
-    const base = { supplierId: 'sA', date: '2026-03-05', isReturn: false, baseValue: '1000.1234', vat: '140.0173', stampDuty: '0.9', withheld: '10.1', discountRate: '1', category: 'مواد', project: 'م1' };
+    const base = { supplierId: 'sA', date: '2026-03-05', isReturn: false, baseValue: '1000.123400', vat: '140.017300', stampDuty: '0.9', withheld: '10.1', discountRate: '1', category: 'مواد', project: 'م1' };
     expect((await post(viewer, { ...base, invoiceNo: `${x}-0` })).status).toBe(403);
     // المعادلة الانتقالية: الإجمالي = 1000.1234 + 140.0173 + 0.9 = 1141.0407، والصافي = 1130.9407
     const a = await post(acc, { ...base, invoiceNo: `${x}-1` });
@@ -66,14 +66,14 @@ describe('7.2.4 supplier invoices API', () => {
     expect(r1.body.internalNo).toMatch(/^PR-2026-\d{5}$/);
     expect(await legacyInv(a.body.id)).toMatchObject({ cancelled: false, postReturnWht: true, linkedReturnIds: [r1.body.id] });
     // مرتجع تاني بيغطي الباقي (1130.9407 − 114 = 1016.9407) ← الأصل اتلغى + حدث إلغاء
-    const r2 = await post(acc, { supplierId: 'sA', invoiceNo: `${x}-R2`, date: '2026-03-11', isReturn: true, linkedInvoiceId: a.body.id, baseValue: '1016.9407' });
+    const r2 = await post(acc, { supplierId: 'sA', invoiceNo: `${x}-R2`, date: '2026-03-11', isReturn: true, linkedInvoiceId: a.body.id, baseValue: '1016.940700' });
     expect(await legacyInv(a.body.id)).toMatchObject({ cancelled: true, postReturnWht: false, linkedReturnIds: [r1.body.id, r2.body.id] });
     // الملغية مابتظهرش في قايمة الربط
     expect((await t.http().get(`${P}/linkable?supplierId=sA`).set(bearer(acc))).body.map((i: { id: string }) => i.id)).not.toContain(a.body.id);
     expect((await post(acc, { supplierId: 'sA', invoiceNo: `${x}-R3`, date: '2026-03-12', isReturn: true, linkedInvoiceId: a.body.id, baseValue: '1' })).body.code).toBe('BAD_LINK');
     // نقل r2 لفاتورة b ← a بترجع (حدث رجوع)، وb بتتقيّم (500+70=570 < 1016.9407؟ لا: المرتجع أكبر ← ملغية)
     const r2v = r2.body.rev;
-    const mv = await t.http().patch(`${P}/${r2.body.id}`).set(bearer(acc)).send({ supplierId: 'sA', invoiceNo: `${x}-R2`, date: '2026-03-11', isReturn: true, linkedInvoiceId: b.body.id, baseValue: '1016.9407', rev: r2v });
+    const mv = await t.http().patch(`${P}/${r2.body.id}`).set(bearer(acc)).send({ supplierId: 'sA', invoiceNo: `${x}-R2`, date: '2026-03-11', isReturn: true, linkedInvoiceId: b.body.id, baseValue: '1016.940700', rev: r2v });
     expect(mv.status).toBe(200);
     expect(await legacyInv(a.body.id)).toMatchObject({ cancelled: false, postReturnWht: true, linkedReturnIds: [r1.body.id] });
     expect(await legacyInv(b.body.id)).toMatchObject({ cancelled: true, linkedReturnIds: [r2.body.id] });
@@ -95,7 +95,7 @@ describe('7.2.4 supplier invoices API', () => {
       ['supplier-invoice.reinstated', `supplier-invoice.reinstated:${a.body.id}:1`],
     ]);
     const [posted] = await events(a.body.id);
-    expect(posted.payload).toMatchObject({ internalNo: a.body.internalNo, total: '1141.0407', withheld: '10.1000', net: '1130.9407', currency: 'EGP', taxLines: [] });
+    expect(posted.payload).toMatchObject({ internalNo: a.body.internalNo, total: '1141.040700', withheld: '10.100000', net: '1130.940700', currency: 'EGP', taxLines: [] });
     expect((await events(r1.body.id))[0]).toMatchObject({ event_type: 'supplier-return.posted', payload: { originalInvoiceId: a.body.id, originalEventKey: `supplier-invoice.posted:${a.body.id}` } });
     await expect(t.ds.query(`UPDATE integration_events SET payload = '{}'::jsonb`)).rejects.toThrow(/append-only/);
     // نفس Idempotency-Key ← نفس الرد من غير فاتورة تانية ولا حدث تاني

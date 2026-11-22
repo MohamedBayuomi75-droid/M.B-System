@@ -116,7 +116,7 @@
 | TECH-0006 | سجل التدقيق | Verified | المرحلة 2 القديمة + إعادة التحقق في المراحل 1 و2 v1.4.5 |
 | TECH-0007 | Backup & Restore | Verified | المرحلة 2 القديمة + إعادة التحقق في المراحل 1 و2 v1.4.5 |
 | TECH-0008 | تحديث `xlsx` + 2FA للإدارة | Verified | 2FA + xlsx 0.20.3 (المرحلة 3 القديمة) |
-| TECH-0009 | الحساب العشري: NUMERIC بأربع خانات وHALF_UP على الخادم (Money) | Verified | money.spec + money.e2e (مطابقة PostgreSQL على 30,008 قيمة) |
+| TECH-0009 | الحساب العشري: NUMERIC بست خانات (DEC-0112، كانت 4) وHALF_UP على الخادم (Money) | Verified | money.spec + money.e2e (مطابقة PostgreSQL على 30,008 قيمة) |
 | TECH-0010 | ترقيم NO_GAPS داخل معاملة الخادم، والرقم المُصدر مابيتعادش حتى مع الإلغاء | Verified | server e2e (المرحلة 5)؛ النطاق والشكل B-29 مفتوح |
 | TECH-0011 | Approved ≠ Posted، والمرحّل مابيتعدّلش (التصحيح بمستند عكسي) | Verified | محرك الاعتمادات + B-51 (المرحلة 5، 6.2) |
 | TECH-0012 | Idempotency-Key للعمليات الحساسة | Verified | server e2e (المرحلة 5) |

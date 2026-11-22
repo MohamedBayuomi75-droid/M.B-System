@@ -54,14 +54,15 @@ describe('B-20 formula expression engine', () => {
     expect([...r.vars].sort()).toEqual(['Discount', 'lines']);
     expect([...r.lists.get('lines')!].sort()).toEqual(['Quantity', 'UnitPrice']);
   });
-  it('multi-step formulas: later steps see earlier results; money 4dp / qty 5dp rounding', () => {
+  it('multi-step formulas: later steps see earlier results; money 6dp (DEC-0112) / qty 5dp rounding', () => {
     const out = runSteps([
       { name: 'Gross', expr: 'SUM(lines, ROUND(Quantity * UnitPrice, 4))' },
       { name: 'Net', expr: 'Gross - Discount' },
       { name: 'Avg', expr: 'Net / 3', kind: 'qty' },
       { name: 'Ok', expr: 'Net > 0', kind: 'check' },
     ], { lines: [{ Quantity: '1', UnitPrice: '10.00005' }], Discount: '0.5' });
-    expect(out).toEqual({ Gross: '10.0001', Net: '9.5001', Avg: '3.16670', Ok: true });
+    // ROUND(…, 4) صريح في التعبير بيفضل 4، والخطوة نفسها بتتخزّن بست خانات
+    expect(out).toEqual({ Gross: '10.000100', Net: '9.500100', Avg: '3.16670', Ok: true });
     expect(err(() => runSteps([{ name: 'Discount', expr: '1' }], { Discount: '1' }))).toBe('NAME_CLASH');
   });
 });

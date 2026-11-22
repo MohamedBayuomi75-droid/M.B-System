@@ -17,10 +17,10 @@ const CUSTOMER_LISTS = ['contracts', 'invoices', 'collections', 'workSurveys', '
 /** تطبيع البحث بالعربي (نفس فكرة searchNorm في الواجهة الحالية): همزات/ى/ة/تشكيل/تطويل وحالة الأحرف */
 export const norm = (s: unknown) => String(s ?? '').toLowerCase().replace(/[ً-ْـ]/g, '').replace(/[أإآ]/g, 'ا').replace(/ى/g, 'ي').replace(/ة/g, 'ه').trim();
 const str = (v: unknown) => (v == null ? '' : String(v));
-/** رقم JSON من الطبقة الانتقالية ← نص عشري 4 خانات (عرض بس — مفيش حساب بـ Number) */
+/** رقم JSON من الطبقة الانتقالية ← نص عشري بخانات المبالغ (6، DEC-0112) (عرض بس — مفيش حساب بـ Number) */
 export const moneyOut = (v: unknown): string => {
-  if (v == null || v === '') return '0.0000';
-  try { return (typeof v === 'number' ? Money.fromNumberUnsafe(v) : Money.of(String(v))).toFixed(); } catch { return '0.0000'; }
+  if (v == null || v === '') return Money.zero().toFixed();
+  try { return (typeof v === 'number' ? Money.fromNumberUnsafe(v) : Money.of(String(v))).toFixed(); } catch { return Money.zero().toFixed(); }
 };
 /**
  * نص عشري ← رقم JSON بنفس شكل الواجهة الحالية (MODULE_MIGRATION_PLAN §3.1). مسموح بس لما الرقم يتمثّل بالظبط

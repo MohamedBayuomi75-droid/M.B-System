@@ -30,14 +30,14 @@ function jsonNumber(m: Money): number {
   if (t.replace(/[.-]/g, '').replace(/^0+/, '').length > 15) throw new UnprocessableEntityException({ statusCode: 422, code: 'PRECISION_LIMIT', message: 'المبلغ أطول من اللي يتخزّن بدقة' });
   return Number(t);
 }
-/** مبلغ قديم (رقم أو نص) ← نص بأربع خانات للحدث */
+/** مبلغ قديم (رقم أو نص) ← نص بست خانات للحدث */
 const amt = (v: unknown) => Money.fromNumberUnsafe(Number(v) || 0).toFixed();
 
 interface PendingEvent { type: string; key: string; aggregateId: string; payload: Record<string, unknown> }
 
 /**
  * فواتير ومرتجعات الموردين (7.2.4). القواعد = الواجهة القديمة (invoice-rules.ts، LEGACY-PRESERVE) + القرارات:
- *  - المعادلة الانتقالية للجديد (DEC-0107): الإجمالي = الأساسي + ق.م + الدمغة، والصافي = الإجمالي − المحجوز، بأربع خانات HALF_UP (B-25).
+ *  - المعادلة الانتقالية للجديد (DEC-0107): الإجمالي = الأساسي + ق.م + الدمغة، والصافي = الإجمالي − المحجوز، بست خانات HALF_UP (B-25).
  *    القديم بقيمه، ومابيتعادش حسابه إلا لو اتعدّل من هنا (ساعتها بيتحسب زي ما الواجهة القديمة بتعمل عند الحفظ).
  *  - رقم داخلي سنوي PI-/PR- من خدمة NO_GAPS للجديد بس (DEC-0103، DEC-0108)، جوه معاملة المستند.
  *  - B-31 للجديد: رقم المورد فريد لكل مورد جوه نفس النوع (س1)، تحت قفل الكتابة العام (ومعاه trigger في الجدول بعد النقل).
@@ -136,7 +136,7 @@ export class SupplierInvoicesService {
   private async save(u: AuthUser, editId: string | null, dto: SaveInvoiceDto & { rev?: number }) {
     this.assertWrite(u, editId ? 'edit' : 'add', dto.isReturn);
     const id = editId ?? `inv_${Date.now().toString(36)}${randomBytes(4).toString('hex')}`;
-    // المعادلة الانتقالية (DEC-0107) بأربع خانات (B-25)
+    // المعادلة الانتقالية (DEC-0107) بست خانات (B-25)
     const base = Money.of(dto.baseValue), vat = Money.of(dto.vat || '0'), stamp = Money.of(dto.stampDuty || '0'), wh = Money.of(dto.withheld || '0');
     const total = base.plus(vat).plus(stamp).round(), net = total.minus(wh).round();
     // نفس كائن fields في زرار الحفظ القديم (modals.js m_save)
@@ -257,7 +257,7 @@ export class SupplierInvoicesService {
       returnIds: rets, originalEventKey: this.postedKey(orig) } });
   }
 
-  /** محتوى الحدث (DEC-0104): المبالغ نصوص بأربع خانات. سطور الضرايب من محرك الضرايب لما نسبها تتعتمد (F-01، B-21…B-24) — لحد دلوقتي فاضية */
+  /** محتوى الحدث (DEC-0104): المبالغ نصوص بست خانات. سطور الضرايب من محرك الضرايب لما نسبها تتعتمد (F-01، B-21…B-24) — لحد دلوقتي فاضية */
   private payload(i: Inv, extra: Record<string, unknown> = {}) {
     return { id: i.id, internalNo: i.internalNo ?? null, invoiceNo: s(i.invoiceNo), date: s(i.date), supplierId: s(i.supplierId), project: s(i.project),
       baseValue: amt(i.baseValue), vat: amt(i.vat), stampDuty: amt(i.stampDuty), total: amt(i.totalInvoice), withheld: amt(i.withheld), net: amt(i.netInvoice),

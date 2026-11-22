@@ -59,7 +59,7 @@ describe('B-21 tax engine', () => {
     expect((await t.http().post(`${base}/versions/${d2.body.id}/approve`).set(bearer(admin)).send({})).body.code).toBe('SELF_APPROVAL');
     expect((await t.http().post(`${base}/versions/${d2.body.id}/approve`).set(bearer(viewer)).send({})).status).toBe(403);
     expect((await t.http().post(`${base}/versions/${d2.body.id}/approve`).set(bearer(approver.token)).send({ note: 'مراجعة' })).body.status).toBe('approved');
-    expect((await compute()).body).toEqual([expect.objectContaining({ code: 'TEST-VAT', version: 1, amount: '100.0000', taxableAmount: '1000.0000' })]);
+    expect((await compute()).body).toEqual([expect.objectContaining({ code: 'TEST-VAT', version: 1, amount: '100.000000', taxableAmount: '1000.000000' })]);
     expect((await t.ds.query(`SELECT action FROM audit_log WHERE action LIKE 'tax.%' ORDER BY id`)).map((a: { action: string }) => a.action))
       .toEqual(['tax.code.create', 'tax.code.create', 'tax.code.create', 'tax.code.create', 'tax.version.create', 'tax.version.delete_draft', 'tax.version.create', 'tax.version.submit', 'tax.version.approve']);
   });
@@ -77,20 +77,20 @@ describe('B-21 tax engine', () => {
     expect(n.approve.body.status).toBe('approved');
     const [old] = await t.ds.query(`SELECT to_char(effective_to, 'YYYY-MM-DD') AS e FROM tax_code_versions WHERE code = 'TEST-VAT' AND version = 1`);
     expect(old.e).toBe('2026-06-30');
-    expect((await compute({ date: '2026-06-30' })).body[0]).toMatchObject({ version: 1, amount: '100.0000' });
-    expect((await compute({ date: '2026-07-01' })).body[0]).toMatchObject({ version: 2, amount: '120.0000' });
+    expect((await compute({ date: '2026-06-30' })).body[0]).toMatchObject({ version: 1, amount: '100.000000' });
+    expect((await compute({ date: '2026-07-01' })).body[0]).toMatchObject({ version: 2, amount: '120.000000' });
     const lines = await svc.documentLines('test-invoice', 'INV-1');
-    expect(lines.map((l: { version: number; amount: string }) => [l.version, l.amount])).toEqual([[1, '100.0000']]);
+    expect(lines.map((l: { version: number; amount: string }) => [l.version, l.amount])).toEqual([[1, '100.000000']]);
   });
 
   it('transitional treatment by contract date + exemption; same-condition overlap is refused', async () => {
     await flow('TEST-WHT', draft({ rate: '5', baseRatio: '40', conditions: { contractDateTo: '2026-03-15' }, collector: 'COMPANY_WITHHOLDS', exemptions: [{ reason: 'إعفاء اختباري', activities: ['exempt-activity'] }] }));
     await flow('TEST-WHT', draft({ rate: '5', conditions: { contractDateFrom: '2026-03-16' }, collector: 'COMPANY_WITHHOLDS', minBase: '300' }));
     const w = (context: Record<string, unknown>, amount = '1000') => compute({ codes: ['TEST-WHT'], bases: { NET_OF_DISCOUNT: amount }, context });
-    expect((await w({ contractDate: '2026-03-01' })).body[0]).toMatchObject({ version: 1, taxableAmount: '400.0000', amount: '20.0000' });
-    expect((await w({ contractDate: '2026-04-01' })).body[0]).toMatchObject({ version: 2, amount: '50.0000' });
-    expect((await w({ contractDate: '2026-03-01', activity: 'exempt-activity' })).body[0]).toMatchObject({ amount: '0.0000', exemptReason: 'إعفاء اختباري' });
-    expect((await w({ contractDate: '2026-04-01' }, '300')).body[0]).toMatchObject({ amount: '0.0000', exemptReason: 'BELOW_MIN_BASE' });
+    expect((await w({ contractDate: '2026-03-01' })).body[0]).toMatchObject({ version: 1, taxableAmount: '400.000000', amount: '20.000000' });
+    expect((await w({ contractDate: '2026-04-01' })).body[0]).toMatchObject({ version: 2, amount: '50.000000' });
+    expect((await w({ contractDate: '2026-03-01', activity: 'exempt-activity' })).body[0]).toMatchObject({ amount: '0.000000', exemptReason: 'إعفاء اختباري' });
+    expect((await w({ contractDate: '2026-04-01' }, '300')).body[0]).toMatchObject({ amount: '0.000000', exemptReason: 'BELOW_MIN_BASE' });
     expect((await w({})).body.code).toBe('NO_APPROVED_RATE');
     const dup = await t.http().post(`${base}/codes/TEST-WHT/versions`).set(bearer(admin)).send(draft({ rate: '6', effectiveFrom: '2025-01-01', conditions: { contractDateFrom: '2026-03-16' } }));
     await t.http().post(`${base}/versions/${dup.body.id}/submit`).set(bearer(admin)).expect(200);
@@ -107,10 +107,10 @@ describe('B-21 tax engine', () => {
     expect(ret.approve.body).toMatchObject({ status: 'approved', template_rate: '5.000000' });
     expect((await compute({ codes: ['TEST-RET'], bases: { GROSS: '1000' } })).body.code).toBe('CONTRACT_TERM_REQUIRED');
     const both = await compute({ codes: ['TEST-VAT', 'TEST-RET'], bases: { NET_OF_DISCOUNT: '1000', GROSS: '1000' }, contractTerms: { 'TEST-RET': { rate: '5', termRef: 'عقد اختبار — بند 12' } } });
-    expect(both.body.map((l: { category: string; amount: string }) => [l.category, l.amount])).toEqual([['VAT', '100.0000'], ['CONTRACTUAL', '50.0000']]);
+    expect(both.body.map((l: { category: string; amount: string }) => [l.category, l.amount])).toEqual([['VAT', '100.000000'], ['CONTRACTUAL', '50.000000']]);
     await flow('TEST-PAY', draft({ method: 'BRACKETS', rate: undefined, base: 'TAXABLE_WAGE', appliesTo: ['test-payroll'], bearer: 'EMPLOYEE', collector: 'COMPANY_WITHHOLDS',
       brackets: [{ upTo: '1000', rate: '0' }, { upTo: '3000', rate: '10' }, { upTo: null, rate: '20' }] }));
-    expect((await compute({ documentType: 'test-payroll', codes: ['TEST-PAY'], bases: { TAXABLE_WAGE: '5000' } })).body[0].amount).toBe('600.0000');
+    expect((await compute({ documentType: 'test-payroll', codes: ['TEST-PAY'], bases: { TAXABLE_WAGE: '5000' } })).body[0].amount).toBe('600.000000');
     expect((await t.http().post(`${base}/versions/${ret.id}/suspend`).set(bearer(approver.token)).send({ note: 'إيقاف اختباري' })).body.status).toBe('suspended');
     expect((await compute({ codes: ['TEST-RET'], bases: { GROSS: '1000' }, contractTerms: { 'TEST-RET': { rate: '5', termRef: 'x' } } })).body.code).toBe('NO_APPROVED_RATE');
   });

@@ -74,7 +74,7 @@ async function login(page, username, password) {
   adminTok = r.body.accessToken;
   await api('POST', '/api/sync', { changes: [
     { collection: 'projects', id: 'p1', op: 'upsert', baseRev: 0, set: { name: 'مشروع الشروق', code: 'PRJ-1', budget: 1250000.5, status: 'active' } },
-    { collection: 'projects', id: 'p2', op: 'upsert', baseRev: 0, set: { name: 'مشروع النيل', code: 'PRJ-2', budget: '2000.00005', status: 'active' } },
+    { collection: 'projects', id: 'p2', op: 'upsert', baseRev: 0, set: { name: 'مشروع النيل', code: 'PRJ-2', budget: '2000.0000005', status: 'active' } },
   ] }, adminTok);
 
   console.log('[3] pilot screen reads /api/v1/projects; money shown from the server string (no client math)');
@@ -85,7 +85,7 @@ async function login(page, username, password) {
     const rows = await A.page.evaluate(() => [...document.querySelectorAll('#projectsTable tr[data-id]')].map((tr) => [...tr.querySelectorAll('td')].map((td) => td.textContent.trim())));
     eq(rows.length, 2, 'two projects listed');
     const budgets = rows.map((x) => x[3]);
-    ok(budgets.includes('١٬٢٥٠٬٠٠٠٫٥٠') && budgets.includes('٢٬٠٠٠٫٠٠٠١'), 'budgets: 1250000.5 → ١٬٢٥٠٬٠٠٠٫٥٠ · 2000.00005 → HALF_UP 4dp ٢٬٠٠٠٫٠٠٠١', budgets);
+    ok(budgets.includes('١٬٢٥٠٬٠٠٠٫٥٠') && budgets.includes('٢٬٠٠٠٫٠٠٠٠٠١'), 'budgets: 1250000.5 → ١٬٢٥٠٬٠٠٠٫٥٠ · 2000.0000005 → HALF_UP 6dp ٢٬٠٠٠٫٠٠٠٠٠١ (DEC-0112)', budgets);
     await A.page.fill('#projSearch', 'نيل');
     await A.page.waitForFunction(() => document.querySelectorAll('#projectsTable tr[data-id]').length === 1);
     ok(true, 'search filters on the server');
@@ -402,7 +402,7 @@ async function login(page, username, password) {
     ok(true, 'approved by a different user from the screen');
     await T.ctx.close();
     const e = await api('POST', `/api/v1/finance/formulas/${f.code}/evaluate`, { date: '2026-06-01', inputs: { RecognizedRevenue: '200', RecognizedProjectCost: '150' } }, adminTok);
-    eq(e.body.outputs, { GrossProfit: '50.0000', ProfitMargin: '25.0000' }, 'evaluation uses the approved version');
+    eq(e.body.outputs, { GrossProfit: '50.000000', ProfitMargin: '25.000000' }, 'evaluation uses the approved version');
   }
 
   console.log('[6g] 7.2: supplier invoices screen — legacy layout, add via the modal (server formula + PI- number), linked return cancels the original, view modal (test data)');

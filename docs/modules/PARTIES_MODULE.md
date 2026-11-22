@@ -32,7 +32,7 @@
 | اسم المورد إلزامي (بعد قص المسافات) | `ledger/helpers.js:56` | `NAME_REQUIRED` |
 | الرقم الضريبي لو موجود ≥ 5 حروف | `ledger/helpers.js:57` | `TAX_ID_TOO_SHORT` |
 | صيغة البريد | `ledger/helpers.js:59` | `INVALID_EMAIL` |
-| الرصيد الافتتاحي رقم (يقبل السالب) | `ledger/helpers.js:63`، `pages-suppliers.js:162` | نص عشري حتى 4 خانات (B-25) |
+| الرصيد الافتتاحي رقم (يقبل السالب) | `ledger/helpers.js:63`، `pages-suppliers.js:162` | نص عشري حتى 6 خانات (B-25 بعد DEC-0112) |
 | اسم العميل إلزامي | `pages-customers.js:396` | `NAME_REQUIRED` |
 | كود العميل الفاضي = البادئة (`customerPrefix` أو `CUS-`) + (أكبر رقم في آخر الأكواد + 1) بأربع خانات | `clients/helpers.js:13` | `nextCustomerCode()` |
 | حالة العميل الجديد `active` | `pages-customers.js:418` | ✅ |

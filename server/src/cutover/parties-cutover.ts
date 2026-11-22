@@ -5,11 +5,11 @@ import { SUPPLIER_INVOICE_COLUMNS } from '../migrations/1764800000000-SupplierIn
 export type { CutoverReport } from './module-cutover';
 
 /**
- * 6.1 — الموردين والعملاء. التطبيع المسموح بس: defaults للحقول الناقصة + تقريب الرصيد الافتتاحي لـ 4 خانات HALF_UP (B-25)
+ * 6.1 — الموردين والعملاء. التطبيع المسموح بس: defaults للحقول الناقصة + تقريب الرصيد الافتتاحي لـ 6 خانات HALF_UP (B-25)
  * + جهات اتصال بنفس المفاتيح.
  */
 const partiesNormalized = (defaults: string) => `(${defaults} || r.data || jsonb_build_object('id', r.id,
-  'openingBalance', CASE WHEN coalesce(r.data->>'openingBalance','') = '' THEN 0 ELSE trim_scale(round((r.data->>'openingBalance')::numeric, 4)) END)
+  'openingBalance', CASE WHEN coalesce(r.data->>'openingBalance','') = '' THEN 0 ELSE trim_scale(round((r.data->>'openingBalance')::numeric, 6)) END)
   || CASE WHEN r.data ? 'contacts' AND jsonb_typeof(r.data->'contacts') = 'array' THEN jsonb_build_object('contacts', (SELECT coalesce(jsonb_agg(jsonb_build_object('title','','phone','','email','') || e ORDER BY o), '[]'::jsonb) FROM jsonb_array_elements(r.data->'contacts') WITH ORDINALITY AS x(e, o))) ELSE '{}'::jsonb END
   || CASE WHEN coalesce(r.data->>'status','') = '' AND r.data ? 'code' THEN jsonb_build_object('status','active') ELSE '{}'::jsonb END)`;
 

@@ -120,8 +120,8 @@
 - **الأدلة:** `server/src/data/data.controller.ts`.
 - **إعادة النظر:** بعد إيقاف الواجهة الحالية تُحذف واجهة التوافق.
 
-## ADR-011 — `NUMERIC` للأموال، 4 خانات، HALF_UP، والتقريب داخل Backend
-- **الحالة:** **Accepted** (2026-11-17 — `ERP_MASTER_IMPLEMENTATION_PLAN.md` §2؛ B-25 محسوم).
+## ADR-011 — `NUMERIC` للأموال، 6 خانات (كانت 4)، HALF_UP، والتقريب داخل Backend
+- **الحالة:** **Accepted** (2026-11-17 — `ERP_MASTER_IMPLEMENTATION_PLAN.md` §2؛ B-25 محسوم). **اتعدّل 2026-11-22 (DEC-0112): 6 خانات بدل 4، `NUMERIC(20,6)`، والتقريب HALF_UP زي ما هو** (`money.ts` `MONEY_SCALE`، والمطابقة مع PostgreSQL في `money.e2e-spec.ts` بست خانات).
 - **السياق:** الأموال الآن أرقام عائمة في JavaScript، والتقريب غير موحّد (6 خانات في الدفتر، خانتان في المستخلصات والعمالة) — `renderer/modules/ledger/helpers.js:208`، `clients/pages-invoices.js:19`، `core/helpers.js:21`.
 - **القرار:** كل قيمة مالية `NUMERIC` بـ **4 خانات عشرية** وتقريب **HALF_UP**؛ دالة تقريب واحدة في الخادم؛ لا معادلات مالية في الواجهة؛ لا `float`/`double precision`.
 - **تفسير HALF_UP (VERIFIED على PostgreSQL 16.15، 2026-11-17):** `round(x,4)` والتحويل إلى `numeric(p,4)` يقرّبان الحالة النصفية **بعيدًا عن الصفر**: `2.00005 ← 2.0001`، `−2.00005 ← −2.0001`، `1.23445 ← 1.2345`. هذا هو التفسير المعياري لـ HALF_UP (مثل `BigDecimal.HALF_UP`). تأكيده للأرقام السالبة: B-70.

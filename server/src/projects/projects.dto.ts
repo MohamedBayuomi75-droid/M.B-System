@@ -17,7 +17,7 @@ export class ProjectDto {
   @ApiProperty() name: string;
   @ApiProperty({ nullable: true }) status: string | null;
   @ApiProperty({ nullable: true, description: 'مرحلة مسار المشروع' }) stage: string | null;
-  @ApiProperty({ nullable: true, example: '10000.0000', description: 'الميزانية: نص عشري بأربع خانات (ADR-023) — أو null' }) budget: string | null;
+  @ApiProperty({ nullable: true, example: '10000.000000', description: 'الميزانية: نص عشري بست خانات (DEC-0112) (ADR-023) — أو null' }) budget: string | null;
   @ApiProperty({ nullable: true }) supervisorId: string | null;
   @ApiProperty({ nullable: true }) customerId: string | null;
   @ApiProperty() rev: number;

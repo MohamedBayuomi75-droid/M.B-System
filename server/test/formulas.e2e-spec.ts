@@ -43,7 +43,7 @@ describe('B-20 financial rules engine', () => {
   });
 
   it('draft/pending never applies; tests must pass before submission; the creator cannot approve', async () => {
-    const bad = await t.http().post(`${F}/SUP-INVOICE/versions`).set(bearer(admin)).send(version({ testCases: [{ name: 'خطأ متعمّد', inputs, expected: { NetSupplierPayable: '1.0000' } }] }));
+    const bad = await t.http().post(`${F}/SUP-INVOICE/versions`).set(bearer(admin)).send(version({ testCases: [{ name: 'خطأ متعمّد', inputs, expected: { NetSupplierPayable: '1.000000' } }] }));
     expect(bad.body).toMatchObject({ status: 'draft', tests_passed: false });
     expect((await t.http().post(`${F}/versions/${bad.body.id}/submit`).set(bearer(admin))).body.code).toBe('TESTS_REQUIRED');
     await t.http().delete(`${F}/versions/${bad.body.id}`).set(bearer(admin)).expect(200);
@@ -52,14 +52,14 @@ describe('B-20 financial rules engine', () => {
     expect(d.body.test_results.every((r: { status: string }) => r.status === 'PASS')).toBe(true);
     expect((await ev()).body.code).toBe('NO_APPROVED_FORMULA');
     const p = await t.http().post(`${F}/versions/${d.body.id}/preview`).set(bearer(admin)).send({ inputs });
-    expect(p.body.outputs).toMatchObject({ InvoiceTotal: '114000.0000', NetSupplierPayable: '113000.0000' });
+    expect(p.body.outputs).toMatchObject({ InvoiceTotal: '114000.000000', NetSupplierPayable: '113000.000000' });
     await t.http().post(`${F}/versions/${d.body.id}/submit`).set(bearer(admin)).expect(200);
     expect((await ev()).body.code).toBe('NO_APPROVED_FORMULA');
     expect((await t.http().post(`${F}/versions/${d.body.id}/approve`).set(bearer(admin)).send({})).body.code).toBe('SELF_APPROVAL');
     expect((await t.http().post(`${F}/versions/${d.body.id}/approve`).set(bearer(viewer)).send({})).status).toBe(403);
     expect((await t.http().post(`${F}/versions/${d.body.id}/approve`).set(bearer(approver.token)).send({ note: 'مراجعة' })).body.status).toBe('approved');
-    expect((await ev()).body).toMatchObject({ version: 1, outputs: { InvoiceTotal: '114000.0000', NetSupplierPayable: '113000.0000' } });
-    expect((await ev('2026-06-01', { ...inputs, CommercialDiscounts: '100000.0001' })).body.code).toBe('DISCOUNT_EXCEEDS_BASE');
+    expect((await ev()).body).toMatchObject({ version: 1, outputs: { InvoiceTotal: '114000.000000', NetSupplierPayable: '113000.000000' } });
+    expect((await ev('2026-06-01', { ...inputs, CommercialDiscounts: '100000.000100' })).body.code).toBe('DISCOUNT_EXCEEDS_BASE');
   });
 
   it('approved versions are immutable in the database; submitted versions cannot be deleted', async () => {
@@ -70,20 +70,20 @@ describe('B-20 financial rules engine', () => {
   it('#20 a new version from a future date does not change documents computed before; recomputation returns the stored snapshot (#18)', async () => {
     const svc = t.app.get(FormulasService);
     const first = await t.ds.transaction((em) => svc.computeAndSnapshot(em, 'supplier-invoice', 'INV-1', 'SUP-INVOICE', '2026-06-01', inputs, null));
-    expect(first).toMatchObject({ version: 1, reused: false, outputs: { NetSupplierPayable: '113000.0000' } });
+    expect(first).toMatchObject({ version: 1, reused: false, outputs: { NetSupplierPayable: '113000.000000' } });
     // إصدار 2 (تعديل منطق): الدفعات المقدمة مابتطرحش من المستحق — مثال اختباري بس
     const steps2 = (sup.steps as { name: string; expr: string }[]).map((s) => (s.name === 'NetSupplierPayable' ? { ...s, expr: 'InvoiceTotal - WithholdingAmount - OtherApprovedDeductions' } : s));
-    const tc2 = [{ name: 'منطق جديد', inputs: { ...inputs, AdvancesApplied: '500' }, expected: { NetSupplierPayable: '113000.0000' } }];
+    const tc2 = [{ name: 'منطق جديد', inputs: { ...inputs, AdvancesApplied: '500' }, expected: { NetSupplierPayable: '113000.000000' } }];
     const v2 = await t.http().post(`${F}/SUP-INVOICE/versions`).set(bearer(admin)).send(version({ changeKind: 'logic', effectiveFrom: '2026-07-01', definition: { variables: sup.variables, lists: sup.lists, steps: steps2 }, testCases: tc2 }));
     expect(v2.body).toMatchObject({ version: 2, tests_passed: true });
     await t.http().post(`${F}/versions/${v2.body.id}/submit`).set(bearer(admin)).expect(200);
     await t.http().post(`${F}/versions/${v2.body.id}/approve`).set(bearer(approver.token)).send({}).expect(200);
     const [old] = await t.ds.query(`SELECT to_char(effective_to, 'YYYY-MM-DD') AS e FROM financial_formula_versions WHERE code = 'SUP-INVOICE' AND version = 1`);
     expect(old.e).toBe('2026-06-30');
-    expect((await ev('2026-06-30', { ...inputs, AdvancesApplied: '500' })).body).toMatchObject({ version: 1, outputs: { NetSupplierPayable: '112500.0000' } });
-    expect((await ev('2026-07-01', { ...inputs, AdvancesApplied: '500' })).body).toMatchObject({ version: 2, outputs: { NetSupplierPayable: '113000.0000' } });
+    expect((await ev('2026-06-30', { ...inputs, AdvancesApplied: '500' })).body).toMatchObject({ version: 1, outputs: { NetSupplierPayable: '112500.000000' } });
+    expect((await ev('2026-07-01', { ...inputs, AdvancesApplied: '500' })).body).toMatchObject({ version: 2, outputs: { NetSupplierPayable: '113000.000000' } });
     const again = await t.ds.transaction((em) => svc.computeAndSnapshot(em, 'supplier-invoice', 'INV-1', 'SUP-INVOICE', '2026-07-15', { ...inputs, AdvancesApplied: '999' }, null));
-    expect(again).toMatchObject({ version: 1, reused: true, outputs: { NetSupplierPayable: '113000.0000' } });
+    expect(again).toMatchObject({ version: 1, reused: true, outputs: { NetSupplierPayable: '113000.000000' } });
     await expect(t.ds.query(`UPDATE document_formula_snapshots SET outputs = '{}'`)).rejects.toThrow();
     const audit = (await t.ds.query(`SELECT action FROM audit_log WHERE action LIKE 'formula.%' ORDER BY id`)).map((a: { action: string }) => a.action);
     expect(audit).toEqual(expect.arrayContaining(['formula.create', 'formula.version.create', 'formula.version.submit', 'formula.version.approve', 'formula.version.delete_draft']));
@@ -96,7 +96,7 @@ describe('B-20 financial rules engine', () => {
     await t.http().post(`${F}/versions/${v.body.id}/submit`).set(bearer(admin)).expect(200);
     await t.http().post(`${F}/versions/${v.body.id}/approve`).set(bearer(approver.token)).send({}).expect(200);
     const z = await t.http().post(`${F}/PROJECT-COST/evaluate`).set(bearer(viewer)).send({ date: '2025-06-01', inputs: { MaterialCost: '1', LaborCost: '0', EquipmentCost: '0', SubcontractorCost: '0', DirectExpenses: '0', AllocatedIndirectCosts: '0', BudgetedCost: '0' } });
-    expect(z.body.outputs).toMatchObject({ ActualProjectCost: '1.0000', VariancePercentage: null });
+    expect(z.body.outputs).toMatchObject({ ActualProjectCost: '1.000000', VariancePercentage: null });
     const list = (await t.http().get(F).set(bearer(admin))).body;
     expect(list.find((f: { code: string }) => f.code === 'PROJECT-COST').versions[0].status).toBe('expired');
     expect((await t.http().post(`${F}/versions/${v.body.id}/suspend`).set(bearer(approver.token)).send({})).body.code).toBe('REASON_REQUIRED');

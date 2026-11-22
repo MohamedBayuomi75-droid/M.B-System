@@ -5,7 +5,7 @@ const T = require('../tools/formulas/target');
 const s = (d) => d.toString();
 
 // TR-01/12: أربع خانات HALF_UP للموجب والسالب
-eq([T.q4('2.00005'), T.q4('-2.00005'), T.q4('1.23444'), T.q4('-0.00005'), T.q4('550628.695')].map(s), ['2.0001', '-2.0001', '1.2344', '-0.0001', '550628.695'], 'TR-01/12: 4 خانات HALF_UP (السالب كمان بعيد عن الصفر)');
+eq([T.qm('2.0000005'), T.qm('-2.0000005'), T.qm('1.2344444'), T.qm('-0.0000005'), T.qm('550628.695')].map(s), ['2.000001', '-2.000001', '1.234444', '-0.000001', '550628.695'], 'TR-01/12: 6 خانات HALF_UP (DEC-0112، والسالب كمان بعيد عن الصفر)');
 
 // الموردين
 const D = {
@@ -62,7 +62,7 @@ eq(s(ar.total), '1016.665', 'TR-07: إجمالي المستحق من غير ال
 // الرواتب الجزئية
 let threw = null; try { T.proratedSalary(6000, 15, 31, null); } catch (e) { threw = e.code; }
 eq(threw, 'POLICY_REQUIRED', 'TR-09: الراتب الجزئي بيرفض الحساب من غير سياسة معتمدة (مفيش افتراض)');
-eq([s(T.proratedSalary(6000, 15, 31, { method: 'calendar' })), s(T.proratedSalary(6000, 15, 31, { method: 'fixed30' })), s(T.proratedSalary(6000, 13, 31, { method: 'workdays', workDaysInMonth: 26 }))], ['2903.2258', '3000', '3000'], 'TR-09: التناسب بالطريقة اللي هتتعتمد (تقويمي / 30 / أيام عمل)');
+eq([s(T.proratedSalary(6000, 15, 31, { method: 'calendar' })), s(T.proratedSalary(6000, 15, 31, { method: 'fixed30' })), s(T.proratedSalary(6000, 13, 31, { method: 'workdays', workDaysInMonth: 26 }))], ['2903.225806', '3000', '3000'], 'TR-09: التناسب بالطريقة اللي هتتعتمد (تقويمي / 30 / أيام عمل)');
 
 // تكلفة المشروع
 const Pj = { ledger: { invoices: [

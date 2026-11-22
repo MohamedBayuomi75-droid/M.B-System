@@ -1,12 +1,12 @@
-import { Money } from '../common/money';
+import { Money, MONEY_SCALE } from '../common/money';
 
 /**
  * ⚠️ مرجع مراجعة B-20 بس — **مش متوصّل بأي موديول ولا بيتنفّذ في الإنتاج**.
  * الصيغ المقترحة في docs/FINANCIAL_FORMULAS_REVIEW.md مكتوبة هنا كدوال صافية عشان أمثلة الوثيقة تتختبر بالظبط
- * (4 خانات HALF_UP للمبالغ، 5 خانات للكميات وأسعار الوحدة — B-25/B-26). بعد اعتماد المدير المالي بتتنقل لمحرك القواعد
+ * (6 خانات HALF_UP للمبالغ، 5 خانات للكميات وأسعار الوحدة — B-25/B-26). بعد اعتماد المدير المالي بتتنقل لمحرك القواعد
  * كإصدارات معتمدة، والنسب (الضريبة، الخصم، الاحتجاز…) من أكواد B-21 وبنود العقد — مش من الكود.
  */
-const r4 = (x: Money) => x.round(4);
+const r4 = (x: Money) => x.round(MONEY_SCALE); // خانات المبالغ: 6 (DEC-0112، كانت 4)
 const r5 = (x: Money) => x.round(5);
 const M = (v: string | number) => Money.of(String(v));
 
@@ -46,7 +46,7 @@ export function supplierBalance(b: { opening: string; docs: { kind: 'invoice' | 
   return { balance: r4(bal).toFixed(), unclassified };
 }
 
-/** F-08 يومية عامل (TR-07): الأجر × معامل الحالة − الخصم، بحد أدنى صفر — 4 خانات */
+/** F-08 يومية عامل (TR-07): الأجر × معامل الحالة − الخصم، بحد أدنى صفر — 6 خانات */
 export function workerDay(d: { wage: string; factor: string; deduction?: string }) {
   const v = r4(M(d.wage).times(d.factor)).minus(d.deduction ?? '0');
   return (v.isNegative() ? Money.zero() : v).toFixed();
@@ -68,7 +68,7 @@ export function projectProfit(p: { revenue: string; actualCost: string }) {
   return { profit: profit.toFixed(), marginPct: margin };
 }
 
-/** F-15 القيد المزدوج: كل قيد متوازن بالظبط (4 خانات) */
+/** F-15 القيد المزدوج: كل قيد متوازن بالظبط (6 خانات) */
 export function balancedEntry(lines: { debit: string; credit: string }[]) {
   const d = Money.sum(lines.map((l) => M(l.debit))), c = Money.sum(lines.map((l) => M(l.credit)));
   return { debit: d.toFixed(), credit: c.toFixed(), balanced: d.eq(c) };

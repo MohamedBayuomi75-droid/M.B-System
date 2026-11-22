@@ -1,4 +1,5 @@
 import Decimal from 'decimal.js';
+import { MONEY_SCALE } from '../common/money';
 
 /**
  * Formula Expression Engine (B-20 §13.4) — لغة تعبيرات محدودة وآمنة:
@@ -191,11 +192,11 @@ export function evaluate(n: Node, scope: Scope, item?: Scope): Value {
 
 /**
  * صيغة متعددة الخطوات: كل خطوة اسم + تعبير، والخطوات اللاحقة بتشوف نتائج اللي قبلها.
- * التقريب افتراضيًا: مبلغ 4 خانات HALF_UP (B-25)، كمية/سعر وحدة 5 (B-26)، نسبة 6، أو من غير تقريب (raw)، أو شرط (check).
+ * التقريب افتراضيًا: مبلغ 6 خانات HALF_UP (B-25 بعد DEC-0112)، كمية/سعر وحدة 5 (B-26)، نسبة 6، أو من غير تقريب (raw)، أو شرط (check).
  */
 export type StepKind = 'money' | 'qty' | 'rate' | 'raw' | 'check';
 export interface Step { name: string; expr: string; kind?: StepKind }
-const PLACES: Partial<Record<StepKind, number>> = { money: 4, qty: 5, rate: 6 };
+const PLACES: Partial<Record<StepKind, number>> = { money: MONEY_SCALE, qty: 5, rate: 6 }; // money = 6 (DEC-0112)
 
 export function runSteps(steps: Step[], inputs: Scope): Record<string, string | boolean | null> {
   const scope: Scope = { ...inputs }; const out: Record<string, string | boolean | null> = {};

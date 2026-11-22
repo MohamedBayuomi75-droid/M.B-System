@@ -415,11 +415,11 @@ export class SupplierInvoicesPage implements OnInit {
   suggestWithheld(force: boolean) {
     if (!force && this.whManual) return;
     const dr = Number(plain(this.e['discountRate'])) || 0;
-    if (dr > 0) this.e['withheld'] = String(roundMoney((Number(plain(this.e['baseValue'])) || 0) * dr / 100, 4));
+    if (dr > 0) this.e['withheld'] = String(roundMoney((Number(plain(this.e['baseValue'])) || 0) * dr / 100, 6)); // خانات المبالغ 6 (DEC-0112)
   }
-  /** عرض بس (recalcTotals) — الحساب المعتمد من السيرفر بأربع خانات (DEC-0107) */
-  calcTotal() { const t = (Number(plain(this.e['baseValue'])) || 0) + (Number(plain(this.e['vat'])) || 0) + (Number(plain(this.e['stampDuty'])) || 0); return this.fmt(roundMoney(t, 4)).replace(/[⁦⁩]/g, ''); }
-  calcNet() { const t = (Number(plain(this.e['baseValue'])) || 0) + (Number(plain(this.e['vat'])) || 0) + (Number(plain(this.e['stampDuty'])) || 0) - (Number(plain(this.e['withheld'])) || 0); return this.fmt(roundMoney(t, 4)).replace(/[⁦⁩]/g, ''); }
+  /** عرض بس (recalcTotals) — الحساب المعتمد من السيرفر بست خانات (DEC-0107، DEC-0112) */
+  calcTotal() { const t = (Number(plain(this.e['baseValue'])) || 0) + (Number(plain(this.e['vat'])) || 0) + (Number(plain(this.e['stampDuty'])) || 0); return this.fmt(roundMoney(t, 6)).replace(/[⁦⁩]/g, ''); }
+  calcNet() { const t = (Number(plain(this.e['baseValue'])) || 0) + (Number(plain(this.e['vat'])) || 0) + (Number(plain(this.e['stampDuty'])) || 0) - (Number(plain(this.e['withheld'])) || 0); return this.fmt(roundMoney(t, 6)).replace(/[⁦⁩]/g, ''); }
   openLink(url?: string) {
     const u = String(url ?? '').trim();
     if (!u) { this.toast.show('اكتب رابط الفاتورة الأصلية الأول'); return; }
@@ -444,7 +444,7 @@ export class SupplierInvoicesPage implements OnInit {
     if (!body['supplierId']) { this.error.set('المورد مطلوب'); return; }
     if (!body['invoiceNo']) { this.error.set('رقم الفاتورة مطلوب'); return; }
     if (!body['date']) { this.error.set('تاريخ التعامل مطلوب'); return; }
-    if (!/^\d{1,14}(\.\d{1,4})?$/.test(String(body['baseValue']))) { this.error.set('القيمة الإجمالية لازم تكون رقم بحد أقصى 4 خانات عشرية'); return; }
+    if (!/^\d{1,14}(\.\d{1,6})?$/.test(String(body['baseValue']))) { this.error.set('القيمة الإجمالية لازم تكون رقم بحد أقصى 6 خانات عشرية'); return; }
     this.busy.set(true); this.error.set('');
     try {
       const saved = e['id']

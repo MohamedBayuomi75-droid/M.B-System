@@ -782,7 +782,7 @@
       "type": "string"
      },
      "openingBalance": {
-      "description": "نص عشري (حتى 4 خانات، يقبل السالب)",
+      "description": "نص عشري (حتى 6 خانات، يقبل السالب — DEC-0112)",
       "example": "-1250.5",
       "type": "string"
      },
@@ -1687,8 +1687,8 @@
    "ProjectDto": {
     "properties": {
      "budget": {
-      "description": "الميزانية: نص عشري بأربع خانات (ADR-023) — أو null",
-      "example": "10000.0000",
+      "description": "الميزانية: نص عشري بست خانات (DEC-0112) (ADR-023) — أو null",
+      "example": "10000.000000",
       "nullable": true,
       "type": "object"
      },
@@ -2431,7 +2431,7 @@
       "type": "string"
      },
      "openingBalance": {
-      "description": "نص عشري (حتى 4 خانات، يقبل السالب)",
+      "description": "نص عشري (حتى 6 خانات، يقبل السالب — DEC-0112)",
       "example": "-1250.5",
       "type": "string"
      },
@@ -4912,7 +4912,7 @@
   },
   "/api/v1/projects": {
    "get": {
-    "description": "نفس الصلاحيات ونطاق المشروع. المبالغ نصوص بأربع خانات.",
+    "description": "نفس الصلاحيات ونطاق المشروع. المبالغ نصوص بست خانات.",
     "operationId": "ProjectsController_list",
     "parameters": [
      {

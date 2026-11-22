@@ -56,13 +56,13 @@ function main() {
   review.attendanceZeroWage = (DATA.workerAttendance || []).filter((a) => !(Number(a.dayWage) > 0)).map((a) => a.id);
   out.attendance.zeroWage = review.attendanceZeroWage.length;
 
-  // التقريب لأربع خانات (قيم مخزّنة بأكتر من 4 خانات)
+  // التقريب لست خانات (DEC-0112): قيم مخزّنة بأكتر من 6 خانات
   const fields = ['baseValue', 'vat', 'stampDuty', 'withheld', 'totalInvoice', 'netInvoice', 'unitPrice'];
   let n = 0, sumDiff = Dec.zero(); const byField = {};
   for (const i of inv) for (const f of fields) {
     const v = i[f]; if (v === '' || v == null) continue;
     const x = Number(String(v).replace(/,/g, '')); if (!Number.isFinite(x)) continue;
-    const exact = Dec.of(x), r = T.q4(x);
+    const exact = Dec.of(x), r = T.qm(x);
     if (exact.cmp(r) !== 0) { n++; byField[f] = (byField[f] || 0) + 1; sumDiff = sumDiff.add(r.sub(exact)); }
   }
   out.rounding = { valuesAffected: n, byField, netEffectOnStoredValues: sumDiff.toString() };

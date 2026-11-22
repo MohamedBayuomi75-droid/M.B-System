@@ -76,7 +76,7 @@ const md = `# مصفوفة تطابق الحقول — فواتير ومرتجع
 ${rows}
 ## الخلاصة (P7.2-B)
 - **كل حقل ليه مكان** (عمود أو \`legacy_extra\`)، ومفيش حقل بيضيع: أمر الكتابة بيحط أي مفتاح مش معروف، أو نوعه مختلف، في \`legacy_extra\`، وتحقق التكافؤ في أمر النقل بيقارن كل سجل.
-- **المبالغ** \`numeric\` من غير scale: القديم بكل خاناته (DEC-0107). الجديد من الـ API بأربع خانات HALF_UP (B-25).
+- **المبالغ** \`numeric\` من غير scale: القديم بكل خاناته (DEC-0107). الجديد من الـ API بست خانات HALF_UP (B-25 بعد DEC-0112).
 `;
 const file = path.join(ROOT, 'docs/modules/SUPPLIER_INVOICES_FIELD_PARITY.md');
 if (process.argv.includes('--check')) {

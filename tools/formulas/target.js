@@ -5,9 +5,9 @@
 'use strict';
 const { Dec, D, sum } = require('./decimal');
 
-/** TR-01/TR-12: كل المبالغ NUMERIC بأربع خانات، والتقريب HALF_UP للموجب والسالب (النص بعيد عن الصفر) */
-const q4 = (x) => D(x).round(4, 'halfAwayFromZero');
-const num = (x) => { if (x == null || x === '') return Dec.zero(); if (typeof x === 'string' && /^\s*[+-]?(\d+(\.\d*)?|\.\d+)\s*$/.test(x.replace(/,/g, ''))) return q4(D(x.replace(/,/g, '').trim())); const n = Number(String(x).replace(/,/g, '')); return Number.isFinite(n) ? q4(D(n)) : Dec.zero(); };
+/** TR-01/TR-12 + DEC-0112: كل المبالغ NUMERIC بست خانات (كانت 4)، والتقريب HALF_UP للموجب والسالب (النص بعيد عن الصفر) */
+const qm = (x) => D(x).round(6, 'halfAwayFromZero'); // خانات المبالغ: 6 (DEC-0112، كانت 4)
+const num = (x) => { if (x == null || x === '') return Dec.zero(); if (typeof x === 'string' && /^\s*[+-]?(\d+(\.\d*)?|\.\d+)\s*$/.test(x.replace(/,/g, ''))) return qm(D(x.replace(/,/g, '').trim())); const n = Number(String(x).replace(/,/g, '')); return Number.isFinite(n) ? qm(D(n)) : Dec.zero(); };
 
 class PolicyRequired extends Error { constructor(what) { super('POLICY_REQUIRED: ' + what); this.code = 'POLICY_REQUIRED'; this.what = what; } }
 
@@ -123,7 +123,7 @@ function attendanceReview(DATA, payFactors = DEFAULT_PAY_FACTORS) {
     let days = Number(a.days);
     if (!Number.isFinite(days) || days <= 0) days = 1;
     const factor = st === 'half' ? D(payFactors.half) : D(payFactors[st]).mul(days);
-    const pay = q4(wage.mul(factor).sub(num(a.deduction)).max0());
+    const pay = qm(wage.mul(factor).sub(num(a.deduction)).max0());
     counted.push({ id: a.id, personId: pid, pay });
   }
   return { counted, duplicates, orphans, needsPolicy, total: sum(counted, (c) => c.pay) };
@@ -134,7 +134,7 @@ function proratedSalary(monthlySalary, entitledDays, periodDays, policy) {
   if (!policy || !policy.method) throw new PolicyRequired('salary proration method (B-47)');
   const denom = policy.method === 'calendar' ? periodDays : policy.method === 'fixed30' ? 30 : policy.method === 'workdays' ? policy.workDaysInMonth : null;
   if (!denom) throw new PolicyRequired('salary proration method (B-47)');
-  return q4(num(monthlySalary).mul(entitledDays).div(denom));
+  return qm(num(monthlySalary).mul(entitledDays).div(denom));
 }
 
 // ---------------------------------------------------------------- المشروعات
@@ -175,13 +175,13 @@ function movingAverageIssueCosts(DATA, itemId) {
     const q = num(m.qty);
     if (m.type === 'in' || m.type === 'adjust_in') {
       const unit = m.unitCost != null && m.unitCost !== '' ? num(m.unitCost) : (qty.isZero() ? Dec.zero() : value.div(qty));
-      qty = qty.add(q); value = value.add(q4(q.mul(unit)));
+      qty = qty.add(q); value = value.add(qm(q.mul(unit)));
     } else if (m.type === 'out' || m.type === 'adjust_out') {
-      const avg = qty.isZero() ? Dec.zero() : q4(value.div(qty));
+      const avg = qty.isZero() ? Dec.zero() : qm(value.div(qty));
       const fixed = m.unitCost != null && m.unitCost !== '';
       const unit = fixed ? num(m.unitCost) : avg;
       out.push({ id: m.id, unitCost: unit, fixed, suggested: fixed ? null : avg });
-      qty = qty.sub(q); value = value.sub(q4(q.mul(unit)));
+      qty = qty.sub(q); value = value.sub(qm(q.mul(unit)));
     }
   }
   return out;
@@ -196,7 +196,7 @@ function movingAverageIssueCosts(DATA, itemId) {
  */
 function clientCertificate(cert, previousNetTotal) {
   const cumulative = num(cert.previousWorks).add(num(cert.value)).add(num(cert.extras)).sub(num(cert.excluded));
-  const retention = q4(cumulative.mul(num(cert.retentionPct)).div(100));
+  const retention = qm(cumulative.mul(num(cert.retentionPct)).div(100));
   const cumulativeNet = cumulative.sub(retention).sub(num(cert.deductions)).sub(num(cert.advanceDeduct));
   return { cumulative, retention, cumulativeNet, periodDue: cumulativeNet.sub(num(previousNetTotal)), taxApplied: false };
 }
@@ -214,4 +214,4 @@ function leaveUsed(DATA, employeeId, year, type = 'annual') {
   return sum((DATA.leaves || []).filter((l) => l && l.status === 'approved' && l.type === type && (l.employeeId === employeeId || ((l.personKind || 'employee') === 'employee' && l.personId === employeeId)) && String(l.from || '').startsWith(String(year))), (l) => num(l.days));
 }
 
-module.exports = { q4, num, PolicyRequired, invoiceState, supplierLedger, allocationReport, DEFAULT_PAY_FACTORS, attendanceReview, proratedSalary, projectSupplyCost, expenseActual, movingAverageIssueCosts, clientCertificate, clientCertificateStatus, leaveUsed };
+module.exports = { qm, num, PolicyRequired, invoiceState, supplierLedger, allocationReport, DEFAULT_PAY_FACTORS, attendanceReview, proratedSalary, projectSupplyCost, expenseActual, movingAverageIssueCosts, clientCertificate, clientCertificateStatus, leaveUsed };
