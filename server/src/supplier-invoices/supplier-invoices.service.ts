@@ -170,6 +170,10 @@ export class SupplierInvoicesService {
             if (f.startsWith('duplicate:')) throw new ConflictException({ statusCode: 409, code: 'DUPLICATE_INVOICE_NO', message: 'رقم الفاتورة ده متسجّل للمورد قبل كده (B-31)' });
             throw new ConflictException({ statusCode: 409, code: 'CONFLICT', message: 'الفاتورة اتعدّلت من مستخدم تاني — حدّث الصفحة', reason: c.reason });
           }
+          // UAT 7.2 J11: في الفواتير التعارض صريح لكل الحقول، حتى النصية (الملاحظات، البيان…). طبقة المزامنة العامة بتسيب
+          // الحقل النصي «آخر واحد يكسب» (overwrote)؛ هنا بنرفض بنفس الرسالة، والـ exception بيعمل ROLLBACK للحفظ كله.
+          const ow = res.applied.find((a) => a.collection === COLL && a.id === id)?.overwrote;
+          if (ow?.length) throw new ConflictException({ statusCode: 409, code: 'CONFLICT', message: 'الفاتورة اتعدّلت من مستخدم تاني — حدّث الصفحة', reason: 'stale', fields: ow });
           for (const e of events) {
             // الإلغاء والرجوع ممكن يتكرروا لنفس الفاتورة: المفتاح بالترتيب (تحت قفل الكتابة العام، فمفيش تزامن)
             if (e.key.endsWith(':#')) {
