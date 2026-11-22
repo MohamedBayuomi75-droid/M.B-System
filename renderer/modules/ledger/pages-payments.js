@@ -84,7 +84,7 @@ function renderPaymentsPage(){
           <td class="amount-cell payment">${fmt(p.amount)}</td>
           <td><div class="row-actions">
             <button class="row-btn" data-viewpay-btn="${p.id}" title="عرض">👁</button>
-            <button class="row-btn" data-editpay="${p.id}" title="تعديل">✎</button>
+            ${(typeof hasPagePermission!=='function' || hasPagePermission("ledger.payments",'edit')) ? `<button class="row-btn" data-editpay="${p.id}" title="تعديل">✎</button>` : ''}
             ${(typeof hasPagePermission!=='function' || hasPagePermission("ledger.payments",'delete')) ? `<button class="row-btn del" data-delpay-global="${p.id}" title="حذف">✕</button>` : ''}
           </div></td>
         </tr>`;
