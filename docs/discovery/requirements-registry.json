@@ -6,7 +6,7 @@
   "TECH": 19,
   "NEW": 10,
   "CHG": 15,
-  "DEC": 117
+  "DEC": 118
  },
  "entries": [
   {
@@ -2579,6 +2579,24 @@
    "classification": "OPEN-DECISION",
    "kind": "decision",
    "title": "الحزمة 7.4 = المشروعات، والربط بالاسم يفضل بالاسم في الحزمة دي مع تقرير بالأسماء غير المطابقة (أعداد بس)، وتجهيز مستند قرارات العقود والمستخلصات بالتوازي (ورق ب",
+   "module": "قرارات",
+   "priority": "—",
+   "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",
+   "tests": [],
+   "target": "—",
+   "notes": "محسوم",
+   "aliases": [],
+   "decisionStatus": "resolved",
+   "priorityStatus": "—",
+   "status": "resolved"
+  },
+  {
+   "id": "DEC-0117",
+   "key": "decision:DEC-0117",
+   "prefix": "DEC",
+   "classification": "OPEN-DECISION",
+   "kind": "decision",
+   "title": "نطاق الحزمة 7.4 معتمد (المشروعات): مسار المشروع في الواجهة القديمة مع تحريك موضعه عند تغيير المرحلة زي `pwOnStatusChanged`، ونشر تغيير الاسم على السجلات المربوط",
    "module": "قرارات",
    "priority": "—",
    "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",
