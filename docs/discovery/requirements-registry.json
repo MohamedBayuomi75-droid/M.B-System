@@ -6,7 +6,7 @@
   "TECH": 19,
   "NEW": 10,
   "CHG": 15,
-  "DEC": 116
+  "DEC": 117
  },
  "entries": [
   {
@@ -2561,6 +2561,24 @@
    "classification": "OPEN-DECISION",
    "kind": "decision",
    "title": "دفعات الموردين والتخصيص والرصيد (الحزمة 7.3) Accepted، والباقي غير الموزّع بالفرق الدقيق (س1)، وتعديل سجل من دفعة موزّعة لوحده (س2)، وقلب توجيه «الدفعات» للشاشة",
+   "module": "قرارات",
+   "priority": "—",
+   "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",
+   "tests": [],
+   "target": "—",
+   "notes": "محسوم",
+   "aliases": [],
+   "decisionStatus": "resolved",
+   "priorityStatus": "—",
+   "status": "resolved"
+  },
+  {
+   "id": "DEC-0116",
+   "key": "decision:DEC-0116",
+   "prefix": "DEC",
+   "classification": "OPEN-DECISION",
+   "kind": "decision",
+   "title": "الحزمة 7.4 = المشروعات، والربط بالاسم يفضل بالاسم في الحزمة دي مع تقرير بالأسماء غير المطابقة (أعداد بس)، وتجهيز مستند قرارات العقود والمستخلصات بالتوازي (ورق ب",
    "module": "قرارات",
    "priority": "—",
    "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",
