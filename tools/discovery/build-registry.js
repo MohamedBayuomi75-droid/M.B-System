@@ -102,6 +102,9 @@ for (const [file, v] of Object.entries(inv.perFile)) {
     ['renderer/modules/warehouses/helpers.js', 'whNextItemCode', 'المخازن (المرحلة 7، الحزمة 7.1) — ترقيم'],
     ['renderer/modules/warehouses/helpers.js', 'whNextMovementId', 'المخازن (المرحلة 7، الحزمة 7.1) — ترقيم'],
     ['renderer/modules/ledger/modals.js', 'applyReturnLinkEffects', 'فواتير الموردين (المرحلة 7، الحزمة 7.2) — أثر المرتجع على الفاتورة الأصلية (الإلغاء وpostReturnWht)'],
+    ['renderer/modules/ledger/data-store.js', 'nextPaymentNo', 'دفعات الموردين (المرحلة 7، الحزمة 7.3) — ترقيم الدفعات (عدّاد عام)'],
+    ['renderer/modules/ledger/helpers.js', 'confirmAndSoftDeletePayment', 'دفعات الموردين (المرحلة 7، الحزمة 7.3) — حذف فعلي مع استعادة 5 ثواني'],
+    ['renderer/modules/ledger/helpers.js', 'confirmAndSoftDeleteInvoice', 'فواتير الموردين (المرحلة 7، الحزمة 7.2) — حذف فعلي مع استعادة 5 ثواني (اتكشف في 7.2.1)'],
   ];
   for (const [file, fn, why] of EXTRA_WRITES) {
     const src = read(file);
