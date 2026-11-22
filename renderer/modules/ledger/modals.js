@@ -1653,7 +1653,7 @@ function openViewPaymentModal(paymentId){
         </div>
         <div class="modal-actions">
           <button class="btn btn-outline" id="m_close_pay_view">إغلاق</button>
-          <button class="btn btn-gold" id="m_pay_edit">تعديل الدفعة</button>
+          ${(readOnlyMode || (typeof hasPagePermission==='function' && !hasPagePermission("ledger.payments",'edit')))?'':`<button class="btn btn-gold" id="m_pay_edit">تعديل الدفعة</button>`}
           ${inv?`<button class="btn btn-primary" id="m_pay_view_inv">عرض الفاتورة المرتبطة</button>`:''}
         </div>
       </div>
