@@ -79,6 +79,13 @@ describe('7.2.4 supplier invoices API', () => {
     expect(await legacyInv(b.body.id)).toMatchObject({ cancelled: true, linkedReturnIds: [r2.body.id] });
     // تعديل بـ rev قديم ← تعارض، ومفيش تحويل نوع لمستند ليه رقم داخلي
     expect((await t.http().patch(`${P}/${r2.body.id}`).set(bearer(acc)).send({ supplierId: 'sA', invoiceNo: `${x}-R2`, date: '2026-03-11', isReturn: true, baseValue: '1', rev: r2v })).body.code).toBe('CONFLICT');
+    // UAT 7.2 J11: التعارض صريح حتى في الحقول النصية — نفس الحقل اتعدّل من حد تاني بعد الـ rev ده ← 409، والحفظ الأول بيفضل
+    const bBody = { ...base, invoiceNo: `${x}-2`, baseValue: '500', vat: '70', stampDuty: '0', withheld: '0' };
+    const bRev = (await t.http().get(`${P}/${b.body.id}`).set(bearer(acc))).body.rev;
+    expect((await t.http().patch(`${P}/${b.body.id}`).set(bearer(acc)).send({ ...bBody, notes: `أول ${x}`, rev: bRev })).status).toBe(200);
+    const stale = await t.http().patch(`${P}/${b.body.id}`).set(bearer(acc)).send({ ...bBody, notes: `تاني ${x}`, rev: bRev });
+    expect([stale.status, stale.body.code]).toEqual([409, 'CONFLICT']);
+    expect((await legacyInv(b.body.id)).notes).toBe(`أول ${x}`);
     const aRev = (await t.http().get(`${P}/${a.body.id}`).set(bearer(acc))).body.rev;
     expect((await t.http().patch(`${P}/${a.body.id}`).set(bearer(acc)).send({ ...base, invoiceNo: `${x}-1`, isReturn: true, rev: aRev })).body.code).toBe('KIND_LOCKED');
     // الأحداث: الترحيل مرة واحدة، والإلغاء والرجوع أحداث جديدة بالترتيب، ومفيش قيود
