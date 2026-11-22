@@ -465,6 +465,8 @@ async function login(page, username, password) {
     ] }, adminTok);
     await A.page.goto(srv.base + '/app/supplier-payments');
     await A.page.waitForSelector('#payTable');
+    // قلب التوجيه (موافقة 2026-11-22): «الدفعات» في صف قسم «الحسابات» بتفتح الشاشة الجديدة
+    ok((await A.page.$$eval('a', (as) => as.map((x) => x.getAttribute('href') || ''))).some((h) => /\/supplier-payments$/.test(h)), 'section link opens /app/supplier-payments');
     ok(!!(await A.page.$('.filters-row #paymentsSearchBox')) && (await A.page.$$('#payStats .stat-card')).length === 2 && (await A.page.$$('#payTable thead th')).length === 10, 'legacy layout: filters row, 2 cards, 10 columns');
     // دفعة موزّعة من النافذة: 700 على PUI-1 من 1000 ← سجلين بنفس الـ batch (الفاتورة + الباقي 300)
     await A.page.click('#openAddPaymentPageBtn'); await A.page.waitForSelector('#m_pay_save');

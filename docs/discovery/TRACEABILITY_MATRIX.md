@@ -8,14 +8,14 @@
 ## 1. التغطية حسب النوع (LEG)
 | النوع | العدد | ليه اختبار بيلمسه | اتنقل للنظام الجديد |
 |---|---|---|---|
-| page | 54 | 54 (100%) | 6 |
+| page | 54 | 54 (100%) | 7 |
 | calc | 120 | 46 (38%) | 0 |
 | data-write | 30 | 20 (67%) | 0 |
 | modal | 63 | 24 (38%) | 0 |
 | export/print | 37 | 5 (14%) | 0 |
 | permission | 8 | 0 (0%) | 8 |
 | electron-capability | 42 | 6 (14%) | 0 |
-| **الإجمالي** | **354** | **155 (44%)** | **14** |
+| **الإجمالي** | **354** | **155 (44%)** | **15** |
 
 ## 2. التغطية حسب الموديول (LEG)
 | الموديول | العدد | منها P0 (مقترح) | ليه اختبار | اتنقل | قرارات مفتوحة بتمنعه |
@@ -28,7 +28,7 @@
 | المخازن | 13 | 8 | 11 (85%) | 1 | DEC-0077 (B-77) |
 | الإعدادات | 11 | 1 | 3 (27%) | 8 | DEC-0035 (B-35) |
 | (خارج القايمة) | 10 | 0 | 10 (100%) | 0 | — |
-| الحسابات | 6 | 0 | 6 (100%) | 0 | DEC-0013 (B-13)، DEC-0014 (B-14)، DEC-0015 (B-15)، DEC-0016 (B-16) |
+| الحسابات | 6 | 0 | 6 (100%) | 1 | DEC-0013 (B-13)، DEC-0014 (B-14)، DEC-0015 (B-15)، DEC-0016 (B-16) |
 | التقارير | 4 | 0 | 4 (100%) | 0 | — |
 | الأرشيف | 3 | 0 | 3 (100%) | 0 | DEC-0061 (B-61) |
 | مركز المتابعة | 1 | 0 | 1 (100%) | 0 | — |
@@ -159,7 +159,7 @@
 | LEG-0027 | page | المخازن | صفحة «تقارير المخازن» (warehouses.reports) | renderer/modules/warehouses/pages-reports.js:2 | legacy /legacy/ | phase61.js | Verified (باختبار) | DEC-0077 (B-77) |
 | LEG-0028 | page | حركة الموارد | صفحة «حركة الموارد» (transfers) | renderer/modules/hr/pages-ops.js:336 | legacy /legacy/ | phase61.js، phase65.js، app-e2e.js، stock.e2e-spec.ts، warehouses.e2e-spec.ts | Verified (باختبار) | DEC-0045 (B-45)، DEC-0046 (B-46)، DEC-0047 (B-47)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0076 (B-76)، DEC-0042 (B-42) |
 | LEG-0029 | page | الحسابات | صفحة «المستحقات» (workerDues) | renderer/modules/hr/pages-worker-dues.js:79 | legacy /legacy/ | phase61.js | Verified (باختبار) | DEC-0013 (B-13)، DEC-0014 (B-14)، DEC-0015 (B-15)، DEC-0016 (B-16) |
-| LEG-0030 | page | الحسابات | صفحة «الدفعات» (ledger.payments) | renderer/modules/ledger/pages-payments.js:33 | legacy /legacy/ | phase61.js، phase21.js، phase69.js، app-e2e.js، parties.e2e-spec.ts، sp-cutover.e2e-spec.ts (+1) | Verified (باختبار) | DEC-0013 (B-13)، DEC-0014 (B-14)، DEC-0015 (B-15)، DEC-0016 (B-16) |
+| LEG-0030 | page | الحسابات | صفحة «الدفعات» (ledger.payments) | renderer/modules/ledger/pages-payments.js:33 | angular /supplier-payments | phase61.js، phase21.js، phase69.js، app-e2e.js، parties.e2e-spec.ts، sp-cutover.e2e-spec.ts (+1) | Implemented (اتنقل) | DEC-0013 (B-13)، DEC-0014 (B-14)، DEC-0015 (B-15)، DEC-0016 (B-16) |
 | LEG-0031 | page | الحسابات | صفحة «مصاريف شاملة» (expenses) | renderer/modules/hr/pages-ops.js:1244 | legacy /legacy/ | phase17.js، phase26.js، phase53.js، phase59.js، phase18.js، phase19.js (+7) | Verified (باختبار) | DEC-0013 (B-13)، DEC-0014 (B-14)، DEC-0015 (B-15)، DEC-0016 (B-16) |
 | LEG-0032 | page | الحسابات | صفحة «تكاليف شاملة» (costs) | renderer/modules/hr/pages-costs.js:98 | legacy /legacy/ | phase17.js، phase59.js، phase18.js، web-e2e.js، legacy-runner.js، reference.js (+1) | Verified (باختبار) | DEC-0013 (B-13)، DEC-0014 (B-14)، DEC-0015 (B-15)، DEC-0016 (B-16) |
 | LEG-0033 | page | الحسابات | صفحة «الإيرادات» (clients.collections) | renderer/modules/clients/pages-collections.js:28 | legacy /legacy/ | phase13.js، phase20.js | Verified (باختبار) | DEC-0013 (B-13)، DEC-0014 (B-14)، DEC-0015 (B-15)، DEC-0016 (B-16) |

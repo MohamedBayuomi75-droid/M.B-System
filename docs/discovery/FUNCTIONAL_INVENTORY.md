@@ -51,7 +51,7 @@
 | LEG-0027 | [تقارير المخازن](#warehousesreports) | المخازن | legacy /legacy/ | 3 | 0 | [ديسكتوب](visual-baseline/desktop/warehouses.reports.png) · [موبايل](visual-baseline/mobile/warehouses.reports.png) |
 | LEG-0028 | [حركة الموارد](#transfers) | حركة الموارد | legacy /legacy/ | 6 | 1 | [ديسكتوب](visual-baseline/desktop/transfers.png) · [موبايل](visual-baseline/mobile/transfers.png) |
 | LEG-0029 | [المستحقات](#workerDues) | الحسابات | legacy /legacy/ | 8 | 0 | [ديسكتوب](visual-baseline/desktop/workerDues.png) · [موبايل](visual-baseline/mobile/workerDues.png) |
-| LEG-0030 | [الدفعات](#ledgerpayments) | الحسابات | legacy /legacy/ | 12 | 3 | [ديسكتوب](visual-baseline/desktop/ledger.payments.png) · [موبايل](visual-baseline/mobile/ledger.payments.png) |
+| LEG-0030 | [الدفعات](#ledgerpayments) | الحسابات | angular /supplier-payments | 12 | 3 | [ديسكتوب](visual-baseline/desktop/ledger.payments.png) · [موبايل](visual-baseline/mobile/ledger.payments.png) |
 | LEG-0031 | [مصاريف شاملة](#expenses) | الحسابات | legacy /legacy/ | 9 | 0 | [ديسكتوب](visual-baseline/desktop/expenses.png) · [موبايل](visual-baseline/mobile/expenses.png) |
 | LEG-0032 | [تكاليف شاملة](#costs) | الحسابات | legacy /legacy/ | 9 | 0 | [ديسكتوب](visual-baseline/desktop/costs.png) · [موبايل](visual-baseline/mobile/costs.png) |
 | LEG-0033 | [الإيرادات](#clientscollections) | الحسابات | legacy /legacy/ | 8 | 1 | [ديسكتوب](visual-baseline/desktop/clients.collections.png) · [موبايل](visual-baseline/mobile/clients.collections.png) |
@@ -690,7 +690,7 @@
 
 ### <a id="ledgerpayments"></a>الدفعات — `ledger.payments` — LEG-0030
 - **القسم:** الحسابات · **في القايمة:** أيوه · **دالة الرسم:** `renderPaymentsPage` (renderer/modules/ledger/pages-payments.js:33)
-- **المكان المستهدف:** legacy /legacy/ · **الاختبارات:** phase61.js
+- **المكان المستهدف:** angular /supplier-payments · **الاختبارات:** phase61.js
 - **العنوان الظاهر:** النظام الموحد · **التبويبات:** —
 - **اللقطات:** [ديسكتوب](visual-baseline/desktop/ledger.payments.png) · [موبايل](visual-baseline/mobile/ledger.payments.png)
 

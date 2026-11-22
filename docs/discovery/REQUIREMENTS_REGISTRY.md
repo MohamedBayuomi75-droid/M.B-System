@@ -11,8 +11,8 @@
 | `CHG-` | APPROVED-CHANGE | 14 |
 | `TECH-` | TECHNICAL | 18 |
 | `NEW-` | NEW-REQUIREMENT | 9 |
-| `DEC-` | OPEN-DECISION (المفتوح والمحسوم) | 114 (مفتوح: 40) |
-| **الإجمالي** | | **509** |
+| `DEC-` | OPEN-DECISION (المفتوح والمحسوم) | 115 (مفتوح: 40) |
+| **الإجمالي** | | **510** |
 
 **عناصر LEG حسب النوع:** page 54 · calc 120 · data-write 30 · modal 63 · export/print 37 · permission 8 · electron-capability 42
 
@@ -48,7 +48,7 @@
 | LEG-0027 | page | المخازن | صفحة «تقارير المخازن» (warehouses.reports) | P1 | renderer/modules/warehouses/pages-reports.js:2 | legacy /legacy/ | phase61.js | verified-static | في القايمة، في مصفوفة الصلاحيات |
 | LEG-0028 | page | حركة الموارد | صفحة «حركة الموارد» (transfers) | P1 | renderer/modules/hr/pages-ops.js:336 | legacy /legacy/ | phase61.js | verified-static | في القايمة، في مصفوفة الصلاحيات |
 | LEG-0029 | page | الحسابات | صفحة «المستحقات» (workerDues) | P1 | renderer/modules/hr/pages-worker-dues.js:79 | legacy /legacy/ | phase61.js | verified-static | في القايمة، في مصفوفة الصلاحيات |
-| LEG-0030 | page | الحسابات | صفحة «الدفعات» (ledger.payments) | P1 | renderer/modules/ledger/pages-payments.js:33 | legacy /legacy/ | phase61.js | verified-static | في القايمة، في مصفوفة الصلاحيات |
+| LEG-0030 | page | الحسابات | صفحة «الدفعات» (ledger.payments) | P1 | renderer/modules/ledger/pages-payments.js:33 | angular /supplier-payments | phase61.js | verified-static | في القايمة، في مصفوفة الصلاحيات |
 | LEG-0031 | page | الحسابات | صفحة «مصاريف شاملة» (expenses) | P1 | renderer/modules/hr/pages-ops.js:1244 | legacy /legacy/ | phase17.js، phase26.js، phase53.js، phase59.js | verified-static | في القايمة، في مصفوفة الصلاحيات |
 | LEG-0032 | page | الحسابات | صفحة «تكاليف شاملة» (costs) | P1 | renderer/modules/hr/pages-costs.js:98 | legacy /legacy/ | phase17.js، phase59.js | verified-static | في القايمة، في مصفوفة الصلاحيات |
 | LEG-0033 | page | الحسابات | صفحة «الإيرادات» (clients.collections) | P1 | renderer/modules/clients/pages-collections.js:28 | legacy /legacy/ | phase13.js، phase20.js | verified-static | في القايمة، في مصفوفة الصلاحيات |
@@ -544,4 +544,5 @@
 | DEC-0112 | decision | قرارات | المبالغ 6 خانات بدل 4 في النظام كله (تعديل B-25، طلب المستخدم بعد بوابة 7.2، والنطاق «كل المبالغ» بتأكيده). التقريب HALF_UP زي ما هو. أعمدة المبالغ `NUMERIC(20, | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
 | DEC-0113 | decision | قرارات | نطاق الحزمة 7.3 معتمد (دفعات الموردين والتخصيص والرصيد): التوزيع زي القديم (سجلات مربوطة بـ `batchId`)، والرصيد والكشف في الشاشة الجديدة بقاعدة F-05 من دلوقتي م | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
 | DEC-0114 | decision | قرارات | UAT الحزمة 7.3 اتنفّذ آليًا (جلسة Claude على اللابتوب، بطلب المستخدم، ببيانات اصطناعية على النسخة المعزولة) والمستخدم وافق عليه: 14 نجح بعد إصلاح K14 في الواجهة | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
+| DEC-0115 | decision | قرارات | دفعات الموردين والتخصيص والرصيد (الحزمة 7.3) Accepted، والباقي غير الموزّع بالفرق الدقيق (س1)، وتعديل سجل من دفعة موزّعة لوحده (س2)، وقلب توجيه «الدفعات» للشاشة | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
 
