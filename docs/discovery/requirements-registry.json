@@ -6,7 +6,7 @@
   "TECH": 19,
   "NEW": 10,
   "CHG": 15,
-  "DEC": 111
+  "DEC": 113
  },
  "entries": [
   {
@@ -2476,6 +2476,42 @@
    "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",
    "tests": [],
    "target": "—",
+   "notes": "محسوم",
+   "aliases": [],
+   "decisionStatus": "resolved",
+   "priorityStatus": "—",
+   "status": "resolved"
+  },
+  {
+   "id": "DEC-0111",
+   "key": "decision:DEC-0111",
+   "prefix": "DEC",
+   "classification": "OPEN-DECISION",
+   "kind": "decision",
+   "title": "فواتير ومرتجعات الموردين (الحزمة 7.2) Accepted، ومقترحات البوابة س1–س5 معتمدة: (1) المرتجع ينفع ياخد نفس رقم الفاتورة الأصلية، والتكرار ممنوع جوه كل نوع لوحده؛ ",
+   "module": "قرارات",
+   "priority": "—",
+   "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",
+   "tests": [],
+   "target": "—",
+   "notes": "محسوم",
+   "aliases": [],
+   "decisionStatus": "resolved",
+   "priorityStatus": "—",
+   "status": "resolved"
+  },
+  {
+   "id": "DEC-0112",
+   "key": "decision:DEC-0112",
+   "prefix": "DEC",
+   "classification": "OPEN-DECISION",
+   "kind": "decision",
+   "title": "المبالغ لحد 6 خانات بدل 4 (طلب المستخدم بعد بوابة 7.2، بيغيّر B-25). النطاق والتقريب محتاجين تأكيد قبل التنفيذ",
+   "module": "قرارات",
+   "priority": "—",
+   "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",
+   "tests": [],
+   "target": "—",
    "notes": "مفتوح",
    "aliases": [],
    "decisionStatus": "open",
@@ -2997,7 +3033,7 @@
    "tests": [
     "phase16.js"
    ],
-   "target": "legacy /legacy/",
+   "target": "angular /supplier-invoices",
    "notes": "في القايمة، في مصفوفة الصلاحيات",
    "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
@@ -3033,7 +3069,7 @@
    "tests": [
     "phase61.js"
    ],
-   "target": "legacy /legacy/",
+   "target": "angular /supplier-returns",
    "notes": "في القايمة، في مصفوفة الصلاحيات",
    "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"

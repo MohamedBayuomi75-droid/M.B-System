@@ -44,9 +44,9 @@
 | LEG-0020 | [المقارنة](#clientscomparison) | العملاء والمشاريع | legacy /legacy/ | 3 | 0 | [ديسكتوب](visual-baseline/desktop/clients.comparison.png) · [موبايل](visual-baseline/mobile/clients.comparison.png) |
 | LEG-0021 | [CRM](#clientscrm) | العملاء والمشاريع | legacy /legacy/ | 8 | 1 | [ديسكتوب](visual-baseline/desktop/clients.crm.png) · [موبايل](visual-baseline/mobile/clients.crm.png) |
 | LEG-0022 | [الموردون](#ledgersuppliers) | الموردون | angular /suppliers | 6 | 1 | [ديسكتوب](visual-baseline/desktop/ledger.suppliers.png) · [موبايل](visual-baseline/mobile/ledger.suppliers.png) |
-| LEG-0023 | [الفواتير](#ledgerinvoices) | الموردون | legacy /legacy/ | 14 | 3 | [ديسكتوب](visual-baseline/desktop/ledger.invoices.png) · [موبايل](visual-baseline/mobile/ledger.invoices.png) |
+| LEG-0023 | [الفواتير](#ledgerinvoices) | الموردون | angular /supplier-invoices | 14 | 3 | [ديسكتوب](visual-baseline/desktop/ledger.invoices.png) · [موبايل](visual-baseline/mobile/ledger.invoices.png) |
 | LEG-0024 | [إشعارات الخصم](#ledgerquarterly) | الموردون | legacy /legacy/ | 17 | 2 | [ديسكتوب](visual-baseline/desktop/ledger.quarterly.png) · [موبايل](visual-baseline/mobile/ledger.quarterly.png) |
-| LEG-0025 | [المرتجعات](#ledgerreturns) | الموردون | legacy /legacy/ | 9 | 2 | [ديسكتوب](visual-baseline/desktop/ledger.returns.png) · [موبايل](visual-baseline/mobile/ledger.returns.png) |
+| LEG-0025 | [المرتجعات](#ledgerreturns) | الموردون | angular /supplier-returns | 9 | 2 | [ديسكتوب](visual-baseline/desktop/ledger.returns.png) · [موبايل](visual-baseline/mobile/ledger.returns.png) |
 | LEG-0026 | [المخازن](#warehouseshome) | المخازن | angular /warehouses | 11 | 3 | [ديسكتوب](visual-baseline/desktop/warehouses.home.png) · [موبايل](visual-baseline/mobile/warehouses.home.png) |
 | LEG-0027 | [تقارير المخازن](#warehousesreports) | المخازن | legacy /legacy/ | 3 | 0 | [ديسكتوب](visual-baseline/desktop/warehouses.reports.png) · [موبايل](visual-baseline/mobile/warehouses.reports.png) |
 | LEG-0028 | [حركة الموارد](#transfers) | حركة الموارد | legacy /legacy/ | 6 | 1 | [ديسكتوب](visual-baseline/desktop/transfers.png) · [موبايل](visual-baseline/mobile/transfers.png) |
@@ -537,7 +537,7 @@
 
 ### <a id="ledgerinvoices"></a>الفواتير — `ledger.invoices` — LEG-0023
 - **القسم:** الموردون · **في القايمة:** أيوه · **دالة الرسم:** `renderInvoicesPage` (renderer/modules/ledger/pages-invoices.js:35)
-- **المكان المستهدف:** legacy /legacy/ · **الاختبارات:** phase16.js
+- **المكان المستهدف:** angular /supplier-invoices · **الاختبارات:** phase16.js
 - **العنوان الظاهر:** النظام الموحد · **التبويبات:** —
 - **اللقطات:** [ديسكتوب](visual-baseline/desktop/ledger.invoices.png) · [موبايل](visual-baseline/mobile/ledger.invoices.png)
 
@@ -587,7 +587,7 @@
 
 ### <a id="ledgerreturns"></a>المرتجعات — `ledger.returns` — LEG-0025
 - **القسم:** الموردون · **في القايمة:** أيوه · **دالة الرسم:** `renderInvoicesPage` (renderer/modules/ledger/pages-invoices.js:35)
-- **المكان المستهدف:** legacy /legacy/ · **الاختبارات:** phase61.js
+- **المكان المستهدف:** angular /supplier-returns · **الاختبارات:** phase61.js
 - **العنوان الظاهر:** النظام الموحد · **التبويبات:** —
 - **اللقطات:** [ديسكتوب](visual-baseline/desktop/ledger.returns.png) · [موبايل](visual-baseline/mobile/ledger.returns.png)
 

@@ -410,6 +410,9 @@ async function login(page, username, password) {
     await api('POST', '/api/sync', { changes: [{ collection: 'ledger.suppliers', id: 'si-ui-sup', op: 'upsert', baseRev: 0, set: { id: 'si-ui-sup', name: 'مورد شاشة الفواتير', taxId: '987', commercialReg: 'CR-1', openingBalance: 0, extraFields: [], attachments: [] } }] }, adminTok);
     await A.page.goto(srv.base + '/app/supplier-invoices');
     await A.page.waitForSelector('#invTable');
+    // قلب التوجيه (موافقة 2026-11-22): «الفواتير» و«المرتجعات» في صف القسم بيفتحوا الشاشة الجديدة
+    const navHrefs = await A.page.$$eval('a', (as) => as.map((a) => a.getAttribute('href') || ''));
+    ok(navHrefs.some((h) => /\/supplier-invoices$/.test(h)) && navHrefs.some((h) => /\/supplier-returns$/.test(h)), 'section links open /app/supplier-invoices and /app/supplier-returns', navHrefs.filter((h) => /supplier|ledger/.test(h)));
     ok(!!(await A.page.$('.filters-row #invSearchBox')) && (await A.page.$$('#invStats .stat-card')).length === 6 && (await A.page.$$('#invTable thead th')).length === 17, 'legacy layout: filters row, 6 cards, 17 columns');
     await A.page.click('#openAddInvoiceModalBtnGlobal'); await A.page.waitForSelector('#modalOverlay .modal.wide');
     await A.page.selectOption('#inv_supplier', 'si-ui-sup');

@@ -16,7 +16,7 @@ export const routes: Routes = [
       { path: 'projects', canActivate: [pageGuard], data: { page: 'projects' }, loadComponent: () => import('./features/projects.page').then((m) => m.ProjectsPage), title: 'المشروعات (تجريبي)' },
       { path: 'suppliers', canActivate: [pageGuard], data: { page: 'ledger.suppliers', skin: 'legacy', bodyClass: 'module-ledger' }, loadComponent: () => import('./features/suppliers.page').then((m) => m.SuppliersPage), title: 'الموردين' },
       { path: 'customers', canActivate: [pageGuard], data: { page: 'clients.customers', skin: 'legacy' }, loadComponent: () => import('./features/customers.page').then((m) => m.CustomersPage), title: 'العملاء' },
-      // 7.2.5: فواتير ومرتجعات الموردين. **التوجيه من القايمة لسه للواجهة القديمة** (page-routes) لحد موافقة البوابة — الشاشة متاحة بالرابط للمقارنة والـ UAT
+      // 7.2: فواتير ومرتجعات الموردين — التوجيه من القايمة اتقلب بموافقة البوابة (2026-11-22، page-routes)
       { path: 'supplier-invoices', canActivate: [pageGuard], data: { page: 'ledger.invoices', skin: 'legacy', bodyClass: 'module-ledger', mode: 'invoices' }, loadComponent: () => import('./features/supplier-invoices.page').then((m) => m.SupplierInvoicesPage), title: 'كل الفواتير' },
       { path: 'supplier-returns', canActivate: [pageGuard], data: { page: 'ledger.returns', skin: 'legacy', bodyClass: 'module-ledger', mode: 'returns' }, loadComponent: () => import('./features/supplier-invoices.page').then((m) => m.SupplierInvoicesPage), title: 'المرتجعات' },
       { path: 'warehouses', canActivate: [pageGuard], data: { page: 'warehouses.home', skin: 'legacy' }, loadComponent: () => import('./features/warehouses.page').then((m) => m.WarehousesPage), title: 'المخازن' },

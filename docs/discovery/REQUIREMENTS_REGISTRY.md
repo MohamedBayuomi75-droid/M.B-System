@@ -11,8 +11,8 @@
 | `CHG-` | APPROVED-CHANGE | 14 |
 | `TECH-` | TECHNICAL | 18 |
 | `NEW-` | NEW-REQUIREMENT | 9 |
-| `DEC-` | OPEN-DECISION (المفتوح والمحسوم) | 110 (مفتوح: 41) |
-| **الإجمالي** | | **502** |
+| `DEC-` | OPEN-DECISION (المفتوح والمحسوم) | 112 (مفتوح: 41) |
+| **الإجمالي** | | **504** |
 
 **عناصر LEG حسب النوع:** page 54 · calc 120 · data-write 27 · modal 63 · export/print 37 · permission 8 · electron-capability 42
 
@@ -41,9 +41,9 @@
 | LEG-0020 | page | العملاء والمشاريع | صفحة «المقارنة» (clients.comparison) | P1 | renderer/modules/clients/comparison.js:62 | legacy /legacy/ | phase11.js، phase12.js، phase14.js | verified-static | في القايمة، في مصفوفة الصلاحيات |
 | LEG-0021 | page | العملاء والمشاريع | صفحة «CRM» (clients.crm) | P1 | renderer/modules/clients/pages-crm.js:40 | legacy /legacy/ | phase61.js | verified-static | في القايمة، في مصفوفة الصلاحيات |
 | LEG-0022 | page | الموردون | صفحة «الموردون» (ledger.suppliers) | P1 | renderer/modules/ledger/pages-suppliers.js:3 | angular /suppliers | phase60.js، phase61.js | verified-static | في القايمة، في مصفوفة الصلاحيات |
-| LEG-0023 | page | الموردون | صفحة «الفواتير» (ledger.invoices) | P1 | renderer/modules/ledger/pages-invoices.js:35 | legacy /legacy/ | phase16.js | verified-static | في القايمة، في مصفوفة الصلاحيات |
+| LEG-0023 | page | الموردون | صفحة «الفواتير» (ledger.invoices) | P1 | renderer/modules/ledger/pages-invoices.js:35 | angular /supplier-invoices | phase16.js | verified-static | في القايمة، في مصفوفة الصلاحيات |
 | LEG-0024 | page | الموردون | صفحة «إشعارات الخصم» (ledger.quarterly) | P1 | renderer/modules/ledger/pages-quarterly.js:39 | legacy /legacy/ | phase61.js | verified-static | في القايمة، في مصفوفة الصلاحيات |
-| LEG-0025 | page | الموردون | صفحة «المرتجعات» (ledger.returns) | P1 | renderer/modules/ledger/pages-invoices.js:35 | legacy /legacy/ | phase61.js | verified-static | في القايمة، في مصفوفة الصلاحيات |
+| LEG-0025 | page | الموردون | صفحة «المرتجعات» (ledger.returns) | P1 | renderer/modules/ledger/pages-invoices.js:35 | angular /supplier-returns | phase61.js | verified-static | في القايمة، في مصفوفة الصلاحيات |
 | LEG-0026 | page | المخازن | صفحة «المخازن» (warehouses.home) | P1 | renderer/modules/warehouses/pages-home.js:6 | angular /warehouses | phase61.js | verified-static | في القايمة، في مصفوفة الصلاحيات |
 | LEG-0027 | page | المخازن | صفحة «تقارير المخازن» (warehouses.reports) | P1 | renderer/modules/warehouses/pages-reports.js:2 | legacy /legacy/ | phase61.js | verified-static | في القايمة، في مصفوفة الصلاحيات |
 | LEG-0028 | page | حركة الموارد | صفحة «حركة الموارد» (transfers) | P1 | renderer/modules/hr/pages-ops.js:336 | legacy /legacy/ | phase61.js | verified-static | في القايمة، في مصفوفة الصلاحيات |
@@ -536,5 +536,7 @@
 | DEC-0107 | decision | قرارات | معادلة فاتورة المورد الانتقالية (B-20): بتتنقل للسيرفر زي الواجهة الحالية بالظبط: المبالغ يدوي، `الإجمالي = الأساسي + ق.م + الدمغة`، و`الصافي = الإجمالي − المحج | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
 | DEC-0108 | decision | قرارات | نطاق الحزمة 7.2 معتمد: الفواتير القديمة من غير رقم داخلي (برقم المورد)، والرقم الداخلي `PI-`/`PR-` السنوي للجديد بس، وحذف الفاتورة يفضل في الواجهة القديمة لحد ح | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
 | DEC-0109 | decision | قرارات | التعارض في فواتير الموردين صريح لكل الحقول (حتى النصية زي الملاحظات والبيان): الحفظ بـ `rev` قديم على حقل اتعدّل من مستخدم تاني بيترفض 409 بنفس الرسالة، والحفظ  | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
-| DEC-0110 | decision | قرارات | UAT الحزمة 7.2 اتنفّذ آليًا (جلسة Claude على اللابتوب بالمتصفح، بطلب المستخدم، ببيانات اصطناعية على النسخة المعزولة): 14 نجح بعد إصلاح J11 (DEC-0109). سيناريوها | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | open | مفتوح |
+| DEC-0110 | decision | قرارات | UAT الحزمة 7.2 اتنفّذ آليًا (جلسة Claude على اللابتوب بالمتصفح، بطلب المستخدم، ببيانات اصطناعية على النسخة المعزولة): 14 نجح بعد إصلاح J11 (DEC-0109). سيناريوها | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
+| DEC-0111 | decision | قرارات | فواتير ومرتجعات الموردين (الحزمة 7.2) Accepted، ومقترحات البوابة س1–س5 معتمدة: (1) المرتجع ينفع ياخد نفس رقم الفاتورة الأصلية، والتكرار ممنوع جوه كل نوع لوحده؛  | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
+| DEC-0112 | decision | قرارات | المبالغ لحد 6 خانات بدل 4 (طلب المستخدم بعد بوابة 7.2، بيغيّر B-25). النطاق والتقريب محتاجين تأكيد قبل التنفيذ | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | open | مفتوح |
 

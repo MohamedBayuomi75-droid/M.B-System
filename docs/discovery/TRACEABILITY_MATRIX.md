@@ -8,21 +8,21 @@
 ## 1. التغطية حسب النوع (LEG)
 | النوع | العدد | ليه اختبار بيلمسه | اتنقل للنظام الجديد |
 |---|---|---|---|
-| page | 54 | 54 (100%) | 4 |
+| page | 54 | 54 (100%) | 6 |
 | calc | 120 | 46 (38%) | 0 |
 | data-write | 27 | 17 (63%) | 0 |
 | modal | 63 | 21 (33%) | 0 |
 | export/print | 37 | 5 (14%) | 0 |
 | permission | 8 | 0 (0%) | 8 |
 | electron-capability | 42 | 6 (14%) | 0 |
-| **الإجمالي** | **351** | **149 (42%)** | **12** |
+| **الإجمالي** | **351** | **149 (42%)** | **14** |
 
 ## 2. التغطية حسب الموديول (LEG)
 | الموديول | العدد | منها P0 (مقترح) | ليه اختبار | اتنقل | قرارات مفتوحة بتمنعه |
 |---|---|---|---|---|---|
 | مشترك (core) | 97 | 10 | 30 (31%) | 0 | — |
 | الموارد البشرية | 69 | 21 | 19 (28%) | 0 | DEC-0045 (B-45)، DEC-0046 (B-46)، DEC-0047 (B-47)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0076 (B-76)، DEC-0042 (B-42) |
-| الموردون | 55 | 19 | 26 (47%) | 1 | — |
+| الموردون | 55 | 19 | 26 (47%) | 3 | — |
 | ديسكتوب | 42 | 15 | 6 (14%) | 0 | — |
 | العملاء والمشاريع | 38 | 11 | 28 (74%) | 2 | DEC-0035 (B-35) |
 | المخازن | 13 | 8 | 11 (85%) | 1 | DEC-0077 (B-77) |
@@ -152,9 +152,9 @@
 | LEG-0020 | page | العملاء والمشاريع | صفحة «المقارنة» (clients.comparison) | renderer/modules/clients/comparison.js:62 | legacy /legacy/ | phase11.js، phase12.js، phase14.js | Verified (باختبار) | DEC-0035 (B-35) |
 | LEG-0021 | page | العملاء والمشاريع | صفحة «CRM» (clients.crm) | renderer/modules/clients/pages-crm.js:40 | legacy /legacy/ | phase61.js | Verified (باختبار) | DEC-0035 (B-35) |
 | LEG-0022 | page | الموردون | صفحة «الموردون» (ledger.suppliers) | renderer/modules/ledger/pages-suppliers.js:3 | angular /suppliers | phase60.js، phase61.js، phase16.js، phase17.js، phase21.js، app-e2e.js (+5) | Implemented (اتنقل) | — |
-| LEG-0023 | page | الموردون | صفحة «الفواتير» (ledger.invoices) | renderer/modules/ledger/pages-invoices.js:35 | legacy /legacy/ | phase16.js، phase17.js، phase21.js، phase62.js، phase67.js، phase68.js (+9) | Verified (باختبار) | — |
+| LEG-0023 | page | الموردون | صفحة «الفواتير» (ledger.invoices) | renderer/modules/ledger/pages-invoices.js:35 | angular /supplier-invoices | phase16.js، phase17.js، phase21.js، phase62.js، phase67.js، phase68.js (+9) | Implemented (اتنقل) | — |
 | LEG-0024 | page | الموردون | صفحة «إشعارات الخصم» (ledger.quarterly) | renderer/modules/ledger/pages-quarterly.js:39 | legacy /legacy/ | phase61.js | Verified (باختبار) | — |
-| LEG-0025 | page | الموردون | صفحة «المرتجعات» (ledger.returns) | renderer/modules/ledger/pages-invoices.js:35 | legacy /legacy/ | phase61.js، phase67.js | Verified (باختبار) | — |
+| LEG-0025 | page | الموردون | صفحة «المرتجعات» (ledger.returns) | renderer/modules/ledger/pages-invoices.js:35 | angular /supplier-returns | phase61.js، phase67.js | Implemented (اتنقل) | — |
 | LEG-0026 | page | المخازن | صفحة «المخازن» (warehouses.home) | renderer/modules/warehouses/pages-home.js:6 | angular /warehouses | phase61.js، phase66.js، app-e2e.js، stock-adjustments.e2e-spec.ts | Implemented (اتنقل) | DEC-0077 (B-77) |
 | LEG-0027 | page | المخازن | صفحة «تقارير المخازن» (warehouses.reports) | renderer/modules/warehouses/pages-reports.js:2 | legacy /legacy/ | phase61.js | Verified (باختبار) | DEC-0077 (B-77) |
 | LEG-0028 | page | حركة الموارد | صفحة «حركة الموارد» (transfers) | renderer/modules/hr/pages-ops.js:336 | legacy /legacy/ | phase61.js، phase65.js، app-e2e.js، stock.e2e-spec.ts، warehouses.e2e-spec.ts | Verified (باختبار) | DEC-0045 (B-45)، DEC-0046 (B-46)، DEC-0047 (B-47)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0076 (B-76)، DEC-0042 (B-42) |
