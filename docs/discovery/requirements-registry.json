@@ -6,7 +6,7 @@
   "TECH": 19,
   "NEW": 10,
   "CHG": 15,
-  "DEC": 120
+  "DEC": 121
  },
  "entries": [
   {
@@ -2633,6 +2633,24 @@
    "classification": "OPEN-DECISION",
    "kind": "decision",
    "title": "المشروعات (الحزمة 7.4) Accepted، وقلب توجيه «المشاريع» للشاشة الجديدة (القديمة «الشاشة الكاملة»)",
+   "module": "قرارات",
+   "priority": "—",
+   "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",
+   "tests": [],
+   "target": "—",
+   "notes": "محسوم",
+   "aliases": [],
+   "decisionStatus": "resolved",
+   "priorityStatus": "—",
+   "status": "resolved"
+  },
+  {
+   "id": "DEC-0120",
+   "key": "decision:DEC-0120",
+   "prefix": "DEC",
+   "classification": "OPEN-DECISION",
+   "kind": "decision",
+   "title": "بداية المرحلة 8 بسجلات الأشخاص (المرحلة 7 بتفضل مفتوحة جزئيًا: العقود والمستخلصات ومقاولين الباطن والمشتريات مستنيين قرارات)، ومستند قرارات الحضور والمستحقات با",
    "module": "قرارات",
    "priority": "—",
    "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",

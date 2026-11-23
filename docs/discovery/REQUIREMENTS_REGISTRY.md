@@ -11,8 +11,8 @@
 | `CHG-` | APPROVED-CHANGE | 14 |
 | `TECH-` | TECHNICAL | 18 |
 | `NEW-` | NEW-REQUIREMENT | 9 |
-| `DEC-` | OPEN-DECISION (المفتوح والمحسوم) | 119 (مفتوح: 40) |
-| **الإجمالي** | | **514** |
+| `DEC-` | OPEN-DECISION (المفتوح والمحسوم) | 120 (مفتوح: 40) |
+| **الإجمالي** | | **515** |
 
 **عناصر LEG حسب النوع:** page 54 · calc 120 · data-write 30 · modal 63 · export/print 37 · permission 8 · electron-capability 42
 
@@ -549,4 +549,5 @@
 | DEC-0117 | decision | قرارات | نطاق الحزمة 7.4 معتمد (المشروعات): مسار المشروع في الواجهة القديمة مع تحريك موضعه عند تغيير المرحلة زي `pwOnStatusChanged`، ونشر تغيير الاسم على السجلات المربوط | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
 | DEC-0118 | decision | قرارات | UAT الحزمة 7.4 اتنفّذ آليًا (جلسة Claude على اللابتوب، بطلب المستخدم، ببيانات اصطناعية على النسخة المعزولة)، وقرار L11: توحيد المرفقات (نافذة المشروع القديمة في | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
 | DEC-0119 | decision | قرارات | المشروعات (الحزمة 7.4) Accepted، وقلب توجيه «المشاريع» للشاشة الجديدة (القديمة «الشاشة الكاملة») | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
+| DEC-0120 | decision | قرارات | بداية المرحلة 8 بسجلات الأشخاص (المرحلة 7 بتفضل مفتوحة جزئيًا: العقود والمستخلصات ومقاولين الباطن والمشتريات مستنيين قرارات)، ومستند قرارات الحضور والمستحقات با | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
 
