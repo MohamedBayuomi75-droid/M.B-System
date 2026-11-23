@@ -4,6 +4,7 @@ import { SUPPLIER_INVOICE_COLUMNS } from '../migrations/1764800000000-SupplierIn
 import { SUPPLIER_PAYMENT_COLUMNS } from '../migrations/1765000000000-SupplierPayments';
 import { PROJECT_COLUMNS } from '../migrations/1765100000000-ProjectsCutover';
 import { WORKER_COLUMNS } from '../migrations/1765200000000-WorkersCutover';
+import { DRIVER_COLUMNS, SUPERVISOR_COLUMNS } from '../migrations/1765300000000-SupervisorsDriversCutover';
 
 export type { CutoverReport } from './module-cutover';
 
@@ -87,7 +88,19 @@ export const WORKERS: ModuleSpec = {
   clearTables: ['workers'],
 };
 
-export const MODULES: Record<string, ModuleSpec> = { parties: PARTIES, warehouses: WAREHOUSES, 'supplier-invoices': SUPPLIER_INVOICES, 'supplier-payments': SUPPLIER_PAYMENTS, projects: PROJECTS, workers: WORKERS };
+/** 8.2 — المشرفين والسواقين (DEC-0123). نفس الطريقة، والاتنين في أمر واحد */
+export const SUPERVISORS_DRIVERS: ModuleSpec = {
+  label: 'supervisors-drivers',
+  collections: [
+    { collection: 'supervisors', table: 'supervisors', write: 'legacy_write_supervisor', read: 'supervisor_to_legacy',
+      normalized: `(r.data || jsonb_build_object('id', r.id))`, typedKeys: SUPERVISOR_COLUMNS.map(([, k]) => k) },
+    { collection: 'drivers', table: 'drivers', write: 'legacy_write_driver', read: 'driver_to_legacy',
+      normalized: `(r.data || jsonb_build_object('id', r.id))`, typedKeys: DRIVER_COLUMNS.map(([, k]) => k) },
+  ],
+  clearTables: ['drivers', 'supervisors'],
+};
+
+export const MODULES: Record<string, ModuleSpec> = { parties: PARTIES, warehouses: WAREHOUSES, 'supplier-invoices': SUPPLIER_INVOICES, 'supplier-payments': SUPPLIER_PAYMENTS, projects: PROJECTS, workers: WORKERS, 'supervisors-drivers': SUPERVISORS_DRIVERS };
 
 export const partiesCutover = (ds: DataSource, by: string, mode: CutoverReport['mode']) => cutoverModule(ds, PARTIES, by, mode);
 export const partiesRollback = (ds: DataSource, by: string) => rollbackModule(ds, PARTIES, by);

@@ -31,6 +31,8 @@ const RELATIONAL_WRITERS: Record<string, { fn: string; table: string }> = {
   'ledger.payments': { fn: 'legacy_write_supplier_payment', table: 'supplier_payments' },
   projects: { fn: 'legacy_write_project', table: 'projects' },
   workers: { fn: 'legacy_write_worker', table: 'workers' },
+  supervisors: { fn: 'legacy_write_supervisor', table: 'supervisors' },
+  drivers: { fn: 'legacy_write_driver', table: 'drivers' },
 };
 /** أكواد PostgreSQL لرفض قيد (تفرّد/CHECK/قيمة) ← تعارض صريح بدل 500 */
 /** مجموعات عليها قيود قاعدة بيانات بتتفحص بعد الكتابة (B-50: الرصيد السالب) — الرفض بيرجع تعارض صريح ومابيوقفش باقي الدفعة */
