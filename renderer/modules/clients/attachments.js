@@ -103,6 +103,61 @@ function clAttachMount(ownerId, label, initialDocs){
   return { get: function(){ return docs; } };
 }
 
+/**
+ * مرفقات السيرفر (جدول المرفقات بالإصدارات — المرحلة 5) لسجل، في نسخة الويب بس (UAT 7.4 L11):
+ * اللي اترفع من الشاشة الجديدة بيظهر هنا كمان (آخر إصدار من كل مستند)، والتنزيل من السيرفر بصلاحية السجل.
+ * قراءة وتنزيل بس — الرفع في الويب من الشاشة الجديدة لحد ما مرفقات الواجهة القديمة تتفعّل (A5).
+ * بيضيف بلوك لآخر نافذة مفتوحة (داخل .modal-body). في الديسكتوب مابيعملش حاجة.
+ */
+function clServerAttachMount(collection, recordId){
+  const ws = window.WebSession;
+  if(!ws || typeof ws.api !== 'function' || !recordId) return null;
+  const body = document.querySelector('.modal-body'); if(!body) return null;
+  const box = document.createElement('div');
+  box.className = 'cl-att-block cl-att-server'; box.style.cssText = 'margin-top:12px;border-top:1px solid var(--line);padding-top:10px;';
+  box.innerHTML = '<div class="section-title" style="margin-top:8px;">مرفقات السيرفر (من الشاشة الجديدة)</div><div class="cl-att-host"><div class="cl-att-empty">… جارِ التحميل</div></div>';
+  body.appendChild(box);
+  const host = box.querySelector('.cl-att-host');
+  const q = '?collection=' + encodeURIComponent(collection) + '&recordId=' + encodeURIComponent(recordId);
+  const authGet = async function(path){
+    let r = await fetch(path, { headers: { Authorization: 'Bearer ' + (ws.token() || '') }, credentials: 'same-origin' });
+    if(r.status === 401 && typeof ws.refresh === 'function' && await ws.refresh()) r = await fetch(path, { headers: { Authorization: 'Bearer ' + (ws.token() || '') }, credentials: 'same-origin' });
+    return r;
+  };
+  (async function(){
+    let list = [];
+    try{
+      const r = await ws.api('GET', '/api/attachments' + q);
+      if(!r.ok){ host.innerHTML = '<div class="cl-att-empty">تعذر تحميل مرفقات السيرفر</div>'; return; }
+      list = Array.isArray(r.body) ? r.body : [];
+    }catch(e){ host.innerHTML = '<div class="cl-att-empty">تعذر تحميل مرفقات السيرفر</div>'; return; }
+    if(!list.length){ host.innerHTML = '<div class="cl-att-empty">📭 لا مرفقات على السيرفر</div>'; return; }
+    host.innerHTML = '<div class="cl-att-list">' + list.map(function(a){
+      const nm = String(a.filename || 'ملف');
+      const ext = (nm.split('.').length > 1 ? nm.split('.').pop() : '').slice(0, 5).toUpperCase();
+      return '<div class="cl-att-item" data-server-att="' + escapeHtml(a.id) + '">' +
+        '<span class="cl-att-ico">' + clDocIcon({ name: nm, mime: a.mime }) + '</span>' +
+        '<div class="cl-att-info"><span class="cl-att-name" title="' + escapeHtml(nm) + '">' + escapeHtml(nm) + '</span>' +
+          '<span class="cl-att-sub">' + (ext ? '<i>' + escapeHtml(ext) + '</i>' : '') + 'إصدار ' + escapeHtml(String(a.version || 1)) + (a.createdAt ? ' · ' + escapeHtml(String(a.createdAt).slice(0, 10)) : '') + '</span></div>' +
+        '<div class="cl-att-btns"><button type="button" class="btn btn-outline btn-sm cl-att-dl">تنزيل</button></div>' +
+      '</div>';
+    }).join('') + '</div>';
+    host.querySelectorAll('[data-server-att]').forEach(function(row){
+      const a = list.find(function(x){ return String(x.id) === row.getAttribute('data-server-att'); });
+      row.querySelector('.cl-att-dl').addEventListener('click', async function(){
+        try{
+          const r = await authGet('/api/attachments/' + encodeURIComponent(a.id) + '/content');
+          if(!r.ok){ showToast('تعذر تنزيل الملف'); return; }
+          const url = URL.createObjectURL(await r.blob()); const link = document.createElement('a');
+          link.href = url; link.download = a.filename || 'file'; document.body.appendChild(link); link.click();
+          setTimeout(function(){ URL.revokeObjectURL(url); link.remove(); }, 1000);
+        }catch(e){ showToast('تعذر تنزيل الملف'); }
+      });
+    });
+  })();
+  return box;
+}
+
 /* ---------- خانات مخصصة (نفس نظام «تعديلات مخصصة» في الإعدادات) ---------- */
 /** يرسم الخانات المخصصة المعرّفة للكيان داخل آخر نافذة مفتوحة — يُستدعى بعد openModal */
 function clMountCustomFields(entity, record){
