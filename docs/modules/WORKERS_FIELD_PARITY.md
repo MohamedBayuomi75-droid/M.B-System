@@ -28,7 +28,7 @@
 | `hireDate` | string | عمود `hire_date` (text) | ✅ |
 | `id` | string | المفتاح الأساسي `id` | ✅ |
 | `idCardExpiry` | string | عمود `id_card_expiry` (text) | ✅ |
-| `idCardStatus` | string | عمود `id_card_status` (text) | — (بتتحسب من تاريخ البطاقة (السيرفر) وبتتعرض كـ «حالة البطاقة») |
+| `idCardStatus` | string | عمود `id_card_status` (text) | ✅ |
 | `insuranceNumber` | string | عمود `insurance_number` (text) | ✅ |
 | `insuranceStatus` | string | عمود `insurance_status` (text) | ✅ |
 | `legacyDepartmentId` | string | عمود `legacy_department_id` (text) | — (قسم قديم قبل الأقسام الأساسية — للعرض في القديمة بس) |

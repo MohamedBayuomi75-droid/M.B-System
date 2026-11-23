@@ -6,7 +6,7 @@
   "TECH": 19,
   "NEW": 10,
   "CHG": 15,
-  "DEC": 122
+  "DEC": 123
  },
  "entries": [
   {
@@ -2669,6 +2669,24 @@
    "classification": "OPEN-DECISION",
    "kind": "decision",
    "title": "نطاق الحزمة 8.1 معتمد (العمال بس): صفحة العامل وكشف مستحقاته في القديمة، والحذف في القديمة، والاستقالة بتنسخ لأرشيف المستقيلين زي القديم، والكود `WRK-` زي القدي",
+   "module": "قرارات",
+   "priority": "—",
+   "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",
+   "tests": [],
+   "target": "—",
+   "notes": "محسوم",
+   "aliases": [],
+   "decisionStatus": "resolved",
+   "priorityStatus": "—",
+   "status": "resolved"
+  },
+  {
+   "id": "DEC-0122",
+   "key": "decision:DEC-0122",
+   "prefix": "DEC",
+   "classification": "OPEN-DECISION",
+   "kind": "decision",
+   "title": "العمال (الحزمة 8.1) Accepted. ترتيب الأعمدة (M2): الاختيار (أ) — الشاشة الجديدة بتقرا تخطيط الأعمدة المحفوظ (`formLayouts.workers` و`workersTemp`) وتطبّقه زي ال",
    "module": "قرارات",
    "priority": "—",
    "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",

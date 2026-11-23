@@ -11,8 +11,8 @@
 | `CHG-` | APPROVED-CHANGE | 14 |
 | `TECH-` | TECHNICAL | 18 |
 | `NEW-` | NEW-REQUIREMENT | 9 |
-| `DEC-` | OPEN-DECISION (المفتوح والمحسوم) | 121 (مفتوح: 40) |
-| **الإجمالي** | | **516** |
+| `DEC-` | OPEN-DECISION (المفتوح والمحسوم) | 122 (مفتوح: 40) |
+| **الإجمالي** | | **517** |
 
 **عناصر LEG حسب النوع:** page 54 · calc 120 · data-write 30 · modal 63 · export/print 37 · permission 8 · electron-capability 42
 
@@ -551,4 +551,5 @@
 | DEC-0119 | decision | قرارات | المشروعات (الحزمة 7.4) Accepted، وقلب توجيه «المشاريع» للشاشة الجديدة (القديمة «الشاشة الكاملة») | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
 | DEC-0120 | decision | قرارات | بداية المرحلة 8 بسجلات الأشخاص (المرحلة 7 بتفضل مفتوحة جزئيًا: العقود والمستخلصات ومقاولين الباطن والمشتريات مستنيين قرارات)، ومستند قرارات الحضور والمستحقات با | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
 | DEC-0121 | decision | قرارات | نطاق الحزمة 8.1 معتمد (العمال بس): صفحة العامل وكشف مستحقاته في القديمة، والحذف في القديمة، والاستقالة بتنسخ لأرشيف المستقيلين زي القديم، والكود `WRK-` زي القدي | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
+| DEC-0122 | decision | قرارات | العمال (الحزمة 8.1) Accepted. ترتيب الأعمدة (M2): الاختيار (أ) — الشاشة الجديدة بتقرا تخطيط الأعمدة المحفوظ (`formLayouts.workers` و`workersTemp`) وتطبّقه زي ال | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
 

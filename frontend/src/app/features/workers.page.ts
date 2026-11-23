@@ -6,6 +6,7 @@ import { legacyUrl } from '../core/page-routes';
 import { errorMessage, SessionService } from '../core/session.service';
 import { AttachmentsPanelComponent } from './attachments-panel.component';
 import { LegacyToast } from './legacy-toast';
+import { Cell, customCols, customValue, effectiveLayout, Head, LayoutDocs, layoutTable, Row } from './legacy-table-layout';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 type W = any;
@@ -16,7 +17,7 @@ const PAGE_SIZE = 20;
 const EMPTY = { q: '', status: '', supervisorId: '', type: '', project: '', xCard: '', xIns: '', xDocs: '', xData: '' };
 const TYPES = [{ code: 'temporary', label: 'عامل مؤقت' }, { code: 'company', label: 'عامل شركة' }, { code: 'daily', label: 'عامل يومية' }];
 const CONTRACT_STATUS = [{ code: 'active', label: 'ساري' }, { code: 'expired', label: 'منتهي' }, { code: 'suspended', label: 'موقوف' }];
-const INS_STATUS = [{ code: 'insured', label: 'مؤمَّن' }, { code: 'none', label: 'غير مؤمن عليه' }, { code: 'pending', label: 'قيد التسجيل' }];
+const INS_STATUS = [{ code: 'insured', label: 'مؤمَّن' }, { code: 'none', label: 'غير مؤمن عليه' }, { code: 'pending', label: 'قيد التسجيل' }];
 const CARD_STATUS: Record<string, string> = { valid: 'سارية', expired: 'منتهية', none: 'لا يوجد' };
 /** fmtNum / fmtMoney / fmtDate القديمة — للعرض بس */
 const fmtNum = (n: unknown) => (Number(n) || 0).toLocaleString('ar-EG', { maximumFractionDigits: 2 });
@@ -93,51 +94,30 @@ const fmtDate = (v: unknown) => { const m = String(v || '').match(/^(\d{4})-(\d{
           @if (f.xCard || f.xIns || f.xDocs || f.xData || f.q.trim()) { <button type="button" class="btn btn-outline btn-sm" id="wrkXClear" (click)="f = { ...empty }; reload()">مسح الفلاتر</button> }
         </div>
         @if (error() && !modal()) { <div class="err" role="alert" id="wkError">{{ error() }}</div> }
-        <div class="table-wrap"><table class="data-table" id="wkTable">
-          @if (mode() === 'temp') {
-            <thead><tr><th>الكود</th><th>الاسم</th><th>الحالة</th><th>الرقم القومي</th><th>الوظيفة</th><th>القسم</th><th>المشرف</th>@if (wages()) { <th>اليومية</th> }<th>رقم التليفون</th><th>العنوان</th><th>الملاحظات</th><th></th></tr></thead>
-            <tbody>
-              @for (w of pageRows(); track w.id) {
-                <tr [attr.data-id]="w.id">
-                  <td>{{ w.code || '' }}</td>
-                  <td>@if (w.warning) { <span class="doc-warn" [title]="w.warning" style="cursor:help;font-size:14px;margin-inline-end:4px;">⚠️</span> }<strong>{{ w.name }}</strong></td>
-                  <td><span class="badge badge-{{ w.statusTone }}">{{ w.statusLabel }}</span>@if (w.leaveUntil) { <div class="leave-until">🏖️ حتى {{ w.leaveUntil }}</div> }</td>
-                  <td>{{ w.nationalId || '—' }}</td><td>{{ w.position || w.skill || '—' }}</td><td>{{ w.departmentName }}</td><td>{{ w.supervisorName }}</td>
-                  @if (wages()) { <td>{{ money(w.dailyWage) }}</td> }
-                  <td>{{ w.phone || '—' }}</td><td>{{ w.address || '—' }}</td>
-                  <td class="notes-cell">@if (w.issues.length) { <ul class="notes-list" [title]="w.issues.join('\\n')">@for (i of w.issues.slice(0, 3); track $index) { <li>{{ i }}</li> }@if (w.issues.length > 3) { <li class="notes-more">+{{ w.issues.length - 3 }} أخرى</li> }</ul> } @else { <span class="notes-ok">✓ مكتمل</span> }</td>
-                  <td><div class="row-actions"><a class="row-btn btn-view-wrk" [href]="full" title="صفحة العامل وكشف المستحقات (الشاشة الكاملة)">👁</a>@if (canEdit) { <button type="button" class="row-btn btn-edit-wrk" [attr.data-id]="w.id" title="تعديل" (click)="openEditById(w.id)">✎</button> }@if (canDelete) { <a class="row-btn del btn-del-wrk" [href]="full" title="الحذف من الشاشة الكاملة (DEC-0121)">✕</a> }</div></td>
-                </tr>
-              } @empty { <tr><td colspan="12" style="text-align:center;color:var(--ink-soft);padding:30px;">لا يوجد عمال مؤقتون</td></tr> }
-            </tbody>
-          } @else {
-            <thead><tr><th>كود العامل</th><th>الاسم</th>@if (mode() === 'mixed') { <th>النوع</th> }<th>الوظيفة</th><th>الرقم القومي</th><th>انتهاء البطاقة</th><th>حالة البطاقة</th><th>تاريخ التعيين</th><th>نوع العقد</th><th>حالة العقد</th>@if (mode() !== 'company' && wages()) { <th>اليومية</th> }@if (wages()) { <th>الراتب</th> }<th>حالة التأمين</th><th>الرقم التأميني</th><th>رقم التليفون</th><th>تاريخ الميلاد</th><th>العنوان</th><th>المشروع</th><th>المشرف</th><th>القسم</th><th>الحالة</th><th>الملاحظات</th><th></th></tr></thead>
-            <tbody>
-              @for (w of pageRows(); track w.id) {
-                <tr [attr.data-id]="w.id">
-                  @if (w.temporary) {
-                    <td>—</td><td>@if (w.warning) { <span class="doc-warn" [title]="w.warning" style="cursor:help;font-size:14px;margin-inline-end:4px;">⚠️</span> }<strong>{{ w.name }}</strong></td>@if (mode() === 'mixed') { <td>مؤقت</td> }
-                    <td>—</td><td>{{ w.nationalId || '—' }}</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td>@if (wages()) { <td>{{ money(w.dailyWage) }}</td><td>—</td> }<td>—</td><td>—</td>
-                    <td>{{ w.phone || '—' }}</td><td>{{ w.address || '—' }}</td><td>{{ w.project || '—' }}</td><td>{{ w.supervisorName }}</td><td>{{ w.departmentName }}</td>
-                    <td><span class="badge badge-ok">مؤقت</span></td>
-                  } @else {
-                    <td>{{ w.code || '' }}</td><td>@if (w.warning) { <span class="doc-warn" [title]="w.warning" style="cursor:help;font-size:14px;margin-inline-end:4px;">⚠️</span> }<strong>{{ w.name }}</strong></td>@if (mode() === 'mixed') { <td>شركة</td> }
-                    <td>{{ w.position || w.skill || '' }}</td><td>{{ w.nationalId || '—' }}</td><td>{{ date(w.idCardExpiry) }}</td>
-                    <td>@if (w.cardStatus) { <span class="badge {{ w.cardStatus === 'expired' ? 'badge-err' : 'badge-ok' }}">{{ cardLabel(w.cardStatus) }}</span> } @else { — }</td>
-                    <td>{{ date(w.hireDate) }}</td><td>{{ w.contractTypeLabel || '—' }}</td>
-                    <td>@if (w.contractStatus) { <span class="badge {{ w.contractStatus === 'active' ? 'badge-ok' : 'badge-err' }}">{{ label(contractStatus, w.contractStatus) }}</span> } @else { — }</td>
-                    @if (mode() !== 'company' && wages()) { <td>{{ money(w.dailyWage) }}</td> }@if (wages()) { <td>{{ money(w.salary || w.basicSalary) }}</td> }
-                    <td>@if (w.insuranceStatus) { <span class="badge {{ w.insuranceStatus === 'insured' ? 'badge-ok' : w.insuranceStatus === 'pending' ? 'badge-warn' : 'badge-err' }}">{{ label(insStatus, w.insuranceStatus) }}</span> } @else { — }</td>
-                    <td>{{ w.insuranceNumber || '—' }}</td><td>{{ w.phone || '—' }}</td><td>{{ w.birthDate ? date(w.birthDate) : '—' }}</td><td>{{ w.address || '—' }}</td><td>{{ w.project || '—' }}</td>
-                    <td>{{ w.supervisorName }}</td><td>{{ w.departmentName }}</td>
-                    <td><span class="badge badge-{{ w.statusTone }}">{{ w.statusLabel }}</span>@if (w.leaveUntil) { <div class="leave-until">🏖️ حتى {{ w.leaveUntil }}</div> }</td>
+        <div class="table-wrap"><table class="data-table" id="wkTable" [attr.data-layout-ent]="mode() === 'temp' ? 'workersTemp' : null">
+          <!-- الأعمدة بتخطيط الأعمدة المحفوظ زي القديمة (DEC-0122): legacy-table-layout.ts -->
+          <thead><tr>@for (h of tbl().head; track $index) { <th [style.display]="h.hide ? 'none' : null" [attr.data-col-key]="h.key || null" [attr.data-auto-col]="h.auto ? '1' : null">{{ h.text }}</th> }</tr></thead>
+          <tbody>
+            @for (r of tbl().rows; track $index) {
+              <tr [attr.data-id]="r.id || null">
+                @for (c of r.cells; track $index) {
+                  @switch (c.t) {
+                    @case ('empty') { <td colspan="12" style="text-align:center;color:var(--ink-soft);padding:30px;">{{ c.v }}</td> }
+                    @case ('name') { <td [style.display]="c.hide ? 'none' : null">@if (rec(r.id).warning) { <span class="doc-warn" [title]="rec(r.id).warning" style="cursor:help;font-size:14px;margin-inline-end:4px;">⚠️</span> }<strong>{{ rec(r.id).name }}</strong></td> }
+                    @case ('status') { <td [style.display]="c.hide ? 'none' : null"><span class="badge badge-{{ rec(r.id).statusTone }}">{{ rec(r.id).statusLabel }}</span>@if (rec(r.id).leaveUntil) { <div class="leave-until">🏖️ حتى {{ rec(r.id).leaveUntil }}</div> }</td> }
+                    @case ('tempBadge') { <td [style.display]="c.hide ? 'none' : null"><span class="badge badge-ok">مؤقت</span></td> }
+                    @case ('card') { <td [style.display]="c.hide ? 'none' : null">@if (rec(r.id).cardStatus) { <span class="badge {{ rec(r.id).cardStatus === 'expired' ? 'badge-err' : 'badge-ok' }}">{{ cardLabel(rec(r.id).cardStatus) }}</span> } @else { — }</td> }
+                    @case ('contract') { <td [style.display]="c.hide ? 'none' : null">@if (rec(r.id).contractStatus) { <span class="badge {{ rec(r.id).contractStatus === 'active' ? 'badge-ok' : 'badge-err' }}">{{ label(contractStatus, rec(r.id).contractStatus) }}</span> } @else { — }</td> }
+                    @case ('ins') { <td [style.display]="c.hide ? 'none' : null">@if (rec(r.id).insuranceStatus) { <span class="badge {{ rec(r.id).insuranceStatus === 'insured' ? 'badge-ok' : rec(r.id).insuranceStatus === 'pending' ? 'badge-warn' : 'badge-err' }}">{{ label(insStatus, rec(r.id).insuranceStatus) }}</span> } @else { — }</td> }
+                    @case ('notes') { <td class="notes-cell" [style.display]="c.hide ? 'none' : null">@if (rec(r.id).issues.length) { <ul class="notes-list" [title]="rec(r.id).issues.join('\\n')">@for (i of rec(r.id).issues.slice(0, 3); track $index) { <li>{{ i }}</li> }@if (rec(r.id).issues.length > 3) { <li class="notes-more">+{{ rec(r.id).issues.length - 3 }} أخرى</li> }</ul> } @else { <span class="notes-ok">✓ مكتمل</span> }</td> }
+                    @case ('actions') { <td><div class="row-actions"><a class="row-btn btn-view-wrk" [href]="full" title="صفحة العامل وكشف المستحقات (الشاشة الكاملة)">👁</a>@if (canEdit) { <button type="button" class="row-btn btn-edit-wrk" [attr.data-id]="r.id" title="تعديل" (click)="openEditById(r.id)">✎</button> }@if (canDelete) { <a class="row-btn del btn-del-wrk" [href]="full" title="الحذف من الشاشة الكاملة (DEC-0121)">✕</a> }</div></td> }
+                    @case ('cust') { <td style="font-size:12.5px;max-width:140px;overflow:hidden;text-overflow:ellipsis;" [title]="c.v" [style.display]="c.hide ? 'none' : null">{{ c.v || '—' }}</td> }
+                    @default { <td [style.display]="c.hide ? 'none' : null" [attr.data-auto-col]="c.auto ? '1' : null">{{ c.v }}</td> }
                   }
-                  <td class="notes-cell">@if (w.issues.length) { <ul class="notes-list" [title]="w.issues.join('\\n')">@for (i of w.issues.slice(0, 3); track $index) { <li>{{ i }}</li> }@if (w.issues.length > 3) { <li class="notes-more">+{{ w.issues.length - 3 }} أخرى</li> }</ul> } @else { <span class="notes-ok">✓ مكتمل</span> }</td>
-                  <td><div class="row-actions"><a class="row-btn btn-view-wrk" [href]="full" title="صفحة العامل وكشف المستحقات (الشاشة الكاملة)">👁</a>@if (canEdit) { <button type="button" class="row-btn btn-edit-wrk" [attr.data-id]="w.id" title="تعديل" (click)="openEditById(w.id)">✎</button> }@if (canDelete) { <a class="row-btn del btn-del-wrk" [href]="full" title="الحذف من الشاشة الكاملة (DEC-0121)">✕</a> }</div></td>
-                </tr>
-              } @empty { <tr><td colspan="12" style="text-align:center;color:var(--ink-soft);padding:30px;">لا يوجد عمال — اضغط "إضافة عامل"</td></tr> }
-            </tbody>
-          }
+                }
+              </tr>
+            }
+          </tbody>
         </table></div>
         <div class="btn-row table-pager" data-pager="workers" style="justify-content:space-between;align-items:center;margin-top:10px;flex-wrap:wrap;gap:8px;">
           <span style="font-size:13px;color:var(--ink-soft);">عرض {{ rows().length ? (curPage() - 1) * pageSize + 1 : 0 }}–{{ min(curPage() * pageSize, rows().length) }} من {{ rows().length }} <span style="opacity:.75;">(20 صف لكل صفحة)</span></span>
@@ -234,6 +214,50 @@ export class WorkersPage implements OnInit {
   readonly pages = computed(() => Math.max(1, Math.ceil(this.rows().length / PAGE_SIZE)));
   readonly curPage = computed(() => Math.min(this.page(), this.pages()));
   readonly pageRows = computed(() => this.rows().slice((this.curPage() - 1) * PAGE_SIZE, this.curPage() * PAGE_SIZE));
+  readonly layoutDocs = signal<LayoutDocs | null>(null);
+  private readonly byId = computed(() => new Map(this.pageRows().map((w) => [String(w['id']), w])));
+  rec = (id: string): W => this.byId().get(id) ?? {};
+  /** نفس جدول renderWorkersPage بالموضع (thIf/tdIf بنفس المفاتيح)، وبعدين تخطيط الأعمدة المحفوظ زي القديمة (DEC-0122) */
+  readonly tbl = computed(() => {
+    const mode = this.mode(), wages = this.wages(), rows = this.pageRows();
+    const temp = mode === 'temp', ent = temp ? 'workersTemp' : 'workers';
+    const layout = effectiveLayout(ent, this.layoutDocs());
+    const H = (text: string, key?: string): Head => ({ text, key });
+    const C = (t: string, key?: string, v?: string): Cell => ({ t, key, v });
+    const X = (v: unknown, key?: string): Cell => ({ t: 'txt', key, v: v == null || v === '' ? '—' : String(v) });
+    let head: Head[]; let body: Row[];
+    if (temp) {
+      head = [H('الكود', 'code'), H('الاسم', 'name'), H('الحالة', 'status'), H('الرقم القومي', 'nationalId'), H('الوظيفة', 'job'), H('القسم', 'department'), H('المشرف', 'supervisor'),
+        ...(wages ? [H('اليومية', 'dailyWage')] : []), H('رقم التليفون', 'phone'), H('العنوان', 'address'), H('الملاحظات', 'notes'), H('')];
+      body = rows.map((w) => ({ id: String(w['id']), cells: [C('txt', 'code', w['code'] || ''), C('name', 'name'), C('status', 'status'), X(w['nationalId'], 'nationalId'), X(w['position'] || w['skill'], 'job'),
+        C('txt', 'department', w['departmentName']), C('txt', 'supervisor', w['supervisorName']), ...(wages ? [C('txt', 'dailyWage', fmtMoney(w['dailyWage']))] : []),
+        X(w['phone'], 'phone'), X(w['address'], 'address'), C('notes', 'notes'), C('actions')] }));
+    } else {
+      const customs = customCols(layout);
+      head = [H('كود العامل', 'code'), H('الاسم', 'name'), ...(mode === 'mixed' ? [H('النوع')] : []), H('الوظيفة', 'job'), H('الرقم القومي', 'nationalId'), H('انتهاء البطاقة', 'idCardExpiry'),
+        H('حالة البطاقة', 'idCardStatus'), H('تاريخ التعيين', 'hireDate'), H('نوع العقد', 'contractType'), H('حالة العقد', 'contractStatus'), ...(mode !== 'company' && wages ? [H('اليومية', 'dailyWage')] : []),
+        ...(wages ? [H('الراتب', 'salary')] : []), H('حالة التأمين', 'insuranceStatus'), H('الرقم التأميني', 'insuranceNumber'), H('رقم التليفون', 'phone'), H('تاريخ الميلاد', 'birthDate'),
+        H('العنوان', 'address'), H('المشروع', 'project'), H('المشرف', 'supervisor'), H('القسم', 'department'), H('الحالة', 'status'), H('الملاحظات', 'notes'), ...customs.map((d) => H(d.label)), H('')];
+      const cust = (w: W) => customs.map((d) => C('cust', undefined, customValue(w, d.label)));
+      body = rows.map((w) => {
+        const id = String(w['id']);
+        if (w['temporary']) {
+          return { id, cells: [X(''), C('name', 'name'), ...(mode === 'mixed' ? [C('txt', undefined, 'مؤقت')] : []), X(''), X(w['nationalId'], 'nationalId'), X(''), X(''), X(''), X(''), X(''),
+            ...(wages ? [C('txt', 'dailyWage', fmtMoney(w['dailyWage'])), X('')] : []), X(''), X(''), X(w['phone'], 'phone'), X(w['address'], 'address'), X(w['project'], 'project'),
+            C('txt', 'supervisor', w['supervisorName']), C('txt', 'department', w['departmentName']), C('tempBadge'), C('notes', 'notes'), ...cust(w), C('actions')] };
+        }
+        return { id, cells: [C('txt', 'code', w['code'] || ''), C('name', 'name'), ...(mode === 'mixed' ? [C('txt', undefined, 'شركة')] : []), C('txt', 'job', w['position'] || w['skill'] || ''),
+          X(w['nationalId'], 'nationalId'), C('txt', 'idCardExpiry', fmtDate(w['idCardExpiry'])), C('card', 'idCardStatus'), C('txt', 'hireDate', fmtDate(w['hireDate'])), X(w['contractTypeLabel'], 'contractType'),
+          C('contract', 'contractStatus'), ...(mode !== 'company' && wages ? [C('txt', 'dailyWage', fmtMoney(w['dailyWage']))] : []), ...(wages ? [C('txt', 'salary', fmtMoney(w['salary'] || w['basicSalary']))] : []),
+          C('ins', 'insuranceStatus'), X(w['insuranceNumber'], 'insuranceNumber'), X(w['phone'], 'phone'), C('txt', 'birthDate', w['birthDate'] ? fmtDate(w['birthDate']) : '—'), X(w['address'], 'address'),
+          X(w['project'], 'project'), C('txt', 'supervisor', w['supervisorName']), C('txt', 'department', w['departmentName']), C('status', 'status'), C('notes', 'notes'), ...cust(w), C('actions')] };
+      });
+    }
+    if (!body.length) body = [{ id: '', cells: [{ t: 'empty', v: temp ? 'لا يوجد عمال مؤقتون' : 'لا يوجد عمال — اضغط "إضافة عامل"' }] }];
+    // أعمدة الأجور ماتتعرضش كأعمدة تلقائية لمستخدم مالوش صلاحيتها (B-48)
+    const noWage = (f: { key: string; selector?: string }) => !wages && (['dailyWage', 'salary', 'basicSalary'].includes(f.key) || /Wage|Salary/.test(String(f.selector || '')));
+    return layoutTable(ent, temp, head, body, layout, this.byId(), { date: fmtDate }, noWage);
+  });
   e: W = {};
   private qTimer?: ReturnType<typeof setTimeout>;
   fmtNum = fmtNum; money = fmtMoney; date = fmtDate; min = Math.min;
@@ -256,8 +280,8 @@ export class WorkersPage implements OnInit {
       let params = new HttpParams();
       const d = this.dept();
       for (const [k, v] of Object.entries({ ...this.f, departmentId: d ?? '' })) if (v) params = params.set(k, v);
-      const r = await firstValueFrom(this.http.get<{ boards: Board[]; cards: Card[]; rows: W[]; mode: 'temp' | 'company' | 'mixed'; hiddenFields: string[]; supervisors: { id: string; code: string; name: string }[]; projects: string[] }>('/api/v1/workers', { params }));
-      this.boards.set(r.boards); this.cards.set(r.cards); this.rows.set(r.rows); this.mode.set(r.mode); this.hidden.set(r.hiddenFields); this.supervisors.set(r.supervisors); this.projects.set(r.projects);
+      const r = await firstValueFrom(this.http.get<{ boards: Board[]; cards: Card[]; rows: W[]; mode: 'temp' | 'company' | 'mixed'; hiddenFields: string[]; supervisors: { id: string; code: string; name: string }[]; projects: string[]; layout?: LayoutDocs }>('/api/v1/workers', { params }));
+      this.boards.set(r.boards); this.cards.set(r.cards); this.rows.set(r.rows); this.mode.set(r.mode); this.hidden.set(r.hiddenFields); this.supervisors.set(r.supervisors); this.projects.set(r.projects); this.layoutDocs.set(r.layout ?? null);
     } catch (err) { this.error.set(errorMessage(err, 'تعذر تحميل العمال')); }
   }
 

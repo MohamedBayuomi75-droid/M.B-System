@@ -9,6 +9,8 @@
  * المرحلة 7.3 (قلب التوجيه بموافقة 2026-11-22): «الدفعات» → Angular. الشاشة الكاملة للحذف والتصدير وطباعة الكشف والمرفقات. الرجوع: السطرين دول.
  * المرحلة 7.4 (قلب التوجيه بموافقة 2026-11-23، DEC-0119): «المشاريع» → Angular. الشاشة الكاملة لعرض المشروع والتكلفة والمسار والحذف
  *   والتصدير (DEC-0117). الرجوع: السطرين دول.
+ * المرحلة 8.1 (قلب التوجيه بموافقة 2026-11-23، DEC-0122): «العمال» → Angular، بتخطيط الأعمدة المحفوظ زي القديمة. الشاشة الكاملة
+ *   لصفحة العامل وكشف المستحقات والحذف والإجراءات الجماعية والتصدير وتعديل التخطيط (DEC-0121). الرجوع: السطرين دول.
  */
 export interface PageRoute { key: string; label: string; icon: string; target: 'legacy' | 'angular'; path?: string; pilot?: boolean }
 
@@ -24,8 +26,8 @@ export const PAGE_ROUTES: readonly PageRoute[] = [
   { key: 'ledger.returns', label: 'المرتجعات — الشاشة الكاملة', icon: 'assignment_return', target: 'legacy' },
   { key: 'ledger.payments', label: 'الدفعات', icon: 'payments', target: 'angular', path: '/supplier-payments' },
   { key: 'ledger.payments', label: 'الدفعات — الشاشة الكاملة', icon: 'payments', target: 'legacy' },
-  { key: 'workers', label: 'العمال (الشاشة الجديدة)', icon: 'engineering', target: 'angular', path: '/workers', pilot: true },
-  { key: 'workers', label: 'العمال', icon: 'engineering', target: 'legacy' },
+  { key: 'workers', label: 'العمال', icon: 'engineering', target: 'angular', path: '/workers' },
+  { key: 'workers', label: 'العمال — الشاشة الكاملة', icon: 'badge', target: 'legacy' },
   { key: 'workerDues', label: 'المستحقات', icon: 'payments', target: 'legacy' },
   { key: 'clients.customers', label: 'العملاء', icon: 'groups', target: 'angular', path: '/customers' },
   { key: 'clients.customers', label: 'العملاء — الشاشة الكاملة', icon: 'contact_page', target: 'legacy' },

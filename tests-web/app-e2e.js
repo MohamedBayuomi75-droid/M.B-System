@@ -67,7 +67,7 @@ async function login(page, username, password) {
     ok((await A.page.textContent('#whoami')).includes('مدير النظام'), 'shell shows the user and role');
     eq(await A.page.evaluate(() => getComputedStyle(document.body).direction), 'rtl', 'page direction is RTL');
     const nav = await A.page.evaluate(() => ({ app: [...document.querySelectorAll('#nav [data-page]')].map((a) => a.getAttribute('data-page')), legacy: [...document.querySelectorAll('#nav [data-legacy]')].map((a) => a.getAttribute('href')) }));
-    ok(nav.app.includes('ledger.suppliers') && nav.app.includes('clients.customers') && nav.legacy.includes('/legacy/#dashboard') && nav.legacy.includes('/legacy/#hrHome'), 'legacy sections (DEC-0093): sections with a moved page open it here, the others open their legacy board/page', nav);
+    ok(nav.app.includes('ledger.suppliers') && nav.app.includes('clients.customers') && nav.app.includes('workers') && nav.legacy.includes('/legacy/#dashboard') && nav.legacy.includes('/legacy/#transfers'), 'legacy sections (DEC-0093): sections with a moved page open it here (HR → workers since 8.1), the others open their legacy board/page', nav);
     ok(!!(await A.page.$('.lx .top .brand img.mark-logo')) && !!(await A.page.$('.lx nav.nav.nav-sections')), 'legacy header and section tabs');
   }
   r = await api('POST', '/api/auth/login', { username: 'admin', password: PW });
@@ -118,12 +118,17 @@ async function login(page, username, password) {
       { collection: 'workers', id: 'w1', op: 'upsert', baseRev: 0, set: { code: 'WRK-001', name: 'محمد علي', workerType: 'temporary', type: 'temporary', status: 'active', dailyWage: 300, departmentId: '__core_workers_temp__', categoryId: '__core_workers_temp__' } },
       { collection: 'workers', id: 'w2', op: 'upsert', baseRev: 0, set: { code: 'WRK-002', name: 'أحمد محمود', workerType: 'company', type: 'company', status: 'active', salary: 6000, basicSalary: 6000, position: 'نجار', skill: 'نجار', departmentId: '__core_workers_perm__', categoryId: '__core_workers_perm__' } },
     ] }, adminTok);
-    await A.page.goto(srv.base + '/app/workers');
+    // قلب التوجيه (موافقة 2026-11-23، DEC-0122): «العمال» في صف قسم الموارد البشرية بتفتح الشاشة الجديدة، والقديمة «الشاشة الكاملة»
+    await A.page.goto(srv.base + '/app/projects'); await A.page.waitForSelector('#nav [data-section="hr"]');
+    await A.page.click('#nav [data-section="hr"]');
+    await A.page.click('#navWorkers');
     await A.page.waitForSelector('#wkBoards .entity-dept-board');
+    ok(/\/app\/workers$/.test(A.page.url()), 'section link opens /app/workers', A.page.url());
     const boards = await A.page.$$eval('#wkBoards .entity-dept-board', (bs) => bs.map((b) => [b.getAttribute('data-dept'), b.querySelector('.num').textContent.trim()]));
     eq(boards.slice(0, 1).concat(boards.filter(([d]) => d.startsWith('__core_workers'))), [['', '2'], ['__core_workers_perm__', '1'], ['__core_workers_temp__', '1']], 'department boards with counts');
     await A.page.click('#wkBoards .entity-dept-board[data-dept=""]');
     await A.page.waitForSelector('#wkTable tr[data-id="w2"]');
+    ok((await A.page.$$eval('a', (as) => as.map((x) => x.getAttribute('href') || ''))).includes('/legacy/#workers'), 'the full legacy screen stays reachable (/legacy/#workers)');
     ok(!!(await A.page.$('#wkCards .sc-card')) && !!(await A.page.$('#wkBack')), 'legacy list structure (cards + back to boards)');
     await A.page.click('#btnAddTempWorker'); await A.page.waitForSelector('#btnSaveWrk');
     eq(await A.page.inputValue('#wrkCode'), 'WRK-003', 'auto code prefilled');
