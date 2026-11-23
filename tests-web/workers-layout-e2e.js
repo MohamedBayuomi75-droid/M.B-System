@@ -36,8 +36,8 @@ const seed = {
     ],
   },
   customFieldDefs: { workers: [{ id: 'cf1', label: 'المقاس', showInTable: true }] },
-  // خانات تلقائية (زي M2 على البيانات الحقيقية): «اليومية» في جدول الشركة (مالوش عمود أصلي)، و«كود العامل» في المؤقت
-  autoFields: { workers: [{ key: 'f_wrkWageTemp', label: 'اليومية', selector: '#wrkWageTemp' }], workersTemp: [{ key: 'f_wrkCodeX', label: 'كود العامل', selector: '#wrkCodeX' }] },
+  // خانات تلقائية (زي M2 وM15 على البيانات الحقيقية — «كود العامل» في المؤقت قيمته «—» في القديمة لأن DATA.workersTemp مش موجودة): «اليومية» في جدول الشركة (مالوش عمود أصلي)، و«كود العامل» في المؤقت
+  autoFields: { workers: [{ key: 'f_wrkWageTemp', label: 'اليومية', selector: '#wrkWageTemp' }], workersTemp: [{ key: 'f_wrkCode', label: 'كود العامل', selector: '#wrkCode' }] },
 };
 
 const MODES = [['temp', '__core_workers_temp__'], ['company', '__core_workers_perm__'], ['mixed', '']];
