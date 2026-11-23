@@ -6,7 +6,7 @@
   "TECH": 19,
   "NEW": 10,
   "CHG": 15,
-  "DEC": 119
+  "DEC": 120
  },
  "entries": [
   {
@@ -2615,6 +2615,24 @@
    "classification": "OPEN-DECISION",
    "kind": "decision",
    "title": "UAT الحزمة 7.4 اتنفّذ آليًا (جلسة Claude على اللابتوب، بطلب المستخدم، ببيانات اصطناعية على النسخة المعزولة)، وقرار L11: توحيد المرفقات (نافذة المشروع القديمة في",
+   "module": "قرارات",
+   "priority": "—",
+   "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",
+   "tests": [],
+   "target": "—",
+   "notes": "محسوم",
+   "aliases": [],
+   "decisionStatus": "resolved",
+   "priorityStatus": "—",
+   "status": "resolved"
+  },
+  {
+   "id": "DEC-0119",
+   "key": "decision:DEC-0119",
+   "prefix": "DEC",
+   "classification": "OPEN-DECISION",
+   "kind": "decision",
+   "title": "المشروعات (الحزمة 7.4) Accepted، وقلب توجيه «المشاريع» للشاشة الجديدة (القديمة «الشاشة الكاملة»)",
    "module": "قرارات",
    "priority": "—",
    "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",

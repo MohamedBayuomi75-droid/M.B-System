@@ -7,14 +7,15 @@
  * المرحلة 7.2 (قلب التوجيه بموافقة 2026-11-22): «الفواتير» و«المرتجعات» → Angular. الشاشة الكاملة القديمة متاحة للحذف والتصدير
  *   وإشعارات الخصم والمرفقات (DEC-0108). الرجوع: تغيير السطرين دول.
  * المرحلة 7.3 (قلب التوجيه بموافقة 2026-11-22): «الدفعات» → Angular. الشاشة الكاملة للحذف والتصدير وطباعة الكشف والمرفقات. الرجوع: السطرين دول.
- * المرحلة 4: مفيش صفحة اتنقلت — «المشروعات (تجريبي)» شاشة عرض جديدة جنب الصفحة القديمة، مش بديل ليها.
+ * المرحلة 7.4 (قلب التوجيه بموافقة 2026-11-23، DEC-0119): «المشاريع» → Angular. الشاشة الكاملة لعرض المشروع والتكلفة والمسار والحذف
+ *   والتصدير (DEC-0117). الرجوع: السطرين دول.
  */
 export interface PageRoute { key: string; label: string; icon: string; target: 'legacy' | 'angular'; path?: string; pilot?: boolean }
 
 export const PAGE_ROUTES: readonly PageRoute[] = [
   { key: 'dashboard', label: 'مركز المتابعة', icon: 'dashboard', target: 'legacy' },
-  { key: 'projects', label: 'المشاريع (الشاشة الجديدة)', icon: 'apartment', target: 'angular', path: '/projects', pilot: true },
-  { key: 'projects', label: 'المشروعات', icon: 'domain', target: 'legacy' },
+  { key: 'projects', label: 'المشاريع', icon: 'apartment', target: 'angular', path: '/projects' },
+  { key: 'projects', label: 'المشاريع — الشاشة الكاملة', icon: 'domain', target: 'legacy' },
   { key: 'ledger.suppliers', label: 'الموردين', icon: 'local_shipping', target: 'angular', path: '/suppliers' },
   { key: 'ledger.suppliers', label: 'الموردين — الشاشة الكاملة', icon: 'account_balance_wallet', target: 'legacy' },
   { key: 'ledger.invoices', label: 'فواتير الموردين', icon: 'receipt_long', target: 'angular', path: '/supplier-invoices' },

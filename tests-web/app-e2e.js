@@ -82,6 +82,8 @@ async function login(page, username, password) {
     await A.page.click('#nav [data-section="clients"]');
     await A.page.click('#navProjects');
     await A.page.waitForSelector('#projTable tr[data-id="p1"]');
+    // قلب التوجيه (موافقة 2026-11-23، DEC-0119): «المشاريع» في صف قسم «العملاء والمشاريع» بتفتح الشاشة الجديدة، والقديمة «الشاشة الكاملة»
+    ok((await A.page.$$eval('a', (as) => as.map((x) => x.getAttribute('href') || ''))).some((h) => /\/projects$/.test(h)), 'section link opens /app/projects');
     const rows = await A.page.evaluate(() => [...document.querySelectorAll('#projTable tr[data-id]')].map((tr) => [...tr.querySelectorAll('td')].map((td) => td.textContent.trim())));
     eq(rows.length, 2, 'two projects listed');
     eq(rows.map((x) => [x[0], x[3], x[4]]), [['PRJ-1', 'التنفيذ والمتابعة', '١٬٢٥٠٬٠٠٠٫٥ ج.م'], ['PRJ-2', 'التنفيذ والمتابعة', '٢٬٠٠٠ ج.م']], 'code, legacy stage label (active), value like fmtMoney (toInt = 2 decimals)');
@@ -296,7 +298,7 @@ async function login(page, username, password) {
     eq(b3.body.data.clients.customers.find((x) => x.id === 'cus_x1').extraFields, [{ label: 'المنطقة', value: 'الجيزة' }], 'customer custom field value reaches the legacy record (DEC-0091)');
     // التنقل بأقسام الواجهة القديمة: «الموردون» بيفتح الشاشة الجديدة، وباقي صفحات القسم في الواجهة القديمة
     const nav = await A.page.$$eval('#nav a', (as) => as.map((x) => [x.textContent.trim(), x.getAttribute('href') || '']));
-    ok(nav.some(([t, h]) => t === 'العملاء' && h.endsWith('/customers')) && nav.some(([t, h]) => t === 'المشاريع' && h.includes('/legacy/#projects')), 'legacy-style nav: customers → new screen, other pages → legacy', nav.slice(0, 30));
+    ok(nav.some(([t, h]) => t === 'العملاء' && h.endsWith('/customers')) && nav.some(([t, h]) => t === 'المشاريع' && h.endsWith('/projects')) && nav.filter(([t]) => t === 'المشاريع').length === 1 && nav.some(([t, h]) => t === 'العقود' && h.includes('/legacy/#clients.contracts')), 'legacy-style nav: customers and projects → new screens (once each), other pages → legacy', nav.slice(0, 30));
   }
 
   console.log('[6d] B-21: taxes screen — admin prepares, a different approver approves, preview uses approved only (test data)');

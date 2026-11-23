@@ -11,7 +11,6 @@ import { NotificationsBellComponent } from './notifications-bell.component';
 interface NavLink { key: string; label: string; path?: string; href?: string }
 /** صفحات Angular الجديدة اللي مالهاش مقابل في الواجهة القديمة ← القسم اللي بتظهر فيه */
 const EXTRA_PAGES: { id: string; section: string; label: string; path: string; key: string; show: 'all' | 'finance' }[] = [
-  { id: 'navProjects', section: 'clients', label: 'المشاريع (الشاشة الجديدة)', path: '/projects', key: 'projects', show: 'all' },
   { id: 'navTaxes', section: 'settings', label: 'الضرائب والاستقطاعات', path: '/taxes', key: '', show: 'finance' },
   { id: 'navFormulas', section: 'settings', label: 'إدارة القواعد المالية', path: '/formulas', key: '', show: 'finance' },
 ];
@@ -22,7 +21,7 @@ const ROLE_LABEL: Record<string, string> = { admin: 'مدير', hr: 'موارد 
  * الترويسة (اللوجو والاسم والمستخدم وأدوات العرض)، وصف الأقسام، وصف صفحات القسم، والكلاسات نفسها من legacy-skin.css.
  * - القسم اللي فيه صفحة اتنقلت لـ Angular بيعرض صف صفحاته هنا. وباقي الأقسام بتفتح لوحتها في الواجهة القديمة
  *   (اللوحات ماتنقلتش) — فرق متسجّل في docs/modules/PARTIES_VISUAL_PARITY.md.
- * - صفحات Angular اللي مالهاش مقابل في القديمة (الاعتمادات، والضرائب، والقواعد المالية، والمشروعات التجريبية) في أقسامها.
+ * - صفحات Angular اللي مالهاش مقابل في القديمة (الاعتمادات، والضرائب، والقواعد المالية) في أقسامها. («المشاريع» بقت صفحة القسم بعد قلب التوجيه 7.4.)
  * - الشاشات المطابقة (route data: skin = 'legacy') بتلبس كلاسات الواجهة القديمة (.lx)، وباقي صفحات Angular زي ما هي.
  */
 @Component({
@@ -131,7 +130,8 @@ export class ShellComponent {
     if (hasHome) { const key = s.id === 'hr' ? 'hrHome' : `home_${s.id}`; return { key, label: s.label, href: legacyUrl(key) }; }
     return pages[0] ?? { key: '', label: s.label, href: '/legacy/' };
   }
-  extraId(p: NavLink) { return EXTRA_PAGES.find((x) => x.path === p.path)?.id ?? null; }
+  /** معرّفات ثابتة للروابط (للاختبارات): «المشاريع» بقت صفحة القسم نفسها بعد قلب التوجيه (7.4)، فبتاخد معرّفها القديم */
+  extraId(p: NavLink) { return EXTRA_PAGES.find((x) => x.path === p.path)?.id ?? (p.path === '/projects' ? 'navProjects' : null); }
 
   // أدوات العرض: نفس مفاتيح التخزين بتاعة الواجهة القديمة (uiDensity / uiZoom)، فالإعداد واحد في الواجهتين
   readonly density = signal(this.readNum('uiDensity', 1, (n) => n === 0 || n === 1 || n === 2));
