@@ -19,27 +19,25 @@ describe('platform (phase 4)', () => {
   });
   afterAll(async () => t?.close());
 
-  describe('GET /api/v1/projects (pilot, layered)', () => {
-    it('lists with money as 6-decimal strings (HALF_UP, DEC-0112), sorted, with source marker', async () => {
+  describe('GET /api/v1/projects (layered; 7.4.4 legacy-parity list)', () => {
+    it('lists sorted by Arabic name with the legacy stage label, shown value (round2) and source marker', async () => {
       const r = await t.http().get('/api/v1/projects').set(bearer(admin)).expect(200);
       expect(r.body.source).toBe('legacy-records');
-      expect(r.body.total).toBe(3);
-      expect(r.body.items.map((p: { id: string }) => p.id)).toEqual(['p3', 'p1', 'p2']); // ترتيب أبجدي عربي
-      const p1 = r.body.items.find((p: { id: string }) => p.id === 'p1');
-      const p2 = r.body.items.find((p: { id: string }) => p.id === 'p2');
-      expect([p1.budget, p2.budget, r.body.items.find((p: { id: string }) => p.id === 'p3').budget]).toEqual(['1250000.500000', '2000.000001', null]);
-      expect(p1).toMatchObject({ code: 'PRJ-2', name: 'مشروع الشروق', status: 'active', stage: 'exec', rev: 1 });
+      expect(r.body.cards).toMatchObject({ count: 3, shown: 3, done: 1, active: 2 });
+      expect(r.body.rows.map((p: { id: string }) => p.id)).toEqual(['p3', 'p1', 'p2']); // ترتيب أبجدي عربي
+      expect(r.body.rows.map((p: { shownValue: number }) => p.shownValue)).toEqual([0, 1250000.5, 2000]);
+      expect(r.body.rows.find((p: { id: string }) => p.id === 'p1')).toMatchObject({ code: 'PRJ-2', name: 'مشروع الشروق', status: 'active', stage: 'التنفيذ والمتابعة', badge: 'badge-ok', rev: 1 });
     });
-    it('filters, searches, paginates; validates query', async () => {
-      expect((await t.http().get('/api/v1/projects?status=active&sort=code').set(bearer(admin))).body.items.map((p: { code: string }) => p.code)).toEqual(['PRJ-1', 'PRJ-2']);
-      expect((await t.http().get('/api/v1/projects?q=نيل').set(bearer(admin))).body.total).toBe(1);
-      expect((await t.http().get('/api/v1/projects?limit=1&offset=1').set(bearer(admin))).body.items).toHaveLength(1);
-      const bad = await t.http().get('/api/v1/projects?limit=9999').set(bearer(admin));
+    it('filters and searches like the legacy page; validates query', async () => {
+      expect((await t.http().get('/api/v1/projects').query({ stageSel: 'مكتمل' }).set(bearer(admin))).body.rows.map((p: { code: string }) => p.code)).toEqual(['PRJ-3']);
+      expect((await t.http().get('/api/v1/projects').query({ q: 'النيل' }).set(bearer(admin))).body.rows).toHaveLength(1);
+      expect((await t.http().get('/api/v1/projects').query({ q: 'نيل' }).set(bearer(admin))).body.rows).toHaveLength(0); // بداية كلمة بس (smartMatch)
+      const bad = await t.http().get('/api/v1/projects?hasRes=maybe').set(bearer(admin));
       expect([bad.status, bad.body.code, typeof bad.body.requestId]).toEqual([400, 'VALIDATION_FAILED', 'string']);
     });
     it('project scope: project manager sees only his project; others are 404', async () => {
       const pm = (await newUser(t, admin, 'pm_v1', 'projectManager', { projectScope: ['p1'] })).token;
-      expect((await t.http().get('/api/v1/projects').set(bearer(pm))).body.items.map((p: { id: string }) => p.id)).toEqual(['p1']);
+      expect((await t.http().get('/api/v1/projects').set(bearer(pm))).body.rows.map((p: { id: string }) => p.id)).toEqual(['p1']);
       expect((await t.http().get('/api/v1/projects/p1').set(bearer(pm))).status).toBe(200);
       const hidden = await t.http().get('/api/v1/projects/p2').set(bearer(pm));
       expect([hidden.status, hidden.body.code]).toEqual([404, 'NOT_FOUND']);
@@ -50,8 +48,8 @@ describe('platform (phase 4)', () => {
       expect(r.body).toMatchObject({ statusCode: 401, code: 'UNAUTHENTICATED' });
       expect(r.body.requestId).toBeTruthy();
     });
-    it('the pilot is read-only (no write routes)', async () => {
-      for (const m of ['post', 'put', 'patch', 'delete'] as const) expect([404, 405]).toContain((await (t.http() as any)[m]('/api/v1/projects/p1').set(bearer(admin)).send({})).status);
+    it('no delete/put routes (delete stays in the legacy UI, DEC-0117 d-3)', async () => {
+      for (const m of ['put', 'delete'] as const) expect([404, 405]).toContain((await (t.http() as any)[m]('/api/v1/projects/p1').set(bearer(admin)).send({})).status);
     });
   });
 

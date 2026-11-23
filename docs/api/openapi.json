@@ -1780,87 +1780,6 @@
     ],
     "type": "object"
    },
-   "ProjectDto": {
-    "properties": {
-     "budget": {
-      "description": "الميزانية: نص عشري بست خانات (DEC-0112) (ADR-023) — أو null",
-      "example": "10000.000000",
-      "nullable": true,
-      "type": "object"
-     },
-     "code": {
-      "nullable": true,
-      "type": "object"
-     },
-     "customerId": {
-      "nullable": true,
-      "type": "object"
-     },
-     "id": {
-      "type": "string"
-     },
-     "name": {
-      "type": "string"
-     },
-     "rev": {
-      "type": "number"
-     },
-     "stage": {
-      "description": "مرحلة مسار المشروع",
-      "nullable": true,
-      "type": "object"
-     },
-     "status": {
-      "nullable": true,
-      "type": "object"
-     },
-     "supervisorId": {
-      "nullable": true,
-      "type": "object"
-     },
-     "updatedAt": {
-      "nullable": true,
-      "type": "object"
-     }
-    },
-    "required": [
-     "id",
-     "code",
-     "name",
-     "status",
-     "stage",
-     "budget",
-     "supervisorId",
-     "customerId",
-     "rev",
-     "updatedAt"
-    ],
-    "type": "object"
-   },
-   "ProjectListDto": {
-    "properties": {
-     "items": {
-      "items": {
-       "$ref": "#/components/schemas/ProjectDto"
-      },
-      "type": "array"
-     },
-     "source": {
-      "description": "مصدر البيانات: legacy-records (الافتراضي) أو relational (بعد ترحيل معتمد)",
-      "example": "legacy-records",
-      "type": "string"
-     },
-     "total": {
-      "type": "number"
-     }
-    },
-    "required": [
-     "items",
-     "total",
-     "source"
-    ],
-    "type": "object"
-   },
    "ReasonDto": {
     "properties": {
      "reason": {
@@ -2058,6 +1977,69 @@
      "date",
      "isReturn",
      "baseValue"
+    ],
+    "type": "object"
+   },
+   "SaveProjectDto": {
+    "properties": {
+     "assignedTo": {
+      "type": "string"
+     },
+     "budget": {
+      "example": "800000",
+      "type": "string"
+     },
+     "code": {
+      "description": "فاضي = PRJ- تلقائي",
+      "type": "string"
+     },
+     "contractNo": {
+      "type": "string"
+     },
+     "customerId": {
+      "type": "string"
+     },
+     "customerName": {
+      "description": "اسم العميل النصّي — لما مايكونش فيه عملاء مسجّلين",
+      "type": "string"
+     },
+     "end": {
+      "type": "string"
+     },
+     "extraFields": {
+      "items": {
+       "$ref": "#/components/schemas/ExtraFieldDto"
+      },
+      "type": "array"
+     },
+     "name": {
+      "type": "string"
+     },
+     "notes": {
+      "type": "string"
+     },
+     "progress": {
+      "description": "فاضي = من غير نسبة",
+      "type": "string"
+     },
+     "start": {
+      "example": "2026-11-22",
+      "type": "string"
+     },
+     "status": {
+      "description": "المرحلة / الحالة (فاضي = أول مرحلة)",
+      "type": "string"
+     },
+     "supervisorId": {
+      "type": "string"
+     },
+     "value": {
+      "example": "1000000",
+      "type": "string"
+     }
+    },
+    "required": [
+     "name"
     ],
     "type": "object"
    },
@@ -2547,6 +2529,73 @@
      "date",
      "direction",
      "amount"
+    ],
+    "type": "object"
+   },
+   "UpdateProjectDto": {
+    "properties": {
+     "assignedTo": {
+      "type": "string"
+     },
+     "budget": {
+      "example": "800000",
+      "type": "string"
+     },
+     "code": {
+      "description": "فاضي = PRJ- تلقائي",
+      "type": "string"
+     },
+     "contractNo": {
+      "type": "string"
+     },
+     "customerId": {
+      "type": "string"
+     },
+     "customerName": {
+      "description": "اسم العميل النصّي — لما مايكونش فيه عملاء مسجّلين",
+      "type": "string"
+     },
+     "end": {
+      "type": "string"
+     },
+     "extraFields": {
+      "items": {
+       "$ref": "#/components/schemas/ExtraFieldDto"
+      },
+      "type": "array"
+     },
+     "name": {
+      "type": "string"
+     },
+     "notes": {
+      "type": "string"
+     },
+     "progress": {
+      "description": "فاضي = من غير نسبة",
+      "type": "string"
+     },
+     "rev": {
+      "type": "number"
+     },
+     "start": {
+      "example": "2026-11-22",
+      "type": "string"
+     },
+     "status": {
+      "description": "المرحلة / الحالة (فاضي = أول مرحلة)",
+      "type": "string"
+     },
+     "supervisorId": {
+      "type": "string"
+     },
+     "value": {
+      "example": "1000000",
+      "type": "string"
+     }
+    },
+    "required": [
+     "name",
+     "rev"
     ],
     "type": "object"
    },
@@ -5064,11 +5113,11 @@
   },
   "/api/v1/projects": {
    "get": {
-    "description": "نفس الصلاحيات ونطاق المشروع. المبالغ نصوص بست خانات.",
+    "description": "نفس الصلاحيات ونطاق المشروع.",
     "operationId": "ProjectsController_list",
     "parameters": [
      {
-      "description": "بحث في الاسم أو الكود",
+      "description": "بحث ذكي زي الصفحة القديمة: الاسم، والكود، والعميل، والعقد، والملاحظات، والمرحلة، والمشرف",
       "in": "query",
       "name": "q",
       "required": false,
@@ -5077,56 +5126,61 @@
       }
      },
      {
+      "description": "قسم المرحلة (من القايمة الجانبية)",
       "in": "query",
       "name": "status",
       "required": false,
       "schema": {
-       "example": "active",
+       "type": "string"
+      }
+     },
+     {
+      "description": "فلتر «كل المراحل»",
+      "in": "query",
+      "name": "stageSel",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "description": "فلتر العميل (جوه القسم): معرّف العميل أو اسمه للقديم",
+      "in": "query",
+      "name": "customerId",
+      "required": false,
+      "schema": {
        "type": "string"
       }
      },
      {
       "in": "query",
-      "name": "sort",
+      "name": "hasRes",
       "required": false,
       "schema": {
-       "default": "name",
        "enum": [
-        "name",
-        "code"
+        "",
+        "with",
+        "empty"
        ],
        "type": "string"
       }
      },
      {
+      "description": "بدون ميزانية/قيمة. حالة الميزانية (تحت/قريب/تجاوز) من الشاشة الكاملة (F-12، DEC-0117 د-6)",
       "in": "query",
-      "name": "limit",
+      "name": "budget",
       "required": false,
       "schema": {
-       "default": 100,
-       "maximum": 500,
-       "type": "number"
-      }
-     },
-     {
-      "in": "query",
-      "name": "offset",
-      "required": false,
-      "schema": {
-       "default": 0,
-       "type": "number"
+       "enum": [
+        "",
+        "none"
+       ],
+       "type": "string"
       }
      }
     ],
     "responses": {
      "200": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ProjectListDto"
-        }
-       }
-      },
       "description": ""
      }
     },
@@ -5135,15 +5189,72 @@
       "bearer": []
      }
     ],
-    "summary": "المشروعات (قراءة) — موديول تجريبي للبنية الجديدة",
+    "summary": "القايمة بنفس بحث وفلاتر وكروت صفحة المشروعات القديمة، والموارد والملاحظات (من غير التكلفة — F-12)",
     "tags": [
-     "v1 projects (pilot)"
+     "v1 projects"
+    ]
+   },
+   "post": {
+    "operationId": "ProjectsController_create",
+    "parameters": [],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/SaveProjectDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "إضافة مشروع (Idempotency-Key إلزامي) بنفس تحقق النافذة القديمة + حدث project.saved",
+    "tags": [
+     "v1 projects"
+    ]
+   }
+  },
+  "/api/v1/projects/form-options": {
+   "get": {
+    "operationId": "ProjectsController_formOptions",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "خيارات نافذة المشروع: العملاء، والمشرفين، والمراحل، والكود الجاي",
+    "tags": [
+     "v1 projects"
     ]
    }
   },
   "/api/v1/projects/migration-plan": {
    "get": {
-    "description": "مفيش أي كتابة. التنفيذ في المرحلة 6 بموافقة منفصلة ونسخة احتياطية مختبرة.",
+    "description": "مفيش أي كتابة. النقل نفسه بـ cutover projects.",
     "operationId": "ProjectsController_migrationPlan",
     "parameters": [],
     "responses": {
@@ -5156,9 +5267,29 @@
       "bearer": []
      }
     ],
-    "summary": "خطة ترحيل المشروعات للجدول العلائقي — قراءة بس (dry-run)",
+    "summary": "خطة ترحيل المشروعات — قراءة بس (dry-run)",
     "tags": [
-     "v1 projects (pilot)"
+     "v1 projects"
+    ]
+   }
+  },
+  "/api/v1/projects/unmatched-names": {
+   "get": {
+    "operationId": "ProjectsController_unmatched",
+    "parameters": [],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "الأسماء المكتوبة في سجلات ومالهاش مشروع (B-34، DEC-0117 د-5) — قراءة بس",
+    "tags": [
+     "v1 projects"
     ]
    }
   },
@@ -5177,13 +5308,6 @@
     ],
     "responses": {
      "200": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ProjectDto"
-        }
-       }
-      },
       "description": ""
      }
     },
@@ -5193,7 +5317,44 @@
      }
     ],
     "tags": [
-     "v1 projects (pilot)"
+     "v1 projects"
+    ]
+   },
+   "patch": {
+    "operationId": "ProjectsController_update",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/UpdateProjectDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "تعديل مشروع (rev إلزامي): نشر تغيير الاسم وتحريك المسار زي القديم، في معاملة واحدة",
+    "tags": [
+     "v1 projects"
     ]
    }
   },
