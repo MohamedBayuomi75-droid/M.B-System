@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { ArrayMaxSize, IsArray, IsIn, IsInt, IsOptional, IsString, MaxLength, Min, ValidateNested } from 'class-validator';
+import { ArrayMaxSize, IsArray, IsBoolean, IsIn, IsInt, IsOptional, IsString, MaxLength, Min, ValidateNested } from 'class-validator';
 
 /** 8.1.4 (DEC-0121): فلاتر صفحة العمال القديمة (workerFilters + الفلاتر الإضافية) */
 export class ListWorkersQuery {
@@ -42,6 +42,7 @@ export class SaveWorkerDto {
   @ApiPropertyOptional() @IsOptional() @IsString() @MaxLength(40) insuranceStatus?: string;
   @ApiPropertyOptional({ description: 'الراتب (الشركة بس) — حقل محمي (B-48)' }) @IsOptional() @IsString() @MaxLength(40) salary?: string;
   @ApiPropertyOptional({ type: [ExtraFieldDto] }) @IsOptional() @IsArray() @ArrayMaxSize(50) @ValidateNested({ each: true }) @Type(() => ExtraFieldDto) extraFields?: ExtraFieldDto[];
+  @ApiPropertyOptional({ description: '«حفظ على أي حال» بعد تنبيه التشابه (DUPLICATE_SOFT). التكرار المؤكد (DUPLICATE) مابيتحفظش' }) @IsOptional() @IsBoolean() confirmDuplicates?: boolean;
 }
 export class UpdateWorkerDto extends SaveWorkerDto {
   @ApiProperty() @IsInt() @Min(1) rev: number;

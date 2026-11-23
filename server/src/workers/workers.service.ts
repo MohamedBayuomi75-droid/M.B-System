@@ -4,6 +4,7 @@ import type { AuthUser } from '../auth/auth.types';
 import { hasPagePermission } from '../authz/effective-permissions';
 import type { RecordChangeDto } from '../data/data.dto';
 import { DataService } from '../data/data.service';
+import { DUP_TEXT, findEntityDuplicates } from '../common/person-duplicates';
 import { canRead, canWrite, hiddenFields, inProjectScope, stripHidden } from '../data/policy';
 import { cairoTodayIso } from '../parties/parties.service';
 import {
@@ -141,6 +142,7 @@ export class WorkersService {
         // الأجر المخفي عن المستخدم: النافذة القديمة مابتعرضوش، والسيرفر بياخد القيمة المخزنة (مش بيمسحها)
         const form = { ...dto, ...(hide.includes('dailyWage') && w ? { dailyWage: String(w.dailyWage ?? '') } : {}) };
         const payload = workerPayload(form, w, all, c.today);
+        await this.guardDuplicates(u, em, payload, w ? id : null, rows, !!dto.confirmDuplicates);
         const rec = commitWorker(payload, w, id);
         const arch = syncResigned(rec, archive.map((a) => ({ ...a.data, id: a.id })), c.today, new Date().toISOString(), uid);
         stampMembership(w, rec, c.today);
@@ -170,6 +172,19 @@ export class WorkersService {
       },
     });
     return this.get(u, id);
+  }
+  /**
+   * guardEntityDuplicates('worker', payload, excludeId) زي النافذة القديمة: تكرار مؤكد ← 409 DUPLICATE (مفيش حفظ)،
+   * وتشابه ← 409 DUPLICATE_SOFT لحد ما المستخدم يأكد («حفظ على أي حال» = confirmDuplicates). القوايم = اللي المستخدم يشوفه.
+   */
+  private async guardDuplicates(u: AuthUser, em: QueryRunner['manager'], payload: J, excludeId: string | null, workers: Row[], confirmed: boolean) {
+    const seen = async (coll: string, rows?: Row[]) => (canRead(u, coll) ? (rows ?? (await this.repo.rows(coll, em))).filter((r) => inProjectScope(u, coll, { ...r.data, id: r.id })).map((r) => ({ ...r.data, id: r.id })) : []);
+    const lists = { worker: await seen(COLL, workers), employee: await seen('employees'), supervisor: await seen('supervisors'), driver: await seen('drivers') };
+    const matches = findEntityDuplicates('worker', payload, excludeId, lists);
+    if (!matches.length) return;
+    const hard = matches.some((m) => m.strength === 'hard');
+    if (!hard && confirmed) return;
+    throw new ConflictException({ statusCode: 409, code: hard ? 'DUPLICATE' : 'DUPLICATE_SOFT', message: hard ? DUP_TEXT.hardMsg : DUP_TEXT.softMsg, title: hard ? DUP_TEXT.hardTitle : DUP_TEXT.softTitle, matches });
   }
   async create(u: AuthUser, dto: SaveWorkerDto) { this.assert(u, 'add'); return this.save(u, uid(), dto); }
   async update(u: AuthUser, id: string, dto: UpdateWorkerDto) { this.assert(u, 'edit'); return this.save(u, id, dto, dto.rev); }

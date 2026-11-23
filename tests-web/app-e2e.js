@@ -138,6 +138,13 @@ async function login(page, username, password) {
     const created = await pr.json();
     ok(created.dailyWage === 275.56 && created.departmentId === '__core_workers_temp__' && created.insuranceStatus === 'none', 'saved like the legacy modal (round2, temp department)', created);
     await A.page.waitForSelector(`#wkTable tr[data-id="${created.id}"]`);
+    // منع التكرار زي النافذة القديمة: نفس الاسم ← «يوجد سجلات متشابهة» و«حفظ على أي حال»
+    await A.page.click('#btnAddTempWorker'); await A.page.waitForSelector('#btnSaveWrk');
+    await A.page.fill('#wrkName', 'عامل الواجهة');
+    await A.page.click('#btnSaveWrk'); await A.page.waitForSelector('#appSubModal #btnDupForce');
+    eq(await A.page.$eval('#appSubModal h3', (h) => h.textContent.trim()), '⚠️ يوجد سجلات متشابهة', 'duplicate name → similarity dialog (legacy guardEntityDuplicates)');
+    const [pd] = await Promise.all([A.page.waitForResponse((r) => r.url().endsWith('/api/v1/workers') && r.request().method() === 'POST'), A.page.click('#appSubModal #btnDupForce')]);
+    eq(pd.status(), 201, '«حفظ على أي حال» saves');
     await A.page.click('.btn-edit-wrk[data-id="w2"]'); await A.page.waitForSelector('#wrkSalary');
     ok(!!(await A.page.inputValue('#wrkHire')), 'hire date prefilled with today when empty (legacy form)');
     await A.page.selectOption('#wrkStatus', 'resigned');

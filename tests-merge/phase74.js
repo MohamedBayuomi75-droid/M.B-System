@@ -12,6 +12,7 @@ const { ok, eq, summary, baseUser } = require('./lib');
     users: [baseUser], schemaVersion: 9,
     supervisors: [{ id: 'sv1', code: 'SUP-1', name: 'سامي المشرف', status: 'active' }, { id: 'sv2', code: 'SUP-2', name: 'كريم', status: 'active' }],
     projects: [{ id: 'pA', code: 'PRJ-001', name: 'مشروع الشروق', status: 'active' }],
+    drivers: [{ id: 'd1', code: 'DRV-001', name: 'سائق أول', nationalId: '29901011234567', status: 'active' }],
     leaves: [{ id: 'l1', personKind: 'worker', personId: 'w2', status: 'approved', from: '2020-01-01', to: '2099-01-01' }],
     personDocuments: [{ id: 'pd1', personId: 'w6', docType: 'عقد عمل', attachments: [{ name: 'c.pdf', path: 'x/c.pdf' }] }],
     workers: [
@@ -143,6 +144,38 @@ const { ok, eq, summary, baseUser } = require('./lib');
     const lr = await as('GET', '/api/v1/workers');
     ok(lr.status === 200 && lr.body.rows.length >= 0 && lr.body.rows.every((w) => !('dailyWage' in w) && !('salary' in w)) && lr.body.hiddenFields.includes('dailyWage') && !lr.body.cards.some((c) => /إجمالي/.test(c.label)), 'القايمة من غير الأجور ولا كارت الإجمالي', lr.body.rows && lr.body.rows.map((w) => Object.keys(w).filter((k) => /Wage|alary/.test(k))));
     eq((await as('POST', '/api/v1/workers', { workerType: 'temporary', name: 'x', dailyWage: '100' }, key())).body.code, lr.status === 200 && login.user && login.user.permissions.pages.workers && login.user.permissions.pages.workers.add ? 'FIELD_FORBIDDEN' : 'FORBIDDEN', 'إرسال أجر من غير صلاحيته ← مرفوض');
+
+    console.log('[4] منع التكرار (guardEntityDuplicates): السيرفر = findEntityDuplicates القديمة');
+    {
+      // الكود بيتعمل بـ ensureUniqueCode قبل الفحص فمابيطابقش أبدًا ← الحالات من غير كود في الاتنين
+      const CASES = [
+        ['رقم قومي متطابق (مؤكد)', { name: 'شخص جديد', nationalId: '2900 1011 234567' }, null],
+        ['اسم وهاتف متطابقين (مؤكد)', { name: 'محمد  على', phone: '0100' }, null],
+        ['اسم متطابق بعد التطبيع (تشابه)', { name: 'احمد محمود' }, null],
+        ['رقم قومي مسجّل في السواقين (تشابه)', { name: 'اسم مختلف', nationalId: '29901011234567' }, null],
+        ['تعديل العامل نفسه برقمه (مستثنى)', { name: 'محمد علي', nationalId: '29001011234567', phone: '0100' }, 'w1'],
+      ];
+      for (const [ci, [label, form, ex]] of CASES.entries()) {
+        const want = await page.evaluate(([f, x]) => findEntityDuplicates('worker', f, x).map((m) => [m.code, m.name, m.kind, m.strength, m.reasons]), [form, ex]);
+        const body = { workerType: 'temporary', status: 'active', ...form };
+        let r;
+        if (ex) { const cur = (await api(B.page, 'GET', '/api/v1/workers/' + ex)).body; r = await api(B.page, 'PATCH', '/api/v1/workers/' + ex, { ...body, rev: cur.rev }); }
+        else r = await api(B.page, 'POST', '/api/v1/workers', body, { 'Idempotency-Key': 'wrk-dup-case-' + ci });
+        const got = r.status === 409 && /^DUPLICATE/.test(r.body.code) ? r.body.matches.map((m) => [m.code, m.name, m.kind, m.strength, m.reasons]) : [];
+        eq(got, want, `${label}: نفس المطابقات`);
+        const hard = want.some((m) => m[3] === 'hard');
+        eq([r.status, r.status === 409 ? r.body.code : ''], want.length ? [409, hard ? 'DUPLICATE' : 'DUPLICATE_SOFT'] : [ex ? 200 : 201, ''], `${label}: ${want.length ? (hard ? 'ممنوع' : 'محتاج تأكيد') : 'اتحفظ'}`);
+      }
+      const r1 = await api(B.page, 'POST', '/api/v1/workers', { workerType: 'temporary', status: 'active', name: 'احمد محمود', confirmDuplicates: true }, { 'Idempotency-Key': 'dup-force' });
+      eq(r1.status, 201, 'التشابه + «حفظ على أي حال» ← اتحفظ');
+      const r2 = await api(B.page, 'POST', '/api/v1/workers', { workerType: 'temporary', status: 'active', name: 'شخص جديد', nationalId: '29001011234567', confirmDuplicates: true }, { 'Idempotency-Key': 'dup-hard-force' });
+      eq([r2.status, r2.body.code], [409, 'DUPLICATE'], 'التكرار المؤكد مابيتحفظش حتى مع التأكيد');
+      // النافذة القديمة نفسها: مؤكد ← «إغلاق» بس، وتشابه ← «حفظ على أي حال»
+      await open('', { defaultType: 'temporary' }); await page.fill('#wrkName', 'شخص جديد'); await page.fill('#wrkNidTemp', '29001011234567'); await page.click('#btnSaveWrk');
+      await page.waitForSelector('#appSubModal #btnDupCancel');
+      eq([await page.$eval('#appSubModal h3', (h) => h.textContent.trim()), !!(await page.$('#appSubModal #btnDupForce'))], ['⚠️ لا يمكن الإضافة — يوجد سجل مطابق', false], 'القديمة: نافذة التكرار المؤكد');
+      await page.click('#appSubModal #btnDupCancel');
+    }
 
     eq(B.errors, [], 'no JS errors (B)');
     await B.browser.close();

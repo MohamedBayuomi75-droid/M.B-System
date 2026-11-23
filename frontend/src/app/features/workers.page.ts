@@ -3,7 +3,7 @@ import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
 import { legacyUrl } from '../core/page-routes';
-import { errorMessage, SessionService } from '../core/session.service';
+import { errorCode, errorMessage, SessionService } from '../core/session.service';
 import { AttachmentsPanelComponent } from './attachments-panel.component';
 import { LegacyToast } from './legacy-toast';
 import { Cell, customCols, customValue, effectiveLayout, Head, LayoutDocs, layoutTable, Row } from './legacy-table-layout';
@@ -180,6 +180,29 @@ const fmtDate = (v: unknown) => { const m = String(v || '').match(/^(\d{4})-(\d{
           </div>
         </div>
       </div>
+    }
+    @if (dup(); as d) {
+      <!-- guardEntityDuplicates (openSubModal): فوق نافذة العامل من غير ما تتقفل -->
+      <div class="modal-overlay modal-overlay-sub" id="appSubModal" style="z-index:400000;" (click)="$event.target === $event.currentTarget && dup.set(null)">
+        <div class="modal modal-wide">
+          <div class="modal-header"><h3>{{ d.title }}</h3><button type="button" class="modal-close" id="btnDupX" (click)="dup.set(null)">×</button></div>
+          <div class="modal-body">
+            <p style="margin:0 0 12px;color:var(--ink-soft);">{{ d.message }}</p>
+            <div class="table-wrap"><table class="data-table">
+              <thead><tr><th>الكود</th><th>الاسم</th><th>النوع</th><th>سبب التطابق</th><th>القوة</th><th></th></tr></thead>
+              <tbody>@for (m of d.matches; track $index) {
+                <tr><td>{{ m.code || '—' }}</td><td><strong>{{ m.name }}</strong></td><td>{{ kindLab[m.kind] || m.kind }}</td><td>{{ m.reasons.join(' · ') }}</td>
+                  <td><span class="badge badge-{{ m.strength === 'hard' ? 'err' : 'warn' }}">{{ m.strength === 'hard' ? 'تكرار مؤكد' : 'تشابه' }}</span></td>
+                  <td><a class="btn btn-outline btn-sm btn-dup-open" [href]="kindUrl(m.kind)" target="_blank" rel="noopener">عرض</a></td></tr>
+              }</tbody>
+            </table></div>
+          </div>
+          <div class="modal-footer">
+            @if (d.hard) { <button type="button" class="btn btn-outline" id="btnDupCancel" (click)="dup.set(null)">إغلاق</button> }
+            @else { <button type="button" class="btn btn-outline" id="btnDupCancel" (click)="dup.set(null)">إلغاء</button><button type="button" class="btn btn-primary" id="btnDupForce" (click)="dup.set(null); save(true)">حفظ على أي حال</button> }
+          </div>
+        </div>
+      </div>
     }`,
 })
 export class WorkersPage implements OnInit {
@@ -316,13 +339,16 @@ export class WorkersPage implements OnInit {
   close() { this.modal.set(false); this.error.set(''); }
   onOverlay(ev: MouseEvent) { if (ev.target === ev.currentTarget) this.close(); }
 
-  async save() {
+  readonly dup = signal<{ hard: boolean; title: string; message: string; matches: { code: string; name: string; kind: string; reasons: string[]; strength: string }[] } | null>(null);
+  readonly kindLab: Record<string, string> = { employee: 'موظف', worker: 'عامل', supervisor: 'مشرف', driver: 'سائق', equipment: 'معدة/مركبة' };
+  kindUrl = (k: string) => legacyUrl(k === 'equipment' ? 'equipment' : k + 's');
+  async save(confirmDuplicates = false) {
     const e = this.e;
     if (!String(e['name'] || '').trim()) { this.toast.show('الاسم مطلوب'); return; }
     this.saving.set(true); this.error.set('');
     const temp = e['workerType'] === 'temporary';
     const body: W = { workerType: e['workerType'], code: e['code'], name: e['name'], status: e['status'], supervisorId: e['supervisorId'], position: e['position'], nationalId: e['nationalId'], phone: e['phone'],
-      address: e['address'], project: e['project'], notes: e['notes'] };
+      address: e['address'], project: e['project'], notes: e['notes'], ...(confirmDuplicates ? { confirmDuplicates: true } : {}) };
     if (this.wages()) { if (temp) body['dailyWage'] = String(e['dailyWage'] ?? ''); else body['salary'] = String(e['salary'] ?? ''); }
     if (!temp) Object.assign(body, { birthDate: e['birthDate'], idCardExpiry: e['idCardExpiry'], hireDate: e['hireDate'], contractType: e['contractType'], contractStatus: e['contractStatus'],
       insuranceNumber: e['insuranceNumber'], insuranceStatus: e['insuranceStatus'], extraFields: e['extraFields'] });
@@ -332,7 +358,14 @@ export class WorkersPage implements OnInit {
       this.modal.set(false);
       this.toast.show(e['id'] ? 'تم التعديل' : 'تمت الإضافة');
       await this.load();
-    } catch (err) { const m = errorMessage(err, 'تعذّر الحفظ'); this.toast.show(m); this.error.set(m); }
+    } catch (err) {
+      // منع التكرار زي النافذة القديمة (guardEntityDuplicates): مؤكد ← «إغلاق» بس، وتشابه ← «حفظ على أي حال»
+      const code = errorCode(err);
+      if (code === 'DUPLICATE' || code === 'DUPLICATE_SOFT') {
+        const b = (err as { error: { title: string; message: string; matches: [] } }).error;
+        this.dup.set({ hard: code === 'DUPLICATE', title: b.title, message: b.message, matches: b.matches || [] });
+      } else { const m = errorMessage(err, 'تعذّر الحفظ'); this.toast.show(m); this.error.set(m); }
+    }
     finally { this.saving.set(false); }
   }
 }

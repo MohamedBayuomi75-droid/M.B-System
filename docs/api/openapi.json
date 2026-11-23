@@ -2054,6 +2054,10 @@
      "code": {
       "type": "string"
      },
+     "confirmDuplicates": {
+      "description": "«حفظ على أي حال» بعد تنبيه التشابه (DUPLICATE_SOFT). التكرار المؤكد (DUPLICATE) مابيتحفظش",
+      "type": "boolean"
+     },
      "contractStatus": {
       "type": "string"
      },
@@ -2803,6 +2807,10 @@
      },
      "code": {
       "type": "string"
+     },
+     "confirmDuplicates": {
+      "description": "«حفظ على أي حال» بعد تنبيه التشابه (DUPLICATE_SOFT). التكرار المؤكد (DUPLICATE) مابيتحفظش",
+      "type": "boolean"
      },
      "contractStatus": {
       "type": "string"
