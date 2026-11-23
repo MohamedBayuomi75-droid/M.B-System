@@ -2830,7 +2830,7 @@
     "phase53.js",
     "phase54.js"
    ],
-   "target": "legacy /legacy/",
+   "target": "angular /supervisors",
    "notes": "في القايمة، في مصفوفة الصلاحيات",
    "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
@@ -2891,7 +2891,7 @@
     "phase50.js",
     "phase51.js"
    ],
-   "target": "legacy /legacy/",
+   "target": "angular /drivers",
    "notes": "في القايمة، في مصفوفة الصلاحيات",
    "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"

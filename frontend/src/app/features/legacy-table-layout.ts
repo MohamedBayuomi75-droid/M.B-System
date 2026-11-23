@@ -14,7 +14,7 @@
 
 export interface LayoutDocs {
   formLayouts: Record<string, any[]>; autoFields: Record<string, any[]>; customFieldDefs: Record<string, any[]>; deadFields: Record<string, string[]>;
-  cfRegKeys: Record<string, string>; flags: { allHiddenFixed: boolean; autoFlagsReset: boolean; showInTableMigrated: boolean };
+  cfRegKeys: Record<string, string>; aligned?: Record<string, boolean>; flags: { allHiddenFixed: boolean; autoFlagsReset: boolean; showInTableMigrated: boolean };
 }
 export interface Head { text: string; key?: string; input?: boolean; auto?: boolean; hide?: boolean }
 export interface Cell { t: string; v?: string; key?: string; auto?: boolean; hide?: boolean }
@@ -40,6 +40,25 @@ const FORM_BUILTIN_FIELDS: Record<string, Def[]> = {
     { key: 'nationalId', label: 'الرقم القومي', selector: '#wrkNidTemp' }, { key: 'job', label: 'الوظيفة', selector: '#wrkPosTemp' }, { key: 'department', label: 'القسم', selector: '#wrkDept' },
     { key: 'supervisor', label: 'المشرف', selector: '#wrkSupervisor_text' }, { key: 'dailyWage', label: 'اليومية', selector: '#wrkWageTemp' }, { key: 'phone', label: 'الهاتف', selector: '#wrkPhoneTemp' },
     { key: 'address', label: 'العنوان', selector: '#wrkAddress' }, { key: 'notes', label: 'الملاحظات', selector: '#wrkNotes' },
+  ],
+  supervisors: [
+    { key: 'code', label: 'الكود', selector: '#supCode' }, { key: 'name', label: 'الاسم', selector: '#supName' }, { key: 'nationalId', label: 'الرقم القومي', selector: '#supNid' },
+    { key: 'birthDate', label: 'تاريخ الميلاد', selector: '#supBirth', table: false }, { key: 'phone', label: 'الهاتف', selector: '#supPhone' }, { key: 'department', label: 'القسم', selector: '#supDept' },
+    { key: 'dailyWage', label: 'اليومية', selector: '#supWage' }, { key: 'status', label: 'الحالة', selector: '#supStatus' }, { key: 'address', label: 'العنوان', selector: '#supAddress' },
+    { key: 'notes', label: 'الملاحظات', selector: '#supNotes' },
+  ],
+  drivers: [
+    { key: 'code', label: 'الكود', selector: '#drvCode' }, { key: 'name', label: 'الاسم', selector: '#drvName' }, { key: 'nationalId', label: 'الرقم القومي', selector: '#drvNid' },
+    { key: 'birthDate', label: 'تاريخ الميلاد', selector: '#drvBirth', table: false }, { key: 'phone', label: 'الهاتف', selector: '#drvPhone' },
+    { key: 'licenseDegree', label: 'درجة الرخصة', selector: '#drvLicGrade' }, { key: 'licenseExpiry', label: 'تاريخ انتهاء الرخصة', selector: '#drvLicExp' },
+    { key: 'salary', label: 'الراتب', selector: '#drvSalary' }, { key: 'project', label: 'المشروع', selector: '#drvProject' }, { key: 'department', label: 'القسم', selector: '#drvDept' },
+    { key: 'address', label: 'العنوان', selector: '#drvAddress' }, { key: 'status', label: 'الحالة', selector: '#drvStatus' }, { key: 'notes', label: 'الملاحظات', selector: '#drvNotes' },
+  ],
+  driversExt: [
+    { key: 'code', label: 'الكود', selector: '#drvCode' }, { key: 'name', label: 'الاسم', selector: '#drvName' }, { key: 'status', label: 'الحالة', selector: '#drvStatus' },
+    { key: 'nationalId', label: 'الرقم القومي', selector: '#drvNid' }, { key: 'job', label: 'الوظيفة', selector: '#drvPos' }, { key: 'department', label: 'القسم', selector: '#drvDept' },
+    { key: 'dailyWage', label: 'اليومية', selector: '#drvWage' }, { key: 'phone', label: 'الهاتف', selector: '#drvPhone' }, { key: 'address', label: 'العنوان', selector: '#drvAddress' },
+    { key: 'notes', label: 'الملاحظات', selector: '#drvNotes' },
   ],
 };
 const clone = <T>(x: T): T => JSON.parse(JSON.stringify(x ?? null));
@@ -218,7 +237,7 @@ function apply(ent: string, t: T, layoutAll: any[]) {
 
 /* --- extras.js: addAutoColumns --- */
 /** كيانات تخطيط مالهاش مجموعة في DATA (فـ DATA[ent] فاضية في القديمة) */
-const LAYOUT_ONLY_ENTS = new Set(['workersTemp']);
+const LAYOUT_ONLY_ENTS = new Set(['workersTemp', 'driversExt']);
 function addAutoColumns(ent: string, t: T, layoutAll: any[], recs: Map<string, any>, fmt: { date: (v: string) => string }, skip: (f: any) => boolean) {
   const layout = layoutAll.filter((f) => f && !/ProjSince$/.test(String(f.selector || '')) && f.key !== 'projectSince' && (f.auto || t.unmatched.has(f.key)) && f.showInTable === true && f.visible !== false && !skip(f));
   if (!layout.length) return;

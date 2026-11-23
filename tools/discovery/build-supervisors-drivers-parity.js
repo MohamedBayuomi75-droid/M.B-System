@@ -38,14 +38,15 @@ const hrBody = helpers.slice(hrAt, helpers.indexOf('\nfunction ', hrAt + 10));
 const fromHr = [...hrBody.matchAll(/^\s{4}([A-Za-z_]\w*)\s*:/gm), ...hrBody.matchAll(/out\.([A-Za-z_]\w*)\s*=/g)].map((m) => m[1]);
 const fromSave = ['departmentId', 'categoryId', 'archiveGroup', 'resignedAt', 'retiredAt', 'previousDepartmentId'];
 const SOURCES = {
-  supervisors: { label: 'المشرفين', modal: [...payloadKeys(sup, 'openSupervisorModal'), ...fromHr, ...fromSave], page: 'frontend/src/app/features/supervisors.page.ts' },
-  drivers: { label: 'السواقين', modal: [...payloadKeys(ops, 'openDriverModal'), ...payloadKeys(ops, 'openExternalDriverModal'), ...fromHr, ...fromSave], page: 'frontend/src/app/features/drivers.page.ts' },
+  supervisors: { label: 'المشرفين', modal: [...payloadKeys(sup, 'openSupervisorModal'), ...fromHr, ...fromSave], page: 'frontend/src/app/features/people.page.ts' },
+  drivers: { label: 'السواقين', modal: [...payloadKeys(ops, 'openDriverModal'), ...payloadKeys(ops, 'openExternalDriverModal'), ...fromHr, ...fromSave], page: 'frontend/src/app/features/people.page.ts' },
 };
 const SYSTEM = { id: 'المفتاح الأساسي `id`' };
 const DEFERRED = { custom: 'خانات «تعديلات مخصصة» القديمة — في الشاشة الكاملة', dismissedNotes: 'الملاحظات المخفية — من الشاشة الكاملة',
   legacyDepartmentId: 'قسم قديم قبل الأقسام الأساسية — للعرض في القديمة بس', previousDepartmentId: 'القسم قبل الاستقالة — بيتحسب في السيرفر', archiveGroup: 'بيتحسب في السيرفر مع الاستقالة',
   retiredAt: 'الإحالة للمعاش من الشاشة الكاملة', projectSince: 'تاريخ الانضمام للمشروع — بيتختم في السيرفر', attachments: 'المرفقات من لوحة المرفقات', categoryId: 'نسخة من القسم (بتتكتب معاه)',
-  projectId: 'الربط بالمعرّف — بيتحسب في السيرفر', basicSalary: 'نسخة من الراتب', idCardStatus: 'بتتحسب من تاريخ البطاقة', licenseStatus: 'بتتحسب من تاريخ الرخصة' };
+  projectId: 'الربط بالمعرّف — بيتحسب في السيرفر', basicSalary: 'نسخة من الراتب', idCardStatus: 'بتتحسب من تاريخ البطاقة', licenseStatus: 'بتتحسب من تاريخ الرخصة',
+  project: 'مالوش خانة في نافذة السائق القديمة ولا عمود في جدولها — بيفضل محفوظ زي ما هو' };
 
 let md = `# مصفوفة تطابق الحقول — المشرفين والسواقين (خطة v1.4.5 — المرحلة 8، الحزمة 8.2)
 

@@ -26,9 +26,9 @@
 | LEG-0002 | [مهامي](#tasksmy) | مهامي | legacy /legacy/ | 4 | 0 | [ديسكتوب](visual-baseline/desktop/tasks.my.png) · [موبايل](visual-baseline/mobile/tasks.my.png) |
 | LEG-0003 | [🏠 لوحات الموارد البشرية](#hrHome) | الموارد البشرية | legacy /legacy/ | 9 | 0 | [ديسكتوب](visual-baseline/desktop/hrHome.png) · [موبايل](visual-baseline/mobile/hrHome.png) |
 | LEG-0004 | [الموظفين](#employees) | الموارد البشرية | legacy /legacy/ | 6 | 0 | [ديسكتوب](visual-baseline/desktop/employees.png) · [موبايل](visual-baseline/mobile/employees.png) |
-| LEG-0005 | [المشرفون](#supervisors) | الموارد البشرية | legacy /legacy/ | 6 | 0 | [ديسكتوب](visual-baseline/desktop/supervisors.png) · [موبايل](visual-baseline/mobile/supervisors.png) |
+| LEG-0005 | [المشرفون](#supervisors) | الموارد البشرية | angular /supervisors | 6 | 0 | [ديسكتوب](visual-baseline/desktop/supervisors.png) · [موبايل](visual-baseline/mobile/supervisors.png) |
 | LEG-0006 | [العمال](#workers) | الموارد البشرية | angular /workers | 7 | 0 | [ديسكتوب](visual-baseline/desktop/workers.png) · [موبايل](visual-baseline/mobile/workers.png) |
-| LEG-0007 | [السائقون](#drivers) | الموارد البشرية | legacy /legacy/ | 7 | 0 | [ديسكتوب](visual-baseline/desktop/drivers.png) · [موبايل](visual-baseline/mobile/drivers.png) |
+| LEG-0007 | [السائقون](#drivers) | الموارد البشرية | angular /drivers | 7 | 0 | [ديسكتوب](visual-baseline/desktop/drivers.png) · [موبايل](visual-baseline/mobile/drivers.png) |
 | LEG-0008 | [معدات ومركبات](#equipment) | الموارد البشرية | legacy /legacy/ | 7 | 0 | [ديسكتوب](visual-baseline/desktop/equipment.png) · [موبايل](visual-baseline/mobile/equipment.png) |
 | LEG-0009 | [حضور الموظفين](#attendance) | الموارد البشرية | legacy /legacy/ | 6 | 1 | [ديسكتوب](visual-baseline/desktop/attendance.png) · [موبايل](visual-baseline/mobile/attendance.png) |
 | LEG-0010 | [اليوميات](#workerAttendance) | الموارد البشرية | legacy /legacy/ | 5 | 0 | [ديسكتوب](visual-baseline/desktop/workerAttendance.png) · [موبايل](visual-baseline/mobile/workerAttendance.png) |
@@ -149,7 +149,7 @@
 
 ### <a id="supervisors"></a>المشرفون — `supervisors` — LEG-0005
 - **القسم:** الموارد البشرية · **في القايمة:** أيوه · **دالة الرسم:** `renderSupervisorsPage` (renderer/modules/hr/pages-supervisors.js:12)
-- **المكان المستهدف:** legacy /legacy/ · **الاختبارات:** phase27.js، phase42.js، phase43.js، phase49.js، phase50.js، phase53.js، phase54.js
+- **المكان المستهدف:** angular /supervisors · **الاختبارات:** phase27.js، phase42.js، phase43.js، phase49.js، phase50.js، phase53.js، phase54.js
 - **العنوان الظاهر:** المشرفون · **التبويبات:** —
 - **اللقطات:** [ديسكتوب](visual-baseline/desktop/supervisors.png) · [موبايل](visual-baseline/mobile/supervisors.png)
 
@@ -179,7 +179,7 @@
 
 ### <a id="drivers"></a>السائقون — `drivers` — LEG-0007
 - **القسم:** الموارد البشرية · **في القايمة:** أيوه · **دالة الرسم:** `renderDriversPage` (renderer/modules/hr/pages-ops.js:6)
-- **المكان المستهدف:** legacy /legacy/ · **الاختبارات:** phase27.js، phase42.js، phase44.js، phase45.js، phase49.js، phase50.js، phase51.js
+- **المكان المستهدف:** angular /drivers · **الاختبارات:** phase27.js، phase42.js، phase44.js، phase45.js، phase49.js، phase50.js، phase51.js
 - **العنوان الظاهر:** السائقون · **التبويبات:** —
 - **اللقطات:** [ديسكتوب](visual-baseline/desktop/drivers.png) · [موبايل](visual-baseline/mobile/drivers.png)
 

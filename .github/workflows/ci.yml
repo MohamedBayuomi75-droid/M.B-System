@@ -152,6 +152,12 @@ jobs:
       - name: Workers table column layout = legacy (DEC-0122)
         if: matrix.suite == 'web-app-security'
         run: node tests-web/workers-layout-e2e.js
+      - name: Workers form order = legacy (no saved layout)
+        if: matrix.suite == 'web-app-security'
+        run: node tests-web/workers-form-e2e.js
+      - name: Supervisors and drivers tables and modals = legacy (DEC-0123)
+        if: matrix.suite == 'web-app-security'
+        run: node tests-web/people-layout-e2e.js
       - name: XSS probe
         if: matrix.suite == 'web-app-security'
         run: node tools/security/xss-probe.js

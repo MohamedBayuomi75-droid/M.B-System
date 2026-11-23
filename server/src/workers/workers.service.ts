@@ -70,9 +70,9 @@ export class WorkersService {
   /** تخطيط أعمدة الجدول المحفوظ (DEC-0122، قراية بس): نفس المستندات اللي القديمة بتطبّقها، للكيانين workers وworkersTemp بس */
   private async layoutDocs() {
     const ENTS = ['workers', 'workersTemp'];
-    const [fl, af, cf, df, rk, f1, f2, f3] = await Promise.all(['formLayouts', 'autoFields', 'customFieldDefs', 'deadFields', '_cfRegKeys', '_cfAllHiddenFixed', '_cfAutoFlagsReset', '_cfShowInTableMigrated'].map((k) => this.repo.docValue(k)));
+    const [fl, af, cf, df, rk, f1, f2, f3, al] = await Promise.all(['formLayouts', 'autoFields', 'customFieldDefs', 'deadFields', '_cfRegKeys', '_cfAllHiddenFixed', '_cfAutoFlagsReset', '_cfShowInTableMigrated', '_cfAligned2'].map((k) => this.repo.docValue(k)));
     const pick = (o: unknown) => { const src = o && typeof o === 'object' ? (o as J) : {}; const out: J = {}; for (const e of ENTS) if (src[e] !== undefined) out[e] = src[e]; return out; };
-    return { formLayouts: pick(fl), autoFields: pick(af), customFieldDefs: pick(cf), deadFields: pick(df), cfRegKeys: pick(rk), flags: { allHiddenFixed: !!f1, autoFlagsReset: !!f2, showInTableMigrated: !!f3 } };
+    return { formLayouts: pick(fl), autoFields: pick(af), customFieldDefs: pick(cf), deadFields: pick(df), cfRegKeys: pick(rk), aligned: pick(al), flags: { allHiddenFixed: !!f1, autoFlagsReset: !!f2, showInTableMigrated: !!f3 } };
   }
   private view(c: Ctx, w: J, hide: string[]) {
     const { _rev, ...rec } = w;

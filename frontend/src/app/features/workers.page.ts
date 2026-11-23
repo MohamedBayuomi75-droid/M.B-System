@@ -6,6 +6,7 @@ import { legacyUrl } from '../core/page-routes';
 import { errorCode, errorMessage, SessionService } from '../core/session.service';
 import { AttachmentsPanelComponent } from './attachments-panel.component';
 import { LegacyToast } from './legacy-toast';
+import { formMeta } from './legacy-form-order';
 import { Cell, customCols, customValue, effectiveLayout, Head, LayoutDocs, layoutTable, Row } from './legacy-table-layout';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -137,38 +138,38 @@ const fmtDate = (v: unknown) => { const m = String(v || '').match(/^(\d{4})-(\d{
           <div class="modal-body">
             <div class="form-grid form-grid-2" id="wrkFormGrid">
               <!-- ترتيب الخانات زي ما النافذة القديمة بتظهر بعد applyFormLayout (المؤقت والشركة) -->
-              <label>الكود<input class="input" id="wrkCode" [(ngModel)]="e.code" placeholder="WRK-001"></label>
-              <label>الاسم<input class="input" id="wrkName" [(ngModel)]="e.name"></label>
+              <label [style.order]="ord('Code')" [style.display]="hid('Code') ? 'none' : null">{{ lb('Code', 'الكود') }}<input class="input" id="wrkCode" [(ngModel)]="e.code" placeholder="WRK-001"></label>
+              <label [style.order]="ord('Name')" [style.display]="hid('Name') ? 'none' : null">{{ lb('Name', 'الاسم') }}<input class="input" id="wrkName" [(ngModel)]="e.name"></label>
               @if (e.workerType === 'temporary') {
-                <label>المشرف<select class="input" id="wrkSupervisor" [(ngModel)]="e.supervisorId"><option value="">اكتب اسم المشرف...</option>@for (s of o.supervisors; track s.id) { <option [value]="s.id">{{ (s.name || s.code) + (s.code ? ' — ' + s.code : '') }}</option> }</select></label>
-                <label>الرقم القومي<input class="input" id="wrkNidTemp" [(ngModel)]="e.nationalId"></label>
-                <label>الوظيفة<input class="input" id="wrkPosTemp" [(ngModel)]="e.position" placeholder="مثال: نجار، سباك..."></label>
-                <label>القسم<input class="input" id="wrkDept" readonly tabindex="-1" [value]="e.position" placeholder="يُقرأ من خانة الوظيفة" style="background:var(--paper-2);cursor:default;"></label>
-                @if (wages()) { <label>اليومية<input class="input" id="wrkWageTemp" type="number" min="0" step="0.01" [(ngModel)]="e.dailyWage" placeholder="اليومية"></label> }
-                <label>الهاتف<input class="input" id="wrkPhoneTemp" [(ngModel)]="e.phone"></label>
-                <label>العنوان<input class="input" id="wrkAddress" [(ngModel)]="e.address"></label>
-                <label>الحالة<select class="input" id="wrkStatus" [(ngModel)]="e.status">@if (!e.id) { <option value="">— اختر —</option> }@for (s of statuses; track s.code) { <option [value]="s.code">{{ s.label }}</option> }</select></label>
+                <label [style.order]="ord('Supervisor')" [style.display]="hid('Supervisor') ? 'none' : null">{{ lb('Supervisor', 'المشرف') }}<select class="input" id="wrkSupervisor" [(ngModel)]="e.supervisorId"><option value="">اكتب اسم المشرف...</option>@for (s of o.supervisors; track s.id) { <option [value]="s.id">{{ (s.name || s.code) + (s.code ? ' — ' + s.code : '') }}</option> }</select></label>
+                <label [style.order]="ord('NidTemp')" [style.display]="hid('NidTemp') ? 'none' : null">{{ lb('NidTemp', 'الرقم القومي') }}<input class="input" id="wrkNidTemp" [(ngModel)]="e.nationalId"></label>
+                <label [style.order]="ord('PosTemp')" [style.display]="hid('PosTemp') ? 'none' : null">{{ lb('PosTemp', 'الوظيفة') }}<input class="input" id="wrkPosTemp" [(ngModel)]="e.position" placeholder="مثال: نجار، سباك..."></label>
+                <label [style.order]="ord('Dept')" [style.display]="hid('Dept') ? 'none' : null">{{ lb('Dept', 'القسم') }}<input class="input" id="wrkDept" readonly tabindex="-1" [value]="e.position" placeholder="يُقرأ من خانة الوظيفة" style="background:var(--paper-2);cursor:default;"></label>
+                @if (wages()) { <label [style.order]="ord('WageTemp')" [style.display]="hid('WageTemp') ? 'none' : null">{{ lb('WageTemp', 'اليومية') }}<input class="input" id="wrkWageTemp" type="number" min="0" step="0.01" [(ngModel)]="e.dailyWage" placeholder="اليومية"></label> }
+                <label [style.order]="ord('PhoneTemp')" [style.display]="hid('PhoneTemp') ? 'none' : null">{{ lb('PhoneTemp', 'الهاتف') }}<input class="input" id="wrkPhoneTemp" [(ngModel)]="e.phone"></label>
+                <label [style.order]="ord('Address')" [style.display]="hid('Address') ? 'none' : null">{{ lb('Address', 'العنوان') }}<input class="input" id="wrkAddress" [(ngModel)]="e.address"></label>
+                <label [style.order]="ord('Status')" [style.display]="hid('Status') ? 'none' : null">{{ lb('Status', 'الحالة') }}<select class="input" id="wrkStatus" [(ngModel)]="e.status">@if (!e.id) { <option value="">— اختر —</option> }@for (s of statuses; track s.code) { <option [value]="s.code">{{ s.label }}</option> }</select></label>
               } @else {
-                <label>الحالة<select class="input" id="wrkStatus" [(ngModel)]="e.status">@if (!e.id) { <option value="">— اختر —</option> }@for (s of statuses; track s.code) { <option [value]="s.code">{{ s.label }}</option> }</select></label>
-                <label>الرقم القومي<input class="input" id="wrkNid" [(ngModel)]="e.nationalId" placeholder="14 رقم"></label>
-                <label>الوظيفة<input class="input" id="wrkPos" [(ngModel)]="e.position" placeholder="مهندس، محاسب، نجار..."></label>
-                <label>القسم<input class="input" id="wrkDept" readonly tabindex="-1" [value]="e.position" placeholder="يُقرأ من خانة الوظيفة" style="background:var(--paper-2);cursor:default;"></label>
-                <label>تاريخ التعيين<input class="input" id="wrkHire" type="date" [(ngModel)]="e.hireDate"></label>
-                <label>تاريخ انتهاء البطاقة الشخصية<input class="input" id="wrkIdCardExp" type="date" [(ngModel)]="e.idCardExpiry"></label>
-                <label>حالة البطاقة<select class="input" id="wrkIdCardStatus" disabled><option value="">—</option><option value="valid" [selected]="cardFromDate() === 'valid'">سارية</option><option value="expired" [selected]="cardFromDate() === 'expired'">منتهية</option><option value="none">لا يوجد</option></select></label>
-                <label>نوع العقد<select class="input" id="wrkContractType" [(ngModel)]="e.contractType"><option value="">—</option>@for (c of o.contractTypes; track c.code) { <option [value]="c.code">{{ c.label }}</option> }</select></label>
-                <label>حالة العقد<select class="input" id="wrkContractStatus" [(ngModel)]="e.contractStatus"><option value="">—</option>@for (c of contractStatus; track c.code) { <option [value]="c.code">{{ c.label }}</option> }</select></label>
-                <label>الرقم التأميني<input class="input" id="wrkInsNo" [(ngModel)]="e.insuranceNumber" placeholder="رقم التأمين"></label>
-                <label>حالة التأمين<select class="input" id="wrkInsStatus" [(ngModel)]="e.insuranceStatus"><option value="">—</option>@for (c of insStatus; track c.code) { <option [value]="c.code">{{ c.label }}</option> }</select></label>
-                <label>المشرف<select class="input" id="wrkSupervisor" [(ngModel)]="e.supervisorId"><option value="">اكتب اسم المشرف...</option>@for (s of o.supervisors; track s.id) { <option [value]="s.id">{{ (s.name || s.code) + (s.code ? ' — ' + s.code : '') }}</option> }</select></label>
-                @if (wages()) { <label>الراتب<input class="input" id="wrkSalary" type="number" min="0" step="0.01" [(ngModel)]="e.salary"></label> }
-                <label>الهاتف<input class="input" id="wrkPhone" [(ngModel)]="e.phone" placeholder="01xxxxxxxxx"></label>
-                <label>المشروع<input class="input" id="wrkProject" [(ngModel)]="e.project" list="wrkProjList" placeholder="اكتب أو اختر مشروعاً..."><datalist id="wrkProjList">@for (p of o.projects; track p) { <option [value]="p"></option> }</datalist></label>
-                <label>تاريخ الميلاد<input class="input" id="wrkBirth" type="date" [(ngModel)]="e.birthDate"></label>
-                <label>العنوان<input class="input" id="wrkAddress" [(ngModel)]="e.address"></label>
+                <label [style.order]="ord('Status')" [style.display]="hid('Status') ? 'none' : null">{{ lb('Status', 'الحالة') }}<select class="input" id="wrkStatus" [(ngModel)]="e.status">@if (!e.id) { <option value="">— اختر —</option> }@for (s of statuses; track s.code) { <option [value]="s.code">{{ s.label }}</option> }</select></label>
+                <label [style.order]="ord('Nid')" [style.display]="hid('Nid') ? 'none' : null">{{ lb('Nid', 'الرقم القومي') }}<input class="input" id="wrkNid" [(ngModel)]="e.nationalId" placeholder="14 رقم"></label>
+                <label [style.order]="ord('Pos')" [style.display]="hid('Pos') ? 'none' : null">{{ lb('Pos', 'الوظيفة') }}<input class="input" id="wrkPos" [(ngModel)]="e.position" placeholder="مهندس، محاسب، نجار..."></label>
+                <label [style.order]="ord('Dept')" [style.display]="hid('Dept') ? 'none' : null">{{ lb('Dept', 'القسم') }}<input class="input" id="wrkDept" readonly tabindex="-1" [value]="e.position" placeholder="يُقرأ من خانة الوظيفة" style="background:var(--paper-2);cursor:default;"></label>
+                <label [style.order]="ord('Hire')" [style.display]="hid('Hire') ? 'none' : null">{{ lb('Hire', 'تاريخ التعيين') }}<input class="input" id="wrkHire" type="date" [(ngModel)]="e.hireDate"></label>
+                <label [style.order]="ord('IdCardExp')" [style.display]="hid('IdCardExp') ? 'none' : null">{{ lb('IdCardExp', 'تاريخ انتهاء البطاقة الشخصية') }}<input class="input" id="wrkIdCardExp" type="date" [(ngModel)]="e.idCardExpiry"></label>
+                <label [style.order]="ord('IdCardStatus')" [style.display]="hid('IdCardStatus') ? 'none' : null">{{ lb('IdCardStatus', 'حالة البطاقة') }}<select class="input" id="wrkIdCardStatus" disabled><option value="">—</option><option value="valid" [selected]="cardFromDate() === 'valid'">سارية</option><option value="expired" [selected]="cardFromDate() === 'expired'">منتهية</option><option value="none">لا يوجد</option></select></label>
+                <label [style.order]="ord('ContractType')" [style.display]="hid('ContractType') ? 'none' : null">{{ lb('ContractType', 'نوع العقد') }}<select class="input" id="wrkContractType" [(ngModel)]="e.contractType"><option value="">—</option>@for (c of o.contractTypes; track c.code) { <option [value]="c.code">{{ c.label }}</option> }</select></label>
+                <label [style.order]="ord('ContractStatus')" [style.display]="hid('ContractStatus') ? 'none' : null">{{ lb('ContractStatus', 'حالة العقد') }}<select class="input" id="wrkContractStatus" [(ngModel)]="e.contractStatus"><option value="">—</option>@for (c of contractStatus; track c.code) { <option [value]="c.code">{{ c.label }}</option> }</select></label>
+                <label [style.order]="ord('InsNo')" [style.display]="hid('InsNo') ? 'none' : null">{{ lb('InsNo', 'الرقم التأميني') }}<input class="input" id="wrkInsNo" [(ngModel)]="e.insuranceNumber" placeholder="رقم التأمين"></label>
+                <label [style.order]="ord('InsStatus')" [style.display]="hid('InsStatus') ? 'none' : null">{{ lb('InsStatus', 'حالة التأمين') }}<select class="input" id="wrkInsStatus" [(ngModel)]="e.insuranceStatus"><option value="">—</option>@for (c of insStatus; track c.code) { <option [value]="c.code">{{ c.label }}</option> }</select></label>
+                <label [style.order]="ord('Supervisor')" [style.display]="hid('Supervisor') ? 'none' : null">{{ lb('Supervisor', 'المشرف') }}<select class="input" id="wrkSupervisor" [(ngModel)]="e.supervisorId"><option value="">اكتب اسم المشرف...</option>@for (s of o.supervisors; track s.id) { <option [value]="s.id">{{ (s.name || s.code) + (s.code ? ' — ' + s.code : '') }}</option> }</select></label>
+                @if (wages()) { <label [style.order]="ord('Salary')" [style.display]="hid('Salary') ? 'none' : null">{{ lb('Salary', 'الراتب') }}<input class="input" id="wrkSalary" type="number" min="0" step="0.01" [(ngModel)]="e.salary"></label> }
+                <label [style.order]="ord('Phone')" [style.display]="hid('Phone') ? 'none' : null">{{ lb('Phone', 'الهاتف') }}<input class="input" id="wrkPhone" [(ngModel)]="e.phone" placeholder="01xxxxxxxxx"></label>
+                <label [style.order]="ord('Project')" [style.display]="hid('Project') ? 'none' : null">{{ lb('Project', 'المشروع') }}<input class="input" id="wrkProject" [(ngModel)]="e.project" list="wrkProjList" placeholder="اكتب أو اختر مشروعاً..."><datalist id="wrkProjList">@for (p of o.projects; track p) { <option [value]="p"></option> }</datalist></label>
+                <label [style.order]="ord('Birth')" [style.display]="hid('Birth') ? 'none' : null">{{ lb('Birth', 'تاريخ الميلاد') }}<input class="input" id="wrkBirth" type="date" [(ngModel)]="e.birthDate"></label>
+                <label [style.order]="ord('Address')" [style.display]="hid('Address') ? 'none' : null">{{ lb('Address', 'العنوان') }}<input class="input" id="wrkAddress" [(ngModel)]="e.address"></label>
               }
-              <label style="grid-column:1/-1;">الملاحظات<textarea class="input" id="wrkNotes" rows="4" [(ngModel)]="e.notes"></textarea></label>
-              @if (e.workerType !== 'temporary') { @for (x of e.extraFields; track $index) { <label>{{ x.label }}<input class="input" [(ngModel)]="x.value" [name]="'ef' + $index"></label> } }
+              <label [style.order]="ord('Notes')" [style.display]="hid('Notes') ? 'none' : null" style="grid-column:1/-1;">{{ lb('Notes', 'الملاحظات') }}<textarea class="input" id="wrkNotes" rows="4" [(ngModel)]="e.notes"></textarea></label>
+              @if (e.workerType !== 'temporary') { @for (x of e.extraFields; track $index) { <label [style.order]="ord('extra')">{{ x.label }}<input class="input" [(ngModel)]="x.value" [name]="'ef' + $index"></label> } }
             </div>
             <p id="wrkTypeHint" style="font-size:12px;color:var(--ink-soft);margin:8px 0 0;">{{ e.workerType === 'temporary' ? 'عامل مؤقت: الاسم · القومي · المشرف · الوظيفة · العنوان · الهاتف · اليومية' : 'عامل شركة: كل البيانات + راتب أساسي + يومية اختيارية' }}</p>
             @if (e.id) { <div class="section-title" style="margin-top:12px;font-size:14px;">المرفقات والمستندات</div><app-attachments collection="workers" [recordId]="e.id" [canEdit]="canEdit" [legacyDocs]="e.legacyAttachments" /> }
@@ -282,7 +283,11 @@ export class WorkersPage implements OnInit {
     return layoutTable(ent, temp, head, body, layout, this.byId(), { date: fmtDate }, noWage);
   });
   e: W = {};
+  readonly formType = signal<'temporary' | 'company'>('company');
   private qTimer?: ReturnType<typeof setTimeout>;
+  /** applyFormLayout + applyPeopleFormOrder على النافذة المفتوحة (legacy-form-order.ts) */
+  private readonly fm = computed(() => { const ent = this.formType() === 'temporary' ? 'workersTemp' : 'workers'; const d = this.layoutDocs(), fl = d?.formLayouts?.[ent]; return formMeta(effectiveLayout(ent, d), 'wrk', Array.isArray(fl) && fl.length > 0 && !!d?.aligned?.[ent]); });
+  ord = (k: string) => this.fm().ord(k); hid = (k: string) => this.fm().hid(k); lb = (k: string, d: string) => this.fm().lb(k, d);
   fmtNum = fmtNum; money = fmtMoney; date = fmtDate; min = Math.min;
   cardLabel = (s: string) => CARD_STATUS[s] || s;
   label = (list: { code: string; label: string }[], v: string) => list.find((x) => x.code === v)?.label ?? v;
@@ -330,11 +335,19 @@ export class WorkersPage implements OnInit {
         dailyWage: w && w['dailyWage'] != null && w['dailyWage'] !== '' ? String(w['dailyWage']) : '', notes: s(w?.['notes']), birthDate: s(w?.['birthDate']), idCardExpiry: s(w?.['idCardExpiry']),
         hireDate: s(w?.['hireDate']) || o.today, // زي personHrFieldsHtml: تاريخ التعيين بيتملى بالنهارده لو فاضي
         contractType: s(w?.['contractType']), contractStatus: s(w?.['contractStatus']), insuranceNumber: s(w?.['insuranceNumber']), insuranceStatus: s(w?.['insuranceStatus']),
-        salary: w && (w['salary'] || w['basicSalary']) ? String(w['salary'] || w['basicSalary']) : '', extraFields: Array.isArray(w?.['extraFields']) ? w!['extraFields'].map((x: W) => ({ ...x })) : [],
+        salary: w && (w['salary'] || w['basicSalary']) ? String(w['salary'] || w['basicSalary']) : '', extraFields: this.extraFieldsFor(w),
         legacyAttachments: Array.isArray(w?.['attachments']) ? w!['attachments'] : [],
       };
-      this.opts.set(o); this.modal.set(true);
+      this.formType.set(type); this.opts.set(o); this.modal.set(true);
     } catch (err) { this.error.set(errorMessage(err, 'تعذر فتح النافذة')); }
+  }
+  /** customFieldsFormHtml('workers'): خانات «تعديلات مخصصة» الظاهرة في التخطيط (حتى في الإضافة)، بقيمها من السجل، وبعدها أي خانة قديمة تانية */
+  private extraFieldsFor(w: W | null): { label: string; value: string }[] {
+    const defs = effectiveLayout('workers', this.layoutDocs()).filter((x) => x && x.type === 'custom' && x.visible !== false && x.label);
+    const own: { label: string; value: unknown }[] = Array.isArray(w?.['extraFields']) ? w!['extraFields'] : [];
+    const out = defs.map((d) => ({ label: String(d.label), value: customValue(w, d.label) }));
+    for (const x of own) if (x && x.label && !out.some((o) => o.label === x.label)) out.push({ label: String(x.label), value: String(x.value ?? '') });
+    return out;
   }
   close() { this.modal.set(false); this.error.set(''); }
   onOverlay(ev: MouseEvent) { if (ev.target === ev.currentTarget) this.close(); }

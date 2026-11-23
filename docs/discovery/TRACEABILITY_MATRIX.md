@@ -1,27 +1,27 @@
 # مصفوفة التتبّع (خطة v1.4.5 — المرحلة 3)
 
 > **مولَّد** بـ `node tools/discovery/build-traceability.js` من `requirements-registry.json` + ملفات الاختبار. ماتعدّلش الملف باليد.
-> **الاختبارات** بتتلاقى بالبحث عن اسم الدالة أو الصفحة في `tests-merge/` و`tests-web/` و`tools/formulas/` و`server/test/` (122 ملف). ده **دليل إن الاختبار بيلمس العنصر**، مش إثبات إنه بيغطي كل حالاته.
+> **الاختبارات** بتتلاقى بالبحث عن اسم الدالة أو الصفحة في `tests-merge/` و`tests-web/` و`tools/formulas/` و`server/test/` (124 ملف). ده **دليل إن الاختبار بيلمس العنصر**، مش إثبات إنه بيغطي كل حالاته.
 > **الحالات** (`02` §20): Implemented ≠ Verified ≠ Accepted. **مفيش حاجة هنا Accepted**: القبول بيكون لكل موديول ببوابة.
 > **الأولويات مقترحة.**
 
 ## 1. التغطية حسب النوع (LEG)
 | النوع | العدد | ليه اختبار بيلمسه | اتنقل للنظام الجديد |
 |---|---|---|---|
-| page | 54 | 54 (100%) | 8 |
+| page | 54 | 54 (100%) | 10 |
 | calc | 120 | 46 (38%) | 0 |
 | data-write | 30 | 20 (67%) | 0 |
 | modal | 63 | 24 (38%) | 0 |
 | export/print | 37 | 5 (14%) | 0 |
 | permission | 8 | 0 (0%) | 8 |
 | electron-capability | 42 | 6 (14%) | 0 |
-| **الإجمالي** | **354** | **155 (44%)** | **16** |
+| **الإجمالي** | **354** | **155 (44%)** | **18** |
 
 ## 2. التغطية حسب الموديول (LEG)
 | الموديول | العدد | منها P0 (مقترح) | ليه اختبار | اتنقل | قرارات مفتوحة بتمنعه |
 |---|---|---|---|---|---|
 | مشترك (core) | 97 | 10 | 31 (32%) | 0 | — |
-| الموارد البشرية | 69 | 21 | 19 (28%) | 1 | DEC-0045 (B-45)، DEC-0046 (B-46)، DEC-0047 (B-47)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0076 (B-76)، DEC-0042 (B-42) |
+| الموارد البشرية | 69 | 21 | 19 (28%) | 3 | DEC-0045 (B-45)، DEC-0046 (B-46)، DEC-0047 (B-47)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0076 (B-76)، DEC-0042 (B-42) |
 | الموردون | 58 | 22 | 31 (53%) | 3 | — |
 | ديسكتوب | 42 | 15 | 6 (14%) | 0 | — |
 | العملاء والمشاريع | 38 | 11 | 28 (74%) | 2 | DEC-0035 (B-35) |
@@ -134,9 +134,9 @@
 | LEG-0002 | page | مهامي | صفحة «مهامي» (tasks.my) | renderer/modules/clients/pages-tasks.js:38 | legacy /legacy/ | phase61.js | Verified (باختبار) | — |
 | LEG-0003 | page | الموارد البشرية | صفحة «لوحات الموارد البشرية» (hrHome) | renderer/core/boards.js:172 | legacy /legacy/ | phase22.js | Verified (باختبار) | DEC-0045 (B-45)، DEC-0046 (B-46)، DEC-0047 (B-47)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0076 (B-76)، DEC-0042 (B-42) |
 | LEG-0004 | page | الموارد البشرية | صفحة «الموظفين» (employees) | renderer/modules/hr/pages-employees.js:77 | legacy /legacy/ | phase22.js، phase26.js، phase27.js، phase28.js، phase29.js، phase30.js (+32) | Verified (باختبار) | DEC-0045 (B-45)، DEC-0046 (B-46)، DEC-0047 (B-47)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0076 (B-76)، DEC-0042 (B-42) |
-| LEG-0005 | page | الموارد البشرية | صفحة «المشرفون» (supervisors) | renderer/modules/hr/pages-supervisors.js:12 | legacy /legacy/ | phase27.js، phase42.js، phase43.js، phase49.js، phase50.js، phase53.js (+24) | Verified (باختبار) | DEC-0045 (B-45)، DEC-0046 (B-46)، DEC-0047 (B-47)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0076 (B-76)، DEC-0042 (B-42) |
-| LEG-0006 | page | الموارد البشرية | صفحة «العمال» (workers) | renderer/modules/hr/pages-workers.js:29 | angular /workers | phase24.js، phase26.js، phase27.js، phase28.js، phase29.js، phase30.js (+38) | Implemented (اتنقل) | DEC-0045 (B-45)، DEC-0046 (B-46)، DEC-0047 (B-47)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0076 (B-76)، DEC-0042 (B-42) |
-| LEG-0007 | page | الموارد البشرية | صفحة «السائقون» (drivers) | renderer/modules/hr/pages-ops.js:6 | legacy /legacy/ | phase27.js، phase42.js، phase44.js، phase45.js، phase49.js، phase50.js (+15) | Verified (باختبار) | DEC-0045 (B-45)، DEC-0046 (B-46)، DEC-0047 (B-47)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0076 (B-76)، DEC-0042 (B-42) |
+| LEG-0005 | page | الموارد البشرية | صفحة «المشرفون» (supervisors) | renderer/modules/hr/pages-supervisors.js:12 | angular /supervisors | phase27.js، phase42.js، phase43.js، phase49.js، phase50.js، phase53.js (+25) | Implemented (اتنقل) | DEC-0045 (B-45)، DEC-0046 (B-46)، DEC-0047 (B-47)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0076 (B-76)، DEC-0042 (B-42) |
+| LEG-0006 | page | الموارد البشرية | صفحة «العمال» (workers) | renderer/modules/hr/pages-workers.js:29 | angular /workers | phase24.js، phase26.js، phase27.js، phase28.js، phase29.js، phase30.js (+40) | Implemented (اتنقل) | DEC-0045 (B-45)، DEC-0046 (B-46)، DEC-0047 (B-47)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0076 (B-76)، DEC-0042 (B-42) |
+| LEG-0007 | page | الموارد البشرية | صفحة «السائقون» (drivers) | renderer/modules/hr/pages-ops.js:6 | angular /drivers | phase27.js، phase42.js، phase44.js، phase45.js، phase49.js، phase50.js (+16) | Implemented (اتنقل) | DEC-0045 (B-45)، DEC-0046 (B-46)، DEC-0047 (B-47)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0076 (B-76)، DEC-0042 (B-42) |
 | LEG-0008 | page | الموارد البشرية | صفحة «معدات ومركبات» (equipment) | renderer/modules/hr/pages-equipment.js:32 | legacy /legacy/ | phase23.js، phase24.js، phase25.js، phase26.js، phase27.js، phase31.js (+16) | Verified (باختبار) | DEC-0045 (B-45)، DEC-0046 (B-46)، DEC-0047 (B-47)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0076 (B-76)، DEC-0042 (B-42) |
 | LEG-0009 | page | الموارد البشرية | صفحة «حضور الموظفين» (attendance) | renderer/modules/hr/pages-attendance.js:19 | legacy /legacy/ | phase61.js، phase59.js، legacy-runner.js، reference.js، target-diff.js، data.e2e-spec.ts | Verified (باختبار) | DEC-0045 (B-45)، DEC-0046 (B-46)، DEC-0047 (B-47)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0076 (B-76)، DEC-0042 (B-42) |
 | LEG-0010 | page | الموارد البشرية | صفحة «اليوميات» (workerAttendance) | renderer/modules/hr/pages-worker-attendance.js:195 | legacy /legacy/ | phase24.js، phase26.js، phase27.js، phase28.js، phase39.js، phase40.js (+15) | Verified (باختبار) | DEC-0045 (B-45)، DEC-0046 (B-46)، DEC-0047 (B-47)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0076 (B-76)، DEC-0042 (B-42) |
@@ -172,7 +172,7 @@
 | LEG-0040 | page | الأرشيف | صفحة «أرشيف الموردين» (ledger.archive) | renderer/modules/ledger/pages-archive.js:215 | legacy /legacy/ | phase61.js | Verified (باختبار) | DEC-0061 (B-61) |
 | LEG-0041 | page | الأرشيف | صفحة «أرشيف العملاء والمشاريع» (clients.archive) | renderer/modules/clients/pages-archive.js:36 | legacy /legacy/ | phase8.js | Verified (باختبار) | DEC-0061 (B-61) |
 | LEG-0042 | page | الإعدادات | صفحة «الإعدادات العامة» (backup) | renderer/core/pages-backup.js:5 | legacy /legacy/ | phase10.js، phase29.js، phase32.js، phase34.js، phase35.js، phase36.js (+3) | Verified (باختبار) | DEC-0035 (B-35) |
-| LEG-0043 | page | الإعدادات | صفحة «المستخدمون» (users) | renderer/core/pages-users.js:16 | legacy /legacy/ | phase61.js، pages-smoke.js، phase10.js، phase11.js، phase12.js، phase13.js (+86) | Verified (باختبار) | DEC-0035 (B-35) |
+| LEG-0043 | page | الإعدادات | صفحة «المستخدمون» (users) | renderer/core/pages-users.js:16 | legacy /legacy/ | phase61.js، pages-smoke.js، phase10.js، phase11.js، phase12.js، phase13.js (+88) | Verified (باختبار) | DEC-0035 (B-35) |
 | LEG-0044 | page | الإعدادات | صفحة «الاقتراحات» (ledger.categories) | renderer/modules/ledger/pages-categories.js:4 | legacy /legacy/ | phase61.js | Verified (باختبار) | DEC-0035 (B-35) |
 | LEG-0045 | page | (خارج القايمة) | صفحة «clients.dashboard» (clients.dashboard) — اسم بديل لـ dashboard | renderer/modules/hr/pages-dashboard.js:28 | legacy /legacy/ | phase20.js | Verified (باختبار) | — |
 | LEG-0046 | page | (خارج القايمة) | صفحة «fuel» (fuel) — اسم بديل لـ equipment | renderer/modules/hr/pages-equipment.js:32 | legacy /legacy/ | phase61.js، phase18.js، phase26.js، legacy-runner.js، reference.js | Verified (باختبار) | — |
@@ -328,7 +328,7 @@
 | LEG-0196 | modal | الموارد البشرية | نافذة openLeaveModal | renderer/modules/hr/pages-leaves.js:172 | legacy |  | Verified (جرد ثابت بس) | DEC-0045 (B-45)، DEC-0046 (B-46)، DEC-0047 (B-47)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0076 (B-76)، DEC-0042 (B-42) |
 | LEG-0197 | calc | الموارد البشرية | دالة حساب calcLeaveDays | renderer/modules/hr/pages-leaves.js:32 | legacy |  | Verified (جرد ثابت بس) | DEC-0045 (B-45)، DEC-0046 (B-46)، DEC-0047 (B-47)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0076 (B-76)، DEC-0042 (B-42) |
 | LEG-0198 | modal | الموارد البشرية | نافذة openExternalDriverModal | renderer/modules/hr/pages-ops.js:133 | legacy |  | Verified (جرد ثابت بس) | DEC-0045 (B-45)، DEC-0046 (B-46)، DEC-0047 (B-47)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0076 (B-76)، DEC-0042 (B-42) |
-| LEG-0199 | modal | الموارد البشرية | نافذة openDriverModal | renderer/modules/hr/pages-ops.js:189 | legacy | phase36.js، phase47.js، phase49.js، phase50.js، phase51.js، phase75.js (+1) | Verified (باختبار) | DEC-0045 (B-45)، DEC-0046 (B-46)، DEC-0047 (B-47)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0076 (B-76)، DEC-0042 (B-42) |
+| LEG-0199 | modal | الموارد البشرية | نافذة openDriverModal | renderer/modules/hr/pages-ops.js:189 | legacy | phase36.js، phase47.js، phase49.js، phase50.js، phase51.js، phase75.js (+2) | Verified (باختبار) | DEC-0045 (B-45)، DEC-0046 (B-46)، DEC-0047 (B-47)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0076 (B-76)، DEC-0042 (B-42) |
 | LEG-0200 | modal | الموارد البشرية | نافذة openFuelModal | renderer/modules/hr/pages-ops.js:274 | legacy |  | Verified (جرد ثابت بس) | DEC-0045 (B-45)، DEC-0046 (B-46)، DEC-0047 (B-47)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0076 (B-76)، DEC-0042 (B-42) |
 | LEG-0201 | modal | الموارد البشرية | نافذة openTransferModal | renderer/modules/hr/pages-ops.js:419 | legacy |  | Verified (جرد ثابت بس) | DEC-0045 (B-45)، DEC-0046 (B-46)، DEC-0047 (B-47)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0076 (B-76)، DEC-0042 (B-42) |
 | LEG-0202 | modal | الموارد البشرية | نافذة openPerfModal | renderer/modules/hr/pages-ops.js:610 | legacy |  | Verified (جرد ثابت بس) | DEC-0045 (B-45)، DEC-0046 (B-46)، DEC-0047 (B-47)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0076 (B-76)، DEC-0042 (B-42) |
@@ -348,7 +348,7 @@
 | LEG-0216 | export/print | الموارد البشرية | تصدير/طباعة exportCurrentReportCsv | renderer/modules/hr/pages-reports.js | legacy |  | Verified (جرد ثابت بس) | DEC-0045 (B-45)، DEC-0046 (B-46)، DEC-0047 (B-47)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0076 (B-76)، DEC-0042 (B-42) |
 | LEG-0217 | export/print | الموارد البشرية | تصدير/طباعة exportCurrentReportXlsx | renderer/modules/hr/pages-reports.js | legacy |  | Verified (جرد ثابت بس) | DEC-0045 (B-45)، DEC-0046 (B-46)، DEC-0047 (B-47)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0076 (B-76)، DEC-0042 (B-42) |
 | LEG-0218 | export/print | الموارد البشرية | تصدير/طباعة printCurrentReport | renderer/modules/hr/pages-reports.js | legacy |  | Verified (جرد ثابت بس) | DEC-0045 (B-45)، DEC-0046 (B-46)، DEC-0047 (B-47)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0076 (B-76)، DEC-0042 (B-42) |
-| LEG-0219 | modal | الموارد البشرية | نافذة openSupervisorModal | renderer/modules/hr/pages-supervisors.js:323 | legacy | phase36.js، phase47.js، phase49.js، phase50.js، phase75.js، phase76.js | Verified (باختبار) | DEC-0045 (B-45)، DEC-0046 (B-46)، DEC-0047 (B-47)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0076 (B-76)، DEC-0042 (B-42) |
+| LEG-0219 | modal | الموارد البشرية | نافذة openSupervisorModal | renderer/modules/hr/pages-supervisors.js:323 | legacy | phase36.js، phase47.js، phase49.js، phase50.js، phase75.js، phase76.js (+1) | Verified (باختبار) | DEC-0045 (B-45)، DEC-0046 (B-46)، DEC-0047 (B-47)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0076 (B-76)، DEC-0042 (B-42) |
 | LEG-0220 | calc | الموارد البشرية | دالة حساب supervisorStatementSectionsHtml | renderer/modules/hr/pages-supervisors.js:99 | legacy |  | Verified (جرد ثابت بس) | DEC-0045 (B-45)، DEC-0046 (B-46)، DEC-0047 (B-47)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0076 (B-76)، DEC-0042 (B-42) |
 | LEG-0221 | calc | الموارد البشرية | دالة حساب supervisorStatementCardsHtml | renderer/modules/hr/pages-supervisors.js:149 | legacy |  | Verified (جرد ثابت بس) | DEC-0045 (B-45)، DEC-0046 (B-46)، DEC-0047 (B-47)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0076 (B-76)، DEC-0042 (B-42) |
 | LEG-0222 | modal | الموارد البشرية | نافذة openWattDaySitesModal | renderer/modules/hr/pages-worker-attendance.js:541 | legacy | phase28.js | Verified (باختبار) | DEC-0045 (B-45)، DEC-0046 (B-46)، DEC-0047 (B-47)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0076 (B-76)، DEC-0042 (B-42) |
@@ -357,7 +357,7 @@
 | LEG-0225 | modal | الموارد البشرية | نافذة openPayItemsManageModal | renderer/modules/hr/pages-worker-dues.js:1454 | legacy |  | Verified (جرد ثابت بس) | DEC-0045 (B-45)، DEC-0046 (B-46)، DEC-0047 (B-47)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0076 (B-76)، DEC-0042 (B-42) |
 | LEG-0226 | calc | الموارد البشرية | دالة حساب duesEntityKind | renderer/modules/hr/pages-worker-dues.js:12 | legacy |  | Verified (جرد ثابت بس) | DEC-0045 (B-45)، DEC-0046 (B-46)، DEC-0047 (B-47)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0076 (B-76)، DEC-0042 (B-42) |
 | LEG-0227 | calc | الموارد البشرية | دالة حساب duesListForKind | renderer/modules/hr/pages-worker-dues.js:17 | legacy |  | Verified (جرد ثابت بس) | DEC-0045 (B-45)، DEC-0046 (B-46)، DEC-0047 (B-47)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0076 (B-76)، DEC-0042 (B-42) |
-| LEG-0228 | modal | الموارد البشرية | نافذة openWorkerModal | renderer/modules/hr/pages-workers.js:216 | legacy | phase29.js، phase36.js، phase37.js، phase39.js، phase47.js، phase50.js (+3) | Verified (باختبار) | DEC-0045 (B-45)، DEC-0046 (B-46)، DEC-0047 (B-47)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0076 (B-76)، DEC-0042 (B-42) |
+| LEG-0228 | modal | الموارد البشرية | نافذة openWorkerModal | renderer/modules/hr/pages-workers.js:216 | legacy | phase29.js، phase36.js، phase37.js، phase39.js، phase47.js، phase50.js (+5) | Verified (باختبار) | DEC-0045 (B-45)، DEC-0046 (B-46)، DEC-0047 (B-47)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0076 (B-76)، DEC-0042 (B-42) |
 | LEG-0229 | calc | الموارد البشرية | دالة حساب projectStatement | renderer/modules/hr/project-statement.js:48 | legacy | phase17.js | Verified (باختبار) | DEC-0045 (B-45)، DEC-0046 (B-46)، DEC-0047 (B-47)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0076 (B-76)، DEC-0042 (B-42) |
 | LEG-0230 | calc | الموارد البشرية | دالة حساب projectStatementSectionsHtml | renderer/modules/hr/project-statement.js:177 | legacy |  | Verified (جرد ثابت بس) | DEC-0045 (B-45)، DEC-0046 (B-46)، DEC-0047 (B-47)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0076 (B-76)، DEC-0042 (B-42) |
 | LEG-0231 | modal | الموردون | نافذة openGlobalValidationModal | renderer/modules/ledger/app.js:567 | legacy |  | Verified (جرد ثابت بس) | — |

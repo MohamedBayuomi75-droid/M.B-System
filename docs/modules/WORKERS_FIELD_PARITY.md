@@ -20,7 +20,7 @@
 | `code` | string | عمود `code` (text) | ✅ |
 | `contractStatus` | string | عمود `contract_status` (text) | ✅ |
 | `contractType` | string | عمود `contract_type` (text) | ✅ |
-| `custom` | object | عمود `custom` (json) | — (خانات «تعديلات مخصصة» القديمة — في الشاشة الكاملة) |
+| `custom` | object | عمود `custom` (json) | ✅ |
 | `dailyWage` | number | عمود `daily_wage` (number) | ✅ |
 | `departmentId` | string | عمود `department_id` (text) | ✅ |
 | `dismissedNotes` | array | عمود `dismissed_notes` (json) | — (الملاحظات المخفية — من الشاشة الكاملة) |

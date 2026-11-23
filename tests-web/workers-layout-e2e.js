@@ -89,6 +89,23 @@ const grab = (sel) => {
   ok(legacy.company.head.indexOf('تاريخ الميلاد') < legacy.company.head.indexOf('رقم التليفون'), 'الشركة: الترتيب مش الافتراضي', legacy.company.head);
   ok(legacy.company.head.includes('اليومية') && legacy.temp.head.includes('كود العامل'), 'عمود زيادة من خانة تلقائية (زي M2)', [legacy.company.head, legacy.temp.head]);
   ok(legacy.company.head.includes('المقاس') && !legacy.company.head.includes('المشروع'), 'الشركة: خانة إضافية وعمود مخفي', legacy.company.head);
+  console.log('[3] نافذة العامل: نفس الخانات بالترتيب الظاهر (applyPeopleFormOrder)، والخانة الإضافية حتى في الإضافة');
+  const labels = () => page.evaluate(() => [...document.querySelectorAll('#appModal .modal-body label')].filter((l) => l.offsetParent !== null && getComputedStyle(l).display !== 'none')
+    .map((l, i) => [l, Number(getComputedStyle(l).order) || 0, i]).sort((a, b) => a[1] - b[1] || a[2] - b[2])
+    .map(([l]) => { const c = l.cloneNode(true); c.querySelectorAll('input,select,textarea,small,button').forEach((n) => n.remove()); return (c.textContent || '').replace(/\s+/g, ' ').replace(/\*/g, '').trim(); }).filter((x) => x && !/^(المرفقات|إرفاق|رفع مرفق)/.test(x)));
+  const leg = {};
+  await page.goto(base + '/legacy/'); await page.waitForFunction(() => typeof DATA !== 'undefined' && window.WebSync && WebSync._state.meta, null, { timeout: 30000 });
+  for (const [k, id, o] of [['إضافة شركة', null, { defaultType: 'company' }], ['تعديل شركة', 'w2', null], ['إضافة مؤقت', null, { defaultType: 'temporary' }]]) {
+    await page.evaluate(() => { try { closeModal(); } catch (e) { /* */ } }); await page.waitForTimeout(300);
+    await page.evaluate(([i, o]) => { goToPage('workers'); openWorkerModal(i, o || undefined); }, [id, o]); await page.waitForTimeout(500); leg[k] = await labels();
+  }
+  for (const [k, how] of [['إضافة شركة', '#btnAddWorker'], ['تعديل شركة', '.btn-edit-wrk[data-id="w2"]'], ['إضافة مؤقت', '#btnAddTempWorker']]) {
+    await page.goto(base + '/app/workers'); await page.waitForSelector('#wkBoards .entity-dept-board'); await page.click('#wkBoards .entity-dept-board[data-dept=""]'); await page.waitForSelector('#wkTable tr[data-id="w2"]');
+    await page.click(how); await page.waitForSelector('#btnSaveWrk'); await page.waitForTimeout(300);
+    eq(await labels(), leg[k], `${k}: نفس الخانات بالترتيب`);
+  }
+  ok(leg['إضافة شركة'].includes('المقاس'), 'الخانة الإضافية ظاهرة في الإضافة', leg['إضافة شركة']);
+
   eq(errors, [], 'من غير أخطاء');
   await browser.close();
   summary();
