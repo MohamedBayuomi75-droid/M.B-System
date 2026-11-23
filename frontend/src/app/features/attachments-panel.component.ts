@@ -5,7 +5,7 @@ import { firstValueFrom } from 'rxjs';
 import { Attachment } from '../core/models';
 import { errorMessage } from '../core/session.service';
 
-/** مرفقات سجل بالإصدارات (المرحلة 5 — 5.3): رفع، واستبدال بإصدار جديد (القديم بيفضل محفوظ)، وتنزيل */
+/** مرفقات سجل بالإصدارات (المرحلة 5 — 5.3): رفع، واستبدال بإصدار جديد (القديم بيفضل محفوظ)، وتنزيل. ومعاها (اختياري) مرفقات الواجهة القديمة للعرض */
 @Component({
   selector: 'app-attachments',
   imports: [MatButtonModule],
@@ -21,13 +21,22 @@ import { errorMessage } from '../core/session.service';
         </li>
       } @empty { <li class="muted">مفيش مرفقات</li> }
     </ul>
-    @if (canEdit()) { <label class="mat-mdc-button">رفع مرفق<input type="file" hidden id="attUpload" accept=".pdf,.jpg,.jpeg,.png,.docx,.xlsx" (change)="upload($event)" /></label> }`,
+    @if (canEdit()) { <label class="mat-mdc-button">رفع مرفق<input type="file" hidden id="attUpload" accept=".pdf,.jpg,.jpeg,.png,.docx,.xlsx" (change)="upload($event)" /></label> }
+    @if (legacyDocs().length) {
+      <h3 style="font-size:13px;margin:10px 0 4px;">مرفقات من الواجهة القديمة</h3>
+      <ul id="attLegacyList">
+        @for (d of legacyDocs(); track $index) { <li [attr.data-legacy-id]="d.id" class="muted">{{ d.name || d.storedName || 'ملف' }}@if (d.date) { — {{ d.date }} }</li> }
+      </ul>
+      <p class="muted" style="font-size:12px;margin:4px 0 0;">الملفات دي متخزّنة على جهاز سطح المكتب، وبتتفتح من نسخة سطح المكتب.</p>
+    }`,
 })
 export class AttachmentsPanelComponent {
   private readonly http = inject(HttpClient);
   readonly collection = input.required<string>();
   readonly recordId = input.required<string>();
   readonly canEdit = input(false);
+  /** مرفقات الواجهة القديمة المتخزّنة جوه السجل نفسه (record.attachments — مسار على جهاز سطح المكتب): عرض بس (UAT 7.4 L11) */
+  readonly legacyDocs = input<{ id?: string; name?: string; storedName?: string; date?: string }[]>([]);
   readonly versions = signal<Attachment[]>([]); readonly error = signal('');
   constructor() { effect(() => { this.recordId(); void this.load(); }); }
   private params() { return new HttpParams().set('collection', this.collection()).set('recordId', this.recordId()); }
