@@ -217,6 +217,8 @@ function apply(ent: string, t: T, layoutAll: any[]) {
 }
 
 /* --- extras.js: addAutoColumns --- */
+/** كيانات تخطيط مالهاش مجموعة في DATA (فـ DATA[ent] فاضية في القديمة) */
+const LAYOUT_ONLY_ENTS = new Set(['workersTemp']);
 function addAutoColumns(ent: string, t: T, layoutAll: any[], recs: Map<string, any>, fmt: { date: (v: string) => string }, skip: (f: any) => boolean) {
   const layout = layoutAll.filter((f) => f && !/ProjSince$/.test(String(f.selector || '')) && f.key !== 'projectSince' && (f.auto || t.unmatched.has(f.key)) && f.showInTable === true && f.visible !== false && !skip(f));
   if (!layout.length) return;
@@ -228,7 +230,8 @@ function addAutoColumns(ent: string, t: T, layoutAll: any[], recs: Map<string, a
     const last = t.head[t.head.length - 1]; const endBlank = !!last && !(last.text || '').trim() && !last.input;
     if (endBlank) t.head.splice(t.head.length - 1, 0, th); else t.head.push(th);
     t.rows.forEach((r) => {
-      const rec = recs.get(r.id);
+      // القديمة بتدوّر في DATA[ent]، و«workersTemp» تخطيط بس من غير مجموعة بيانات ← مابتلاقيش السجل وبتكتب «—» (UAT M15)
+      const rec = LAYOUT_ONLY_ENTS.has(ent) ? undefined : recs.get(r.id);
       const cell: Cell = { t: 'txt', auto: true, v: rec ? String(autoCellValue(ent, rec, f, fmt)) : '—' };
       if (endBlank && r.cells.length === t.head.length - 1) r.cells.splice(r.cells.length - 1, 0, cell); else r.cells.push(cell);
     });
