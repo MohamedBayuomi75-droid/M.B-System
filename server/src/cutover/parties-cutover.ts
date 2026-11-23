@@ -3,6 +3,7 @@ import { CutoverReport, cutoverModule, ModuleSpec, rollbackModule } from './modu
 import { SUPPLIER_INVOICE_COLUMNS } from '../migrations/1764800000000-SupplierInvoices';
 import { SUPPLIER_PAYMENT_COLUMNS } from '../migrations/1765000000000-SupplierPayments';
 import { PROJECT_COLUMNS } from '../migrations/1765100000000-ProjectsCutover';
+import { WORKER_COLUMNS } from '../migrations/1765200000000-WorkersCutover';
 
 export type { CutoverReport } from './module-cutover';
 
@@ -76,7 +77,17 @@ export const PROJECTS: ModuleSpec = {
   clearTables: ['projects'],
 };
 
-export const MODULES: Record<string, ModuleSpec> = { parties: PARTIES, warehouses: WAREHOUSES, 'supplier-invoices': SUPPLIER_INVOICES, 'supplier-payments': SUPPLIER_PAYMENTS, projects: PROJECTS };
+/** 8.1 — العمال (DEC-0121). نفس الطريقة: مفيش تطبيع، واللي نوعه مختلف بيفضل في legacy_extra ويتعدّ */
+export const WORKERS: ModuleSpec = {
+  label: 'workers',
+  collections: [
+    { collection: 'workers', table: 'workers', write: 'legacy_write_worker', read: 'worker_to_legacy',
+      normalized: `(r.data || jsonb_build_object('id', r.id))`, typedKeys: WORKER_COLUMNS.map(([, k]) => k) },
+  ],
+  clearTables: ['workers'],
+};
+
+export const MODULES: Record<string, ModuleSpec> = { parties: PARTIES, warehouses: WAREHOUSES, 'supplier-invoices': SUPPLIER_INVOICES, 'supplier-payments': SUPPLIER_PAYMENTS, projects: PROJECTS, workers: WORKERS };
 
 export const partiesCutover = (ds: DataSource, by: string, mode: CutoverReport['mode']) => cutoverModule(ds, PARTIES, by, mode);
 export const partiesRollback = (ds: DataSource, by: string) => rollbackModule(ds, PARTIES, by);

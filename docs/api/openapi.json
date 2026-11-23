@@ -2043,6 +2043,88 @@
     ],
     "type": "object"
    },
+   "SaveWorkerDto": {
+    "properties": {
+     "address": {
+      "type": "string"
+     },
+     "birthDate": {
+      "type": "string"
+     },
+     "code": {
+      "type": "string"
+     },
+     "contractStatus": {
+      "type": "string"
+     },
+     "contractType": {
+      "type": "string"
+     },
+     "dailyWage": {
+      "description": "اليومية (المؤقت بس) — حقل محمي (B-48)",
+      "type": "string"
+     },
+     "extraFields": {
+      "items": {
+       "$ref": "#/components/schemas/ExtraFieldDto"
+      },
+      "type": "array"
+     },
+     "hireDate": {
+      "type": "string"
+     },
+     "idCardExpiry": {
+      "type": "string"
+     },
+     "insuranceNumber": {
+      "type": "string"
+     },
+     "insuranceStatus": {
+      "type": "string"
+     },
+     "name": {
+      "type": "string"
+     },
+     "nationalId": {
+      "type": "string"
+     },
+     "notes": {
+      "type": "string"
+     },
+     "phone": {
+      "type": "string"
+     },
+     "position": {
+      "description": "الوظيفة (= المهارة)",
+      "type": "string"
+     },
+     "project": {
+      "type": "string"
+     },
+     "salary": {
+      "description": "الراتب (الشركة بس) — حقل محمي (B-48)",
+      "type": "string"
+     },
+     "status": {
+      "type": "string"
+     },
+     "supervisorId": {
+      "type": "string"
+     },
+     "workerType": {
+      "enum": [
+       "temporary",
+       "company"
+      ],
+      "type": "string"
+     }
+    },
+    "required": [
+     "workerType",
+     "name"
+    ],
+    "type": "object"
+   },
    "SubmitDto": {
     "properties": {
      "amount": {
@@ -2709,6 +2791,92 @@
       "type": "string"
      }
     },
+    "type": "object"
+   },
+   "UpdateWorkerDto": {
+    "properties": {
+     "address": {
+      "type": "string"
+     },
+     "birthDate": {
+      "type": "string"
+     },
+     "code": {
+      "type": "string"
+     },
+     "contractStatus": {
+      "type": "string"
+     },
+     "contractType": {
+      "type": "string"
+     },
+     "dailyWage": {
+      "description": "اليومية (المؤقت بس) — حقل محمي (B-48)",
+      "type": "string"
+     },
+     "extraFields": {
+      "items": {
+       "$ref": "#/components/schemas/ExtraFieldDto"
+      },
+      "type": "array"
+     },
+     "hireDate": {
+      "type": "string"
+     },
+     "idCardExpiry": {
+      "type": "string"
+     },
+     "insuranceNumber": {
+      "type": "string"
+     },
+     "insuranceStatus": {
+      "type": "string"
+     },
+     "name": {
+      "type": "string"
+     },
+     "nationalId": {
+      "type": "string"
+     },
+     "notes": {
+      "type": "string"
+     },
+     "phone": {
+      "type": "string"
+     },
+     "position": {
+      "description": "الوظيفة (= المهارة)",
+      "type": "string"
+     },
+     "project": {
+      "type": "string"
+     },
+     "rev": {
+      "type": "number"
+     },
+     "salary": {
+      "description": "الراتب (الشركة بس) — حقل محمي (B-48)",
+      "type": "string"
+     },
+     "status": {
+      "type": "string"
+     },
+     "supervisorId": {
+      "type": "string"
+     },
+     "workerType": {
+      "enum": [
+       "temporary",
+       "company"
+      ],
+      "type": "string"
+     }
+    },
+    "required": [
+     "workerType",
+     "name",
+     "rev"
+    ],
     "type": "object"
    },
    "UserDto": {
@@ -6396,6 +6564,245 @@
     "summary": "تحويل بين مخزنين (B-50 على المصدر)",
     "tags": [
      "v1 warehouses"
+    ]
+   }
+  },
+  "/api/v1/workers": {
+   "get": {
+    "operationId": "WorkersController_list",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "q",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "description": "الحالة، و«temporary» = النوع المؤقت",
+      "in": "query",
+      "name": "status",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "type",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "supervisorId",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "project",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "description": "القسم (لوحة)، و«__none__» = بدون قسم أو وظيفة",
+      "in": "query",
+      "name": "departmentId",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "xCard",
+      "required": false,
+      "schema": {
+       "enum": [
+        "",
+        "valid",
+        "soon",
+        "expired",
+        "none"
+       ],
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "xIns",
+      "required": false,
+      "schema": {
+       "enum": [
+        "",
+        "insured",
+        "none",
+        "pending",
+        "empty"
+       ],
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "xDocs",
+      "required": false,
+      "schema": {
+       "enum": [
+        "",
+        "missing",
+        "complete"
+       ],
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "xData",
+      "required": false,
+      "schema": {
+       "enum": [
+        "",
+        "missing"
+       ],
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "لوحات الأقسام، والقايمة بنفس فلاتر وبحث صفحة العمال القديمة، والكروت، والملاحظات (الأجور محمية — B-48)",
+    "tags": [
+     "v1 workers"
+    ]
+   },
+   "post": {
+    "operationId": "WorkersController_create",
+    "parameters": [],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/SaveWorkerDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "إضافة عامل (Idempotency-Key إلزامي) بنفس حساب النافذة القديمة + حدث worker.saved",
+    "tags": [
+     "v1 workers"
+    ]
+   }
+  },
+  "/api/v1/workers/form-options": {
+   "get": {
+    "operationId": "WorkersController_formOptions",
+    "parameters": [],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "خيارات نافذة العامل",
+    "tags": [
+     "v1 workers"
+    ]
+   }
+  },
+  "/api/v1/workers/{id}": {
+   "get": {
+    "operationId": "WorkersController_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "tags": [
+     "v1 workers"
+    ]
+   },
+   "patch": {
+    "operationId": "WorkersController_update",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/UpdateWorkerDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "تعديل عامل (rev إلزامي): الدمج، والقسم، وأرشيف المستقيلين — في معاملة واحدة",
+    "tags": [
+     "v1 workers"
     ]
    }
   }

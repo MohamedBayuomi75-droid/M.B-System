@@ -1,3 +1,5 @@
+import { smartMatch } from '../common/smart-search';
+
 /**
  * قواعد المشروعات (7.4.4، DEC-0117) — **نقل حرفي من الواجهة القديمة**، والمقارنة بالدوال القديمة نفسها في tests-merge/phase72.js:
  *  - مسار المشروع (project-workflow.js): normalizeWorkflow، وcanonicalStatus، وcurrent، وstepStatus، وonStatusChanged (pwOnStatusChanged)، وlateSteps.
@@ -48,26 +50,8 @@ export function nextCode(prefix: string, list: J[], field = 'code'): string {
   return code;
 }
 
-// ---------------- البحث الذكي (smart-tools.js)
-function normAr(s: unknown): string {
-  if (s == null) return '';
-  return String(s).toLowerCase().replace(/[ً-ٰٟـ]/g, '').replace(/[أإآٱ]/g, 'ا').replace(/ى/g, 'ي').replace(/ة/g, 'ه').replace(/ؤ/g, 'و').replace(/ئ/g, 'ي')
-    .replace(/[٠-٩]/g, (d) => String(EAST.indexOf(d))).replace(/[۰-۹]/g, (d) => String(PERS.indexOf(d)));
-}
-const searchWords = (s: unknown) => { const t = normAr(s); return t ? t.split(/[^\p{L}\p{N}]+/u).filter(Boolean) : []; };
-function xWordHit(qt: string, words: string[]): number {
-  for (let i = 0; i < words.length; i++) if (words[i].indexOf(qt) === 0) return i;
-  if (/^[0-9]{3,}$/.test(qt)) for (let i = 0; i < words.length; i++) if (/[0-9]/.test(words[i]) && words[i].indexOf(qt) >= 0) return i;
-  for (let i = 0; i < words.length - 1; i++) if (qt.length > words[i].length && (words[i] + words[i + 1]).indexOf(qt) === 0) return i;
-  return -1;
-}
-/** smartMatch: كل كلمة بحث لازم تكون بداية كلمة في النص */
-export function smartMatch(blob: unknown, q: unknown): boolean {
-  const toks = searchWords(q);
-  if (!toks.length) return true;
-  const words = searchWords(blob);
-  return toks.every((t) => xWordHit(t, words) >= 0);
-}
+// ---------------- البحث الذكي: مشترك (common/smart-search.ts)
+export { smartMatch } from '../common/smart-search';
 
 // ---------------- مسار المشروع (project-workflow.js)
 interface Step { key: string; label: string; optional: boolean; stance: boolean; needsDate: boolean; needsAttach: boolean; needsReason: boolean; dueDays: number }

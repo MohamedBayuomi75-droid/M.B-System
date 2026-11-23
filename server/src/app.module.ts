@@ -13,6 +13,7 @@ import { HealthModule } from './health/health.module';
 import { FilesModule } from './files/files.module';
 import { CommonModule } from './common/common.module';
 import { ProjectsModule } from './projects/projects.module';
+import { WorkersModule } from './workers/workers.module';
 import { NumberingModule } from './numbering/numbering.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { ApprovalsModule } from './approvals/approvals.module';
@@ -60,6 +61,7 @@ import { HistoryModule } from './history/history.module';
     HealthModule,
     FilesModule,
     ProjectsModule,
+    WorkersModule,
     NumberingModule,
     NotificationsModule,
     ApprovalsModule,
