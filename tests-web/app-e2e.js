@@ -77,18 +77,36 @@ async function login(page, username, password) {
     { collection: 'projects', id: 'p2', op: 'upsert', baseRev: 0, set: { name: 'مشروع النيل', code: 'PRJ-2', budget: '2000.0000005', status: 'active' } },
   ] }, adminTok);
 
-  console.log('[3] pilot screen reads /api/v1/projects; money shown from the server string (no client math)');
+  console.log('[3] projects screen (7.4.5): legacy look, server list, add + rename through the modal');
   {
     await A.page.click('#nav [data-section="clients"]');
     await A.page.click('#navProjects');
-    await A.page.waitForSelector('#projectsTable tr[data-id="p1"]');
-    const rows = await A.page.evaluate(() => [...document.querySelectorAll('#projectsTable tr[data-id]')].map((tr) => [...tr.querySelectorAll('td')].map((td) => td.textContent.trim())));
+    await A.page.waitForSelector('#projTable tr[data-id="p1"]');
+    const rows = await A.page.evaluate(() => [...document.querySelectorAll('#projTable tr[data-id]')].map((tr) => [...tr.querySelectorAll('td')].map((td) => td.textContent.trim())));
     eq(rows.length, 2, 'two projects listed');
-    const budgets = rows.map((x) => x[3]);
-    ok(budgets.includes('١٬٢٥٠٬٠٠٠٫٥٠') && budgets.includes('٢٬٠٠٠٫٠٠٠٠٠١'), 'budgets: 1250000.5 → ١٬٢٥٠٬٠٠٠٫٥٠ · 2000.0000005 → HALF_UP 6dp ٢٬٠٠٠٫٠٠٠٠٠١ (DEC-0112)', budgets);
-    await A.page.fill('#projSearch', 'نيل');
-    await A.page.waitForFunction(() => document.querySelectorAll('#projectsTable tr[data-id]').length === 1);
-    ok(true, 'search filters on the server');
+    eq(rows.map((x) => [x[0], x[3], x[4]]), [['PRJ-1', 'التنفيذ والمتابعة', '١٬٢٥٠٬٠٠٠٫٥ ج.م'], ['PRJ-2', 'التنفيذ والمتابعة', '٢٬٠٠٠ ج.م']], 'code, legacy stage label (active), value like fmtMoney (toInt = 2 decimals)');
+    ok(!!(await A.page.$('.page .stats-row .stat-card')) && !!(await A.page.$('.filters-bar #projHasRes')), 'legacy page structure (cards + filters bar)');
+    await A.page.fill('#projSearch', 'النيل');
+    await A.page.waitForFunction(() => document.querySelectorAll('#projTable tr[data-id]').length === 1);
+    ok(true, 'smart search on the server');
+    await A.page.fill('#projSearch', '');
+    await A.page.waitForFunction(() => document.querySelectorAll('#projTable tr[data-id]').length === 2);
+    await A.page.click('#btnAddProject'); await A.page.waitForSelector('#btnSavePr');
+    eq(await A.page.inputValue('#prCode'), 'PRJ-003', 'auto code prefilled');
+    await A.page.fill('#prName', 'مشروع الواجهة');
+    if (await A.page.$('#prCustomer')) await A.page.fill('#prCustomer', 'عميل نصّي');
+    await A.page.fill('#prValue', '1500.255');
+    const [pr] = await Promise.all([A.page.waitForResponse((r) => r.url().endsWith('/api/v1/projects') && r.request().method() === 'POST'), A.page.click('#btnSavePr')]);
+    eq(pr.status(), 201, 'created through the modal');
+    await A.page.waitForFunction(() => document.querySelectorAll('#projTable tr[data-id]').length === 3);
+    const created = (await api('GET', '/api/v1/projects', null, adminTok)).body.rows.find((p) => p.name === 'مشروع الواجهة');
+    ok(created && created.value === 1500.26 && created.budget === 1500.26 && created.status === 'الدراسة والتخطيط', 'saved like the legacy modal (round2, budget = value, first stage)', created);
+    await A.page.click(`.btn-edit-proj[data-id="${created.id}"]`); await A.page.waitForSelector('#btnSavePr');
+    await A.page.fill('#prName', 'مشروع الواجهة ٢');
+    const [pu] = await Promise.all([A.page.waitForResponse((r) => r.url().includes('/api/v1/projects/') && r.request().method() === 'PATCH'), A.page.click('#btnSavePr')]);
+    eq(pu.status(), 200, 'renamed through the modal');
+    await A.page.waitForFunction(() => [...document.querySelectorAll('#projTable tr[data-id] strong')].some((s) => s.textContent === 'مشروع الواجهة ٢'));
+    ok(true, 'list refreshed after save');
   }
 
   console.log('[4] same session with the legacy UI + deep link');
@@ -111,10 +129,11 @@ async function login(page, username, password) {
     await login(W.page, 'app_wh', PW);
     await W.page.waitForSelector('#whoami');
     await W.page.goto(srv.base + '/app/projects');
-    await W.page.waitForSelector('.shell-body h1');
+    await W.page.waitForSelector('.shell-body h1, .shell-body h2.page-title');
     const canView = !!(me.permissions.pages.projects && me.permissions.pages.projects.view);
-    const h1 = await W.page.textContent('.shell-body h1');
-    ok(canView ? h1.includes('المشروعات') : h1.includes('ليس لديك صلاحية'), `guard follows server permissions (warehouse can view projects: ${canView})`, h1);
+    const h1 = await W.page.textContent('.shell-body h1, .shell-body h2.page-title');
+    ok(canView ? h1.includes('المشاريع') : h1.includes('ليس لديك صلاحية'), `guard follows server permissions (warehouse can view projects: ${canView})`, h1);
+    if (canView) ok(!(await W.page.$('#btnAddProject')) && !(await W.page.$('.btn-edit-proj')), 'view-only: no add/edit buttons');
     await W.page.goto(srv.base + '/app/does-not-exist');
     await W.page.waitForSelector('.shell-body h1');
     ok((await W.page.textContent('.shell-body h1')).includes('غير موجودة'), 'unknown route → not found inside the shell');
@@ -180,8 +199,8 @@ async function login(page, username, password) {
 
     eq((await api('POST', '/api/sync', { changes: [{ collection: 'projects', id: 'e2e-att', op: 'upsert', baseRev: 0, set: { name: 'مشروع مرفقات اختبار' } }] }, adminTok)).status, 200, 'test project');
     await A.page.goto(srv.base + '/app/projects');
-    await A.page.waitForSelector('#projectsTable [data-id="e2e-att"]');
-    await A.page.click('#projectsTable [data-id="e2e-att"]');
+    await A.page.waitForSelector('#projTable tr[data-id="e2e-att"]');
+    await A.page.click('#projTable .btn-edit-proj[data-id="e2e-att"]'); // المرفقات في نافذة التعديل (زي «📎 إرفاق مستند» في النافذة القديمة)
     await A.page.waitForSelector('#attUpload', { state: 'attached' });
     const pdf = (t) => Buffer.from(`%PDF-1.4\n1 0 obj << /Type /Catalog /Pages 2 0 R /T (${t}) >> endobj\n2 0 obj << /Type /Pages /Kids [] /Count 0 >> endobj\ntrailer << /Root 1 0 R >>\n%%EOF\n`, 'latin1');
     await A.page.setInputFiles('#attUpload', { name: 'عقد.pdf', mimeType: 'application/pdf', buffer: pdf('v1') });

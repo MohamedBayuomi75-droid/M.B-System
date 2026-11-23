@@ -11,7 +11,7 @@ import { NotificationsBellComponent } from './notifications-bell.component';
 interface NavLink { key: string; label: string; path?: string; href?: string }
 /** صفحات Angular الجديدة اللي مالهاش مقابل في الواجهة القديمة ← القسم اللي بتظهر فيه */
 const EXTRA_PAGES: { id: string; section: string; label: string; path: string; key: string; show: 'all' | 'finance' }[] = [
-  { id: 'navProjects', section: 'clients', label: 'المشروعات (تجريبي)', path: '/projects', key: 'projects', show: 'all' },
+  { id: 'navProjects', section: 'clients', label: 'المشاريع (الشاشة الجديدة)', path: '/projects', key: 'projects', show: 'all' },
   { id: 'navTaxes', section: 'settings', label: 'الضرائب والاستقطاعات', path: '/taxes', key: '', show: 'finance' },
   { id: 'navFormulas', section: 'settings', label: 'إدارة القواعد المالية', path: '/formulas', key: '', show: 'finance' },
 ];

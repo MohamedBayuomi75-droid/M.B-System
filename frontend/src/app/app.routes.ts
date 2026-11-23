@@ -13,7 +13,7 @@ export const routes: Routes = [
   {
     path: '', component: ShellComponent, canActivate: [authGuard], children: [
       { path: '', component: HomePage, title: 'النظام الموحد' },
-      { path: 'projects', canActivate: [pageGuard], data: { page: 'projects' }, loadComponent: () => import('./features/projects.page').then((m) => m.ProjectsPage), title: 'المشروعات (تجريبي)' },
+      { path: 'projects', canActivate: [pageGuard], data: { page: 'projects', skin: 'legacy' }, loadComponent: () => import('./features/projects.page').then((m) => m.ProjectsPage), title: 'المشاريع' },
       { path: 'suppliers', canActivate: [pageGuard], data: { page: 'ledger.suppliers', skin: 'legacy', bodyClass: 'module-ledger' }, loadComponent: () => import('./features/suppliers.page').then((m) => m.SuppliersPage), title: 'الموردين' },
       { path: 'customers', canActivate: [pageGuard], data: { page: 'clients.customers', skin: 'legacy' }, loadComponent: () => import('./features/customers.page').then((m) => m.CustomersPage), title: 'العملاء' },
       // 7.2: فواتير ومرتجعات الموردين — التوجيه من القايمة اتقلب بموافقة البوابة (2026-11-22، page-routes)

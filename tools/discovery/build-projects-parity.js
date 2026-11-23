@@ -34,7 +34,7 @@ const fields = [...new Set([...fromCode, ...Object.keys(real)])].sort();
 const SYSTEM = { id: 'المفتاح الأساسي `id`' };
 // حقول ليها مكان ومالهاش خانة في الشاشة الجديدة بقرار
 const WF = 'مسار المشروع — في الواجهة القديمة (DEC-0117 د-1)';
-const DEFERRED = { stepMeta: WF, completedSteps: WF, stepFiles: WF, pathHistory: WF, workflowSnapshot: WF, stepKey: WF, tenderStance: WF, rejectReason: WF, statusBeforeReject: WF,
+const DEFERRED = { stageKey: 'بيتعرض كـ «المرحلة» (normalizeProjectStatus)، وبيتحرّك من السيرفر مع تغيير المرحلة (د-1)', stepMeta: WF, completedSteps: WF, stepFiles: WF, pathHistory: WF, workflowSnapshot: WF, stepKey: WF, tenderStance: WF, rejectReason: WF, statusBeforeReject: WF,
   attachments: 'المرفقات من الشاشة الكاملة', customer: 'نسخة من اسم العميل (بتتكتب مع customerName)' };
 const inNew = (k) => page && new RegExp(`\\b${k}\\b`).test(page);
 

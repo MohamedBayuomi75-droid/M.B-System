@@ -13,7 +13,7 @@ export interface PageRoute { key: string; label: string; icon: string; target: '
 
 export const PAGE_ROUTES: readonly PageRoute[] = [
   { key: 'dashboard', label: 'مركز المتابعة', icon: 'dashboard', target: 'legacy' },
-  { key: 'projects', label: 'المشروعات (تجريبي)', icon: 'apartment', target: 'angular', path: '/projects', pilot: true },
+  { key: 'projects', label: 'المشاريع (الشاشة الجديدة)', icon: 'apartment', target: 'angular', path: '/projects', pilot: true },
   { key: 'projects', label: 'المشروعات', icon: 'domain', target: 'legacy' },
   { key: 'ledger.suppliers', label: 'الموردين', icon: 'local_shipping', target: 'angular', path: '/suppliers' },
   { key: 'ledger.suppliers', label: 'الموردين — الشاشة الكاملة', icon: 'account_balance_wallet', target: 'legacy' },
