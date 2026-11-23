@@ -1,7 +1,5 @@
 import { BadRequestException, ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
-import { InjectDataSource } from '@nestjs/typeorm';
 import { randomBytes } from 'node:crypto';
-import { DataSource, QueryRunner } from 'typeorm';
 import type { AuthUser } from '../auth/auth.types';
 import { hasPagePermission } from '../authz/effective-permissions';
 import { Money } from '../common/money';
@@ -17,6 +15,8 @@ import { ListProjectsQuery, SaveProjectDto, UpdateProjectDto } from './projects.
 import { ProjectsRepository } from './projects.repository';
 
 const COLL = 'projects';
+/** المعاملة اللي DataService.sync بيدّيها للـ before/after (الـ Service مابيستوردش TypeORM — طبقة الوصول للبيانات هي اللي بتستخدم manager) */
+type QueryRunner = Parameters<NonNullable<NonNullable<Parameters<DataService['sync']>[2]>['before']>>[0];
 const s = (v: unknown) => (v == null ? '' : String(v));
 interface Rec { id: string; data: J; rev: number }
 const HR_COLLS = ['workers', 'equipment', 'drivers', 'employees', 'supervisors'];
@@ -33,18 +33,13 @@ const CLIENT_COLLS = CLIENT_LISTS.map((k) => `clients.${k}`);
  */
 @Injectable()
 export class ProjectsService {
-  constructor(@InjectDataSource() private readonly ds: DataSource, private readonly data: DataService, private readonly repo: ProjectsRepository) {}
+  constructor(private readonly data: DataService, private readonly repo: ProjectsRepository) {}
 
-  private all(c: string, qr?: QueryRunner): Promise<Rec[]> {
-    return (qr ?? this.ds).query(`SELECT id, data, rev FROM legacy_records WHERE collection = $1 AND deleted_at IS NULL ORDER BY created_at, id`, [c]);
-  }
+  private all(c: string, qr?: QueryRunner): Promise<Rec[]> { return this.repo.rows(c, qr?.manager); }
   private many(cs: string[], qr?: QueryRunner): Promise<Record<string, Rec[]>> {
     return Promise.all(cs.map((c) => this.all(c, qr))).then((xs) => Object.fromEntries(cs.map((c, i) => [c, xs[i]])));
   }
-  private async settingsWorkflow(qr?: QueryRunner): Promise<unknown> {
-    const [r] = await (qr ?? this.ds).query(`SELECT data FROM docs WHERE key = 'clients.settings'`);
-    return r?.data && typeof r.data === 'object' ? (r.data as J).projectWorkflow : null;
-  }
+  private settingsWorkflow(qr?: QueryRunner): Promise<unknown> { return this.repo.settingsWorkflow(qr?.manager); }
   private ctx(u: AuthUser, settingsWorkflow: unknown): WfCtx {
     return { settingsWorkflow, today: cairoTodayIso(), nowIso: new Date().toISOString(), userName: u.name || u.username || '', uid: () => `id_${Date.now().toString(36)}${randomBytes(4).toString('hex').slice(0, 7)}` };
   }
@@ -90,7 +85,7 @@ export class ProjectsService {
     if (!r || !inProjectScope(u, COLL, { ...r.data, id: r.id })) throw new NotFoundException({ statusCode: 404, code: 'NOT_FOUND', message: 'المشروع غير موجود' });
     const c = this.ctx(u, wfRaw);
     const p = { ...r.data, id: r.id };
-    const events = await this.ds.query(`SELECT event_type AS type, idempotency_key AS key FROM integration_events WHERE aggregate_type = 'project' AND aggregate_id = $1 ORDER BY seq`, [id]);
+    const events = await this.repo.events(id);
     return { ...p, rev: r.rev, stage: normalizeProjectStatus(p, c), events };
   }
 
@@ -251,10 +246,8 @@ export class ProjectsService {
 
   /** حدث project.saved (DEC-0104: صندوق integration_events، مرة واحدة لكل حفظ). مفيش قيود محاسبية */
   private async event(qr: QueryRunner, u: AuthUser, id: string, kind: 'created' | 'updated', p: J, extra: J) {
-    const [{ n }] = await qr.query(`SELECT count(*)::int AS n FROM integration_events WHERE aggregate_type = 'project' AND aggregate_id = $1`, [id]);
     const payload = { kind, id, code: s(p.code), name: s(p.name), status: s(p.status), customerId: s(p.customerId), value: Money.fromNumberUnsafe(Number(p.value) || 0).toFixed(), budget: Money.fromNumberUnsafe(Number(p.budget) || 0).toFixed(), ...extra };
-    await qr.query(`INSERT INTO integration_events (event_type, aggregate_type, aggregate_id, idempotency_key, payload, created_by) VALUES ('project.saved', 'project', $1, $2, $3::jsonb, $4)
-      ON CONFLICT (idempotency_key) DO NOTHING`, [id, `project.saved:${id}:${n + 1}`, JSON.stringify(payload), u.id]);
+    await this.repo.addSavedEvent(qr.manager, id, payload, u.id);
   }
 
   /** الأسماء المكتوبة في سجلات ومالهاش مشروع (projUnmatchedReport، د-5): أعداد لكل مجموعة + الأسماء (للأدمن بس) */

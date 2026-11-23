@@ -27,6 +27,25 @@ export class ProjectsRepository {
     return rows[0] ?? null;
   }
 
+  /** سجلات أي مجموعة بالشكل القديم (legacy_records) — القواعد بتقرا منها المشروعات والسجلات المربوطة (نشر الاسم، والموارد) */
+  rows(collection: string, em: EntityManager = this.ds.manager): Promise<{ id: string; data: Record<string, any>; rev: number }[]> { // eslint-disable-line @typescript-eslint/no-explicit-any
+    return em.query(`SELECT id, data, rev FROM legacy_records WHERE collection = $1 AND deleted_at IS NULL ORDER BY created_at, id`, [collection]);
+  }
+  /** مسار المشروع المعتمد من إعدادات العملاء (clients.settings.projectWorkflow) — null = الافتراضي */
+  async settingsWorkflow(em: EntityManager = this.ds.manager): Promise<unknown> {
+    const [r] = await em.query(`SELECT data FROM docs WHERE key = 'clients.settings'`);
+    return r?.data && typeof r.data === 'object' ? (r.data as Record<string, unknown>).projectWorkflow : null;
+  }
+  events(id: string, em: EntityManager = this.ds.manager): Promise<{ type: string; key: string }[]> {
+    return em.query(`SELECT event_type AS type, idempotency_key AS key FROM integration_events WHERE aggregate_type = 'project' AND aggregate_id = $1 ORDER BY seq`, [id]);
+  }
+  /** حدث project.saved في صندوق integration_events (مرة لكل حفظ — المفتاح بعدد الأحداث السابقة للمشروع) */
+  async addSavedEvent(em: EntityManager, id: string, payload: Record<string, unknown>, by: string): Promise<void> {
+    const [{ n }] = await em.query(`SELECT count(*)::int AS n FROM integration_events WHERE aggregate_type = 'project' AND aggregate_id = $1`, [id]);
+    await em.query(`INSERT INTO integration_events (event_type, aggregate_type, aggregate_id, idempotency_key, payload, created_by) VALUES ('project.saved', 'project', $1, $2, $3::jsonb, $4)
+      ON CONFLICT (idempotency_key) DO NOTHING`, [id, `project.saved:${id}:${n + 1}`, JSON.stringify(payload), by]);
+  }
+
   // ---------- خطة الترحيل (قراءة بس — مفيش كتابة)
   legacyProjects(em: EntityManager = this.ds.manager): Promise<ProjectRow[]> {
     return em.query(`SELECT id, data, rev, updated_at FROM legacy_records WHERE collection = 'projects' AND deleted_at IS NULL ORDER BY id`);
