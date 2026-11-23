@@ -2831,7 +2831,7 @@
     "phase53.js",
     "phase61.js"
    ],
-   "target": "legacy /legacy/",
+   "target": "angular /workers",
    "notes": "في القايمة، في مصفوفة الصلاحيات",
    "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"

@@ -24,6 +24,7 @@ export const PAGE_ROUTES: readonly PageRoute[] = [
   { key: 'ledger.returns', label: 'المرتجعات — الشاشة الكاملة', icon: 'assignment_return', target: 'legacy' },
   { key: 'ledger.payments', label: 'الدفعات', icon: 'payments', target: 'angular', path: '/supplier-payments' },
   { key: 'ledger.payments', label: 'الدفعات — الشاشة الكاملة', icon: 'payments', target: 'legacy' },
+  { key: 'workers', label: 'العمال (الشاشة الجديدة)', icon: 'engineering', target: 'angular', path: '/workers', pilot: true },
   { key: 'workers', label: 'العمال', icon: 'engineering', target: 'legacy' },
   { key: 'workerDues', label: 'المستحقات', icon: 'payments', target: 'legacy' },
   { key: 'clients.customers', label: 'العملاء', icon: 'groups', target: 'angular', path: '/customers' },

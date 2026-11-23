@@ -42,7 +42,8 @@ const SYSTEM = { id: 'المفتاح الأساسي `id`' };
 const DEFERRED = { custom: 'خانات «تعديلات مخصصة» القديمة — في الشاشة الكاملة', dismissedNotes: 'الملاحظات المخفية — من الشاشة الكاملة',
   legacyDepartmentId: 'قسم قديم قبل الأقسام الأساسية — للعرض في القديمة بس', previousDepartmentId: 'القسم قبل الاستقالة — بيتحسب في السيرفر', archiveGroup: 'بيتحسب في السيرفر مع الاستقالة',
   retiredAt: 'الإحالة للمعاش من الشاشة الكاملة', projectSince: 'تاريخ الانضمام للمشروع — بيتختم في السيرفر', attachments: 'المرفقات من لوحة المرفقات', licenseExpiry: 'الرخصة مش للعمال (personNotesIssues)', licenseStatus: 'الرخصة مش للعمال', licenseGrade: 'الرخصة مش للعمال',
-  basicSalary: 'نسخة من الراتب (بتتكتب معاه)', type: 'نسخة من النوع (بتتكتب معاه)', categoryId: 'نسخة من القسم (بتتكتب معاه)', projectId: 'الربط بالمعرّف — بيتحسب في السيرفر' };
+  basicSalary: 'نسخة من الراتب (بتتكتب معاه)', type: 'نسخة من النوع (بتتكتب معاه)', categoryId: 'نسخة من القسم (بتتكتب معاه)', projectId: 'الربط بالمعرّف — بيتحسب في السيرفر',
+  idCardStatus: 'بتتحسب من تاريخ البطاقة (السيرفر) وبتتعرض كـ «حالة البطاقة»', resignedAt: 'بيتحط مع الاستقالة في السيرفر (النافذة القديمة مافيهاش خانة تاريخ)' };
 const inNew = (k) => page && new RegExp(`\\b${k}\\b`).test(page);
 
 const counts = { column: 0, extra: 0, mismatch: 0 };

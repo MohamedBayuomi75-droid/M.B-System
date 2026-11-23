@@ -111,6 +111,39 @@ async function login(page, username, password) {
     ok(true, 'list refreshed after save');
   }
 
+  console.log('[3w] workers screen (8.1.5): boards, list from the server, add temporary + edit company + resign through the modal');
+  {
+    await api('POST', '/api/sync', { changes: [
+      { collection: 'supervisors', id: 'sv1', op: 'upsert', baseRev: 0, set: { code: 'SUP-1', name: 'سامي', status: 'active' } },
+      { collection: 'workers', id: 'w1', op: 'upsert', baseRev: 0, set: { code: 'WRK-001', name: 'محمد علي', workerType: 'temporary', type: 'temporary', status: 'active', dailyWage: 300, departmentId: '__core_workers_temp__', categoryId: '__core_workers_temp__' } },
+      { collection: 'workers', id: 'w2', op: 'upsert', baseRev: 0, set: { code: 'WRK-002', name: 'أحمد محمود', workerType: 'company', type: 'company', status: 'active', salary: 6000, basicSalary: 6000, position: 'نجار', skill: 'نجار', departmentId: '__core_workers_perm__', categoryId: '__core_workers_perm__' } },
+    ] }, adminTok);
+    await A.page.goto(srv.base + '/app/workers');
+    await A.page.waitForSelector('#wkBoards .entity-dept-board');
+    const boards = await A.page.$$eval('#wkBoards .entity-dept-board', (bs) => bs.map((b) => [b.getAttribute('data-dept'), b.querySelector('.num').textContent.trim()]));
+    eq(boards.slice(0, 1).concat(boards.filter(([d]) => d.startsWith('__core_workers'))), [['', '2'], ['__core_workers_perm__', '1'], ['__core_workers_temp__', '1']], 'department boards with counts');
+    await A.page.click('#wkBoards .entity-dept-board[data-dept=""]');
+    await A.page.waitForSelector('#wkTable tr[data-id="w2"]');
+    ok(!!(await A.page.$('#wkCards .sc-card')) && !!(await A.page.$('#wkBack')), 'legacy list structure (cards + back to boards)');
+    await A.page.click('#btnAddTempWorker'); await A.page.waitForSelector('#btnSaveWrk');
+    eq(await A.page.inputValue('#wrkCode'), 'WRK-003', 'auto code prefilled');
+    await A.page.fill('#wrkName', 'عامل الواجهة'); await A.page.fill('#wrkWageTemp', '275.555'); await A.page.fill('#wrkPosTemp', 'مساعد');
+    const [pr] = await Promise.all([A.page.waitForResponse((r) => r.url().endsWith('/api/v1/workers') && r.request().method() === 'POST'), A.page.click('#btnSaveWrk')]);
+    eq(pr.status(), 201, 'temporary worker created through the modal');
+    const created = await pr.json();
+    ok(created.dailyWage === 275.56 && created.departmentId === '__core_workers_temp__' && created.insuranceStatus === 'none', 'saved like the legacy modal (round2, temp department)', created);
+    await A.page.waitForSelector(`#wkTable tr[data-id="${created.id}"]`);
+    await A.page.click('.btn-edit-wrk[data-id="w2"]'); await A.page.waitForSelector('#wrkSalary');
+    ok(!!(await A.page.inputValue('#wrkHire')), 'hire date prefilled with today when empty (legacy form)');
+    await A.page.selectOption('#wrkStatus', 'resigned');
+    const [pu] = await Promise.all([A.page.waitForResponse((r) => r.url().includes('/api/v1/workers/') && r.request().method() === 'PATCH'), A.page.click('#btnSaveWrk')]);
+    eq(pu.status(), 200, 'company worker edited through the modal');
+    const res = await pu.json();
+    eq([res.status, res.departmentId, res.archiveGroup], ['resigned', '__resigned_worker__', 'resigned'], 'resign moves to the resigned department');
+    await A.page.click('#wkBack'); await A.page.waitForSelector('#wkBoards');
+    ok((await A.page.$eval('#wkBoards .entity-dept-board[data-dept="__resigned_worker__"] .num', (e) => e.textContent.trim())) === '1', 'resigned board counts him');
+  }
+
   console.log('[4] same session with the legacy UI + deep link');
   {
     await A.page.goto(srv.base + '/legacy/#ledger.suppliers');

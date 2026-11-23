@@ -27,7 +27,7 @@
 | LEG-0003 | [🏠 لوحات الموارد البشرية](#hrHome) | الموارد البشرية | legacy /legacy/ | 9 | 0 | [ديسكتوب](visual-baseline/desktop/hrHome.png) · [موبايل](visual-baseline/mobile/hrHome.png) |
 | LEG-0004 | [الموظفين](#employees) | الموارد البشرية | legacy /legacy/ | 6 | 0 | [ديسكتوب](visual-baseline/desktop/employees.png) · [موبايل](visual-baseline/mobile/employees.png) |
 | LEG-0005 | [المشرفون](#supervisors) | الموارد البشرية | legacy /legacy/ | 6 | 0 | [ديسكتوب](visual-baseline/desktop/supervisors.png) · [موبايل](visual-baseline/mobile/supervisors.png) |
-| LEG-0006 | [العمال](#workers) | الموارد البشرية | legacy /legacy/ | 7 | 0 | [ديسكتوب](visual-baseline/desktop/workers.png) · [موبايل](visual-baseline/mobile/workers.png) |
+| LEG-0006 | [العمال](#workers) | الموارد البشرية | angular /workers | 7 | 0 | [ديسكتوب](visual-baseline/desktop/workers.png) · [موبايل](visual-baseline/mobile/workers.png) |
 | LEG-0007 | [السائقون](#drivers) | الموارد البشرية | legacy /legacy/ | 7 | 0 | [ديسكتوب](visual-baseline/desktop/drivers.png) · [موبايل](visual-baseline/mobile/drivers.png) |
 | LEG-0008 | [معدات ومركبات](#equipment) | الموارد البشرية | legacy /legacy/ | 7 | 0 | [ديسكتوب](visual-baseline/desktop/equipment.png) · [موبايل](visual-baseline/mobile/equipment.png) |
 | LEG-0009 | [حضور الموظفين](#attendance) | الموارد البشرية | legacy /legacy/ | 6 | 1 | [ديسكتوب](visual-baseline/desktop/attendance.png) · [موبايل](visual-baseline/mobile/attendance.png) |
@@ -164,7 +164,7 @@
 
 ### <a id="workers"></a>العمال — `workers` — LEG-0006
 - **القسم:** الموارد البشرية · **في القايمة:** أيوه · **دالة الرسم:** `renderWorkersPage` (renderer/modules/hr/pages-workers.js:29)
-- **المكان المستهدف:** legacy /legacy/ · **الاختبارات:** phase24.js، phase26.js، phase27.js، phase28.js، phase29.js، phase30.js، phase37.js، phase39.js، phase40.js، phase41.js، phase42.js، phase43.js، phase45.js، phase47.js، phase49.js، phase50.js، phase51.js، phase52.js، phase53.js، phase61.js
+- **المكان المستهدف:** angular /workers · **الاختبارات:** phase24.js، phase26.js، phase27.js، phase28.js، phase29.js، phase30.js، phase37.js، phase39.js، phase40.js، phase41.js، phase42.js، phase43.js، phase45.js، phase47.js، phase49.js، phase50.js، phase51.js، phase52.js، phase53.js، phase61.js
 - **العنوان الظاهر:** العمال · **التبويبات:** —
 - **اللقطات:** [ديسكتوب](visual-baseline/desktop/workers.png) · [موبايل](visual-baseline/mobile/workers.png)
 
