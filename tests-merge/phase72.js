@@ -92,7 +92,11 @@ const { ok, eq, summary, baseUser } = require('./lib');
       return Object.fromEntries(colls.map((c) => [c, strip((get(c) || []).map((x) => (x && x.pathHistory ? { ...x, pathHistory: x.pathHistory.map(({ id, ...h }) => h) } : x)).slice().sort((a, b) => String(a.id).localeCompare(String(b.id))))]));
     }, colls);
     const reload = async (pg) => { await pg.reload(); await pg.waitForFunction(() => typeof DATA !== 'undefined' && window.WebSync && WebSync._state.meta && Array.isArray(DATA.projects) && DATA.projects.length > 0, null, { timeout: 30000 }); await pg.waitForTimeout(300); };
-    const open = async (id) => { await page.evaluate(() => { try { closeModal(); } catch (e) { /* */ } }); await page.waitForTimeout(250); await page.evaluate((i) => { goToPage('projects'); openProjectModal(i || undefined); }, id || ''); await page.waitForSelector('#appModal:not(.modal-overlay-out) #btnSavePr'); };
+    const open = async (id) => { await page.evaluate(() => { try { closeModal(); } catch (e) { /* */ } }); await page.waitForTimeout(250); await page.evaluate((i) => { goToPage('projects'); openProjectModal(i || undefined); }, id || ''); await page.waitForSelector('#appModal:not(.modal-overlay-out) #btnSavePr');
+      // على CI البطيء: نستنى النافذة تستقر بقيم السجل قبل الكتابة (وإلا الكتابة بتقع في خانة الكود)
+      if (id) await page.waitForFunction((i) => { const p = DATA.projects.find((x) => x.id === i), n = document.getElementById('prName'); return p && n && n.value === p.name; }, id, { timeout: 15000 });
+      await page.waitForTimeout(150); };
+    const setName = async (v) => { await page.fill('#prName', v); await page.waitForFunction((x) => document.getElementById('prName').value === x, v); };
     const save = async () => { const n = await page.evaluate(() => window.__saveCount); await page.click('#btnSavePr'); await page.waitForFunction((x) => window.__saveCount > x, n, { timeout: 15000 }); };
     await open();
     const today = await page.evaluate(() => document.getElementById('prStart').value);
@@ -114,7 +118,9 @@ const { ok, eq, summary, baseUser } = require('./lib');
 
     console.log('[3] التعديل: تغيير الاسم والمرحلة (A = B)');
     // A: النافذة القديمة
-    await open('pA'); await page.fill('#prName', 'الشروق الجديد'); await save();
+    await open('pA'); const codeBefore = await page.evaluate(() => document.getElementById('prCode') && document.getElementById('prCode').value); await setName('الشروق الجديد');
+    if (codeBefore != null) await page.waitForFunction((c) => document.getElementById('prCode').value === c, codeBefore);
+    await save();
     await open('pB'); await page.selectOption('#prStatus', 'التسليم الابتدائي'); await save();
     await open('pE'); await page.selectOption('#prStatus', 'المستخلصات'); await save();
     // B: الـ API بنفس الخانات اللي النافذة بتبعتها
