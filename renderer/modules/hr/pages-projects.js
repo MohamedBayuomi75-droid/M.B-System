@@ -415,6 +415,8 @@ function openProjectModal(editId, presetCustomerId){
   `);
 
   const prAtt = (typeof clAttachMount === 'function') ? clAttachMount(function(){ return 'project_' + (p ? p.id : 'new'); }, 'مشروع', p ? (p.attachments || []) : []) : null;
+  // نسخة الويب: مرفقات السيرفر اللي اترفعت من الشاشة الجديدة (/app/projects) بتظهر هنا كمان (UAT 7.4 L11)
+  if(p && typeof clServerAttachMount === 'function') clServerAttachMount('projects', p.id);
   if(typeof bindEntityCombos === 'function') bindEntityCombos(document.getElementById('appModal'));
   if(typeof applyFormLayout === 'function') applyFormLayout('projects', document.getElementById('appModal'));
 
