@@ -11,7 +11,7 @@ import { LegacyToast } from './legacy-toast';
 interface Proj {
   id: string; rev: number; code?: string; name: string; status?: string; stage: string; badge: string; shownValue: number; contractNo?: string; customerId?: string; customerName?: string; customer?: string;
   value?: number; budget?: number | string; start?: string; end?: string; progress?: number | null; supervisorId?: string; assignedTo?: string; notes?: string;
-  extraFields?: { label: string; value: string }[]; resources: { supervisors: number; workers: number; equipment: number }; issues: string[];
+  extraFields?: { label: string; value: string }[]; attachments?: { id?: string; name?: string; storedName?: string; date?: string }[]; resources: { supervisors: number; workers: number; equipment: number }; issues: string[];
 }
 interface Stage { value: string; short: string }
 interface Cards { inSection: boolean; count: number; active?: number; done?: number; customers?: number; totalValue: number; shown?: number }
@@ -143,7 +143,7 @@ const fmtMoney = (n: unknown) => `${(Number(n) || 0).toLocaleString('ar-EG', { m
             </div>
             @if (e.id) {
               <div class="section-title" style="margin-top:12px;font-size:14px;border-top:1px solid var(--line, #ddd);padding-top:10px;">المرفقات والمستندات</div>
-              <app-attachments collection="projects" [recordId]="e.id" [canEdit]="canEdit" />
+              <app-attachments collection="projects" [recordId]="e.id" [canEdit]="canEdit" [legacyDocs]="e.legacyAttachments" />
               <p style="font-size:12px;color:var(--ink-soft);margin:8px 0 0;">مسار المشروع (الخطوات والمناقصة) من <a [href]="full">الشاشة الكاملة</a>.</p>
             }
             @if (error()) { <div class="err" role="alert" id="prError">{{ error() }}</div> }
@@ -208,7 +208,9 @@ export class ProjectsPage implements OnInit {
 
   private blank() {
     return { id: '', rev: 0, code: '', name: '', customerId: '', customerName: '', contractNo: '', value: '' as string | number, budget: '' as string | number, start: cairoToday(), end: '',
-      progress: '' as string | number, status: '', supervisorId: '', assignedTo: '', notes: '', extraFields: [] as { label: string; value: string }[] };
+      progress: '' as string | number, status: '', supervisorId: '', assignedTo: '', notes: '', extraFields: [] as { label: string; value: string }[],
+      /** record.attachments القديمة (عرض بس في لوحة المرفقات — UAT 7.4 L11) */
+      legacyAttachments: [] as { id?: string; name?: string; storedName?: string; date?: string }[] };
   }
 
   async openEdit(p: Proj | null) {
@@ -222,7 +224,8 @@ export class ProjectsPage implements OnInit {
         const cid = cur.customerId || o.customers.find((c) => c.name === cur.customerName)?.id || '';
         Object.assign(e, { id: cur.id, rev: cur.rev, code: cur.code ?? '', name: cur.name ?? '', customerId: cid, customerName: cur.customerName || cur.customer || '', contractNo: cur.contractNo ?? '',
           value: Number(cur.value || cur.budget) || 0, budget: Number(cur.budget) || 0, start: cur.start || cairoToday(), end: cur.end ?? '', progress: cur.progress != null ? cur.progress : '',
-          supervisorId: cur.supervisorId ?? '', assignedTo: cur.assignedTo ?? '', notes: cur.notes ?? '', extraFields: (Array.isArray(cur.extraFields) ? cur.extraFields : []).map((x) => ({ ...x })) });
+          supervisorId: cur.supervisorId ?? '', assignedTo: cur.assignedTo ?? '', notes: cur.notes ?? '', extraFields: (Array.isArray(cur.extraFields) ? cur.extraFields : []).map((x) => ({ ...x })),
+          legacyAttachments: Array.isArray(cur.attachments) ? cur.attachments : [] });
       } else { e.code = o.nextCode; e.budget = 0; }
       e.status = o.current;
       this.e = e; this.opts.set(o); this.modal.set('edit');
