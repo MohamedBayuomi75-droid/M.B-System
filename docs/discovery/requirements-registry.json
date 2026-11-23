@@ -6,7 +6,7 @@
   "TECH": 19,
   "NEW": 10,
   "CHG": 15,
-  "DEC": 118
+  "DEC": 119
  },
  "entries": [
   {
@@ -2597,6 +2597,24 @@
    "classification": "OPEN-DECISION",
    "kind": "decision",
    "title": "نطاق الحزمة 7.4 معتمد (المشروعات): مسار المشروع في الواجهة القديمة مع تحريك موضعه عند تغيير المرحلة زي `pwOnStatusChanged`، ونشر تغيير الاسم على السجلات المربوط",
+   "module": "قرارات",
+   "priority": "—",
+   "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",
+   "tests": [],
+   "target": "—",
+   "notes": "محسوم",
+   "aliases": [],
+   "decisionStatus": "resolved",
+   "priorityStatus": "—",
+   "status": "resolved"
+  },
+  {
+   "id": "DEC-0118",
+   "key": "decision:DEC-0118",
+   "prefix": "DEC",
+   "classification": "OPEN-DECISION",
+   "kind": "decision",
+   "title": "UAT الحزمة 7.4 اتنفّذ آليًا (جلسة Claude على اللابتوب، بطلب المستخدم، ببيانات اصطناعية على النسخة المعزولة)، وقرار L11: توحيد المرفقات (نافذة المشروع القديمة في",
    "module": "قرارات",
    "priority": "—",
    "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",

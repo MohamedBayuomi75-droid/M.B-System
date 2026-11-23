@@ -197,7 +197,7 @@ async function login(page, username, password) {
     eq((await api('GET', '/api/v1/approvals/requests/' + sub.body.id, null, adminTok)).body.status, 'Approved', 'approved from the UI');
     await P.ctx.close();
 
-    eq((await api('POST', '/api/sync', { changes: [{ collection: 'projects', id: 'e2e-att', op: 'upsert', baseRev: 0, set: { name: 'مشروع مرفقات اختبار' } }] }, adminTok)).status, 200, 'test project');
+    eq((await api('POST', '/api/sync', { changes: [{ collection: 'projects', id: 'e2e-att', op: 'upsert', baseRev: 0, set: { name: 'مشروع مرفقات اختبار', attachments: [{ id: 'old1', name: 'مرفق-قديم.pdf', date: '2026-01-01' }] } }] }, adminTok)).status, 200, 'test project');
     await A.page.goto(srv.base + '/app/projects');
     await A.page.waitForSelector('#projTable tr[data-id="e2e-att"]');
     await A.page.click('#projTable .btn-edit-proj[data-id="e2e-att"]'); // المرفقات في نافذة التعديل (زي «📎 إرفاق مستند» في النافذة القديمة)
@@ -211,6 +211,14 @@ async function login(page, username, password) {
     ok((await A.page.textContent('#attList')).includes('متبدّل'), 'old version kept and marked superseded');
     const latest = await api('GET', '/api/attachments?collection=projects&recordId=e2e-att', null, adminTok);
     eq(latest.body.map((a) => a.version), [2], 'list returns the latest version only');
+    // UAT 7.4 L11 (قرار المستخدم: توحيد المرفقات): كل واجهة بتعرض النوعين
+    ok((await A.page.textContent('#attLegacyList')).includes('مرفق-قديم.pdf'), '/app/ edit window also lists the legacy record attachments (read-only)');
+    await A.page.goto(srv.base + '/legacy/#projects');
+    await A.page.waitForFunction(() => typeof openProjectModal === 'function' && window.WebSync && WebSync._state.meta && Array.isArray(DATA.projects) && DATA.projects.some((p) => p.id === 'e2e-att'), null, { timeout: 30000 });
+    await A.page.evaluate(() => openProjectModal('e2e-att'));
+    await A.page.waitForSelector('.cl-att-server [data-server-att]');
+    ok((await A.page.textContent('.cl-att-server')).includes('عقد-معدل.pdf'), 'legacy project window (web) lists the server attachment uploaded from /app/ (latest version)');
+    await A.page.evaluate(() => closeModal());
   }
 
   console.log('[6c] phase 6.1: suppliers & customers screens (cutover) write the same records the legacy UI reads (test data)');
