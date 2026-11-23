@@ -1980,6 +1980,93 @@
     ],
     "type": "object"
    },
+   "SavePersonDto": {
+    "properties": {
+     "address": {
+      "type": "string"
+     },
+     "birthDate": {
+      "type": "string"
+     },
+     "code": {
+      "type": "string"
+     },
+     "confirmDuplicates": {
+      "description": "«حفظ على أي حال» بعد تنبيه التشابه (DUPLICATE_SOFT)",
+      "type": "boolean"
+     },
+     "contractStatus": {
+      "type": "string"
+     },
+     "contractType": {
+      "type": "string"
+     },
+     "dailyWage": {
+      "description": "اليومية (المشرف والسواق الخارجي) — حقل محمي (B-48)",
+      "type": "string"
+     },
+     "external": {
+      "description": "سواق من خارج الشركة (الإضافة بس؛ التعديل بياخد نوع السجل المخزن)",
+      "type": "boolean"
+     },
+     "extraFields": {
+      "items": {
+       "$ref": "#/components/schemas/ExtraFieldDto"
+      },
+      "type": "array"
+     },
+     "hireDate": {
+      "type": "string"
+     },
+     "idCardExpiry": {
+      "type": "string"
+     },
+     "insuranceNumber": {
+      "type": "string"
+     },
+     "insuranceStatus": {
+      "type": "string"
+     },
+     "licenseExpiry": {
+      "type": "string"
+     },
+     "licenseGrade": {
+      "description": "درجة الرخصة (سواق الشركة)",
+      "type": "string"
+     },
+     "name": {
+      "type": "string"
+     },
+     "nationalId": {
+      "type": "string"
+     },
+     "notes": {
+      "type": "string"
+     },
+     "phone": {
+      "type": "string"
+     },
+     "position": {
+      "description": "الوظيفة",
+      "type": "string"
+     },
+     "resignedAt": {
+      "description": "تاريخ الاستقالة (بيتاخد بس لو الحالة استقالة — readResignedDateFromForm)",
+      "type": "string"
+     },
+     "salary": {
+      "description": "الراتب (سواق الشركة) — حقل محمي (B-48)",
+      "type": "string"
+     },
+     "status": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "name"
+    ],
+    "type": "object"
+   },
    "SaveProjectDto": {
     "properties": {
      "assignedTo": {
@@ -2615,6 +2702,97 @@
      "date",
      "direction",
      "amount"
+    ],
+    "type": "object"
+   },
+   "UpdatePersonDto": {
+    "properties": {
+     "address": {
+      "type": "string"
+     },
+     "birthDate": {
+      "type": "string"
+     },
+     "code": {
+      "type": "string"
+     },
+     "confirmDuplicates": {
+      "description": "«حفظ على أي حال» بعد تنبيه التشابه (DUPLICATE_SOFT)",
+      "type": "boolean"
+     },
+     "contractStatus": {
+      "type": "string"
+     },
+     "contractType": {
+      "type": "string"
+     },
+     "dailyWage": {
+      "description": "اليومية (المشرف والسواق الخارجي) — حقل محمي (B-48)",
+      "type": "string"
+     },
+     "external": {
+      "description": "سواق من خارج الشركة (الإضافة بس؛ التعديل بياخد نوع السجل المخزن)",
+      "type": "boolean"
+     },
+     "extraFields": {
+      "items": {
+       "$ref": "#/components/schemas/ExtraFieldDto"
+      },
+      "type": "array"
+     },
+     "hireDate": {
+      "type": "string"
+     },
+     "idCardExpiry": {
+      "type": "string"
+     },
+     "insuranceNumber": {
+      "type": "string"
+     },
+     "insuranceStatus": {
+      "type": "string"
+     },
+     "licenseExpiry": {
+      "type": "string"
+     },
+     "licenseGrade": {
+      "description": "درجة الرخصة (سواق الشركة)",
+      "type": "string"
+     },
+     "name": {
+      "type": "string"
+     },
+     "nationalId": {
+      "type": "string"
+     },
+     "notes": {
+      "type": "string"
+     },
+     "phone": {
+      "type": "string"
+     },
+     "position": {
+      "description": "الوظيفة",
+      "type": "string"
+     },
+     "resignedAt": {
+      "description": "تاريخ الاستقالة (بيتاخد بس لو الحالة استقالة — readResignedDateFromForm)",
+      "type": "string"
+     },
+     "rev": {
+      "type": "number"
+     },
+     "salary": {
+      "description": "الراتب (سواق الشركة) — حقل محمي (B-48)",
+      "type": "string"
+     },
+     "status": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "name",
+     "rev"
     ],
     "type": "object"
    },
@@ -4533,6 +4711,236 @@
     ]
    }
   },
+  "/api/v1/drivers": {
+   "get": {
+    "operationId": "DriversController_list",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "q",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "status",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "description": "القسم (لوحة)، و«__none__» = بدون قسم أو وظيفة",
+      "in": "query",
+      "name": "departmentId",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "xCard",
+      "required": false,
+      "schema": {
+       "enum": [
+        "",
+        "valid",
+        "soon",
+        "expired",
+        "none"
+       ],
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "xLic",
+      "required": false,
+      "schema": {
+       "enum": [
+        "",
+        "valid",
+        "soon",
+        "expired",
+        "none",
+        "nolic"
+       ],
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "xIns",
+      "required": false,
+      "schema": {
+       "enum": [
+        "",
+        "insured",
+        "none",
+        "pending",
+        "empty"
+       ],
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "xDocs",
+      "required": false,
+      "schema": {
+       "enum": [
+        "",
+        "missing",
+        "complete"
+       ],
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "xData",
+      "required": false,
+      "schema": {
+       "enum": [
+        "",
+        "missing"
+       ],
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "لوحات الأقسام، والقايمة بنفس فلاتر وبحث صفحة السائقين القديمة (بترتيب خطواتها)، والكروت، والملاحظات (الأجور محمية — B-48)",
+    "tags": [
+     "v1 drivers"
+    ]
+   },
+   "post": {
+    "operationId": "DriversController_create",
+    "parameters": [],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/SavePersonDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "إضافة سائق شركة، أو خارجي (external) — بنفس حساب النافذة القديمة + حدث driver.saved",
+    "tags": [
+     "v1 drivers"
+    ]
+   }
+  },
+  "/api/v1/drivers/form-options": {
+   "get": {
+    "operationId": "DriversController_formOptions",
+    "parameters": [],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "خيارات نافذتي السائق",
+    "tags": [
+     "v1 drivers"
+    ]
+   }
+  },
+  "/api/v1/drivers/{id}": {
+   "get": {
+    "operationId": "DriversController_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "tags": [
+     "v1 drivers"
+    ]
+   },
+   "patch": {
+    "operationId": "DriversController_update",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/UpdatePersonDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "تعديل سائق (rev إلزامي): سواق الشركة بالدمج، والخارجي من غير دمج زي القديمة",
+    "tags": [
+     "v1 drivers"
+    ]
+   }
+  },
   "/api/v1/finance/formulas": {
    "get": {
     "operationId": "FormulasController_list",
@@ -5789,6 +6197,236 @@
     ],
     "tags": [
      "v1 stock adjustments"
+    ]
+   }
+  },
+  "/api/v1/supervisors": {
+   "get": {
+    "operationId": "SupervisorsController_list",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "q",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "status",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "description": "القسم (لوحة)، و«__none__» = بدون قسم أو وظيفة",
+      "in": "query",
+      "name": "departmentId",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "xCard",
+      "required": false,
+      "schema": {
+       "enum": [
+        "",
+        "valid",
+        "soon",
+        "expired",
+        "none"
+       ],
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "xLic",
+      "required": false,
+      "schema": {
+       "enum": [
+        "",
+        "valid",
+        "soon",
+        "expired",
+        "none",
+        "nolic"
+       ],
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "xIns",
+      "required": false,
+      "schema": {
+       "enum": [
+        "",
+        "insured",
+        "none",
+        "pending",
+        "empty"
+       ],
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "xDocs",
+      "required": false,
+      "schema": {
+       "enum": [
+        "",
+        "missing",
+        "complete"
+       ],
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "xData",
+      "required": false,
+      "schema": {
+       "enum": [
+        "",
+        "missing"
+       ],
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "لوحات الأقسام، والقايمة بنفس فلاتر وبحث صفحة المشرفين القديمة، والكروت («عمال تابعون»)، والملاحظات (اليومية محمية — B-48)",
+    "tags": [
+     "v1 supervisors"
+    ]
+   },
+   "post": {
+    "operationId": "SupervisorsController_create",
+    "parameters": [],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/SavePersonDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "إضافة مشرف (Idempotency-Key إلزامي) بنفس حساب النافذة القديمة + حدث supervisor.saved",
+    "tags": [
+     "v1 supervisors"
+    ]
+   }
+  },
+  "/api/v1/supervisors/form-options": {
+   "get": {
+    "operationId": "SupervisorsController_formOptions",
+    "parameters": [],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "خيارات نافذة المشرف",
+    "tags": [
+     "v1 supervisors"
+    ]
+   }
+  },
+  "/api/v1/supervisors/{id}": {
+   "get": {
+    "operationId": "SupervisorsController_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "tags": [
+     "v1 supervisors"
+    ]
+   },
+   "patch": {
+    "operationId": "SupervisorsController_update",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/UpdatePersonDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "تعديل مشرف (rev إلزامي): الدمج، وتاريخ الاستقالة، والقسم، وأرشيف المستقيلين — في معاملة واحدة",
+    "tags": [
+     "v1 supervisors"
     ]
    }
   },

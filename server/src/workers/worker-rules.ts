@@ -21,6 +21,10 @@ export const DEPT_NONE = '__none__';
 export const CORE_WORKER_DEPTS = [{ id: '__core_workers_perm__', name: 'عمال الشركة' }, { id: '__core_workers_temp__', name: 'عمالة مؤقتة' }];
 export const RESIGNED_DEPT = '__resigned_worker__';
 export const RETIRED_DEPT = '__retired_worker__';
+/** أنواع الأشخاص اللي القواعد دي بتخدمها (personNotesIssues(kind)، syncPersonResignedState(kind)…) — 8.2 عمّمها */
+export type PersonKind = 'worker' | 'supervisor' | 'driver';
+export const resignedDeptOf = (k: PersonKind) => `__resigned_${k}__`;
+export const retiredDeptOf = (k: PersonKind) => `__retired_${k}__`;
 const HIRE_REQUIRED_DOCS = [
   { code: 'qualification', label: 'أصل شهادة المؤهل' }, { code: 'military', label: 'أصل شهادة الجيش' }, { code: 'birth', label: 'أصل شهادة الميلاد' },
   { code: 'contract', label: 'عقد العمل' }, { code: 'criminal', label: 'فيش وتشبيه' }, { code: 'id_card', label: 'صورة البطاقة الشخصية' },
@@ -31,6 +35,7 @@ const RESIGNED_DOCS = [
   { code: 'res_birth', label: 'صورة شهادة الميلاد' }, { code: 'res_military', label: 'صورة شهادة الجيش' }, { code: 'res_resign_request', label: 'طلب استقالة' },
   { code: 'res_clearance', label: 'نموذج إخلاء طرف' }, { code: 'res_final_settlement', label: 'مخالصة مالية نهائية' }, { code: 'res_docs_receipt', label: 'إيصال استلام أصول المستندات' },
 ];
+const DRIVER_EXTRA_DOCS = [{ code: 'driver_license_img', label: 'صورة الرخصة الشخصية' }, { code: 'driver_license_data', label: 'شهادة بيانات الرخصة' }];
 const DOC_ALIASES: Record<string, string[]> = {
   id_card: ['بطاقة', 'قومي', 'رقم قومي', 'بطاقة شخصية', 'صورة البطاقة'], birth: ['ميلاد', 'شهادة الميلاد'], military: ['جيش', 'عسكري', 'شهادة الجيش'],
   qualification: ['مؤهل', 'شهادة المؤهل'], insurance: ['تأمين', 'برنت', 'برنت تأميني'], work_stub: ['كعب', 'كعب عمل'], contract: ['عقد', 'عقد عمل'],
@@ -103,14 +108,14 @@ export interface Ctx {
 export const deptName = (c: Ctx, id: string) => { const d = c.departments.find((x) => x && x.id === id); return d ? d.name || id : '—'; };
 export const supName = (c: Ctx, id: string) => { const s = c.supervisors.find((x) => x.id === id); return s ? s.name || s.code || id : '—'; };
 /** activeLeaveOf: إجازة معتمدة سارية النهارده */
-export const activeLeaveOf = (c: Ctx, id: string) => c.leaves.find((l) => l && l.status === 'approved' && (l.personKind || l.kind || 'employee') === 'worker' && (l.personId || l.employeeId) === id && (l.from || '') <= c.today && (!l.to || l.to >= c.today)) || null;
+export const activeLeaveOf = (c: Ctx, id: string, kind: PersonKind = 'worker') => c.leaves.find((l) => l && l.status === 'approved' && (l.personKind || l.kind || 'employee') === kind && (l.personId || l.employeeId) === id && (l.from || '') <= c.today && (!l.to || l.to >= c.today)) || null;
 
 // ---------------- الأوراق المطلوبة
-export function requiredDocs(c: Ctx, kind: 'worker' | 'resigned'): { code: string; label: string }[] {
+export function requiredDocs(c: Ctx, kind: PersonKind | 'resigned'): { code: string; label: string }[] {
   const custom = c.requiredDocsByKind?.[kind];
   if (Array.isArray(custom) && !custom.length && c.requiredDocsEmpty?.[kind]) return [];
   if (Array.isArray(custom) && custom.length) return custom.map((d) => ({ code: d.code || d.id || String(d.label || d.name || '').slice(0, 24), label: d.label || d.name || d.code || '' })).filter((d) => d.label);
-  return kind === 'resigned' ? RESIGNED_DOCS : HIRE_REQUIRED_DOCS;
+  return kind === 'resigned' ? RESIGNED_DOCS : kind === 'driver' ? [...HIRE_REQUIRED_DOCS, ...DRIVER_EXTRA_DOCS] : HIRE_REQUIRED_DOCS;
 }
 const docTextMatches = (txt: string, words: string[], excl: string[]) => { const t = normAr(txt); if (!t.trim()) return false; if (excl.some((x) => x && t.indexOf(normAr(x)) !== -1)) return false; return words.some((w) => w && t.indexOf(w) !== -1); };
 /** personHasDocHint: مرفق على الشخص بملف فعلي، أو مستند في الأرشيف بنوع مطابق وملف */
@@ -125,8 +130,8 @@ export function hasDoc(c: Ctx, p: J, doc: J): boolean {
   }
   return false;
 }
-/** personNotesIssues('worker', p) */
-export function notesIssues(c: Ctx, p: J): string[] {
+/** personNotesIssues(kind, p) — العامل والمشرف والسواق (الفروق حسب النوع زي القديمة بالظبط) */
+export function notesIssues(c: Ctx, p: J, kind: PersonKind = 'worker'): string[] {
   const issues: string[] = [];
   const dismissed = new Set((p.dismissedNotes || []).map((x: unknown) => String(x).trim()));
   const keep = () => issues.filter((i) => !dismissed.has(String(i).trim()));
@@ -135,7 +140,7 @@ export function notesIssues(c: Ctx, p: J): string[] {
     for (const doc of requiredDocs(c, 'resigned')) if (!hasDoc(c, p, doc)) issues.push(`ناقص: ${doc.label || doc.code || ''}`);
     return keep();
   }
-  if (isTemporaryWorker(p)) {
+  if (kind === 'worker' && isTemporaryWorker(p)) {
     if (!String(p.nationalId || p.idNumber || '').trim()) issues.push('الرقم القومي ناقص');
     if (!p.supervisorId) issues.push('بدون مشرف');
     if (!String(p.departmentId || p.categoryId || p.department || '').trim()) issues.push('بدون قسم');
@@ -145,21 +150,31 @@ export function notesIssues(c: Ctx, p: J): string[] {
   if (!String(p.name || '').trim()) issues.push('الاسم ناقص');
   if (!String(p.nationalId || p.idNumber || '').trim()) issues.push('الرقم القومي ناقص');
   if (!String(p.phone || p.mobile || '').trim()) issues.push('رقم الهاتف ناقص');
-  if (!p.supervisorId) issues.push('بدون مشرف');
-  if (!String(p.departmentId || p.categoryId || p.department || '').trim()) issues.push('بدون قسم');
-  if (!toInt(p.dailyWage)) issues.push('بدون يومية محددة');
-  if (p.idCardExpiry) { const s = statusFromExpiry(p.idCardExpiry, c.today); if (s === 'expired') issues.push('بطاقة منتهية'); else if (s === 'soon') issues.push('بطاقة قاربت على الانتهاء'); }
+  if (kind === 'worker') {
+    if (!p.supervisorId) issues.push('بدون مشرف');
+    if (!String(p.departmentId || p.categoryId || p.department || '').trim()) issues.push('بدون قسم');
+    if (!toInt(p.dailyWage)) issues.push('بدون يومية محددة');
+  }
+  // المشرف والسواق: اليومية (والسواق اللي ليه راتب كمان — سلوك القديمة)
+  if (kind === 'supervisor' || kind === 'driver') { if (!toInt(p.dailyWage)) issues.push('بدون يومية محددة'); }
+  if (p.idCardExpiry) { const st = statusFromExpiry(p.idCardExpiry, c.today); if (st === 'expired') issues.push('بطاقة منتهية'); else if (st === 'soon') issues.push('بطاقة قاربت على الانتهاء'); }
   else issues.push('لا يوجد تاريخ بطاقة');
-  for (const doc of requiredDocs(c, 'worker')) if (!hasDoc(c, p, doc)) issues.push(`ناقص: ${doc.label}`);
+  // الرخصة: مش للعمال، و«لا يوجد تاريخ رخصة» للسواق بس
+  if (kind !== 'worker') {
+    if (p.licenseExpiry) { const st = statusFromExpiry(p.licenseExpiry, c.today); if (st === 'expired') issues.push('رخصة منتهية'); else if (st === 'soon') issues.push('رخصة قاربت على الانتهاء'); }
+    else if (kind === 'driver') issues.push('لا يوجد تاريخ رخصة');
+  }
+  if (kind === 'driver' && !String(p.licenseGrade || '').trim()) issues.push('درجة الرخصة ناقصة');
+  for (const doc of requiredDocs(c, kind)) if (!hasDoc(c, p, doc)) issues.push(`ناقص: ${doc.label}`);
   const ins = String(p.insuranceStatus || '').toLowerCase();
   if (ins === 'none' || ins === 'uninsured' || ins === 'غير مؤمن عليه' || ins === 'لا يوجد') issues.push('غير مؤمن عليه');
   return keep();
 }
 /** علامة ⚠️ (_personWarningBadgeBase): بيانات أساسية ناقصة (القومي والهاتف والعنوان) أو أوراق ناقصة (مش للمؤقت) */
-export function warning(c: Ctx, p: J): string {
+export function warning(c: Ctx, p: J, kind: PersonKind = 'worker'): string {
   const miss = ['nationalId', 'phone', 'address'].filter((k) => !String(p[k] || '').trim()).map((k) => ({ nationalId: 'الرقم القومي', phone: 'الهاتف', address: 'العنوان' } as J)[k]);
   const dismissed = new Set((p.dismissedNotes || []).map((x: unknown) => String(x).trim()));
-  const docs = isTemporaryWorker(p) ? [] : requiredDocs(c, 'worker').filter((d) => !hasDoc(c, p, d) && !dismissed.has(`ناقص: ${d.label}`));
+  const docs = kind === 'worker' && isTemporaryWorker(p) ? [] : requiredDocs(c, kind).filter((d) => !hasDoc(c, p, d) && !dismissed.has(`ناقص: ${d.label}`));
   if (!miss.length && !docs.length) return '';
   const tips: string[] = [];
   if (miss.length) tips.push(`بيانات ناقصة: ${miss.join('، ')}`);
@@ -169,8 +184,8 @@ export function warning(c: Ctx, p: J): string {
 
 // ---------------- القايمة (filteredWorkers + applyExtraPersonFilters)
 export interface WorkerFilters { q?: string; status?: string; type?: string; supervisorId?: string; project?: string; departmentId?: string; xCard?: string; xIns?: string; xDocs?: string; xData?: string }
-const xInsNorm = (v0: unknown) => { const v = String(v0 || '').toLowerCase().trim(); if (!v) return 'empty'; if (v === 'none' || v === 'uninsured' || v.indexOf('غير') >= 0 || v === 'لا يوجد') return 'none'; if (v === 'pending' || v.indexOf('قيد') >= 0) return 'pending'; if (v === 'insured' || v.indexOf('مؤم') >= 0) return 'insured'; return v; };
-const byNameAr = <T extends J>(list: T[]) => list.slice().sort((a, b) => String(a.name || '').localeCompare(String(b.name || ''), 'ar', { sensitivity: 'base' }));
+export const xInsNorm = (v0: unknown) => { const v = String(v0 || '').toLowerCase().trim(); if (!v) return 'empty'; if (v === 'none' || v === 'uninsured' || v.indexOf('غير') >= 0 || v === 'لا يوجد') return 'none'; if (v === 'pending' || v.indexOf('قيد') >= 0) return 'pending'; if (v === 'insured' || v.indexOf('مؤم') >= 0) return 'insured'; return v; };
+export const byNameAr = <T extends J>(list: T[]) => list.slice().sort((a, b) => String(a.name || '').localeCompare(String(b.name || ''), 'ar', { sensitivity: 'base' }));
 export function filterWorkers(c: Ctx, all: J[], f: WorkerFilters): J[] {
   let list = all.slice();
   if (f.status === 'temporary') list = list.filter((w) => isTemporaryWorker(w)); else if (f.status) list = list.filter((w) => w.status === f.status);
@@ -193,14 +208,18 @@ export function filterWorkers(c: Ctx, all: J[], f: WorkerFilters): J[] {
 }
 
 // ---------------- لوحات الأقسام
-export function boards(c: Ctx, all: J[]) {
-  const sys = c.departments.filter((d) => d && d.system && !d.jobDept && (!d.kind || d.kind === 'workers' || d.kind === 'all' || (Array.isArray(d.kinds) && d.kinds.includes('workers')) || all.some((p) => entityDepartmentId(p) === d.id)));
-  const fixed = [{ id: RESIGNED_DEPT, name: 'المستقيلين' }, { id: RETIRED_DEPT, name: 'المعاشات' }];
-  const order = CORE_WORKER_DEPTS.map((x) => x.id);
-  const deps = [...CORE_WORKER_DEPTS.map((x) => ({ ...x, ...(sys.find((d) => d.id === x.id) ? { name: sys.find((d) => d.id === x.id)!.name || x.name } : {}) })),
+export const CORE_DEPTS_OF: Record<PersonKind, { id: string; name: string }[]> = {
+  worker: CORE_WORKER_DEPTS, supervisor: [{ id: '__core_supervisors__', name: 'المشرفين' }], driver: [{ id: '__core_drivers__', name: 'سائقين الشركة' }, { id: '__core_drivers_ext__', name: 'سائقون من خارج الشركة' }],
+};
+export function boards(c: Ctx, all: J[], kind: PersonKind = 'worker') {
+  const coll = `${kind}s`, core = CORE_DEPTS_OF[kind], RES = resignedDeptOf(kind), RET = retiredDeptOf(kind);
+  const sys = c.departments.filter((d) => d && d.system && !d.jobDept && (!d.kind || d.kind === coll || d.kind === 'all' || (Array.isArray(d.kinds) && d.kinds.includes(coll)) || all.some((p) => entityDepartmentId(p) === d.id)));
+  const fixed = [{ id: RES, name: 'المستقيلين' }, { id: RET, name: 'المعاشات' }];
+  const order = core.map((x) => x.id);
+  const deps = [...core.map((x) => ({ ...x, ...(sys.find((d) => d.id === x.id) ? { name: sys.find((d) => d.id === x.id)!.name || x.name } : {}) })),
     ...sys.filter((d) => !order.includes(d.id) && !isResignedDeptId(d.id)).sort((a, b) => String(a.name || '').localeCompare(String(b.name || ''), 'ar'))];
   const count = (id: string) => (id === DEPT_NONE ? all.filter((x) => entityNoDeptOrJob(x)).length : id === '' ? all.length : all.filter((x) => entityDepartmentId(x) === id).length);
-  return [{ id: '', name: 'الكل', icon: '📋' }, { id: DEPT_NONE, name: 'بدون قسم أو وظيفة', icon: '📂' }, ...fixed.map((d) => ({ ...d, icon: d.id === RESIGNED_DEPT ? '🚪' : '🏖️' })), ...deps.map((d) => ({ id: d.id, name: d.name, icon: '🧑‍🔧' }))]
+  return [{ id: '', name: 'الكل', icon: '📋' }, { id: DEPT_NONE, name: 'بدون قسم أو وظيفة', icon: '📂' }, ...fixed.map((d) => ({ ...d, icon: d.id === RES ? '🚪' : '🏖️' })), ...deps.map((d) => ({ id: d.id, name: d.name, icon: ({ worker: '🧑‍🔧', supervisor: '👷', driver: '🧑‍🚒' } as Record<PersonKind, string>)[kind] }))]
     .map((b) => ({ ...b, count: count(b.id) }));
 }
 
@@ -222,30 +241,31 @@ export function personAge(p: J, on: string): number | null {
 
 // ---------------- الكروت
 export interface Card { label: string; value?: string | number; parts?: { n: number; l: string; tone?: string }[]; tone?: string; ico: string }
-export function cards(c: Ctx, rows: J[], deptF: string): Card[] {
-  const sec = deptF === RETIRED_DEPT ? 'retired' : deptF === RESIGNED_DEPT ? 'resigned' : '';
-  if (sec) {
-    const ret = sec === 'retired', yr = c.today.slice(0, 4);
-    const rd = (p: J) => String(ret ? p.retiredAt || '' : p.resignedAt || p.resignDate || '').slice(0, 10);
-    const noDate = rows.filter((p) => !rd(p)).length;
-    let val = 0, cnt = 0, lastD = '';
-    for (const p of rows) {
-      const r = rd(p); if (r && r > lastD) lastD = r;
-      if (ret) { const a = personAge(p, r || c.today); if (a != null && a > 0) { val += a; cnt++; } }
-      else { const h = String(p.hireDate || '').slice(0, 10); if (h && r && r >= h) { val += (Date.parse(r) - Date.parse(h)) / (1000 * 60 * 60 * 24 * 30.4375); cnt++; } }
-    }
-    const avg = cnt ? val / cnt : 0;
-    const avgTxt = !cnt ? '—' : ret ? `${Math.round(avg)} سنة` : avg >= 12 ? `${Math.round((avg / 12) * 10) / 10} سنة` : `${Math.round(avg)} شهر`;
-    return [
-      { ico: ret ? '🏖️' : '🚪', label: ret ? 'عدد المحالين للمعاش' : 'عدد المستقيلين', value: rows.length },
-      { ico: '📅', label: ret ? 'أُحيلوا هذا العام' : 'استقالوا هذا العام', value: rows.filter((p) => rd(p).slice(0, 4) === yr).length, tone: 'ok' },
-      { ico: ret ? '🎂' : '⏳', label: ret ? 'متوسط سن الإحالة' : 'متوسط مدة الخدمة', value: avgTxt },
-      { ico: '🗓️', label: ret ? 'آخر إحالة' : 'آخر استقالة', value: lastD ? fmtDate(lastD) : '—' },
-      { ico: '❗', label: ret ? 'بدون تاريخ إحالة' : 'بدون تاريخ استقالة', value: noDate, tone: noDate ? 'warn' : '' },
-    ];
+/** كروت القسم (sectionStatCardsHtml): المستقيلين والمعاشات */
+export function sectionCards(c: Ctx, rows: J[], sec: 'resigned' | 'retired'): Card[] {
+  const ret = sec === 'retired', yr = c.today.slice(0, 4);
+  const rd = (p: J) => String(ret ? p.retiredAt || '' : p.resignedAt || p.resignDate || '').slice(0, 10);
+  const noDate = rows.filter((p) => !rd(p)).length;
+  let val = 0, cnt = 0, lastD = '';
+  for (const p of rows) {
+    const r = rd(p); if (r && r > lastD) lastD = r;
+    if (ret) { const a = personAge(p, r || c.today); if (a != null && a > 0) { val += a; cnt++; } }
+    else { const h = String(p.hireDate || '').slice(0, 10); if (h && r && r >= h) { val += (Date.parse(r) - Date.parse(h)) / (1000 * 60 * 60 * 24 * 30.4375); cnt++; } }
   }
+  const avg = cnt ? val / cnt : 0;
+  const avgTxt = !cnt ? '—' : ret ? `${Math.round(avg)} سنة` : avg >= 12 ? `${Math.round((avg / 12) * 10) / 10} سنة` : `${Math.round(avg)} شهر`;
+  return [
+    { ico: ret ? '🏖️' : '🚪', label: ret ? 'عدد المحالين للمعاش' : 'عدد المستقيلين', value: rows.length },
+    { ico: '📅', label: ret ? 'أُحيلوا هذا العام' : 'استقالوا هذا العام', value: rows.filter((p) => rd(p).slice(0, 4) === yr).length, tone: 'ok' },
+    { ico: ret ? '🎂' : '⏳', label: ret ? 'متوسط سن الإحالة' : 'متوسط مدة الخدمة', value: avgTxt },
+    { ico: '🗓️', label: ret ? 'آخر إحالة' : 'آخر استقالة', value: lastD ? fmtDate(lastD) : '—' },
+    { ico: '❗', label: ret ? 'بدون تاريخ إحالة' : 'بدون تاريخ استقالة', value: noDate, tone: noDate ? 'warn' : '' },
+  ];
+}
+/** أجزاء _entityStatCardsBase / _builtinExtraCards المشتركة بين الأنواع */
+export function cardParts(c: Ctx, kind: PersonKind, rows: J[]) {
   const act = (x: J) => !x.status || x.status === 'active' || x.status === 'working';
-  const actN = rows.filter(act).length, onL = rows.filter((x) => activeLeaveOf(c, x.id)).length;
+  const actN = rows.filter(act).length, onL = rows.filter((x) => activeLeaveOf(c, x.id, kind)).length;
   const ins = { insured: 0, none: 0, pending: 0 } as Record<string, number>;
   for (const x of rows) { const v = String(x.insuranceStatus || '').trim(); ins[v === 'insured' || v === 'مؤمَّن' || v === 'مؤمن' ? 'insured' : v === 'pending' || v === 'قيد التسجيل' ? 'pending' : 'none']++; }
   let lv = 0, le = 0;
@@ -256,18 +276,21 @@ export function cards(c: Ctx, rows: J[], deptF: string): Card[] {
   const ce = rows.filter(cardExp).length;
   const cv = rows.filter((x) => !cardExp(x) && (x.idCardExpiry || x.idCardStatus === 'valid' || x.idCardStatus === 'سارية')).length;
   const pay = (x: J) => { const sal = Number(x.salary || x.basicSalary) || 0; return sal || (Number(x.dailyWage) || 0) * c.workDaysPerMonth; };
-  const last: Card = deptF === '__core_workers_temp__'
-    ? { ico: '💰', label: 'إجمالي اليوميات', value: toInt(rows.reduce((s, x) => s + (Number(x.dailyWage) || 0), 0)) }
-    : { ico: '💰', label: 'إجمالي الرواتب', value: toInt(rows.reduce((s, x) => s + pay(x), 0)) };
-  return [
-    { ico: '🧑‍🔧', label: 'عدد العمال', value: rows.length },
-    { ico: '✅', label: 'نشطون', tone: 'ok', parts: [{ n: actN - Math.min(onL, actN), l: 'على رأس العمل', tone: 'ok' }, { n: onL, l: 'في إجازة', tone: onL ? 'warn' : '' }] },
-    { ico: '🛡️', label: 'حالة التأمين', tone: ins.none ? 'warn' : 'ok', parts: [{ n: ins.insured, l: 'مؤمَّن', tone: 'ok' }, { n: ins.none, l: 'غير مؤمن', tone: ins.none ? 'warn' : '' }, { n: ins.pending, l: 'قيد التسجيل' }] },
-    { ico: '🪪', label: 'حالة الرخصة', tone: le ? 'warn' : '', parts: [{ n: lv, l: 'سارية', tone: 'ok' }, { n: le, l: 'منتهية', tone: le ? 'warn' : '' }] },
-    { ico: '📑', label: 'حالة العقد', tone: cs.expired ? 'warn' : '', parts: [{ n: cs.active, l: 'ساري', tone: 'ok' }, { n: cs.expired, l: 'منتهي', tone: cs.expired ? 'warn' : '' }, { n: cs.suspended, l: 'موقوف' }] },
-    { ico: '🪪', label: 'حالة البطاقة', tone: ce ? 'warn' : '', parts: [{ n: cv, l: 'سارية', tone: 'ok' }, { n: ce, l: 'منتهية', tone: ce ? 'warn' : '' }] },
-    last,
-  ];
+  return {
+    active: { ico: '✅', label: 'نشطون', tone: 'ok', parts: [{ n: actN - Math.min(onL, actN), l: 'على رأس العمل', tone: 'ok' }, { n: onL, l: 'في إجازة', tone: onL ? 'warn' : '' }] } as Card,
+    insurance: { ico: '🛡️', label: 'حالة التأمين', tone: ins.none ? 'warn' : 'ok', parts: [{ n: ins.insured, l: 'مؤمَّن', tone: 'ok' }, { n: ins.none, l: 'غير مؤمن', tone: ins.none ? 'warn' : '' }, { n: ins.pending, l: 'قيد التسجيل' }] } as Card,
+    license: { ico: '🪪', label: 'حالة الرخصة', tone: le ? 'warn' : '', parts: [{ n: lv, l: 'سارية', tone: 'ok' }, { n: le, l: 'منتهية', tone: le ? 'warn' : '' }] } as Card,
+    contract: { ico: '📑', label: 'حالة العقد', tone: cs.expired ? 'warn' : '', parts: [{ n: cs.active, l: 'ساري', tone: 'ok' }, { n: cs.expired, l: 'منتهي', tone: cs.expired ? 'warn' : '' }, { n: cs.suspended, l: 'موقوف' }] } as Card,
+    idCard: { ico: '🪪', label: 'حالة البطاقة', tone: ce ? 'warn' : '', parts: [{ n: cv, l: 'سارية', tone: 'ok' }, { n: ce, l: 'منتهية', tone: ce ? 'warn' : '' }] } as Card,
+    dailySum: { ico: '💰', label: 'إجمالي اليوميات', value: toInt(rows.reduce((s, x) => s + (Number(x.dailyWage) || 0), 0)) } as Card,
+    payTotal: { ico: '💰', label: 'إجمالي الرواتب', value: toInt(rows.reduce((s, x) => s + pay(x), 0)) } as Card,
+  };
+}
+export function cards(c: Ctx, rows: J[], deptF: string): Card[] {
+  const sec = deptF === RETIRED_DEPT ? 'retired' : deptF === RESIGNED_DEPT ? 'resigned' : '';
+  if (sec) return sectionCards(c, rows, sec);
+  const k = cardParts(c, 'worker', rows);
+  return [{ ico: '🧑‍🔧', label: 'عدد العمال', value: rows.length }, k.active, k.insurance, k.license, k.contract, k.idCard, deptF === '__core_workers_temp__' ? k.dailySum : k.payTotal];
 }
 
 /** شكل الجدول: مؤقت كله / شركة كله / مختلط (زي renderWorkersPage) */
@@ -376,17 +399,17 @@ export function commitWorker(payload: J, w: J | null, id: string): J {
   return out;
 }
 /** syncPersonResignedState('worker'): بيعدّل p في مكانه، ويرجّع العملية على أرشيف المستقيلين */
-export function syncResigned(p: J, archive: J[], today: string, nowIso: string, uid: () => string): { op: 'upsert'; entry: J } | { op: 'remove'; ids: string[] } | null {
+export function syncResigned(p: J, archive: J[], today: string, nowIso: string, uid: () => string, kind: PersonKind = 'worker'): { op: 'upsert'; entry: J } | { op: 'remove'; ids: string[] } | null {
   if (isResignedStatus(p.status)) {
     const retired = isRetiredStatus(p.status);
-    const dept = retired ? RETIRED_DEPT : RESIGNED_DEPT;
+    const dept = retired ? retiredDeptOf(kind) : resignedDeptOf(kind);
     if (!p.previousDepartmentId) { const cur = p.departmentId || p.categoryId || ''; if (cur && !isResignedDeptId(cur)) p.previousDepartmentId = cur; }
     if (retired) { p.archiveGroup = 'retired'; p.retiredAt = p.retiredAt || p.resignedAt || today; p.resignedAt = ''; }
     else { p.archiveGroup = 'resigned'; p.resignedAt = p.resignedAt || today; }
     p.departmentId = dept; p.categoryId = dept;
-    const existing = archive.find((x) => x.kind === 'worker' && x.personId === p.id);
+    const existing = archive.find((x) => x.kind === kind && x.personId === p.id);
     const entry = {
-      id: existing ? existing.id : uid(), kind: 'worker', personId: p.id, name: p.name || '', code: p.code || '',
+      id: existing ? existing.id : uid(), kind, personId: p.id, name: p.name || '', code: p.code || '',
       sectionName: retired ? 'المعاشات' : 'المستقيلين', archiveGroup: retired ? 'retired' : 'resigned',
       attachments: Array.isArray(p.attachments) ? p.attachments.slice() : [], entity: JSON.parse(JSON.stringify(p)),
       previousDepartmentId: p.previousDepartmentId || '', resignedAt: p.resignedAt, retiredAt: p.retiredAt || '', movedAt: nowIso,
@@ -400,7 +423,7 @@ export function syncResigned(p: J, archive: J[], today: string, nowIso: string, 
     const prev = p.previousDepartmentId || '';
     const restore = prev && !isResignedDeptId(prev) ? prev : '';
     p.departmentId = restore; p.categoryId = restore; p.archiveGroup = ''; p.resignedAt = ''; p.retiredAt = ''; p.previousDepartmentId = '';
-    return { op: 'remove', ids: archive.filter((x) => x.kind === 'worker' && x.personId === p.id).map((x) => x.id) };
+    return { op: 'remove', ids: archive.filter((x) => x.kind === kind && x.personId === p.id).map((x) => x.id) };
   }
   return null;
 }
