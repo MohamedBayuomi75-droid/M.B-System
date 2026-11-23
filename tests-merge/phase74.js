@@ -28,6 +28,8 @@ const { ok, eq, summary, baseUser } = require('./lib');
   const FILTERS = [{}, { status: 'temporary' }, { status: 'active' }, { type: 'company' }, { supervisorId: 'sv1' }, { project: 'الشروق' }, { departmentId: '__core_workers_temp__' },
     { departmentId: '__core_workers_perm__' }, { departmentId: '__none__' }, { q: 'محمد' }, { q: 'محمود' }, { q: '2900' }, { q: 'كريم' }, { xCard: 'expired' }, { xCard: 'none' },
     { xIns: 'insured' }, { xIns: 'none' }, { xData: 'missing' }, { xDocs: 'missing' }, { xDocs: 'complete' }, { status: 'active', q: 'م' }];
+  // الصفحة بتشغّل مزامنة الإجازات (syncLeaveStatuses) قبل أي عرض — زي الاستخدام الفعلي
+  await page.evaluate(() => { goToPage('workers'); rerenderCurrentPage(); }); await page.waitForTimeout(300);
   const legacy = await page.evaluate((FILTERS) => FILTERS.map((f) => {
     Object.keys(workerFilters).forEach((k) => { if (k !== '_boardLevel') workerFilters[k] = ''; });
     Object.assign(workerFilters, f);
@@ -65,8 +67,8 @@ const { ok, eq, summary, baseUser } = require('./lib');
     }
     const all = (await api(page, 'GET', '/api/v1/workers')).body;
     eq(all.boards.map((b) => [b.id, b.name, b.count]), lBoards, 'لوحات الأقسام بالترتيب والأعداد');
-    eq(Object.fromEntries(all.rows.map((w) => [w.id, w.issues])), lNotes, 'الملاحظات (personNotesIssues) لكل عامل');
-    eq(Object.fromEntries(all.rows.map((w) => [w.id, w.warning])), lWarn, 'علامة النقص ⚠️ (البيانات والأوراق)');
+    for (const w of all.rows) eq(w.issues, lNotes[w.id], `الملاحظات (personNotesIssues): ${w.id}`);
+    for (const w of all.rows) eq(w.warning, lWarn[w.id], `علامة النقص ⚠️: ${w.id}`);
     const sc = (cards) => cards.map((c) => [c.label, c.parts ? c.parts.map((p) => fmt(p.n)).join('/') : (typeof c.value === 'number' ? (/إجمالي/.test(c.label) ? fmt(c.value) + ' ج.م' : fmt(c.value)) : c.value)]);
     eq(sc(all.cards), lc.all, 'الكروت (الكل)');
     eq(sc((await api(page, 'GET', '/api/v1/workers?departmentId=__core_workers_temp__')).body.cards), lc.temp, 'الكروت (عمالة مؤقتة: إجمالي اليوميات)');
@@ -85,6 +87,7 @@ const { ok, eq, summary, baseUser } = require('./lib');
     const save = async () => { const n = await page.evaluate(() => window.__saveCount); await page.click('#btnSaveWrk'); await page.waitForFunction((x) => window.__saveCount > x, n, { timeout: 15000 }); };
     // A: مؤقت
     await open('', { defaultType: 'temporary' });
+    const code1 = await page.inputValue('#wrkCode');
     await page.fill('#wrkName', ' عامل جديد '); await page.fill('#wrkWageTemp', '275.555'); await page.fill('#wrkNidTemp', ' 29912 '); await page.fill('#wrkPhoneTemp', '0122'); await page.fill('#wrkPosTemp', 'مساعد');
     await page.evaluate(() => { document.getElementById('wrkSupervisor').value = 'sv1'; });
     await save();
@@ -101,7 +104,7 @@ const { ok, eq, summary, baseUser } = require('./lib');
     await open('w6'); await page.selectOption('#wrkStatus', 'active'); await save();
     // B: نفس المدخلات بالـ API
     const key = () => ({ 'Idempotency-Key': 'wk-' + Math.random().toString(36).slice(2) });
-    eq((await api(B.page, 'POST', '/api/v1/workers', { workerType: 'temporary', name: ' عامل جديد ', code: 'WRK-006', status: '', supervisorId: 'sv1', position: 'مساعد', nationalId: ' 29912 ', phone: '0122', address: '', project: '', dailyWage: '275.555', notes: '' }, key())).status, 201, 'POST مؤقت');
+    eq((await api(B.page, 'POST', '/api/v1/workers', { workerType: 'temporary', name: ' عامل جديد ', code: code1, status: '', supervisorId: 'sv1', position: 'مساعد', nationalId: ' 29912 ', phone: '0122', address: '', project: '', dailyWage: '275.555', notes: '' }, key())).status, 201, 'POST مؤقت');
     eq((await api(B.page, 'POST', '/api/v1/workers', { workerType: 'company', name: 'عامل شركة', code: 'WRK-002', status: '', supervisorId: '', position: 'سباك', nationalId: '27001011234567', phone: '0155', address: 'الجيزة', project: '',
       birthDate: '', idCardExpiry: '2020-05-01', hireDate: hire, contractType: '', contractStatus: '', insuranceNumber: '', insuranceStatus: '', salary: '7000.333', notes: '', extraFields: [] }, key())).status, 201, 'POST شركة');
     const edit = async (id, over) => {
@@ -109,7 +112,8 @@ const { ok, eq, summary, baseUser } = require('./lib');
       const temp = /temporary|temp|daily|مؤقت|يومية|يوميه/.test(String(w.workerType || w.type || '').toLowerCase()) || (!w.salary && !w.basicSalary && w.dailyWage && !/company/.test(w.workerType || ''));
       return api(B.page, 'PATCH', '/api/v1/workers/' + id, { rev: w.rev, workerType: temp ? 'temporary' : 'company', code: w.code || '', name: w.name || '', status: w.status || '', supervisorId: w.supervisorId || '', position: w.skill || w.position || w.jobTitle || '',
         nationalId: w.nationalId || '', phone: w.phone || '', address: w.address || '', project: w.project || '', dailyWage: temp ? String(w.dailyWage ?? '') : '', notes: w.notes || '', birthDate: w.birthDate || '',
-        idCardExpiry: w.idCardExpiry || '', hireDate: w.hireDate || '', contractType: w.contractType || '', contractStatus: w.contractStatus || '', insuranceNumber: w.insuranceNumber || '', insuranceStatus: w.insuranceStatus || '',
+        idCardExpiry: w.idCardExpiry || '', hireDate: w.hireDate || today, // خانة تاريخ التعيين في النافذة القديمة بتتملى بالنهارده لو فاضية
+        contractType: w.contractType || '', contractStatus: w.contractStatus || '', insuranceNumber: w.insuranceNumber || '', insuranceStatus: w.insuranceStatus || '',
         salary: temp ? '' : String(w.salary || w.basicSalary || ''), extraFields: Array.isArray(w.extraFields) ? w.extraFields : [], ...over });
     };
     eq((await edit('w2', { phone: '', address: 'الإسكندرية' })).status, 200, 'PATCH دمج');
@@ -118,8 +122,9 @@ const { ok, eq, summary, baseUser } = require('./lib');
     eq((await edit('w6', { status: 'active' })).status, 200, 'PATCH إعادة تفعيل');
     await reload(page); await reload(B.page);
     const a = await snapshot(page), b = await snapshot(B.page);
-    for (const w of a.workers) eq(b.workers.find((x) => x.name === w.name), w, `العامل «${w.name}»: نفس السجل في الاتنين`);
-    eq(b.archive, a.archive, 'أرشيف المستقيلين: نفس اللقطات');
+    const kdiff = (x, y) => [...new Set([...Object.keys(x || {}), ...Object.keys(y || {})])].filter((k) => JSON.stringify((x || {})[k]) !== JSON.stringify((y || {})[k])).map((k) => [k, (x || {})[k], (y || {})[k]]);
+    for (const w of a.workers) { const d = kdiff(b.workers.find((x) => x.name === w.name), w); ok(!d.length, `العامل «${w.name}»: نفس السجل في الاتنين`, d); }
+    ok(a.archive.length === b.archive.length && a.archive.every((x, i) => !kdiff(b.archive[i], x).length && !kdiff((b.archive[i] || {}).entity, x.entity).length), 'أرشيف المستقيلين: نفس اللقطات', a.archive.map((x, i) => [kdiff(b.archive[i], x).filter(([k]) => k !== 'entity'), kdiff((b.archive[i] || {}).entity, x.entity)]));
     eq(b.depts, a.depts, 'أقسام المستقيلين والمعاشات');
     ok(a.workers.find((w) => w.name === 'خالد حسن').departmentId === '__resigned_worker__' && a.archive.some((x) => x.personId === 'w3'), 'تأكيد: المستقيل في قسمه وفي الأرشيف');
     const ev = (await api(B.page, 'GET', '/api/v1/workers/w6')).body.events.map((e) => e.type);
