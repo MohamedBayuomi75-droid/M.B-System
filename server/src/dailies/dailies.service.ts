@@ -166,7 +166,13 @@ export class DailiesService {
     const pick = (p: J) => ({ id: p.id, name: p.name || '', code: p.code || '', ...(wages ? { dailyWage: p.dailyWage ?? null } : {}) });
     return { today: cairoTodayIso(), wages, statuses: ATTENDANCE_STATUS, projects: this.filterOptions(c, c.all).projects,
       people: { worker: sorted(c.people.worker.filter((w) => w.status === 'active' || !w.status)).map(pick), supervisor: sorted(c.people.supervisor.filter((s) => s.status !== 'inactive')).map(pick),
-        driver: sorted(c.people.driver.filter((d) => d.status !== 'inactive')).map(pick) } };
+        driver: sorted(c.people.driver.filter((d) => d.status !== 'inactive')).map(pick) }, layout: await this.layoutDocs(COLL) };
+  }
+  /** تخطيط النافذة المحفوظ (applyFormLayout في القديمة — قراية بس، نفس شكل الإجازات) */
+  private async layoutDocs(coll: string) {
+    const [fl, af, cf, df, rk, f1, f2, f3, al] = await Promise.all(['formLayouts', 'autoFields', 'customFieldDefs', 'deadFields', '_cfRegKeys', '_cfAllHiddenFixed', '_cfAutoFlagsReset', '_cfShowInTableMigrated', '_cfAligned2'].map((k) => this.repo.docValue(k)));
+    const pick = (o: unknown) => { const src = o && typeof o === 'object' ? (o as J) : {}; return src[coll] !== undefined ? { [coll]: src[coll] } : {}; };
+    return { formLayouts: pick(fl), autoFields: pick(af), customFieldDefs: pick(cf), deadFields: pick(df), cfRegKeys: pick(rk), aligned: pick(al), flags: { allHiddenFixed: !!f1, autoFlagsReset: !!f2, showInTableMigrated: !!f3 } };
   }
 
   /** قايمة المراجعة (DEC-0133) */
@@ -285,6 +291,7 @@ export class DailiesService {
       rows: list.map(({ _rev, ...a }) => ({ ...a, rev: _rev, employeeName: name(a.employeeId), statusLabel: label(a.status) })),
       options: { departments: dl.map((d) => ({ id: d.id, name: d.name })), statuses: ATTENDANCE_STATUS,
         employees: employees.slice().sort((a, b) => String(a.name || '').localeCompare(String(b.name || ''), 'ar', { sensitivity: 'base' })).map((e) => ({ id: e.id, name: e.name || '', code: e.code || '', departmentId: e.departmentId || '' })) },
+      layout: await this.layoutDocs(ATT),
     };
   }
   async attGet(u: AuthUser, id: string) {

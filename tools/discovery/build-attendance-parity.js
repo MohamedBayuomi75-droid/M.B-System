@@ -16,7 +16,7 @@ const watt = read('renderer/modules/hr/pages-worker-attendance.js');
 const att = read('renderer/modules/hr/pages-attendance.js');
 const keysIn = (src, start, end) => { const a = src.indexOf(start); const body = src.slice(a, src.indexOf(end, a)); return [...body.matchAll(/[{,]\s*([A-Za-z_]\w*)\s*(?=[:,}])/g)].map((m) => m[1]).filter((k) => /^[a-z]/.test(k)); }; // المفتاح بعد { أو , بس (مش القيمة)
 // الشاشات الجديدة (8.5.5)
-const PAGES = { workerAttendance: null, attendance: null };
+const PAGES = { workerAttendance: 'frontend/src/app/features/worker-attendance.page.ts', attendance: 'frontend/src/app/features/attendance.page.ts' };
 const SOURCES = {
   workerAttendance: { label: 'اليوميات', table: 'worker_attendance', cols: colsOf('WORKER_ATTENDANCE_COLUMNS'),
     keys: [...keysIn(watt, 'let payload = {', '};'), 'workerId', 'supervisorId', 'driverId', 'personKind', 'dayWageSource', 'reviewDecision', 'reviewReason', 'reviewedBy', 'reviewedAt'] },
@@ -24,7 +24,7 @@ const SOURCES = {
 };
 const JSON_TYPE = { text: 'string', number: 'number', json: 'object', bool: 'boolean' };
 const SYSTEM = { id: 'المفتاح الأساسي `id`' };
-const DEFERRED = { dayWageSource: 'علامة تثبيت الأجر وقت النقل (DEC-0130) — في تقرير الفرق', reviewedBy: 'في التدقيق', reviewedAt: 'في التدقيق', personKind: 'نسخة من personType', driverId: 'نسخة من personId للسواق', supervisorId: 'المشرف وقت الحفظ (للعامل) — بيتحسب في السيرفر', workerId: 'نسخة من personId للعامل' };
+const DEFERRED = { dayWageSource: 'علامة تثبيت الأجر وقت النقل (DEC-0130) — في تقرير الفرق', reviewedBy: 'في التدقيق', reviewedAt: 'في التدقيق', personKind: 'نسخة من personType', driverId: 'نسخة من personId للسواق', supervisorId: 'المشرف وقت الحفظ (للعامل) — بيتحسب في السيرفر', workerId: 'نسخة من personId للعامل', projectId: 'السيرفر بيحطه من اسم المشروع وقت الحفظ (DAILIES_ACCEPTANCE §4.2)' };
 let md = `# مصفوفة تطابق الحقول — اليوميات وحضور الموظفين (خطة v1.4.5 — المرحلة 8، الحزمة 8.5)
 
 > **مولَّد** بـ \`node tools/discovery/build-attendance-parity.js\`. ماتعدّلش الملف باليد.

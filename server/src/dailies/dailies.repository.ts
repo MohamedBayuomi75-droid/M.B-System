@@ -11,6 +11,10 @@ export class DailiesRepository {
   rows(collection: string, em: EntityManager = this.ds.manager): Promise<Row[]> {
     return em.query(`SELECT id, data, rev FROM legacy_records WHERE collection = $1 AND deleted_at IS NULL ORDER BY created_at, id`, [collection]);
   }
+  async docValue(key: string, em: EntityManager = this.ds.manager): Promise<unknown> {
+    const [r] = await em.query(`SELECT data FROM docs WHERE key = $1`, [key]);
+    return r ? r.data : undefined;
+  }
   events(type: string, id: string, em: EntityManager = this.ds.manager): Promise<{ type: string; key: string }[]> {
     return em.query(`SELECT event_type AS type, idempotency_key AS key FROM integration_events WHERE aggregate_type = $1 AND aggregate_id = $2 ORDER BY seq`, [type, id]);
   }

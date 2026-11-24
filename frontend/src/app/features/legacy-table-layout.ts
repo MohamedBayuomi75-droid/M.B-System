@@ -67,6 +67,16 @@ const FORM_BUILTIN_FIELDS: Record<string, Def[]> = {
     { key: 'dailyWage', label: 'اليومية', selector: '#drvWage' }, { key: 'phone', label: 'الهاتف', selector: '#drvPhone' }, { key: 'address', label: 'العنوان', selector: '#drvAddress' },
     { key: 'notes', label: 'الملاحظات', selector: '#drvNotes' },
   ],
+  // نافذة اليومية وحضور الموظفين (8.5.5): زي القديمة — الترتيب والأسماء الافتراضية من هنا (applyFormLayout)
+  attendance: [
+    { key: 'date', label: 'التاريخ', selector: '#attDate' }, { key: 'department', label: 'القسم', selector: '#attDept' }, { key: 'employee', label: 'الموظف', selector: '#attEmp' },
+    { key: 'status', label: 'الحالة', selector: '#attStatus' }, { key: 'notes', label: 'ملاحظات', selector: '#attNotes' },
+  ],
+  workerAttendance: [
+    { key: 'kind', label: 'النوع', selector: '#wattType' }, { key: 'person', label: 'الشخص', selector: '#wattPerson' }, { key: 'status', label: 'الحالة', selector: '#wattStatus' },
+    { key: 'date', label: 'التاريخ', selector: '#wattDate' }, { key: 'days', label: 'عدد الأيام', selector: '#wattDays' }, { key: 'deduction', label: 'خصم', selector: '#wattDed' },
+    { key: 'project', label: 'المشروع', selector: '#wattProject' }, { key: 'notes', label: 'ملاحظات', selector: '#wattNotes' },
+  ],
   // نافذة الإجازة (8.4 V3): زي القديمة بالظبط — أغلب الـ selectors دي مش موجودة في النافذة، والترتيب الفعلي بييجي من الخانات التلقائية والتخطيط المحفوظ
   leaves: [
     { key: 'department', label: 'القسم', selector: '#lvDept' }, { key: 'person', label: 'الشخص', selector: '#lvPerson' }, { key: 'type', label: 'نوع الإجازة', selector: '#lvType' },

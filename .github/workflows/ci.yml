@@ -164,6 +164,9 @@ jobs:
       - name: Leaves page and modal = legacy, save/approve/reject/delete, status now (DEC-0127)
         if: matrix.suite == 'web-app-security'
         run: node tests-web/leaves-e2e.js
+      - name: Dailies and employee attendance pages and modals = legacy, save/delete/review (DEC-0135)
+        if: matrix.suite == 'web-app-security'
+        run: node tests-web/dailies-e2e.js
       - name: XSS probe
         if: matrix.suite == 'web-app-security'
         run: node tools/security/xss-probe.js

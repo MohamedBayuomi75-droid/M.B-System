@@ -17,13 +17,16 @@ export const LEAVE_FIELDS: { id: string; sels: string[] }[] = [
   { id: 'days', sels: ['#lvDays'] }, { id: 'from', sels: ['#lvFromD'] }, { id: 'to', sels: ['#lvToD'] }, { id: 'reason', sels: ['#lvReason'] },
 ];
 export interface LeaveForm { order: Record<string, number>; hide: Record<string, boolean>; label: Record<string, string>; wide: Record<string, boolean | null> }
+export type ModalForm = LeaveForm;
+export interface ModalField { id: string; sels: string[] }
 
 const STRIP = /\s*[([]?\s*(تحدد|تحديد|تُحدد|يحدد)\s*يدو[يى]?[اًا]?\s*[)\]]?/g;
-export function leaveForm(layout: any[]): LeaveForm {
-  const builtins = builtinFields('leaves');
-  const field = (sel: string) => LEAVE_FIELDS.find((f) => f.sels.includes(sel));
-  const out: LeaveForm = { order: {}, hide: {}, label: {}, wide: {} };
-  LEAVE_FIELDS.forEach((f, i) => { out.order[f.id] = i; out.wide[f.id] = null; });
+/** applyFormLayout لأي نافذة: الخانات بترتيبها في الـ DOM والـ selectors بتاعتها (8.5: نافذة اليومية وحضور الموظفين) */
+export function modalForm(entity: string, fields: ModalField[], layout: any[]): ModalForm {
+  const builtins = builtinFields(entity);
+  const field = (sel: string) => fields.find((f) => f.sels.includes(sel));
+  const out: ModalForm = { order: {}, hide: {}, label: {}, wide: {} };
+  fields.forEach((f, i) => { out.order[f.id] = i; out.wide[f.id] = null; });
   const want: string[] = [];
   for (const x of layout || []) {
     if (!x || x.type === 'custom') continue;
@@ -38,8 +41,9 @@ export function leaveForm(layout: any[]): LeaveForm {
     if (l) out.label[f.id] = l;
   }
   if (want.length >= 2) {
-    const slots = want.map((id) => LEAVE_FIELDS.findIndex((f) => f.id === id)).sort((a, b) => a - b);
+    const slots = want.map((id) => fields.findIndex((f) => f.id === id)).sort((a, b) => a - b);
     want.forEach((id, k) => { out.order[id] = slots[k]; });
   }
   return out;
 }
+export function leaveForm(layout: any[]): LeaveForm { return modalForm('leaves', LEAVE_FIELDS, layout); }
