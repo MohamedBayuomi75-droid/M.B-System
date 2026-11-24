@@ -1861,6 +1861,29 @@
     ],
     "type": "object"
    },
+   "ReviewDto": {
+    "properties": {
+     "decision": {
+      "enum": [
+       "count",
+       "void"
+      ],
+      "type": "string"
+     },
+     "reason": {
+      "description": "السبب (إلزامي للإلغاء)",
+      "type": "string"
+     },
+     "rev": {
+      "type": "number"
+     }
+    },
+    "required": [
+     "rev",
+     "decision"
+    ],
+    "type": "object"
+   },
    "RoleDto": {
     "properties": {
      "key": {
@@ -1891,6 +1914,81 @@
      "key",
      "label",
      "permissions"
+    ],
+    "type": "object"
+   },
+   "SaveAttDto": {
+    "properties": {
+     "checkIn": {
+      "type": "string"
+     },
+     "checkOut": {
+      "type": "string"
+     },
+     "date": {
+      "type": "string"
+     },
+     "employeeId": {
+      "type": "string"
+     },
+     "notes": {
+      "type": "string"
+     },
+     "status": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "employeeId",
+     "date"
+    ],
+    "type": "object"
+   },
+   "SaveDailyDto": {
+    "properties": {
+     "date": {
+      "type": "string"
+     },
+     "dayWage": {
+      "description": "أجر اليوم — حقل محمي (DEC-0134)",
+      "type": "string"
+     },
+     "days": {
+      "type": "string"
+     },
+     "deduction": {
+      "description": "خصم التأخير — حقل محمي (DEC-0134)",
+      "type": "string"
+     },
+     "notes": {
+      "type": "string"
+     },
+     "personId": {
+      "type": "string"
+     },
+     "personType": {
+      "enum": [
+       "worker",
+       "supervisor",
+       "driver"
+      ],
+      "type": "string"
+     },
+     "project": {
+      "type": "string"
+     },
+     "site": {
+      "type": "string"
+     },
+     "status": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "personType",
+     "personId",
+     "date",
+     "project"
     ],
     "type": "object"
    },
@@ -2502,6 +2600,37 @@
     ],
     "type": "object"
    },
+   "UpdateAttDto": {
+    "properties": {
+     "checkIn": {
+      "type": "string"
+     },
+     "checkOut": {
+      "type": "string"
+     },
+     "date": {
+      "type": "string"
+     },
+     "employeeId": {
+      "type": "string"
+     },
+     "notes": {
+      "type": "string"
+     },
+     "rev": {
+      "type": "number"
+     },
+     "status": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "employeeId",
+     "date",
+     "rev"
+    ],
+    "type": "object"
+   },
    "UpdateCustomerDto": {
     "properties": {
      "address": {
@@ -2556,6 +2685,58 @@
      }
     },
     "required": [
+     "rev"
+    ],
+    "type": "object"
+   },
+   "UpdateDailyDto": {
+    "properties": {
+     "date": {
+      "type": "string"
+     },
+     "dayWage": {
+      "description": "أجر اليوم — حقل محمي (DEC-0134)",
+      "type": "string"
+     },
+     "days": {
+      "type": "string"
+     },
+     "deduction": {
+      "description": "خصم التأخير — حقل محمي (DEC-0134)",
+      "type": "string"
+     },
+     "notes": {
+      "type": "string"
+     },
+     "personId": {
+      "type": "string"
+     },
+     "personType": {
+      "enum": [
+       "worker",
+       "supervisor",
+       "driver"
+      ],
+      "type": "string"
+     },
+     "project": {
+      "type": "string"
+     },
+     "rev": {
+      "type": "number"
+     },
+     "site": {
+      "type": "string"
+     },
+     "status": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "personType",
+     "personId",
+     "date",
+     "project",
      "rev"
     ],
     "type": "object"
@@ -4704,6 +4885,200 @@
     ]
    }
   },
+  "/api/v1/attendance": {
+   "get": {
+    "operationId": "AttendanceController_list",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "departmentId",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "employeeId",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "status",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "from",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "to",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "q",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "حضور الموظفين بنفس فلاتر الصفحة القديمة، والكروت",
+    "tags": [
+     "v1 attendance"
+    ]
+   },
+   "post": {
+    "operationId": "AttendanceController_create",
+    "parameters": [],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/SaveAttDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "tags": [
+     "v1 attendance"
+    ]
+   }
+  },
+  "/api/v1/attendance/{id}": {
+   "delete": {
+    "operationId": "AttendanceController_remove",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "rev",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "tags": [
+     "v1 attendance"
+    ]
+   },
+   "get": {
+    "operationId": "AttendanceController_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "tags": [
+     "v1 attendance"
+    ]
+   },
+   "patch": {
+    "operationId": "AttendanceController_update",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/UpdateAttDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "tags": [
+     "v1 attendance"
+    ]
+   }
+  },
   "/api/v1/customers": {
    "get": {
     "operationId": "CustomersController_list",
@@ -4821,6 +5196,577 @@
     ],
     "tags": [
      "v1 customers"
+    ]
+   }
+  },
+  "/api/v1/dailies": {
+   "post": {
+    "operationId": "DailiesController_create",
+    "parameters": [],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/SaveDailyDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "تسجيل يومية (Idempotency-Key إلزامي) بنفس حساب النافذة القديمة + حدث daily.recorded",
+    "tags": [
+     "v1 dailies"
+    ]
+   }
+  },
+  "/api/v1/dailies/boards": {
+   "get": {
+    "operationId": "DailiesController_boards",
+    "parameters": [],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "لوحات الأنواع والأقسام",
+    "tags": [
+     "v1 dailies"
+    ]
+   }
+  },
+  "/api/v1/dailies/day": {
+   "get": {
+    "operationId": "DailiesController_day",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "kind",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "date",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "مواقع اليوم الواحد لشخص",
+    "tags": [
+     "v1 dailies"
+    ]
+   }
+  },
+  "/api/v1/dailies/diff": {
+   "get": {
+    "operationId": "DailiesController_diff",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "tab",
+      "required": false,
+      "schema": {
+       "enum": [
+        "workers",
+        "supervisors",
+        "drivers"
+       ],
+       "type": "string"
+      }
+     },
+     {
+      "description": "القسم («» = الكل)",
+      "in": "query",
+      "name": "dept",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "from",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "to",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "supervisorId",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "project",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "site",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "status",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "q",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "تقرير الفرق (د-2): الحساب القديم مقابل الجديد",
+    "tags": [
+     "v1 dailies"
+    ]
+   }
+  },
+  "/api/v1/dailies/form-options": {
+   "get": {
+    "operationId": "DailiesController_formOptions",
+    "parameters": [],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "خيارات نافذة اليومية",
+    "tags": [
+     "v1 dailies"
+    ]
+   }
+  },
+  "/api/v1/dailies/grid": {
+   "get": {
+    "operationId": "DailiesController_grid",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "tab",
+      "required": false,
+      "schema": {
+       "enum": [
+        "workers",
+        "supervisors",
+        "drivers"
+       ],
+       "type": "string"
+      }
+     },
+     {
+      "description": "القسم («» = الكل)",
+      "in": "query",
+      "name": "dept",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "from",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "to",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "supervisorId",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "project",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "site",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "status",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "q",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "الجدول الشهري بنفس فلاتر صفحة اليوميات القديمة، والكروت (المستحق بالحساب الجديد DEC-0129/0130، ومعاه القديم)",
+    "tags": [
+     "v1 dailies"
+    ]
+   }
+  },
+  "/api/v1/dailies/list": {
+   "get": {
+    "operationId": "DailiesController_list",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "tab",
+      "required": false,
+      "schema": {
+       "enum": [
+        "workers",
+        "supervisors",
+        "drivers"
+       ],
+       "type": "string"
+      }
+     },
+     {
+      "description": "القسم («» = الكل)",
+      "in": "query",
+      "name": "dept",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "from",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "to",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "supervisorId",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "project",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "site",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "status",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "q",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "سجلات الفترة",
+    "tags": [
+     "v1 dailies"
+    ]
+   }
+  },
+  "/api/v1/dailies/review": {
+   "get": {
+    "operationId": "DailiesController_review",
+    "parameters": [],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "قايمة المراجعة (DEC-0133): المكررة واليتيمة وبأجر صفر وبحالة مش معروفة",
+    "tags": [
+     "v1 dailies"
+    ]
+   }
+  },
+  "/api/v1/dailies/{id}": {
+   "delete": {
+    "operationId": "DailiesController_remove",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "rev",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "حذف يومية (rev في الـ query)",
+    "tags": [
+     "v1 dailies"
+    ]
+   },
+   "get": {
+    "operationId": "DailiesController_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "tags": [
+     "v1 dailies"
+    ]
+   },
+   "patch": {
+    "operationId": "DailiesController_update",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/UpdateDailyDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "تعديل يومية (rev إلزامي)",
+    "tags": [
+     "v1 dailies"
+    ]
+   }
+  },
+  "/api/v1/dailies/{id}/review": {
+   "post": {
+    "operationId": "DailiesController_decide",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ReviewDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "قرار المراجعة: تتحسب أو تتلغي بسبب (صلاحية «تعديل» على المستحقات)",
+    "tags": [
+     "v1 dailies"
     ]
    }
   },
