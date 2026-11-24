@@ -5,11 +5,13 @@ import { firstValueFrom } from 'rxjs';
 import { legacyUrl } from '../core/page-routes';
 import { errorMessage, SessionService } from '../core/session.service';
 import { LegacyToast } from './legacy-toast';
+import { effectiveLayout, LayoutDocs } from './legacy-table-layout';
+import { LeaveForm, leaveForm } from './legacy-leave-form';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 type P = any;
 interface Opt { code: string; label: string }
-interface Opts { today: string; types: Opt[]; excludeFridays: boolean; departments: Record<string, { id: string; name: string }[]>; people: Record<string, { id: string; name: string; code: string; departmentId: string }[]> }
+interface Opts { today: string; types: Opt[]; excludeFridays: boolean; layout?: LayoutDocs; departments: Record<string, { id: string; name: string }[]>; people: Record<string, { id: string; name: string; code: string; departmentId: string }[]> }
 const PAGE_SIZE = 20;
 const EMPTY = { q: '', personKind: '', type: '', status: '', from: '', to: '' };
 const fmtDate = (v: unknown) => { const m = String(v || '').match(/^(\d{4})-(\d{1,2})-(\d{1,2})/); return m ? `${Number(m[3])}/${Number(m[2])}/${m[1]}` : v ? String(v) : '—'; };
@@ -106,29 +108,29 @@ function calcLeaveDays(from: string, to: string, excludeFridays: boolean): numbe
           <div class="modal-header"><h3>{{ e.id ? 'تعديل إجازة' : 'طلب إجازة' }}</h3><button type="button" class="modal-close" (click)="close()">×</button></div>
           <div class="modal-body">
             <div class="form-grid form-grid-2">
-              <label>الفئة *
+              <label [style.order]="fo.order['kind']" [style.display]="fo.hide['kind'] ? 'none' : null" [style.grid-column]="gc('kind', false)">{{ fo.label['kind'] || 'الفئة *' }}
                 <select class="input" id="lvKind" [(ngModel)]="e.personKind" (ngModelChange)="e.dept = ''; e.personId = ''"><option value="employee">موظف</option><option value="worker">عامل</option><option value="supervisor">مشرف</option><option value="driver">سائق</option></select>
               </label>
-              <label>القسم
+              <label [style.order]="fo.order['dept']" [style.display]="fo.hide['dept'] ? 'none' : null" [style.grid-column]="gc('dept', false)">{{ fo.label['dept'] || 'القسم' }}
                 <select class="input" id="lvDept" [(ngModel)]="e.dept" (ngModelChange)="onDept()"><option value="">— كل الأقسام —</option>@for (d of o.departments[e.personKind] || []; track d.id) { <option [value]="d.id">{{ d.name }}</option> }</select>
               </label>
-              <label id="lvPersonLab" style="grid-column:1/-1;">الشخص *
+              <label id="lvPersonLab" [style.order]="fo.order['person']" [style.display]="fo.hide['person'] ? 'none' : null" [style.grid-column]="gc('person', true)">{{ fo.label['person'] || 'الشخص *' }}
                 <!-- entityComboHtml: الأشخاص بالفئة (ومصفّيين بالقسم)، والاسم «الاسم — الكود» -->
                 <select class="input" id="lvEmp" [(ngModel)]="e.personId"><option value="">{{ e.dept ? 'اختر من القسم...' : 'اكتب الاسم أو الكود...' }}</option>@for (p of personOptions(o); track p.id) { <option [value]="p.id">{{ (p.name || p.code || p.id) + (p.code ? ' — ' + p.code : '') }}</option> }</select>
               </label>
-              <label>نوع الإجازة
+              <label [style.order]="fo.order['type']" [style.display]="fo.hide['type'] ? 'none' : null" [style.grid-column]="gc('type', false)">{{ fo.label['type'] || 'نوع الإجازة' }}
                 <select class="input" id="lvType" [(ngModel)]="e.type">@for (t of o.types; track t.code) { <option [value]="t.code">{{ t.label }}</option> }</select>
               </label>
-              <label>عدد الأيام
+              <label [style.order]="fo.order['days']" [style.display]="fo.hide['days'] ? 'none' : null" [style.grid-column]="gc('days', false)">{{ fo.label['days'] || 'عدد الأيام' }}
                 <input class="input" id="lvDays" type="number" min="0.5" step="0.5" [(ngModel)]="e.days">
               </label>
-              <label>من تاريخ
+              <label [style.order]="fo.order['from']" [style.display]="fo.hide['from'] ? 'none' : null" [style.grid-column]="gc('from', false)">{{ fo.label['from'] || 'من تاريخ' }}
                 <input class="input" id="lvFromD" type="date" [(ngModel)]="e.from" (change)="syncDays()">
               </label>
-              <label>إلى تاريخ
+              <label [style.order]="fo.order['to']" [style.display]="fo.hide['to'] ? 'none' : null" [style.grid-column]="gc('to', false)">{{ fo.label['to'] || 'إلى تاريخ' }}
                 <input class="input" id="lvToD" type="date" [(ngModel)]="e.to" (change)="syncDays()">
               </label>
-              <label style="grid-column:1/-1;">السبب
+              <label [style.order]="fo.order['reason']" [style.display]="fo.hide['reason'] ? 'none' : null" [style.grid-column]="gc('reason', true)">{{ fo.label['reason'] || 'السبب' }}
                 <textarea class="input" id="lvReason" rows="2" [(ngModel)]="e.reason"></textarea>
               </label>
             </div>
@@ -178,6 +180,10 @@ export class LeavesPage implements OnInit {
   readonly curPage = computed(() => Math.min(this.page(), this.pages()));
   readonly pageRows = computed(() => this.rows().slice((this.curPage() - 1) * PAGE_SIZE, this.curPage() * PAGE_SIZE));
   e: P = {};
+  /** النافذة بعد applyFormLayout في القديمة (الترتيب والأسماء والإخفاء من التخطيط المحفوظ — UAT 8.4 V3) */
+  fo: LeaveForm = leaveForm([]);
+  /** grid-column: لو الخانة في التخطيط ← «كبير» بس بعرض الصف (applyFormLayout بيشيل الأصلي)، وإلا الأصلي */
+  gc(id: string, full: boolean) { const w = this.fo.wide[id]; return (w === null || w === undefined ? full : w) ? '1 / -1' : null; }
   fmtDate = fmtDate; min = Math.min;
   statusColor = (st: string) => (st === 'pending' ? '#e6a700' : st === 'approved' ? '#1B4332' : st === 'rejected' ? '#c1121f' : 'inherit');
 
@@ -207,6 +213,7 @@ export class LeavesPage implements OnInit {
       const p = (o.people[kind] || []).find((x) => x.id === pid);
       this.e = { id: l ? l.id : '', rev: l ? l.rev : 0, personKind: kind, personId: pid, dept: p ? p.departmentId : '', type: (l && l.type) || 'annual', days: (l && l.days) || 1,
         from: (l && l.from) || o.today, to: (l && l.to) || o.today, reason: (l && l.reason) || '' };
+      this.fo = leaveForm(effectiveLayout('leaves', o.layout || null));
       this.opts.set(o); this.modal.set(true);
     } catch (err) { this.error.set(errorMessage(err, 'تعذر فتح النافذة')); }
   }
