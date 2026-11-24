@@ -6,7 +6,7 @@
   "TECH": 19,
   "NEW": 10,
   "CHG": 15,
-  "DEC": 127
+  "DEC": 128
  },
  "entries": [
   {
@@ -2759,6 +2759,24 @@
    "classification": "OPEN-DECISION",
    "kind": "decision",
    "title": "الموظفين (الحزمة 8.3) Accepted، والسيرفر بيحط القسم الأساسي («الموظفين») للموظف وقت الحفظ (نفس `assignCoreDepartments` اللي القديمة بتعمله عند التحميل)، وقلب تو",
+   "module": "قرارات",
+   "priority": "—",
+   "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",
+   "tests": [],
+   "target": "—",
+   "notes": "محسوم",
+   "aliases": [],
+   "decisionStatus": "resolved",
+   "priorityStatus": "—",
+   "status": "resolved"
+  },
+  {
+   "id": "DEC-0127",
+   "key": "decision:DEC-0127",
+   "prefix": "DEC",
+   "classification": "OPEN-DECISION",
+   "kind": "decision",
+   "title": "نطاق الحزمة 8.4 معتمد (الإجازات): الموافقة البسيطة زي القديمة (محرك الاعتمادات متأجل لقرار منفصل)، والسيرفر بيطبّق `syncLeaveStatuses` بنفس القاعدة بعد أي تغيير",
    "module": "قرارات",
    "priority": "—",
    "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",
@@ -7672,7 +7690,7 @@
    "title": "دالة حساب equipmentDailyCost",
    "module": "مشترك (core)",
    "priority": "P0",
-   "evidence": "renderer/core/helpers.js:7778",
+   "evidence": "renderer/core/helpers.js:7779",
    "tests": [
     "tests-merge/phase59.js",
     "tools/formulas/compare.js"

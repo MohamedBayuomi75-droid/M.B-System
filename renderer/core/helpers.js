@@ -5681,7 +5681,8 @@ function cleanupOrphanDataRecords(){
   removed += beforeC - (DATA.costs||[]).length;
 
   const beforeL = (DATA.leaves||[]).length;
-  DATA.leaves = (DATA.leaves||[]).filter(l=>l && l.employeeId && personExists('employee', l.employeeId));
+  // DEC-0127 د-4: الإجازة بتتمسح بس لو صاحبها (بنوعه) مش موجود — قبل كده كانت بتمسح إجازات العمال والمشرفين والسواقين (employeeId فاضي)
+  DATA.leaves = (DATA.leaves||[]).filter(l=>l && (l.personId||l.employeeId) && personExists(l.personKind||l.kind||'employee', l.personId||l.employeeId));
   removed += beforeL - (DATA.leaves||[]).length;
 
   const beforeE = (DATA.equipmentDaily||[]).length;

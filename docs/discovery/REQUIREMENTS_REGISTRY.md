@@ -11,8 +11,8 @@
 | `CHG-` | APPROVED-CHANGE | 14 |
 | `TECH-` | TECHNICAL | 18 |
 | `NEW-` | NEW-REQUIREMENT | 9 |
-| `DEC-` | OPEN-DECISION (المفتوح والمحسوم) | 126 (مفتوح: 40) |
-| **الإجمالي** | | **521** |
+| `DEC-` | OPEN-DECISION (المفتوح والمحسوم) | 127 (مفتوح: 40) |
+| **الإجمالي** | | **522** |
 
 **عناصر LEG حسب النوع:** page 54 · calc 120 · data-write 30 · modal 63 · export/print 37 · permission 8 · electron-capability 42
 
@@ -310,7 +310,7 @@
 | LEG-0289 | calc | مشترك (core) | دالة حساب attendanceNetPay | P0 | renderer/core/helpers.js:286 | legacy | tests-merge/phase59.js، tools/formulas/compare.js | verified-static | حساب مالي بتستخدمه المعادلات المرجعية (اتضافت من legacy-runner) |
 | LEG-0290 | calc | العملاء والمشاريع | دالة حساب clInvNet | P0 | renderer/modules/clients/pages-invoices.js:6 | legacy | tests-merge/phase59.js، tools/formulas/compare.js | verified-static | حساب مالي بتستخدمه المعادلات المرجعية (اتضافت من legacy-runner) |
 | LEG-0291 | calc | العملاء والمشاريع | دالة حساب clVoApprovedSum | P0 | renderer/modules/clients/change-orders.js:8 | legacy | tests-merge/phase59.js، tools/formulas/compare.js | verified-static | حساب مالي بتستخدمه المعادلات المرجعية (اتضافت من legacy-runner) |
-| LEG-0292 | calc | مشترك (core) | دالة حساب equipmentDailyCost | P0 | renderer/core/helpers.js:7778 | legacy | tests-merge/phase59.js، tools/formulas/compare.js | verified-static | حساب مالي بتستخدمه المعادلات المرجعية (اتضافت من legacy-runner) |
+| LEG-0292 | calc | مشترك (core) | دالة حساب equipmentDailyCost | P0 | renderer/core/helpers.js:7779 | legacy | tests-merge/phase59.js، tools/formulas/compare.js | verified-static | حساب مالي بتستخدمه المعادلات المرجعية (اتضافت من legacy-runner) |
 | LEG-0293 | calc | الموردون | دالة حساب noticeAmountsFor | P0 | renderer/modules/ledger/helpers.js:606 | legacy | tests-merge/phase59.js، tools/formulas/compare.js | verified-static | حساب مالي بتستخدمه المعادلات المرجعية (اتضافت من legacy-runner) |
 | LEG-0294 | calc | الموردون | دالة حساب openingBalanceFor | P0 | renderer/modules/ledger/statement.js:43 | legacy | tests-merge/phase59.js، tools/formulas/compare.js | verified-static | حساب مالي بتستخدمه المعادلات المرجعية (اتضافت من legacy-runner) |
 | LEG-0295 | calc | الموردون | دالة حساب roundMoney | P0 | renderer/modules/ledger/helpers.js:208 | legacy | tests-merge/phase59.js، tools/formulas/compare.js | verified-static | حساب مالي بتستخدمه المعادلات المرجعية (اتضافت من legacy-runner) |
@@ -556,4 +556,5 @@
 | DEC-0124 | decision | قرارات | المشرفين والسواقين (الحزمة 8.2) Accepted، وقلب توجيه «المشرفون» و«السائقون» للشاشات الجديدة دلوقتي (القديمة «الشاشة الكاملة»). والحزمة الجاية المقترحة 8.3 = الم | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
 | DEC-0125 | decision | قرارات | نطاق الحزمة 8.3 معتمد (الموظفين بس، والإجازات حزمة 8.4 لوحدها): قسم المستقيلين بجدوله وكروته وفلاتره زي القديمة، وصفحة الموظف وكشف الحضور والحذف والإجراءات الجم | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
 | DEC-0126 | decision | قرارات | الموظفين (الحزمة 8.3) Accepted، والسيرفر بيحط القسم الأساسي («الموظفين») للموظف وقت الحفظ (نفس `assignCoreDepartments` اللي القديمة بتعمله عند التحميل)، وقلب تو | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
+| DEC-0127 | decision | قرارات | نطاق الحزمة 8.4 معتمد (الإجازات): الموافقة البسيطة زي القديمة (محرك الاعتمادات متأجل لقرار منفصل)، والسيرفر بيطبّق `syncLeaveStatuses` بنفس القاعدة بعد أي تغيير | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
 
