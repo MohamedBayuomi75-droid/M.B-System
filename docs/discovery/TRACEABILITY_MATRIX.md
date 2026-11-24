@@ -8,20 +8,20 @@
 ## 1. التغطية حسب النوع (LEG)
 | النوع | العدد | ليه اختبار بيلمسه | اتنقل للنظام الجديد |
 |---|---|---|---|
-| page | 54 | 54 (100%) | 11 |
+| page | 54 | 54 (100%) | 12 |
 | calc | 120 | 48 (40%) | 0 |
 | data-write | 30 | 20 (67%) | 0 |
 | modal | 63 | 25 (40%) | 0 |
 | export/print | 37 | 5 (14%) | 0 |
 | permission | 8 | 0 (0%) | 8 |
 | electron-capability | 42 | 6 (14%) | 0 |
-| **الإجمالي** | **354** | **158 (45%)** | **19** |
+| **الإجمالي** | **354** | **158 (45%)** | **20** |
 
 ## 2. التغطية حسب الموديول (LEG)
 | الموديول | العدد | منها P0 (مقترح) | ليه اختبار | اتنقل | قرارات مفتوحة بتمنعه |
 |---|---|---|---|---|---|
 | مشترك (core) | 97 | 10 | 32 (33%) | 0 | — |
-| الموارد البشرية | 69 | 21 | 21 (30%) | 4 | DEC-0045 (B-45)، DEC-0046 (B-46)، DEC-0047 (B-47)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0076 (B-76)، DEC-0042 (B-42) |
+| الموارد البشرية | 69 | 21 | 21 (30%) | 5 | DEC-0045 (B-45)، DEC-0046 (B-46)، DEC-0047 (B-47)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0076 (B-76)، DEC-0042 (B-42) |
 | الموردون | 58 | 22 | 31 (53%) | 3 | — |
 | ديسكتوب | 42 | 15 | 6 (14%) | 0 | — |
 | العملاء والمشاريع | 38 | 11 | 28 (74%) | 2 | DEC-0035 (B-35) |
@@ -139,7 +139,7 @@
 | LEG-0008 | page | الموارد البشرية | صفحة «معدات ومركبات» (equipment) | renderer/modules/hr/pages-equipment.js:32 | legacy /legacy/ | phase23.js، phase24.js، phase25.js، phase26.js، phase27.js، phase31.js (+16) | Verified (باختبار) | DEC-0045 (B-45)، DEC-0046 (B-46)، DEC-0047 (B-47)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0076 (B-76)، DEC-0042 (B-42) |
 | LEG-0009 | page | الموارد البشرية | صفحة «حضور الموظفين» (attendance) | renderer/modules/hr/pages-attendance.js:19 | legacy /legacy/ | phase61.js، phase59.js، legacy-runner.js، reference.js، target-diff.js، data.e2e-spec.ts | Verified (باختبار) | DEC-0045 (B-45)، DEC-0046 (B-46)، DEC-0047 (B-47)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0076 (B-76)، DEC-0042 (B-42) |
 | LEG-0010 | page | الموارد البشرية | صفحة «اليوميات» (workerAttendance) | renderer/modules/hr/pages-worker-attendance.js:195 | legacy /legacy/ | phase24.js، phase26.js، phase27.js، phase28.js، phase39.js، phase40.js (+15) | Verified (باختبار) | DEC-0045 (B-45)، DEC-0046 (B-46)، DEC-0047 (B-47)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0076 (B-76)، DEC-0042 (B-42) |
-| LEG-0011 | page | الموارد البشرية | صفحة «الإجازات» (leaves) | renderer/modules/hr/pages-leaves.js:48 | legacy /legacy/ | phase41.js، phase13.js، phase30.js، phase31.js، phase33.js، phase36.js (+23) | Verified (باختبار) | DEC-0045 (B-45)، DEC-0046 (B-46)، DEC-0047 (B-47)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0076 (B-76)، DEC-0042 (B-42) |
+| LEG-0011 | page | الموارد البشرية | صفحة «الإجازات» (leaves) | renderer/modules/hr/pages-leaves.js:48 | angular /leaves | phase41.js، phase13.js، phase30.js، phase31.js، phase33.js، phase36.js (+24) | Implemented (اتنقل) | DEC-0045 (B-45)، DEC-0046 (B-46)، DEC-0047 (B-47)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0076 (B-76)، DEC-0042 (B-42) |
 | LEG-0012 | page | الموارد البشرية | صفحة «تقييم الأداء» (performance) | renderer/modules/hr/pages-ops.js:540 | legacy /legacy/ | phase61.js | Verified (باختبار) | DEC-0045 (B-45)، DEC-0046 (B-46)، DEC-0047 (B-47)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0076 (B-76)، DEC-0042 (B-42) |
 | LEG-0013 | page | العملاء والمشاريع | صفحة «العملاء» (clients.customers) | renderer/modules/clients/pages-customers.js:14 | angular /customers | phase2.js، phase5.js، phase7.js، phase15.js، phase19.js، phase46.js (+10) | Implemented (اتنقل) | DEC-0035 (B-35) |
 | LEG-0014 | page | العملاء والمشاريع | صفحة «المشاريع» (projects) | renderer/modules/hr/pages-projects.js:60 | angular /projects | phase2.js، phase3.js، phase4.js، phase15.js، phase17.js، phase18.js (+51) | Implemented (اتنقل) | DEC-0035 (B-35) |

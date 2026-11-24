@@ -6,7 +6,7 @@
   "TECH": 19,
   "NEW": 10,
   "CHG": 15,
-  "DEC": 128
+  "DEC": 129
  },
  "entries": [
   {
@@ -2789,6 +2789,24 @@
    "status": "resolved"
   },
   {
+   "id": "DEC-0128",
+   "key": "decision:DEC-0128",
+   "prefix": "DEC",
+   "classification": "OPEN-DECISION",
+   "kind": "decision",
+   "title": "الإجازات (الحزمة 8.4) Accepted، وقلب توجيه «الإجازات» للشاشة الجديدة دلوقتي (القديمة «الشاشة الكاملة» للطباعة والتقارير والتصدير). والخطوة الجاية: تقرير «بعد» ل",
+   "module": "قرارات",
+   "priority": "—",
+   "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",
+   "tests": [],
+   "target": "—",
+   "notes": "محسوم",
+   "aliases": [],
+   "decisionStatus": "resolved",
+   "priorityStatus": "—",
+   "status": "resolved"
+  },
+  {
    "id": "LEG-0001",
    "key": "page:dashboard",
    "prefix": "LEG",
@@ -3059,7 +3077,7 @@
    "tests": [
     "phase41.js"
    ],
-   "target": "legacy /legacy/",
+   "target": "angular /leaves",
    "notes": "في القايمة، في مصفوفة الصلاحيات",
    "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"

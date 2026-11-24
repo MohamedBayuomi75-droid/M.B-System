@@ -11,8 +11,8 @@
 | `CHG-` | APPROVED-CHANGE | 14 |
 | `TECH-` | TECHNICAL | 18 |
 | `NEW-` | NEW-REQUIREMENT | 9 |
-| `DEC-` | OPEN-DECISION (المفتوح والمحسوم) | 127 (مفتوح: 40) |
-| **الإجمالي** | | **522** |
+| `DEC-` | OPEN-DECISION (المفتوح والمحسوم) | 128 (مفتوح: 40) |
+| **الإجمالي** | | **523** |
 
 **عناصر LEG حسب النوع:** page 54 · calc 120 · data-write 30 · modal 63 · export/print 37 · permission 8 · electron-capability 42
 
@@ -29,7 +29,7 @@
 | LEG-0008 | page | الموارد البشرية | صفحة «معدات ومركبات» (equipment) | P1 | renderer/modules/hr/pages-equipment.js:32 | legacy /legacy/ | phase23.js، phase24.js، phase25.js، phase26.js، phase27.js، phase31.js، phase32.js، phase39.js، phase40.js، phase42.js، phase44.js، phase53.js، phase54.js، phase61.js | verified-static | في القايمة، في مصفوفة الصلاحيات |
 | LEG-0009 | page | الموارد البشرية | صفحة «حضور الموظفين» (attendance) | P1 | renderer/modules/hr/pages-attendance.js:19 | legacy /legacy/ | phase61.js | verified-static | في القايمة، في مصفوفة الصلاحيات |
 | LEG-0010 | page | الموارد البشرية | صفحة «اليوميات» (workerAttendance) | P1 | renderer/modules/hr/pages-worker-attendance.js:195 | legacy /legacy/ | phase24.js، phase26.js، phase27.js، phase28.js، phase39.js، phase40.js، phase41.js، phase43.js، phase49.js، phase50.js، phase51.js، phase53.js | verified-static | في القايمة، في مصفوفة الصلاحيات |
-| LEG-0011 | page | الموارد البشرية | صفحة «الإجازات» (leaves) | P1 | renderer/modules/hr/pages-leaves.js:48 | legacy /legacy/ | phase41.js | verified-static | في القايمة، في مصفوفة الصلاحيات |
+| LEG-0011 | page | الموارد البشرية | صفحة «الإجازات» (leaves) | P1 | renderer/modules/hr/pages-leaves.js:48 | angular /leaves | phase41.js | verified-static | في القايمة، في مصفوفة الصلاحيات |
 | LEG-0012 | page | الموارد البشرية | صفحة «تقييم الأداء» (performance) | P1 | renderer/modules/hr/pages-ops.js:540 | legacy /legacy/ | phase61.js | verified-static | في القايمة، في مصفوفة الصلاحيات |
 | LEG-0013 | page | العملاء والمشاريع | صفحة «العملاء» (clients.customers) | P1 | renderer/modules/clients/pages-customers.js:14 | angular /customers | phase2.js، phase5.js، phase7.js، phase15.js، phase19.js، phase46.js، phase48.js، phase55.js، pages-smoke.js | verified-static | في القايمة، في مصفوفة الصلاحيات |
 | LEG-0014 | page | العملاء والمشاريع | صفحة «المشاريع» (projects) | P1 | renderer/modules/hr/pages-projects.js:60 | angular /projects | phase2.js، phase3.js، phase4.js، phase15.js، phase17.js، phase18.js، phase19.js، phase22.js، phase56.js، phase57.js، phase58.js | verified-static | في القايمة، في مصفوفة الصلاحيات |
@@ -557,4 +557,5 @@
 | DEC-0125 | decision | قرارات | نطاق الحزمة 8.3 معتمد (الموظفين بس، والإجازات حزمة 8.4 لوحدها): قسم المستقيلين بجدوله وكروته وفلاتره زي القديمة، وصفحة الموظف وكشف الحضور والحذف والإجراءات الجم | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
 | DEC-0126 | decision | قرارات | الموظفين (الحزمة 8.3) Accepted، والسيرفر بيحط القسم الأساسي («الموظفين») للموظف وقت الحفظ (نفس `assignCoreDepartments` اللي القديمة بتعمله عند التحميل)، وقلب تو | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
 | DEC-0127 | decision | قرارات | نطاق الحزمة 8.4 معتمد (الإجازات): الموافقة البسيطة زي القديمة (محرك الاعتمادات متأجل لقرار منفصل)، والسيرفر بيطبّق `syncLeaveStatuses` بنفس القاعدة بعد أي تغيير | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
+| DEC-0128 | decision | قرارات | الإجازات (الحزمة 8.4) Accepted، وقلب توجيه «الإجازات» للشاشة الجديدة دلوقتي (القديمة «الشاشة الكاملة» للطباعة والتقارير والتصدير). والخطوة الجاية: تقرير «بعد» ل | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
 

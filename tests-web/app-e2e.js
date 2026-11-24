@@ -130,6 +130,9 @@ async function login(page, username, password) {
       await A.page.click(id); await A.page.waitForURL((u) => u.pathname.endsWith(path)); await A.page.waitForSelector('#pplBoards .entity-dept-board');
       ok(A.page.url().endsWith(path), `section link opens ${path}`, A.page.url());
     }
+    // و8.4 (DEC-0128): «الإجازات»
+    await A.page.click('#navLeaves'); await A.page.waitForURL((u) => u.pathname.endsWith('/app/leaves')); await A.page.waitForSelector('#lvTable');
+    ok(A.page.url().endsWith('/app/leaves'), 'section link opens /app/leaves', A.page.url());
     await A.page.click('#navWorkers'); await A.page.waitForSelector('#wkBoards .entity-dept-board');
     const boards = await A.page.$$eval('#wkBoards .entity-dept-board', (bs) => bs.map((b) => [b.getAttribute('data-dept'), b.querySelector('.num').textContent.trim()]));
     eq(boards.slice(0, 1).concat(boards.filter(([d]) => d.startsWith('__core_workers'))), [['', '2'], ['__core_workers_perm__', '1'], ['__core_workers_temp__', '1']], 'department boards with counts');
