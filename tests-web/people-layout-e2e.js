@@ -87,8 +87,10 @@ async function round(label, seed) {
 }
 
 /** النوافذ: نفس الخانات بنفس الترتيب، والحفظ من الشاشة الجديدة بيطلّع القيم المتوقعة (المقارنة الحرفية بالقديمة في phase76) */
-async function modals() {
-  const { browser, page, base: url, errors } = await openWebApp(base());
+async function modals(seed = base(), onlyLabels = false) {
+  const { browser, page, base: url, errors } = await openWebApp(seed);
+  // التخطيط المحفوظ (S5): القديمة بتطبّقه وقت فتح الصفحة (syncAutoFields) — نحفظه زي البيانات الحقيقية
+  if (onlyLabels) { for (const pg of ['supervisors', 'drivers']) { await page.evaluate((p) => { goToPage(p); rerenderCurrentPage(); }, pg); await page.waitForTimeout(500); } await page.evaluate(async () => { await WebSync.save(DATA); }); await page.reload(); await page.waitForFunction(() => typeof DATA !== 'undefined' && window.WebSync && WebSync._state.meta, null, { timeout: 30000 }); }
   // الترتيب الظاهر (CSS order من applyPeopleFormOrder، وبعده ترتيب الـ DOM) — مش ترتيب الـ DOM لوحده
   const labels = (root) => page.evaluate((r) => [...document.querySelectorAll(r + ' .modal-body label')].filter((l) => l.offsetParent !== null && getComputedStyle(l).display !== 'none').map((l, i) => [l, Number(getComputedStyle(l).order) || 0, i]).sort((a, b) => a[1] - b[1] || a[2] - b[2]).map((x) => x[0])
     .map((l) => { const c = l.cloneNode(true); c.querySelectorAll('input,select,textarea,small,button').forEach((n) => n.remove()); return (c.textContent || '').replace(/\s+/g, ' ').replace(/\*/g, '').trim(); }).filter((x) => x && !/^(المرفقات|إرفاق|رفع مرفق)/.test(x)), root);
@@ -114,6 +116,7 @@ async function modals() {
   const names = ['مشرف جديد', 'تعديل مشرف', 'سائق شركة جديد', 'تعديل سائق شركة', 'تعديل سائق خارجي', 'سائق خارجي جديد'];
   for (const [i, [pg, d, how]] of NEW.entries()) { await openNew(pg, d, how); eq(await labels('#appModal'), legacy[i], `${names[i]}: نفس الخانات بالترتيب`); }
 
+  if (onlyLabels) { ok(legacy[0].includes('انتهاء رخصة القيادة'), 'الاسم المتغيّر ظاهر فعلًا في نافذة المشرف القديمة', legacy[0]); eq(errors, [], 'النوافذ (تخطيط محفوظ): من غير أخطاء'); await browser.close(); return; }
   console.log('[الحفظ من الشاشة الجديدة]');
   const lastSaved = async (pg, method) => { const r = await page.waitForResponse((x) => new RegExp(`/api/v1/${pg}(/[^/?]+)?$`).test(x.url()) && x.request().method() === method); return [r.status(), await r.json()]; };
   // مشرف: يومية وتاريخ رخصة
@@ -148,6 +151,10 @@ async function modals() {
 
 (async () => {
   await modals();
+  // S5 (UAT 8.2): اسم خانة متغيّر في التخطيط المحفوظ (خانة تلقائية على #supLicExp)
+  console.log('[النوافذ بتخطيط محفوظ]');
+  await modals({ ...base(), autoFields: { supervisors: [{ key: 'f_supLicExp', label: 'تاريخ انتهاء الرخصة الشخصية', selector: '#supLicExp' }] },
+    formLayouts: { supervisors: [{ key: 'code', label: 'الكود', type: 'builtin' }, { key: 'name', label: 'الاسم', type: 'builtin' }, { key: 'f_supLicExp', label: 'انتهاء رخصة القيادة', type: 'builtin', selector: '#supLicExp', auto: true }] } }, true);
   await round('الافتراضي', base());
   const saved = await round('تخطيط محفوظ', { ...base(), ...SAVED });
   ok(!saved.supervisors.includes('العنوان') && saved.supervisors.includes('المقاس'), 'التخطيط اتطبّق: عمود مخفي وخانة إضافية (المشرفين)', saved.supervisors);

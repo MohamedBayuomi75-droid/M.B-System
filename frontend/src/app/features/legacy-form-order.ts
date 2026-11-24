@@ -30,7 +30,10 @@ export interface FormMeta { ord: (key: string) => number; hid: (key: string) => 
 export function formMeta(layout: any[], pfx: string, stored = true): FormMeta { // eslint-disable-line @typescript-eslint/no-explicit-any
   const find = (key: string) => { const sel = `#${pfx}${key}`; const i = layout.findIndex((x) => x && x.type !== 'custom' && x.selector === sel); return i >= 0 ? { i, x: layout[i] } : null; };
   // applyFormLayout بيلف على التخطيط كله ويكتب على نفس الخانة كل مرة ← لو أكتر من عنصر على نفس الـ selector (خانة تلقائية + أساسية)، الأخير هو اللي بيبان (UAT 8.2 S16)
-  const last = (key: string) => { const sel = `#${pfx}${key}`; for (let i = layout.length - 1; i >= 0; i--) { const x = layout[i]; if (x && x.type !== 'custom' && x.selector === sel) return { i, x }; } return null; };
+  // وفي القديمة syncAutoFields بيحط الخانة التلقائية **قبل** الأساسية اللي على نفس العنصر، فالأخيرة = الأساسية دايمًا ← الأساسية لو موجودة، وإلا التلقائية
+  const last = (key: string) => { const sel = `#${pfx}${key}`; let auto: { i: number; x: any } | null = null; // eslint-disable-line @typescript-eslint/no-explicit-any
+    for (let i = layout.length - 1; i >= 0; i--) { const x = layout[i]; if (!x || x.type === 'custom' || x.selector !== sel) continue; if (!x.auto) return { i, x }; if (!auto) auto = { i, x }; }
+    return auto; };
   return {
     ord: (key) => { const r = formOrder(key); if (r !== 500 || !stored) return r; const f = find(key); return f ? 500 + f.i : 500; },
     hid: (key) => { const f = last(key); return !!f && f.x.visible === false; },
