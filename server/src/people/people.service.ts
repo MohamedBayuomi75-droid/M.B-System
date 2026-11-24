@@ -70,13 +70,15 @@ export class PeopleService {
     const list = kind === 'supervisor' ? filterSupervisors(c, all, q) : kind === 'employee' ? filterEmployees(c, all, q) : filterDrivers(c, all, q);
     const deptF = q.departmentId || '';
     // الموظفين: خيارات فلتر الوظيفة وسنين قسم المستقيلين (من كل الموظفين — زي القديمة)
+    // رصيد الإجازة (employeeLeaveBalance — د-3 في 8.4) لعمود «رصيد الإجازة» التلقائي في جدول الموظفين
+    const bal = kind === 'employee' ? (await this.leaves.balances(u)).balances : {};
     const options = kind === 'employee' ? { positions: employeePositions(all), resignYears: employeeResignYears(all, deptF.indexOf('__retired_') === 0) } : undefined;
     return {
       source: await this.repo.source(coll), boards: boards(c, all, kind),
       cards: peopleCards(c, kind, list, deptF, workers).filter((x) => !hide.length || !['إجمالي الرواتب', 'إجمالي اليوميات'].includes(x.label)),
       mode: kind === 'driver' && deptF === EXT_DEPT ? 'external' : kind === 'employee' && isResignedDeptId(deptF) ? (deptF.indexOf('__retired_') === 0 ? 'retired' : 'resigned') : 'company', hiddenFields: hide,
       ...(options ? { options } : {}),
-      rows: list.map((p) => this.view(kind, c, p, hide, workers)),
+      rows: list.map((p) => ({ ...this.view(kind, c, p, hide, workers), ...(kind === 'employee' ? { leaveBalanceNow: bal[p.id] ?? 0 } : {}) })),
       layout: await this.layoutDocs(kind === 'supervisor' ? ['supervisors'] : kind === 'employee' ? ['employees'] : ['drivers', 'driversExt']),
     };
   }

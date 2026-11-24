@@ -12,7 +12,9 @@ const P = (id, o) => Object.assign({ id, extraFields: [], attachments: [] }, o);
 const base = () => ({
   users: [baseUser], schemaVersion: 9,
   settings: { defaultLeaveDays: 21 },
-  leaves: [{ id: 'l1', personKind: 'employee', personId: 'e2', status: 'approved', from: '2020-01-01', to: '2099-01-01' }],
+  leaves: [{ id: 'l1', personKind: 'employee', personId: 'e2', status: 'approved', from: '2020-01-01', to: '2099-01-01' },
+    // 8.4 (د-3): إجازة سنوية معتمدة السنة دي ← عمود «رصيد الإجازة» التلقائي
+    { id: 'l2', personKind: 'employee', personId: 'e1', employeeId: 'e1', type: 'annual', status: 'approved', from: `${new Date().getFullYear()}-02-01`, to: `${new Date().getFullYear()}-02-03`, days: 3 }],
   employees: [
     P('e1', { code: 'EMP-001', name: 'أحمد المحاسب', status: 'active', employmentType: 'full', position: 'محاسب', nationalId: '28501011234567', phone: '01001234567', address: 'القاهرة', email: 'a@x.com',
       salary: 8000, hireDate: '2022-01-01', idCardExpiry: '2099-01-01', insuranceStatus: 'insured', insuranceNumber: '111', contractType: 'permanent', contractStatus: 'active', leaveBalance: 21, birthDate: '1985-01-01',
@@ -35,10 +37,13 @@ const SAVED = {
       { key: 'code', label: 'الكود', type: 'builtin' }, { key: 'name', label: 'الاسم', type: 'builtin' }, { key: 'status', label: 'الحالة', type: 'builtin' }, { key: 'phone', label: 'الهاتف', type: 'builtin' },
       { key: 'nationalId', label: 'الرقم القومي', type: 'builtin' }, { key: 'position', label: 'المسمى الوظيفي', type: 'builtin' }, { key: 'department', label: 'القسم', type: 'builtin' },
       { key: 'salary', label: 'الراتب', type: 'builtin' }, { key: 'address', label: 'العنوان', type: 'builtin', showInTable: false, _userHidTable: true }, { key: 'birthDate', label: 'تاريخ الميلاد', type: 'builtin' },
-      { key: 'cf1', id: 'cf1', label: 'المقاس', type: 'custom', showInTable: true }, { key: 'notes', label: 'الملاحظات', type: 'builtin' },
+      { key: 'cf1', id: 'cf1', label: 'المقاس', type: 'custom', showInTable: true },
+      { key: 'f_empLeaveBal', label: 'رصيد الإجازة السنوية', type: 'builtin', selector: '#empLeaveBal', auto: true, showInTable: true }, { key: 'notes', label: 'الملاحظات', type: 'builtin' },
     ],
   },
-  autoFields: { employees: [{ key: 'f_empEmail', label: 'البريد الإلكتروني', selector: '#empEmail' }] },
+  // زي البيانات الحقيقية: ترحيل إعادة ضبط الخانات التلقائية اتعمل قبل كده (وإلا القديمة بتخفي «رصيد الإجازة» من الجدول)
+  _cfAutoFlagsReset: true,
+  autoFields: { employees: [{ key: 'f_empEmail', label: 'البريد الإلكتروني', selector: '#empEmail' }, { key: 'f_empLeaveBal', label: 'رصيد الإجازة السنوية', selector: '#empLeaveBal' }] },
 };
 const DEPTS = ['', '__core_employees__', '__resigned_employee__', '__retired_employee__'];
 const grab = (sel) => {
@@ -158,6 +163,7 @@ async function modals(seed = base()) {
   const saved = await round('تخطيط محفوظ', { ...base(), ...SAVED });
   // (الاسم المتغيّر «المسمى الوظيفي» مابيطبّقش على عمود «الوظيفة» في القديمة كمان — والشاشتين متطابقين)
   ok(!saved.employees.includes('العنوان') && saved.employees.includes('المقاس') && saved.employees[2] === 'الرقم القومي', 'التخطيط اتطبّق: عمود مخفي، وخانة إضافية، وترتيب', saved.employees);
+  ok(saved.employees.includes('رصيد الإجازة السنوية'), 'عمود «رصيد الإجازة» التلقائي ظاهر (8.4 د-3) — وخلاياه اتقارنت فوق', saved.employees);
   ok(saved['employees __resigned_employee__'].includes('العنوان'), 'قسم المستقيلين من غير تخطيط (زي القديمة)', saved['employees __resigned_employee__']);
   summary();
 })().catch((e) => { console.error(e); process.exit(1); });

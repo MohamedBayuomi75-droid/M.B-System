@@ -276,7 +276,8 @@ function birthFromNid(nid: string) {
 function autoCellValue(ent: string, rec: any, f: any, fmt: { date: (v: string) => string }): string {
   const sel = String(f.selector || '').replace(/^#/, '');
   const suf = sel.replace(/^(emp|wrk|sup|drv|eq)/, '');
-  if (suf === 'LeaveBal') return '';
+  // employeeLeaveBalance(rec.id) في القديمة — من السيرفر (8.4، د-3): leaveBalanceNow
+  if (suf === 'LeaveBal') return ent === 'employees' && rec.leaveBalanceNow != null ? String(rec.leaveBalanceNow) : '';
   if (!f.auto) {
     if (f.key === 'birthDate') return (rec.birthDate || birthFromNid(rec.nationalId)) || '—';
     const bv = rec[f.key]; if (bv == null || bv === '') return '—';

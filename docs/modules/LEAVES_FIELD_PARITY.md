@@ -7,22 +7,22 @@
 ## الإجازات (`leaves` ← جدول `leaves`)
 - **الحقول:** 12 — ليها عمود: **11**، ومحفوظة في `legacy_extra`: **1**. **ضايعة: 0**.
 - **أنواع مختلفة عن العمود في شكل البيانات الحقيقية:** 0
-- **ناقص في الشاشة الجديدة من غير قرار:** (الشاشة في 8.4.5)
+- **ناقص في الشاشة الجديدة من غير قرار:** مفيش
 
 | الحقل القديم | النوع (الحقيقية) | مكانه في القاعدة | في الشاشة الجديدة |
 |---|---|---|---|
-| `code` | (من الكود القديم) | عمود `code` (text) | (الشاشة في 8.4.5) |
-| `days` | number | عمود `days` (number) | (الشاشة في 8.4.5) |
-| `employeeId` | string | عمود `employee_id` (text) | (الشاشة في 8.4.5) |
-| `from` | string | عمود `from_date` (text) | (الشاشة في 8.4.5) |
-| `id` | string | المفتاح الأساسي `id` | (الشاشة في 8.4.5) |
-| `kind` | (من الكود القديم) | `legacy_extra` (محفوظ زي ما هو) | (الشاشة في 8.4.5) |
-| `personId` | string | عمود `person_id` (text) | (الشاشة في 8.4.5) |
-| `personKind` | string | عمود `person_kind` (text) | (الشاشة في 8.4.5) |
-| `reason` | string | عمود `reason` (text) | (الشاشة في 8.4.5) |
-| `status` | string | عمود `status` (text) | (الشاشة في 8.4.5) |
-| `to` | string | عمود `to_date` (text) | (الشاشة في 8.4.5) |
-| `type` | string | عمود `type` (text) | (الشاشة في 8.4.5) |
+| `code` | (من الكود القديم) | عمود `code` (text) | — (بيتدوّر فيه بس — مفيش خانة) |
+| `days` | number | عمود `days` (number) | ✅ |
+| `employeeId` | string | عمود `employee_id` (text) | ✅ |
+| `from` | string | عمود `from_date` (text) | ✅ |
+| `id` | string | المفتاح الأساسي `id` | ✅ |
+| `kind` | (من الكود القديم) | `legacy_extra` (محفوظ زي ما هو) | ✅ |
+| `personId` | string | عمود `person_id` (text) | ✅ |
+| `personKind` | string | عمود `person_kind` (text) | ✅ |
+| `reason` | string | عمود `reason` (text) | ✅ |
+| `status` | string | عمود `status` (text) | ✅ |
+| `to` | string | عمود `to_date` (text) | ✅ |
+| `type` | string | عمود `type` (text) | ✅ |
 
 ## الخلاصة
 - **كل حقل ليه مكان** (عمود أو `legacy_extra`)، ومفيش حقل بيضيع: أمر الكتابة بيحط أي مفتاح مش معروف، أو نوعه مختلف، في `legacy_extra`، وتحقق التكافؤ في أمر النقل بيقارن كل سجل.

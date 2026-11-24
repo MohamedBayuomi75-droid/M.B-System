@@ -17,6 +17,7 @@ export const routes: Routes = [
       { path: 'supervisors', canActivate: [pageGuard], data: { page: 'supervisors', skin: 'legacy', kind: 'supervisor' }, loadComponent: () => import('./features/people.page').then((m) => m.PeoplePage), title: 'المشرفون' },
       { path: 'drivers', canActivate: [pageGuard], data: { page: 'drivers', skin: 'legacy', kind: 'driver' }, loadComponent: () => import('./features/people.page').then((m) => m.PeoplePage), title: 'السائقون' },
       { path: 'employees', canActivate: [pageGuard], data: { page: 'employees', skin: 'legacy', kind: 'employee' }, loadComponent: () => import('./features/people.page').then((m) => m.PeoplePage), title: 'الموظفين' },
+      { path: 'leaves', canActivate: [pageGuard], data: { page: 'leaves', skin: 'legacy' }, loadComponent: () => import('./features/leaves.page').then((m) => m.LeavesPage), title: 'الإجازات' },
       { path: 'projects', canActivate: [pageGuard], data: { page: 'projects', skin: 'legacy' }, loadComponent: () => import('./features/projects.page').then((m) => m.ProjectsPage), title: 'المشاريع' },
       { path: 'suppliers', canActivate: [pageGuard], data: { page: 'ledger.suppliers', skin: 'legacy', bodyClass: 'module-ledger' }, loadComponent: () => import('./features/suppliers.page').then((m) => m.SuppliersPage), title: 'الموردين' },
       { path: 'customers', canActivate: [pageGuard], data: { page: 'clients.customers', skin: 'legacy' }, loadComponent: () => import('./features/customers.page').then((m) => m.CustomersPage), title: 'العملاء' },

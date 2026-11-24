@@ -17,8 +17,8 @@ const src = read('renderer/modules/hr/pages-leaves.js');
 const at = src.indexOf('const rec = {', src.indexOf('function openLeaveModal('));
 const recBody = src.slice(at, src.indexOf('};', at));
 const modal = [...recBody.matchAll(/^\s+([A-Za-z_]\w*)\s*:/gm)].map((m) => m[1]).concat(['from', 'to', 'days']); // «from, to, days» مكتوبين مختصر
-// الشاشة الجديدة (8.4.5)
-const PAGE = null;
+// الشاشة الجديدة (8.4.5): leaves.page.ts
+const PAGE = 'frontend/src/app/features/leaves.page.ts';
 const JSON_TYPE = { text: 'string', number: 'number', json: 'object', bool: 'boolean' };
 const SYSTEM = { id: 'المفتاح الأساسي `id`' };
 const EXTRA_KEYS = ['code', 'kind'];
@@ -26,7 +26,8 @@ const DEFERRED = { employeeId: 'نسخة من الشخص للموظف (بتتك�
 const byKey = Object.fromEntries(cols.map((c) => [c.key, c]));
 const real = shape.leaves || {};
 const page = readIf(PAGE);
-const inNew = (k) => page && new RegExp(`\\b${k}\\b`).test(page);
+// «code» في الشاشة = كود الشخص مش الإجازة: كود الإجازة بيتدوّر فيه في السيرفر بس
+const inNew = (k) => page && k !== 'code' && new RegExp(`\\b${k}\\b`).test(page);
 const fields = [...new Set([...modal, ...EXTRA_KEYS, 'id', ...Object.keys(real)])].filter((k) => /^[a-z]/.test(k)).sort();
 const counts = { column: 0, extra: 0, mismatch: 0 };
 let rows = '';
