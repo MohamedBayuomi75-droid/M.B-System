@@ -7,6 +7,7 @@ import { WORKER_COLUMNS } from '../migrations/1765200000000-WorkersCutover';
 import { DRIVER_COLUMNS, SUPERVISOR_COLUMNS } from '../migrations/1765300000000-SupervisorsDriversCutover';
 import { EMPLOYEE_COLUMNS } from '../migrations/1765400000000-EmployeesCutover';
 import { LEAVE_COLUMNS } from '../migrations/1765500000000-LeavesCutover';
+import { ATTENDANCE_COLUMNS, WORKER_ATTENDANCE_COLUMNS } from '../migrations/1765600000000-AttendanceCutover';
 
 export type { CutoverReport } from './module-cutover';
 
@@ -122,7 +123,38 @@ export const LEAVES: ModuleSpec = {
   clearTables: ['leaves'],
 };
 
-export const MODULES: Record<string, ModuleSpec> = { parties: PARTIES, warehouses: WAREHOUSES, 'supplier-invoices': SUPPLIER_INVOICES, 'supplier-payments': SUPPLIER_PAYMENTS, projects: PROJECTS, workers: WORKERS, 'supervisors-drivers': SUPERVISORS_DRIVERS, employees: EMPLOYEES, leaves: LEAVES };
+/**
+ * 8.5 — اليوميات وحضور الموظفين (DEC-0135). **التطبيع الوحيد: تثبيت الأجر (DEC-0130، د-3):** اليومية اللي مالهاش أجر محفوظ صالح
+ * (نفس شرط attendanceDayWage: موجود، ومش فاضي، ورقم) بتاخد أجر صاحبها الحالي (toInt = round2، وصفر لو مش موجود — زي القديمة) وبيتثبّت فيها،
+ * ومعاه `dayWageSource: 'pinned-at-cutover'` علشان العدد يطلع في تقرير النقل. صاحب اليومية بنفس attType/attPersonId (normalizeAttendanceRecord).
+ */
+const ATT_KIND = `(CASE WHEN lower(coalesce(r.data->>'personType', r.data->>'personKind', r.data->>'kind', '')) IN ('worker','supervisor','driver')
+    THEN lower(coalesce(r.data->>'personType', r.data->>'personKind', r.data->>'kind'))
+  WHEN EXISTS (SELECT 1 FROM legacy_records x WHERE x.collection = 'workers' AND x.deleted_at IS NULL AND x.id = ATT_PID) THEN 'worker'
+  WHEN EXISTS (SELECT 1 FROM legacy_records x WHERE x.collection = 'drivers' AND x.deleted_at IS NULL AND x.id = ATT_PID) THEN 'driver'
+  WHEN EXISTS (SELECT 1 FROM legacy_records x WHERE x.collection = 'supervisors' AND x.deleted_at IS NULL AND x.id = ATT_PID) THEN 'supervisor'
+  WHEN coalesce(r.data->>'driverId','') <> '' AND coalesce(r.data->>'workerId','') = '' THEN 'driver' ELSE 'worker' END)`;
+const ATT_PID = `coalesce(nullif(r.data->>'personId',''), nullif(r.data->>'workerId',''), nullif(r.data->>'driverId',''), nullif(r.data->>'supervisorId',''), '')`;
+const WAGE_OK = `(r.data ? 'dayWage' AND jsonb_typeof(r.data->'dayWage') <> 'null' AND coalesce(r.data->>'dayWage','') <> ''
+  AND (jsonb_typeof(r.data->'dayWage') = 'number' OR (r.data->>'dayWage') ~ '^\\s*-?[0-9]+(\\.[0-9]+)?\\s*$'))`;
+const PERSON_WAGE = `coalesce((SELECT CASE WHEN jsonb_typeof(x.data->'dailyWage') = 'number' THEN round((x.data->>'dailyWage')::numeric, 2)
+    WHEN (x.data->>'dailyWage') ~ '^\\s*-?[0-9]+(\\.[0-9]+)?\\s*$' THEN round(trim(x.data->>'dailyWage')::numeric, 2) ELSE 0 END
+  FROM legacy_records x WHERE x.deleted_at IS NULL AND x.id = ${ATT_PID}
+    AND x.collection = (CASE ${ATT_KIND.replace(/ATT_PID/g, ATT_PID)} WHEN 'supervisor' THEN 'supervisors' WHEN 'driver' THEN 'drivers' ELSE 'workers' END) LIMIT 1), 0)`;
+export const ATTENDANCE: ModuleSpec = {
+  label: 'attendance',
+  collections: [
+    { collection: 'workerAttendance', table: 'worker_attendance', write: 'legacy_write_worker_attendance', read: 'worker_attendance_to_legacy',
+      normalized: `(coalesce(r.data, jsonb_build_object('id', r.id)) || CASE WHEN ${WAGE_OK} THEN '{}'::jsonb
+        ELSE jsonb_build_object('dayWage', trim_scale(${PERSON_WAGE}), 'dayWageSource', 'pinned-at-cutover') END)`,
+      typedKeys: WORKER_ATTENDANCE_COLUMNS.map(([, k]) => k), writeFrom: 'normalized' },
+    { collection: 'attendance', table: 'attendance', write: 'legacy_write_attendance', read: 'attendance_to_legacy',
+      normalized: `(r.data || jsonb_build_object('id', r.id))`, typedKeys: ATTENDANCE_COLUMNS.map(([, k]) => k) },
+  ],
+  clearTables: ['worker_attendance', 'attendance'],
+};
+
+export const MODULES: Record<string, ModuleSpec> = { parties: PARTIES, warehouses: WAREHOUSES, 'supplier-invoices': SUPPLIER_INVOICES, 'supplier-payments': SUPPLIER_PAYMENTS, projects: PROJECTS, workers: WORKERS, 'supervisors-drivers': SUPERVISORS_DRIVERS, employees: EMPLOYEES, leaves: LEAVES, attendance: ATTENDANCE };
 
 export const partiesCutover = (ds: DataSource, by: string, mode: CutoverReport['mode']) => cutoverModule(ds, PARTIES, by, mode);
 export const partiesRollback = (ds: DataSource, by: string) => rollbackModule(ds, PARTIES, by);

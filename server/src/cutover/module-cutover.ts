@@ -10,13 +10,15 @@ import { WRITE_LOCK_KEY } from '../data/data.service';
  */
 export interface CutoverCollection {
   collection: string; table: string; write: string; read: string; normalized: string; rounding?: { column: string; key: string };
+  /** اللي بيتكتب في الجدول (الافتراضي r.data). 8.5: اليوميات بتتكتب بالتطبيع (تثبيت الأجر — DEC-0130) */
+  writeFrom?: 'data' | 'normalized';
   /** حقول ليها أعمدة بنوع محدد: القيمة اللي نوعها مختلف بتفضل في legacy_extra — التقرير بيعدّها لكل حقل (أعداد بس) */
   typedKeys?: string[];
 }
 export interface ModuleSpec { label: string; collections: CutoverCollection[]; clearTables: string[] }
 export interface CutoverReport {
   mode: 'dry-run' | 'execute'; at: string;
-  collections: { collection: string; migrated: number; rounding: { id: string; from: string; to: string }[]; untyped?: Record<string, number> }[];
+  collections: { collection: string; migrated: number; rounding: { id: string; from: string; to: string }[]; untyped?: Record<string, number>; normalizedOnWrite?: number }[];
 }
 
 async function migrateAll(qr: QueryRunner, spec: ModuleSpec, by: string, mode: CutoverReport['mode']): Promise<CutoverReport> {
@@ -29,7 +31,7 @@ async function migrateAll(qr: QueryRunner, spec: ModuleSpec, by: string, mode: C
     const [{ m }] = await qr.query(`SELECT count(*)::int AS m FROM ${p.table}`);
     if (m > 0) throw new Error(`TABLE_NOT_EMPTY: ${p.table}`);
     const rows: { id: string }[] = await qr.query(
-      `SELECT r.id, ${p.write}(r.id, r.data, r.rev, r.created_at) FROM records r WHERE r.collection = $1 AND r.deleted_at IS NULL ORDER BY r.created_at, r.id`, [p.collection]);
+      `SELECT r.id, ${p.write}(r.id, ${p.writeFrom === 'normalized' ? p.normalized : 'r.data'}, r.rev, r.created_at) FROM records r WHERE r.collection = $1 AND r.deleted_at IS NULL ORDER BY r.created_at, r.id`, [p.collection]);
     const bad: { id: string }[] = await qr.query(
       `SELECT r.id FROM records r JOIN ${p.table} t ON t.id = r.id WHERE r.collection = $1 AND r.deleted_at IS NULL
          AND (${p.normalized} <> ${p.read}(t) OR t.row_version <> r.rev)`, [p.collection]);
@@ -44,7 +46,10 @@ async function migrateAll(qr: QueryRunner, spec: ModuleSpec, by: string, mode: C
        WHERE r.collection = $1 AND r.deleted_at IS NULL AND coalesce(r.data->>'${p.rounding.key}','') <> '' AND (r.data->>'${p.rounding.key}')::numeric <> t.${p.rounding.column}`, [p.collection]) : [];
     const untyped = p.typedKeys ? Object.fromEntries((await qr.query(
       `SELECT k, count(*)::int AS n FROM ${p.table} t, unnest($1::text[]) AS k WHERE t.legacy_extra ? k GROUP BY k ORDER BY k`, [p.typedKeys])).map((x: { k: string; n: number }) => [x.k, x.n])) : undefined;
-    report.collections.push({ collection: p.collection, migrated: rows.length, rounding, ...(untyped ? { untyped } : {}) });
+    // عدد السجلات اللي اتكتبت بتطبيع (مثلًا تثبيت الأجر في اليوميات — DEC-0130)، علشان يطلع في تقرير النقل
+    const normalizedOnWrite = p.writeFrom === 'normalized' ? Number((await qr.query(
+      `SELECT count(*)::int AS n FROM records r WHERE r.collection = $1 AND r.deleted_at IS NULL AND ${p.normalized} <> (r.data || jsonb_build_object('id', r.id))`, [p.collection]))[0].n) : undefined;
+    report.collections.push({ collection: p.collection, migrated: rows.length, rounding, ...(untyped ? { untyped } : {}), ...(normalizedOnWrite !== undefined ? { normalizedOnWrite } : {}) });
   }
   for (const c of report.collections) await qr.query(`INSERT INTO module_cutover (collection, cutover_by, report) VALUES ($1, $2, $3::jsonb)`, [c.collection, by, JSON.stringify(report)]);
   await qr.query(`INSERT INTO audit_log (username, action, entity, details) VALUES ($1, 'module.cutover', $2, $3::jsonb)`, [by, spec.label, JSON.stringify(report)]);

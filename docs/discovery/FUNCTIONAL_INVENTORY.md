@@ -32,7 +32,7 @@
 | LEG-0008 | [معدات ومركبات](#equipment) | الموارد البشرية | legacy /legacy/ | 7 | 0 | [ديسكتوب](visual-baseline/desktop/equipment.png) · [موبايل](visual-baseline/mobile/equipment.png) |
 | LEG-0009 | [حضور الموظفين](#attendance) | الموارد البشرية | legacy /legacy/ | 6 | 1 | [ديسكتوب](visual-baseline/desktop/attendance.png) · [موبايل](visual-baseline/mobile/attendance.png) |
 | LEG-0010 | [اليوميات](#workerAttendance) | الموارد البشرية | legacy /legacy/ | 5 | 0 | [ديسكتوب](visual-baseline/desktop/workerAttendance.png) · [موبايل](visual-baseline/mobile/workerAttendance.png) |
-| LEG-0011 | [الإجازات](#leaves) | الموارد البشرية | legacy /legacy/ | 10 | 2 | [ديسكتوب](visual-baseline/desktop/leaves.png) · [موبايل](visual-baseline/mobile/leaves.png) |
+| LEG-0011 | [الإجازات](#leaves) | الموارد البشرية | angular /leaves | 10 | 2 | [ديسكتوب](visual-baseline/desktop/leaves.png) · [موبايل](visual-baseline/mobile/leaves.png) |
 | LEG-0012 | [تقييم الأداء](#performance) | الموارد البشرية | legacy /legacy/ | 6 | 5 | [ديسكتوب](visual-baseline/desktop/performance.png) · [موبايل](visual-baseline/mobile/performance.png) |
 | LEG-0013 | [العملاء](#clientscustomers) | العملاء والمشاريع | angular /customers | 11 | 1 | [ديسكتوب](visual-baseline/desktop/clients.customers.png) · [موبايل](visual-baseline/mobile/clients.customers.png) |
 | LEG-0014 | [المشاريع](#projects) | العملاء والمشاريع | angular /projects | 11 | 1 | [ديسكتوب](visual-baseline/desktop/projects.png) · [موبايل](visual-baseline/mobile/projects.png) |
@@ -248,7 +248,7 @@
 
 ### <a id="leaves"></a>الإجازات — `leaves` — LEG-0011
 - **القسم:** الموارد البشرية · **في القايمة:** أيوه · **دالة الرسم:** `renderLeavesPage` (renderer/modules/hr/pages-leaves.js:48)
-- **المكان المستهدف:** legacy /legacy/ · **الاختبارات:** phase41.js
+- **المكان المستهدف:** angular /leaves · **الاختبارات:** phase41.js
 - **العنوان الظاهر:** الإجازات · **التبويبات:** —
 - **اللقطات:** [ديسكتوب](visual-baseline/desktop/leaves.png) · [موبايل](visual-baseline/mobile/leaves.png)
 
