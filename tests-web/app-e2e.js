@@ -156,7 +156,8 @@ async function login(page, username, password) {
     await A.page.selectOption('#wrkStatus', 'resigned');
     const [pu] = await Promise.all([A.page.waitForResponse((r) => r.url().includes('/api/v1/workers/') && r.request().method() === 'PATCH'), A.page.click('#btnSaveWrk')]);
     eq(pu.status(), 200, 'company worker edited through the modal');
-    const res = await pu.json();
+    // جسم الرد ممكن يختفي لو الصفحة اتحدّثت بعد الحفظ (Network.getResponseBody على الـ CI) ← نقرا السجل من السيرفر
+    const res = (await api('GET', '/api/v1/workers/w2', null, adminTok)).body;
     eq([res.status, res.departmentId, res.archiveGroup], ['resigned', '__resigned_worker__', 'resigned'], 'resign moves to the resigned department');
     await A.page.click('#wkBack'); await A.page.waitForSelector('#wkBoards');
     ok((await A.page.$eval('#wkBoards .entity-dept-board[data-dept="__resigned_worker__"] .num', (e) => e.textContent.trim())) === '1', 'resigned board counts him');
