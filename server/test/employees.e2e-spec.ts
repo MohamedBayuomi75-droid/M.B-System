@@ -3,7 +3,7 @@ import { cutoverModule } from '../src/cutover/module-cutover';
 import { EMPLOYEES } from '../src/cutover/parties-cutover';
 
 /**
- * 8.3.4 — API الموظفين (بيانات اختبار): الصلاحيات، والإضافة **من غير قسم** (Idempotency + حدث employee.saved)، وحماية الراتب (B-48)،
+ * 8.3.4 — API الموظفين (بيانات اختبار): الصلاحيات، والإضافة بالقسم الأساسي (DEC-0126) (Idempotency + حدث employee.saved)، وحماية الراتب (B-48)،
  * والاستقالة (النهارده — مفيش خانة تاريخ) بأرشيف المستقيلين وقسمهم في معاملة واحدة، وقسم المستقيلين الخاص — ونفس السلوك بعد النقل للجدول.
  * المقارنة الحرفية بالقديم: tests-merge/phase78.js.
  */
@@ -50,7 +50,7 @@ describe('8.3.4 employees API', () => {
   async function addResignReactivate(tag: string) {
     const r = await post(admin, { name: `موظف ${tag}`, email: ' n@x.com ', leaveBalance: '15', salary: '6500.555', position: 'مشتريات' }).expect(201);
     expect(r.body).toMatchObject({ code: expect.stringMatching(/^EMP-/), employmentType: 'full', status: 'active', email: 'n@x.com', leaveBalance: 15, salary: 6500.56, position: 'مشتريات' });
-    expect(r.body).not.toHaveProperty('departmentId'); // personDeptOnSave مش بيتنادى — القسم عند التحميل الجاي (assignCoreDepartments)
+    expect(r.body).toMatchObject({ departmentId: '__core_employees__', categoryId: '__core_employees__' }); // DEC-0126: assignCoreDepartments وقت الحفظ
     expect(r.body.events.map((e: { type: string }) => e.type)).toEqual(['employee.saved']);
     const today = (await t.http().get(`${E}/form-options`).set(bearer(admin))).body.today;
     const res = await t.http().patch(`${E}/${r.body.id}`).set(bearer(admin)).send({ rev: r.body.rev, name: r.body.name, code: r.body.code, status: 'resigned', resignedAt: '2020-01-01' }).expect(200);

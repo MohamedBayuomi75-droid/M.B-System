@@ -207,6 +207,19 @@ export function employeePayload(f: PeopleForm, cur: J | null, all: J[], today: s
   if (p.licenseExpiry) p.licenseStatus = statusFromExpiry(p.licenseExpiry, today);
   return p;
 }
+/**
+ * assignCoreDepartments (helpers.js) على سجل موظف واحد — بقرار المستخدم (DEC-0126) السيرفر بيطبّقه وقت الحفظ بدل ما يستنى فتح الواجهة القديمة:
+ * لو القسم مش قسم مستقيلين/معاشات ومش «الموظفين»، القسم القديم بيتحفظ في legacyDepartmentId (لو فاضي) والقسم بيبقى «الموظفين».
+ * نفس النتيجة النهائية اللي القديمة بتوصلها عند التحميل (اتأكدت في بروفة 8.3: E8).
+ */
+export function assignCoreDept(rec: J): void {
+  const cur = String(rec.departmentId || rec.categoryId || '');
+  if (cur && isResignedDeptId(cur)) return;
+  const want = coreDeptOf('employee', rec);
+  if (cur === want) return;
+  if (cur && !rec.legacyDepartmentId) rec.legacyDepartmentId = cur;
+  rec.departmentId = want; rec.categoryId = want;
+}
 /** commit: الدمج (المشرف وسواق الشركة)، أو **من غير دمج** (السواق الخارجي: كل خانة بتتكتب زي ما هي)، أو السجل الجديد */
 export function commitPerson(payload: J, cur: J | null, id: string, merge: boolean): J {
   if (!cur) return { ...payload, id };

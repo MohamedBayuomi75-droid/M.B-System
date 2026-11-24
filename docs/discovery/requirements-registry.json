@@ -6,7 +6,7 @@
   "TECH": 19,
   "NEW": 10,
   "CHG": 15,
-  "DEC": 126
+  "DEC": 127
  },
  "entries": [
   {
@@ -2753,6 +2753,24 @@
    "status": "resolved"
   },
   {
+   "id": "DEC-0126",
+   "key": "decision:DEC-0126",
+   "prefix": "DEC",
+   "classification": "OPEN-DECISION",
+   "kind": "decision",
+   "title": "الموظفين (الحزمة 8.3) Accepted، والسيرفر بيحط القسم الأساسي («الموظفين») للموظف وقت الحفظ (نفس `assignCoreDepartments` اللي القديمة بتعمله عند التحميل)، وقلب تو",
+   "module": "قرارات",
+   "priority": "—",
+   "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",
+   "tests": [],
+   "target": "—",
+   "notes": "محسوم",
+   "aliases": [],
+   "decisionStatus": "resolved",
+   "priorityStatus": "—",
+   "status": "resolved"
+  },
+  {
    "id": "LEG-0001",
    "key": "page:dashboard",
    "prefix": "LEG",
@@ -2842,7 +2860,7 @@
     "phase51.js",
     "phase52.js"
    ],
-   "target": "legacy /legacy/",
+   "target": "angular /employees",
    "notes": "في القايمة، في مصفوفة الصلاحيات",
    "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"

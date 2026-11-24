@@ -13,6 +13,8 @@
  *   لصفحة العامل وكشف المستحقات والحذف والإجراءات الجماعية والتصدير وتعديل التخطيط (DEC-0121). الرجوع: السطرين دول.
  * المرحلة 8.2 (قلب التوجيه بموافقة 2026-11-24، DEC-0124): «المشرفون» و«السائقون» → Angular. الشاشة الكاملة لكشف الحساب وصفحة الشخص
  *   والحذف والإجراءات الجماعية والتصدير وتعديل التخطيط (DEC-0123). الرجوع: الأربع سطور دول.
+ * المرحلة 8.3 (قلب التوجيه بموافقة 2026-11-24، DEC-0126): «الموظفين» → Angular. الشاشة الكاملة لصفحة الموظف والحضور والحذف والإجراءات
+ *   الجماعية والتصدير و«إضافة مستقيل» وتعديل التخطيط (DEC-0125). الرجوع: السطرين دول.
  */
 export interface PageRoute { key: string; label: string; icon: string; target: 'legacy' | 'angular'; path?: string; pilot?: boolean }
 
@@ -28,6 +30,8 @@ export const PAGE_ROUTES: readonly PageRoute[] = [
   { key: 'ledger.returns', label: 'المرتجعات — الشاشة الكاملة', icon: 'assignment_return', target: 'legacy' },
   { key: 'ledger.payments', label: 'الدفعات', icon: 'payments', target: 'angular', path: '/supplier-payments' },
   { key: 'ledger.payments', label: 'الدفعات — الشاشة الكاملة', icon: 'payments', target: 'legacy' },
+  { key: 'employees', label: 'الموظفين', icon: 'badge', target: 'angular', path: '/employees' },
+  { key: 'employees', label: 'الموظفين — الشاشة الكاملة', icon: 'contact_page', target: 'legacy' },
   { key: 'workers', label: 'العمال', icon: 'engineering', target: 'angular', path: '/workers' },
   { key: 'workers', label: 'العمال — الشاشة الكاملة', icon: 'badge', target: 'legacy' },
   { key: 'supervisors', label: 'المشرفون', icon: 'engineering', target: 'angular', path: '/supervisors' },

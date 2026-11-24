@@ -27,7 +27,7 @@
 | `collectPersonHrFields('emp', { showSalary })` | الحقول (والرخصة كمان) | تتنقل (موجودة من 8.2) |
 | `readResignedDateFromForm('emp', …)` | **مفيش خانة `#empResignDate` في النافذة** ← دايمًا فاضي | تتنقل زي ما هي (تاريخ الاستقالة = النهارده من `syncPersonResignedState`) |
 | `syncDocStatusesFromDates` | حالة البطاقة والرخصة | تتنقل (موجودة) |
-| **`personDeptOnSave` — مش بيتنادى** | الموظف الجديد بيتحفظ **من غير قسم**، والقسم الأساسي بيتحط عند التحميل الجاي (`assignCoreDepartments`) | **سلوك القديمة بيتنقل زي ما هو**، والبروفة بتقيس التعديلات وقت التحميل (§3) |
+| **`personDeptOnSave` — مش بيتنادى** | الموظف الجديد بيتحفظ **من غير قسم**، والقسم الأساسي بيتحط عند التحميل الجاي (`assignCoreDepartments`) | **بقرار البوابة (DEC-0126): السيرفر بيطبّق `assignCoreDepartments` وقت الحفظ** (`assignCoreDept`) — نفس النتيجة النهائية |
 | `guardEntityDuplicates('employee', …)` | منع التكرار | تتنقل (موجودة) |
 | `mergePersonRecord` | الدمج | تتنقل (موجودة) |
 | `syncPersonResignedState('employee', …)` | الأرشيف | تتنقل (موجودة بالنوع) |

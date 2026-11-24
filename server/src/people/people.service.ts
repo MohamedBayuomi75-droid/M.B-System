@@ -13,7 +13,7 @@ import {
 } from '../workers/worker-rules';
 import {
   COLL_OF, commitPerson, driverPayload, employeePayload, employeePositions, employeeResignYears, EMPLOYMENT_TYPES, EXT_DEPT, externalDriverPayload, filterDrivers,
-  filterEmployees, filterSupervisors, INSURANCE_STATUS_OPTS, PeopleKind, peopleCards, supervisorPayload, workersOf,
+  assignCoreDept, filterEmployees, filterSupervisors, INSURANCE_STATUS_OPTS, PeopleKind, peopleCards, supervisorPayload, workersOf,
 } from './people-rules';
 import { ListPeopleQuery, SavePersonDto, UpdatePersonDto } from './people.dto';
 import { PeopleRepository, Row } from './people.repository';
@@ -31,8 +31,8 @@ const LABEL: Record<PeopleKind, { one: string; many: string; code: string }> = {
  *    والقسم، وأرشيف المستقيلين، ومنع التكرار، وتاريخ الانضمام للمشروع — في معاملة واحدة وبنفس صلاحيات /api/sync.
  *  - **الأجور (B-48):** اليومية والراتب مابيظهروش ومايتقبلوش من مستخدم مالوش صفحة الرواتب أو المستحقات، والقيمة المخزنة بتفضل.
  *  - كشف حساب المشرف، وصفحة الشخص، والحذف، والإجراءات الجماعية، والتصدير: من الشاشة الكاملة (د-2، د-3).
- * والموظفين (8.3.4، DEC-0125) بنفس الطبقة: قايمة filteredEmployees وقسم المستقيلين الخاص (كروته وفلاتره وجدوله)، والحفظ **من غير قسم**
- * زي القديمة، ورصيد الإجازة بيتحفظ زي ما هو (د-4)، والراتب محمي (B-48).
+ * والموظفين (8.3.4، DEC-0125) بنفس الطبقة: قايمة filteredEmployees وقسم المستقيلين الخاص (كروته وفلاتره وجدوله)، والحفظ بالقسم الأساسي
+ * («الموظفين» — DEC-0126: نفس اللي القديمة بتعمله عند التحميل)، ورصيد الإجازة بيتحفظ زي ما هو (د-4)، والراتب محمي (B-48).
  */
 @Injectable()
 export class PeopleService {
@@ -176,6 +176,8 @@ export class PeopleService {
         await this.guardDuplicates(kind, u, em, payload, p0 ? id : null, rows, !!dto.confirmDuplicates);
         const rec = commitPerson(payload, p0, id, !external);
         const arch = syncResigned(rec, archive.map((a) => ({ ...a.data, id: a.id })), c.today, new Date().toISOString(), uid, kind);
+        // الموظف: القسم الأساسي وقت الحفظ (DEC-0126) — القديمة بتحطه عند التحميل الجاي (assignCoreDepartments)
+        if (kind === 'employee') assignCoreDept(rec);
         stampMembership(p0, rec, c.today);
         saved = rec;
         const changes: RecordChangeDto[] = [];

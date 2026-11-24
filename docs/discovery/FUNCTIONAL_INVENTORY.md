@@ -25,7 +25,7 @@
 | LEG-0001 | [🧭 مركز المتابعة](#dashboard) | 🧭 مركز المتابعة | legacy /legacy/ | 53 | 1 | [ديسكتوب](visual-baseline/desktop/dashboard.png) · [موبايل](visual-baseline/mobile/dashboard.png) |
 | LEG-0002 | [مهامي](#tasksmy) | مهامي | legacy /legacy/ | 4 | 0 | [ديسكتوب](visual-baseline/desktop/tasks.my.png) · [موبايل](visual-baseline/mobile/tasks.my.png) |
 | LEG-0003 | [🏠 لوحات الموارد البشرية](#hrHome) | الموارد البشرية | legacy /legacy/ | 9 | 0 | [ديسكتوب](visual-baseline/desktop/hrHome.png) · [موبايل](visual-baseline/mobile/hrHome.png) |
-| LEG-0004 | [الموظفين](#employees) | الموارد البشرية | legacy /legacy/ | 6 | 0 | [ديسكتوب](visual-baseline/desktop/employees.png) · [موبايل](visual-baseline/mobile/employees.png) |
+| LEG-0004 | [الموظفين](#employees) | الموارد البشرية | angular /employees | 6 | 0 | [ديسكتوب](visual-baseline/desktop/employees.png) · [موبايل](visual-baseline/mobile/employees.png) |
 | LEG-0005 | [المشرفون](#supervisors) | الموارد البشرية | angular /supervisors | 6 | 0 | [ديسكتوب](visual-baseline/desktop/supervisors.png) · [موبايل](visual-baseline/mobile/supervisors.png) |
 | LEG-0006 | [العمال](#workers) | الموارد البشرية | angular /workers | 7 | 0 | [ديسكتوب](visual-baseline/desktop/workers.png) · [موبايل](visual-baseline/mobile/workers.png) |
 | LEG-0007 | [السائقون](#drivers) | الموارد البشرية | angular /drivers | 7 | 0 | [ديسكتوب](visual-baseline/desktop/drivers.png) · [موبايل](visual-baseline/mobile/drivers.png) |
@@ -134,7 +134,7 @@
 
 ### <a id="employees"></a>الموظفين — `employees` — LEG-0004
 - **القسم:** الموارد البشرية · **في القايمة:** أيوه · **دالة الرسم:** `renderEmployeesPage` (renderer/modules/hr/pages-employees.js:77)
-- **المكان المستهدف:** legacy /legacy/ · **الاختبارات:** phase22.js، phase26.js، phase27.js، phase28.js، phase29.js، phase30.js، phase31.js، phase32.js، phase33.js، phase34.js، phase35.js، phase36.js، phase38.js، phase39.js، phase40.js، phase42.js، phase44.js، phase45.js، phase49.js، phase51.js، phase52.js
+- **المكان المستهدف:** angular /employees · **الاختبارات:** phase22.js، phase26.js، phase27.js، phase28.js، phase29.js، phase30.js، phase31.js، phase32.js، phase33.js، phase34.js، phase35.js، phase36.js، phase38.js، phase39.js، phase40.js، phase42.js، phase44.js، phase45.js، phase49.js، phase51.js، phase52.js
 - **العنوان الظاهر:** الموظفين · **التبويبات:** —
 - **اللقطات:** [ديسكتوب](visual-baseline/desktop/employees.png) · [موبايل](visual-baseline/mobile/employees.png)
 

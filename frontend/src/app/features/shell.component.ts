@@ -131,7 +131,7 @@ export class ShellComponent {
     return pages[0] ?? { key: '', label: s.label, href: '/legacy/' };
   }
   /** معرّفات ثابتة للروابط (للاختبارات): «المشاريع» (7.4) و«العمال» (8.1) بعد قلب التوجيه */
-  extraId(p: NavLink) { return EXTRA_PAGES.find((x) => x.path === p.path)?.id ?? ({ '/projects': 'navProjects', '/workers': 'navWorkers', '/supervisors': 'navSupervisors', '/drivers': 'navDrivers' } as Record<string, string>)[p.path ?? ''] ?? null; }
+  extraId(p: NavLink) { return EXTRA_PAGES.find((x) => x.path === p.path)?.id ?? ({ '/projects': 'navProjects', '/workers': 'navWorkers', '/supervisors': 'navSupervisors', '/drivers': 'navDrivers', '/employees': 'navEmployees' } as Record<string, string>)[p.path ?? ''] ?? null; }
 
   // أدوات العرض: نفس مفاتيح التخزين بتاعة الواجهة القديمة (uiDensity / uiZoom)، فالإعداد واحد في الواجهتين
   readonly density = signal(this.readNum('uiDensity', 1, (n) => n === 0 || n === 1 || n === 2));

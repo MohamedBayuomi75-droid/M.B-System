@@ -11,8 +11,8 @@
 | `CHG-` | APPROVED-CHANGE | 14 |
 | `TECH-` | TECHNICAL | 18 |
 | `NEW-` | NEW-REQUIREMENT | 9 |
-| `DEC-` | OPEN-DECISION (المفتوح والمحسوم) | 125 (مفتوح: 40) |
-| **الإجمالي** | | **520** |
+| `DEC-` | OPEN-DECISION (المفتوح والمحسوم) | 126 (مفتوح: 40) |
+| **الإجمالي** | | **521** |
 
 **عناصر LEG حسب النوع:** page 54 · calc 120 · data-write 30 · modal 63 · export/print 37 · permission 8 · electron-capability 42
 
@@ -22,7 +22,7 @@
 | LEG-0001 | page | مركز المتابعة | صفحة «مركز المتابعة» (dashboard) | P1 | renderer/modules/hr/pages-dashboard.js:28 | legacy /legacy/ | phase16.js، phase20.js، phase38.js، phase61.js | verified-static | في القايمة، في مصفوفة الصلاحيات |
 | LEG-0002 | page | مهامي | صفحة «مهامي» (tasks.my) | P1 | renderer/modules/clients/pages-tasks.js:38 | legacy /legacy/ | phase61.js | verified-static | في القايمة، في مصفوفة الصلاحيات |
 | LEG-0003 | page | الموارد البشرية | صفحة «لوحات الموارد البشرية» (hrHome) | P1 | renderer/core/boards.js:172 | legacy /legacy/ | phase22.js | verified-static | في القايمة، مش في مصفوفة الصلاحيات |
-| LEG-0004 | page | الموارد البشرية | صفحة «الموظفين» (employees) | P1 | renderer/modules/hr/pages-employees.js:77 | legacy /legacy/ | phase22.js، phase26.js، phase27.js، phase28.js، phase29.js، phase30.js، phase31.js، phase32.js، phase33.js، phase34.js، phase35.js، phase36.js، phase38.js، phase39.js، phase40.js، phase42.js، phase44.js، phase45.js، phase49.js، phase51.js، phase52.js | verified-static | في القايمة، في مصفوفة الصلاحيات |
+| LEG-0004 | page | الموارد البشرية | صفحة «الموظفين» (employees) | P1 | renderer/modules/hr/pages-employees.js:77 | angular /employees | phase22.js، phase26.js، phase27.js، phase28.js، phase29.js، phase30.js، phase31.js، phase32.js، phase33.js، phase34.js، phase35.js، phase36.js، phase38.js، phase39.js، phase40.js، phase42.js، phase44.js، phase45.js، phase49.js، phase51.js، phase52.js | verified-static | في القايمة، في مصفوفة الصلاحيات |
 | LEG-0005 | page | الموارد البشرية | صفحة «المشرفون» (supervisors) | P1 | renderer/modules/hr/pages-supervisors.js:12 | angular /supervisors | phase27.js، phase42.js، phase43.js، phase49.js، phase50.js، phase53.js، phase54.js | verified-static | في القايمة، في مصفوفة الصلاحيات |
 | LEG-0006 | page | الموارد البشرية | صفحة «العمال» (workers) | P1 | renderer/modules/hr/pages-workers.js:29 | angular /workers | phase24.js، phase26.js، phase27.js، phase28.js، phase29.js، phase30.js، phase37.js، phase39.js، phase40.js، phase41.js، phase42.js، phase43.js، phase45.js، phase47.js، phase49.js، phase50.js، phase51.js، phase52.js، phase53.js، phase61.js | verified-static | في القايمة، في مصفوفة الصلاحيات |
 | LEG-0007 | page | الموارد البشرية | صفحة «السائقون» (drivers) | P1 | renderer/modules/hr/pages-ops.js:6 | angular /drivers | phase27.js، phase42.js، phase44.js، phase45.js، phase49.js، phase50.js، phase51.js | verified-static | في القايمة، في مصفوفة الصلاحيات |
@@ -555,4 +555,5 @@
 | DEC-0123 | decision | قرارات | نطاق الحزمة 8.2 معتمد (المشرفين والسواقين بنوعيهم): كشف حساب المشرف وصفحة الشخص في القديمة، والحذف والإجراءات الجماعية والتصدير وتعديل التخطيط في القديمة، ونافذ | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
 | DEC-0124 | decision | قرارات | المشرفين والسواقين (الحزمة 8.2) Accepted، وقلب توجيه «المشرفون» و«السائقون» للشاشات الجديدة دلوقتي (القديمة «الشاشة الكاملة»). والحزمة الجاية المقترحة 8.3 = الم | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
 | DEC-0125 | decision | قرارات | نطاق الحزمة 8.3 معتمد (الموظفين بس، والإجازات حزمة 8.4 لوحدها): قسم المستقيلين بجدوله وكروته وفلاتره زي القديمة، وصفحة الموظف وكشف الحضور والحذف والإجراءات الجم | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
+| DEC-0126 | decision | قرارات | الموظفين (الحزمة 8.3) Accepted، والسيرفر بيحط القسم الأساسي («الموظفين») للموظف وقت الحفظ (نفس `assignCoreDepartments` اللي القديمة بتعمله عند التحميل)، وقلب تو | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
 

@@ -140,7 +140,7 @@ async function modals(seed = base()) {
   ok(!(await page.$('#empResignDate')), 'مفيش خانة تاريخ استقالة (زي القديمة)');
   await page.fill('#empName', 'موظف الواجهة'); await page.fill('#empPos', 'مشتريات'); await page.fill('#empSalary', '6500.555'); await page.fill('#empEmail', ' n@x.com '); await page.fill('#empLeaveBal', '15');
   let [st, b] = await Promise.all([lastSaved('POST'), page.click('#btnSaveEmp')]).then((x) => x[0]);
-  eq([st, b.code, b.employmentType, b.salary, b.email, b.leaveBalance, b.position, 'departmentId' in b], [201, 'EMP-008', 'full', 6500.56, 'n@x.com', 15, 'مشتريات', false], 'إضافة موظف (من غير قسم، و«full» افتراضي)');
+  eq([st, b.code, b.employmentType, b.salary, b.email, b.leaveBalance, b.position, b.departmentId], [201, 'EMP-008', 'full', 6500.56, 'n@x.com', 15, 'مشتريات', '__core_employees__'], 'إضافة موظف (القسم الأساسي — DEC-0126، و«full» افتراضي)');
   await page.waitForSelector('.btn-edit-emp[data-id="e4"]'); await page.click('.btn-edit-emp[data-id="e4"]'); await page.waitForSelector('#empStatus');
   await page.selectOption('#empStatus', 'resigned');
   [st, b] = await Promise.all([lastSaved('PATCH'), page.click('#btnSaveEmp')]).then((x) => x[0]);

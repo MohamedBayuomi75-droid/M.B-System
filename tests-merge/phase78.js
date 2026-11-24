@@ -116,6 +116,14 @@ const { ok, eq, summary, baseUser } = require('./lib');
   // B: نفس المدخلات بالـ API (بنفس قيم خانات النافذة)
   const key = () => ({ 'Idempotency-Key': 'emp-' + Math.random().toString(36).slice(2) });
   const HR0 = { birthDate: '', idCardExpiry: '', contractType: '', contractStatus: '', insuranceNumber: '', insuranceStatus: '', phone: '', notes: '', extraFields: [] };
+  // صفحة القديمة في B بتطبّق مزامنة الإجازات (syncLeaveStatuses: منى «في إجازة») في وقت مش ثابت بعد التحميل — ولو الحفظ بالـ API سبقها،
+  // السجل في B بيبقى مختلف عن A (الفرق في التوقيت مش في البرنامج). نشغّلها بنفسنا ونستنى لحد ما توصل السيرفر، وبعدين نحفظ بالـ API
+  await B.page.evaluate(() => { try { syncLeaveStatuses(); } catch (e) { /* */ } });
+  for (let i = 0; i < 60; i++) {
+    const e2 = (await api(B.page, 'GET', '/api/v1/employees/e2')).body;
+    if (e2 && e2.leaveAuto === true) break;
+    await B.page.waitForTimeout(500);
+  }
   eq((await api(B.page, 'POST', '/api/v1/employees', { ...HR0, code, name: ' موظف جديد ', status: '', employmentType: '', position: 'مشتريات', salary: '6500.555', email: ' n@x.com ', leaveBalance: '15',
     licenseExpiry: '2020-05-01', nationalId: '26001011234567', address: ' القاهرة ', hireDate: hire }, key())).status, 201, 'POST موظف');
   /** خانات النافذة كما بتتفتح على السجل (openEmployeeModal + personHrFieldsHtml) */
@@ -137,7 +145,7 @@ const { ok, eq, summary, baseUser } = require('./lib');
   eq((await edit('e1', { phone: '', address: 'الجيزة', employmentType: 'contract' })).status, 200, 'PATCH موظف (دمج)');
   eq((await edit('e4', { status: 'resigned' })).status, 200, 'PATCH استقالة (النهارده)');
   eq((await edit('e4', { status: 'active' })).status, 200, 'PATCH إعادة تفعيل');
-  eq((await edit('e2', { email: 'm@x.com', leaveBalance: '0', status: 'resigned' })).status, 200, 'PATCH موظف في إجازة ← استقالة');
+    eq((await edit('e2', { email: 'm@x.com', leaveBalance: '0', status: 'resigned' })).status, 200, 'PATCH موظف في إجازة ← استقالة');
   await reload(page); await reload(B.page);
   const a = await snapshot(page), b = await snapshot(B.page);
   const kdiff = (x, y) => [...new Set([...Object.keys(x || {}), ...Object.keys(y || {})])].filter((k) => JSON.stringify((x || {})[k]) !== JSON.stringify((y || {})[k])).map((k) => [k, (x || {})[k], (y || {})[k]]);
