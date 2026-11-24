@@ -147,7 +147,15 @@ const { ok, eq, summary, baseUser } = require('./lib');
       insuranceStatus: p.insuranceStatus || '', phone: p.phone || '', address: p.address || '', notes: p.notes || '', extraFields: Array.isArray(p.extraFields) ? p.extraFields : [] };
     return k === 'supervisors' ? { ...base, dailyWage: p.dailyWage ? String(Math.round(p.dailyWage * 100) / 100) : '' } : { ...base, salary: p.salary || p.basicSalary ? String(Math.round((p.salary || p.basicSalary) * 100) / 100) : '', licenseGrade: p.licenseGrade || '' };
   };
-  const edit = async (k, id, over) => { const p = (await api(B.page, 'GET', `/api/v1/${k}/${id}`)).body; return api(B.page, 'PATCH', `/api/v1/${k}/${id}`, { ...formOf(k, p), rev: p.rev, ...over }); };
+  // صفحة القديمة في B ممكن تحفظ مزامنة الإجازات (syncLeaveStatuses) بعد التحميل ← نسخة السجل بتتغيّر بين القراية والحفظ. نعيد مرة على 409
+  const edit = async (k, id, over) => {
+    for (let i = 0; ; i++) {
+      const p = (await api(B.page, 'GET', `/api/v1/${k}/${id}`)).body;
+      const r = await api(B.page, 'PATCH', `/api/v1/${k}/${id}`, { ...formOf(k, p), rev: p.rev, ...over });
+      if (r.status !== 409 || over.rev != null || i >= 2) return r;
+      await B.page.waitForTimeout(500);
+    }
+  };
   eq((await edit('supervisors', 's1', { phone: '', address: 'الإسكندرية' })).status, 200, 'PATCH مشرف (دمج)');
   eq((await edit('supervisors', 's2', { status: 'resigned', resignedAt: '2026-03-15' })).status, 200, 'PATCH استقالة بتاريخها');
   eq((await edit('supervisors', 's2', { status: 'active' })).status, 200, 'PATCH إعادة تفعيل');

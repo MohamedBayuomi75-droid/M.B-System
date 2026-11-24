@@ -56,6 +56,8 @@ const eq = (a, b, name) => { if (typeof b === 'string' && b.startsWith('__probe_
     return page.evaluate(() => [...document.querySelectorAll('#app .entity-dept-board')].map((b) => [b.getAttribute('data-dept'), b.querySelector('.lbl').innerText.trim(), b.querySelector('.num').innerText.trim()]));
   };
   const cardsNow = () => page.evaluate(() => [...document.querySelectorAll('#app .sc-row .sc-card, #app .stats-row .stat-card')].map((c) => c.innerText.replace(/\s+/g, ' ').trim()));
+  // النافذة لازم تستقر قبل الكتابة (زي phase72/phase76)، وإلا الكتابة بتقع في خانة الكود على الـ CI البطيء
+  const settleModal = async (btn) => { await page.waitForSelector('#appModal:not(.modal-overlay-out) ' + btn); await page.waitForTimeout(250); };
   const closeAll = async () => { await page.evaluate(() => { try { closeSubModal(); } catch (e) { /* */ } try { closeModal(); } catch (e) { /* */ } }); await page.waitForTimeout(250); };
 
   console.log('[1] القسم الأساسي عند التحميل');
@@ -95,7 +97,7 @@ const eq = (a, b, name) => { if (typeof b === 'string' && b.startsWith('__probe_
   console.log('[6] نافذة المشرف — إضافة');
   await closeAll();
   await page.evaluate(() => { goToPage('supervisors'); openSupervisorModal(); });
-  await page.waitForSelector('#btnSaveSup');
+  await settleModal('#btnSaveSup');
   eq(await page.inputValue('#supCode'), 'SUP-004', 'الكود التلقائي SUP-');
   ok(!(await page.$('#supSalary')) && !!(await page.$('#supWage')) && !!(await page.$('#supLicExp')), 'يومية ورخصة، من غير راتب');
   eq(await page.$eval('#supResignDateWrap', (e) => getComputedStyle(e).display), 'none', 'تاريخ الاستقالة مخفي لحد ما الحالة تبقى استقالة');
@@ -110,11 +112,11 @@ const eq = (a, b, name) => { if (typeof b === 'string' && b.startsWith('__probe_
   console.log('[7] نافذة سواق الشركة — إضافة');
   await closeAll();
   await page.evaluate(() => { goToPage('drivers'); openDriverModal(); });
-  await page.waitForSelector('#btnSaveDriver');
+  await settleModal('#btnSaveDriver');
   eq(await page.inputValue('#drvCode'), 'DRV-004', 'الكود التلقائي DRV-');
   eq(await page.inputValue('#drvPos'), 'سائق', 'الوظيفة «سائق» افتراضي');
   ok(!!(await page.$('#drvSalary')) && !(await page.$('#drvWage')) && !!(await page.$('#drvLicGrade')), 'راتب ودرجة رخصة، من غير يومية');
-  await page.fill('#drvName', 'سواق جديد'); await page.fill('#drvSalary', '4500.5'); await page.selectOption('#drvLicGrade', 'درجة ثانية'); await page.fill('#drvPhone', '01009998888');
+  await page.fill('#drvName', 'سواق جديد'); await page.fill('#drvSalary', '4500.5'); await page.waitForFunction(() => document.getElementById('drvCode').value === 'DRV-004'); await page.selectOption('#drvLicGrade', 'درجة ثانية'); await page.fill('#drvPhone', '01009998888');
   await page.click('#btnSaveDriver'); await savedRec('drivers', 'سواق جديد');
   const d4 = await page.evaluate(() => { const d = DATA.drivers.find((x) => x.name === 'سواق جديد'); return d && { code: d.code, status: d.status, salary: d.salary, licenseGrade: d.licenseGrade, position: d.position, departmentId: d.departmentId, external: !!d.external, phone: d.phone }; });
   eq(d4, EXPECT.d4, 'سواق الشركة الجديد بنفس قيم النافذة');
@@ -122,25 +124,25 @@ const eq = (a, b, name) => { if (typeof b === 'string' && b.startsWith('__probe_
   console.log('[8] السواق الخارجي: إضافة، وتعديل من غير دمج (قدام سواق الشركة بالدمج)');
   await closeAll();
   await page.evaluate(() => { goToPage('drivers'); openDriverModal(null, { external: true }); });
-  await page.waitForSelector('#btnSaveDriver');
+  await settleModal('#btnSaveDriver');
   eq(await page.inputValue('#drvCode'), 'DRV-005', 'الكود بعد سواق الشركة');
   await page.fill('#drvName', 'خارجي جديد'); await page.fill('#drvWage', '180.555'); await page.fill('#drvPhone', '01115556666');
   await page.click('#btnSaveDriver'); await savedRec('drivers', 'خارجي جديد');
   const d5 = await page.evaluate(() => { const d = DATA.drivers.find((x) => x.name === 'خارجي جديد'); return d && { code: d.code, external: d.external, dailyWage: d.dailyWage, position: d.position, departmentId: d.departmentId, status: d.status }; });
   eq(d5, EXPECT.d5, 'السواق الخارجي الجديد');
   await closeAll();
-  await page.evaluate(() => openDriverModal('d2')); await page.waitForSelector('#btnSaveDriver');
+  await page.evaluate(() => openDriverModal('d2')); await settleModal('#btnSaveDriver');
   eq(await page.$eval('.modal-header h3', (h) => h.textContent.trim()), 'تعديل سائق خارجي', 'تعديل الخارجي بيفتح نافذته');
   await page.fill('#drvAddress', ''); n = await page.evaluate(() => window.__saveCount); await page.click('#btnSaveDriver'); await saved(n);
   eq(await page.evaluate(() => DATA.drivers.find((d) => d.id === 'd2').address), '', 'الخارجي: الخانة الفاضية مسحت العنوان (من غير دمج)');
   await closeAll();
-  await page.evaluate(() => openDriverModal('d1')); await page.waitForSelector('#btnSaveDriver');
+  await page.evaluate(() => openDriverModal('d1')); await settleModal('#btnSaveDriver');
   await page.fill('#drvPhone', ''); n = await page.evaluate(() => window.__saveCount); await page.click('#btnSaveDriver'); await saved(n);
   eq(await page.evaluate(() => DATA.drivers.find((d) => d.id === 'd1').phone), '01112223333', 'سواق الشركة: الخانة الفاضية ماتمسحش (mergePersonRecord)');
 
   console.log('[9] الاستقالة بتاريخها من النافذة، وإعادة التفعيل');
   await closeAll();
-  await page.evaluate(() => openSupervisorModal('s2')); await page.waitForSelector('#btnSaveSup');
+  await page.evaluate(() => openSupervisorModal('s2')); await settleModal('#btnSaveSup');
   await page.selectOption('#supStatus', 'resigned');
   eq(await page.$eval('#supResignDateWrap', (e) => getComputedStyle(e).display !== 'none'), true, 'تاريخ الاستقالة بيظهر مع الاستقالة');
   await page.fill('#supResignDate', '2026-03-15');
@@ -148,7 +150,7 @@ const eq = (a, b, name) => { if (typeof b === 'string' && b.startsWith('__probe_
   const rs = await page.evaluate(() => { const s = DATA.supervisors.find((x) => x.id === 's2'); const a = (DATA.resignedArchive || []).filter((x) => x.personId === 's2'); return { status: s.status, resignedAt: s.resignedAt, departmentId: s.departmentId, previousDepartmentId: s.previousDepartmentId, archive: a.map((x) => [x.personId, x.archiveGroup, x.resignedAt, x.entity && x.entity.departmentId, x.entity && x.entity.previousDepartmentId]) }; });
   eq(rs, EXPECT.resign, 'الاستقالة: التاريخ من النافذة، وقسم المستقيلين، ولقطة في الأرشيف');
   await closeAll();
-  await page.evaluate(() => openSupervisorModal('s2')); await page.waitForSelector('#btnSaveSup');
+  await page.evaluate(() => openSupervisorModal('s2')); await settleModal('#btnSaveSup');
   await page.selectOption('#supStatus', 'active');
   n = await page.evaluate(() => window.__saveCount); await page.click('#btnSaveSup'); await saved(n);
   eq(await page.evaluate(() => { const s = DATA.supervisors.find((x) => x.id === 's2'); return [s.status, s.departmentId, s.resignedAt, (DATA.resignedArchive || []).filter((x) => x.personId === 's2').length]; }), EXPECT.reactivate, 'إعادة التفعيل');
@@ -157,7 +159,7 @@ const eq = (a, b, name) => { if (typeof b === 'string' && b.startsWith('__probe_
   eq(await page.evaluate(() => findEntityDuplicates('supervisor', { name: 'أي اسم', nationalId: '28001011234567' }, null).map((m) => [m.id, m.strength, m.reasons])), [['s1', 'hard', ['الرقم القومي متطابق']]], 'مشرف بنفس الرقم القومي: مؤكد');
   eq(await page.evaluate(() => findEntityDuplicates('driver', { name: 'أي اسم', nationalId: '27001011234567' }, null).map((m) => [m.id, m.kind, m.strength, m.reasons])), [['e1', 'employee', 'soft', ['نفس الرقم القومي مسجّل في موظفين']]], 'سواق برقم موظف: تشابه عبر الأنواع');
   await closeAll();
-  await page.evaluate(() => openSupervisorModal()); await page.waitForSelector('#btnSaveSup');
+  await page.evaluate(() => openSupervisorModal()); await settleModal('#btnSaveSup');
   await page.fill('#supName', 'سامي المشرف');
   await page.click('#btnSaveSup'); await page.waitForSelector('#appSubModal #btnDupForce');
   eq(await page.$eval('#appSubModal h3', (h) => h.textContent.trim()), '⚠️ يوجد سجلات متشابهة', 'نافذة المشرف: نفس الاسم ← تشابه');
