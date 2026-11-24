@@ -125,7 +125,13 @@ async function modals(seed = base(), onlyLabels = false) {
 
   if (onlyLabels) { ok(legacy[0].includes('انتهاء رخصة القيادة'), 'الاسم المتغيّر ظاهر فعلًا في نافذة المشرف القديمة', legacy[0]); eq(errors, [], 'النوافذ (تخطيط محفوظ): من غير أخطاء'); await browser.close(); return; }
   console.log('[الحفظ من الشاشة الجديدة]');
-  const lastSaved = async (pg, method) => { const r = await page.waitForResponse((x) => new RegExp(`/api/v1/${pg}(/[^/?]+)?$`).test(x.url()) && x.request().method() === method); return [r.status(), await r.json()]; };
+  // جسم الرد ممكن يختفي لو الصفحة حدّثت نفسها بعد الحفظ (CI 119: «No data found for resource») ← نقرا السجل من السيرفر بنفس التوثيق
+  const bodyOf = async (r) => { try { return await r.json(); } catch (e) {
+    const auth = r.request().headers()['authorization']; const own = r.request().method() === 'POST' ? null : r.url();
+    if (!own) throw e;
+    return page.evaluate(async ([u, a]) => (await fetch(u, { headers: { Authorization: a, Accept: 'application/json' } })).json(), [own, auth]);
+  } };
+  const lastSaved = async (pg, method) => { const r = await page.waitForResponse((x) => new RegExp(`/api/v1/${pg}(/[^/?]+)?$`).test(x.url()) && x.request().method() === method); return [r.status(), await bodyOf(r)]; };
   // مشرف: يومية وتاريخ رخصة
   await openNew('supervisors', '', '#btnAddSup');
   await page.fill('#supName', 'مشرف الواجهة'); await page.fill('#supPos', 'مشرف أمن'); await page.fill('#supWage', '275.555'); await page.fill('#supLicExp', '2020-05-01');

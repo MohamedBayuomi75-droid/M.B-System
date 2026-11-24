@@ -2005,6 +2005,14 @@
       "description": "اليومية (المشرف والسواق الخارجي) — حقل محمي (B-48)",
       "type": "string"
      },
+     "email": {
+      "description": "الموظف: البريد",
+      "type": "string"
+     },
+     "employmentType": {
+      "description": "الموظف: نوع التوظيف («full» لو فاضي)",
+      "type": "string"
+     },
      "external": {
       "description": "سواق من خارج الشركة (الإضافة بس؛ التعديل بياخد نوع السجل المخزن)",
       "type": "boolean"
@@ -2025,6 +2033,10 @@
       "type": "string"
      },
      "insuranceStatus": {
+      "type": "string"
+     },
+     "leaveBalance": {
+      "description": "الموظف: رصيد الإجازة السنوية (بيتحفظ زي ما هو — د-4)",
       "type": "string"
      },
      "licenseExpiry": {
@@ -2730,6 +2742,14 @@
       "description": "اليومية (المشرف والسواق الخارجي) — حقل محمي (B-48)",
       "type": "string"
      },
+     "email": {
+      "description": "الموظف: البريد",
+      "type": "string"
+     },
+     "employmentType": {
+      "description": "الموظف: نوع التوظيف («full» لو فاضي)",
+      "type": "string"
+     },
      "external": {
       "description": "سواق من خارج الشركة (الإضافة بس؛ التعديل بياخد نوع السجل المخزن)",
       "type": "boolean"
@@ -2750,6 +2770,10 @@
       "type": "string"
      },
      "insuranceStatus": {
+      "type": "string"
+     },
+     "leaveBalance": {
+      "description": "الموظف: رصيد الإجازة السنوية (بيتحفظ زي ما هو — د-4)",
       "type": "string"
      },
      "licenseExpiry": {
@@ -4810,6 +4834,42 @@
        ],
        "type": "string"
       }
+     },
+     {
+      "description": "الموظفين: نوع التوظيف",
+      "in": "query",
+      "name": "employmentType",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "description": "الموظفين: الوظيفة",
+      "in": "query",
+      "name": "position",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "description": "الموظفين — قسم المستقيلين: حالة التأمين",
+      "in": "query",
+      "name": "insuranceStatus",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "description": "الموظفين — قسم المستقيلين: سنة الاستقالة (أو الإحالة)",
+      "in": "query",
+      "name": "resignYear",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
      }
     ],
     "responses": {
@@ -4938,6 +4998,272 @@
     "summary": "تعديل سائق (rev إلزامي): سواق الشركة بالدمج، والخارجي من غير دمج زي القديمة",
     "tags": [
      "v1 drivers"
+    ]
+   }
+  },
+  "/api/v1/employees": {
+   "get": {
+    "operationId": "EmployeesController_list",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "q",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "status",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "description": "القسم (لوحة)، و«__none__» = بدون قسم أو وظيفة",
+      "in": "query",
+      "name": "departmentId",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "xCard",
+      "required": false,
+      "schema": {
+       "enum": [
+        "",
+        "valid",
+        "soon",
+        "expired",
+        "none"
+       ],
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "xLic",
+      "required": false,
+      "schema": {
+       "enum": [
+        "",
+        "valid",
+        "soon",
+        "expired",
+        "none",
+        "nolic"
+       ],
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "xIns",
+      "required": false,
+      "schema": {
+       "enum": [
+        "",
+        "insured",
+        "none",
+        "pending",
+        "empty"
+       ],
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "xDocs",
+      "required": false,
+      "schema": {
+       "enum": [
+        "",
+        "missing",
+        "complete"
+       ],
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "xData",
+      "required": false,
+      "schema": {
+       "enum": [
+        "",
+        "missing"
+       ],
+       "type": "string"
+      }
+     },
+     {
+      "description": "الموظفين: نوع التوظيف",
+      "in": "query",
+      "name": "employmentType",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "description": "الموظفين: الوظيفة",
+      "in": "query",
+      "name": "position",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "description": "الموظفين — قسم المستقيلين: حالة التأمين",
+      "in": "query",
+      "name": "insuranceStatus",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "description": "الموظفين — قسم المستقيلين: سنة الاستقالة (أو الإحالة)",
+      "in": "query",
+      "name": "resignYear",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "لوحات الأقسام، والقايمة بنفس فلاتر صفحة الموظفين القديمة (ومنها قسم المستقيلين بفلاتره وكروته الخاصة)، والكروت، والملاحظات (الراتب محمي — B-48)",
+    "tags": [
+     "v1 employees"
+    ]
+   },
+   "post": {
+    "operationId": "EmployeesController_create",
+    "parameters": [],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/SavePersonDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "إضافة موظف (Idempotency-Key إلزامي) بنفس حساب النافذة القديمة (من غير قسم) + حدث employee.saved",
+    "tags": [
+     "v1 employees"
+    ]
+   }
+  },
+  "/api/v1/employees/form-options": {
+   "get": {
+    "operationId": "EmployeesController_formOptions",
+    "parameters": [],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "خيارات نافذة الموظف (أنواع التوظيف، ورصيد الإجازة الافتراضي)",
+    "tags": [
+     "v1 employees"
+    ]
+   }
+  },
+  "/api/v1/employees/{id}": {
+   "get": {
+    "operationId": "EmployeesController_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "tags": [
+     "v1 employees"
+    ]
+   },
+   "patch": {
+    "operationId": "EmployeesController_update",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/UpdatePersonDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "تعديل موظف (rev إلزامي): الدمج، والاستقالة (النهارده)، وأرشيف المستقيلين — في معاملة واحدة",
+    "tags": [
+     "v1 employees"
     ]
    }
   },
@@ -6297,6 +6623,42 @@
         "",
         "missing"
        ],
+       "type": "string"
+      }
+     },
+     {
+      "description": "الموظفين: نوع التوظيف",
+      "in": "query",
+      "name": "employmentType",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "description": "الموظفين: الوظيفة",
+      "in": "query",
+      "name": "position",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "description": "الموظفين — قسم المستقيلين: حالة التأمين",
+      "in": "query",
+      "name": "insuranceStatus",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "description": "الموظفين — قسم المستقيلين: سنة الاستقالة (أو الإحالة)",
+      "in": "query",
+      "name": "resignYear",
+      "required": false,
+      "schema": {
        "type": "string"
       }
      }

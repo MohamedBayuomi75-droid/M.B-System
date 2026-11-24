@@ -22,6 +22,8 @@ const base = () => ({
       departmentId: '__resigned_employee__', categoryId: '__resigned_employee__', archiveGroup: 'resigned', previousDepartmentId: '__core_employees__' }),
     P('e5', { code: 'EMP-005', name: 'رامي مستقيل قديم', status: 'resigned', resignedAt: '2024-02-10', hireDate: '2023-01-01', position: 'فني', insuranceStatus: 'none', phone: '0122',
       departmentId: '__resigned_employee__', categoryId: '__resigned_employee__', archiveGroup: 'resigned', previousDepartmentId: '__core_employees__' }),
+    // UAT 8.3 E5: حالة بكود قديم في قسم المستقيلين ← labelOf («منتهي الخدمة»)
+    P('e7', { code: 'EMP-007', name: 'كمال منتهي الخدمة', status: 'terminated', resignedAt: '2024-09-01', departmentId: '__resigned_employee__', categoryId: '__resigned_employee__' }),
     P('e6', { code: 'EMP-006', name: 'سعاد معاش', status: 'retired', retiredAt: '2023-05-01', hireDate: '1990-01-01', departmentId: '__retired_employee__', categoryId: '__retired_employee__' }),
     P('e4', { code: 'EMP-004', name: 'سيد بلا وظيفة', status: 'active', employmentType: 'full' }),
   ],
@@ -67,7 +69,7 @@ async function round(label, seed) {
   };
   for (const d of DEPTS) await legacyAt(d);
   await page.evaluate(async () => { await WebSync.save(DATA); });
-  await page.reload(); await page.waitForFunction(() => typeof DATA !== 'undefined' && window.WebSync && WebSync._state.meta && DATA.employees.length === 6, null, { timeout: 30000 });
+  await page.reload(); await page.waitForFunction(() => typeof DATA !== 'undefined' && window.WebSync && WebSync._state.meta && DATA.employees.length === 7, null, { timeout: 30000 });
   console.log(`[${label}] الكروت والفلاتر والجدول بنفس الشكل في الواجهتين`);
   const legacyAll = [];
   for (const d of DEPTS) legacyAll.push(await legacyAt(d));
@@ -126,13 +128,19 @@ async function modals(seed = base()) {
   }
 
   console.log('[الحفظ من الشاشة الجديدة]');
-  const lastSaved = async (method) => { const r = await page.waitForResponse((x) => /\/api\/v1\/employees(\/[^/?]+)?$/.test(x.url()) && x.request().method() === method); return [r.status(), await r.json()]; };
+  // جسم الرد ممكن يختفي لو الصفحة حدّثت نفسها بعد الحفظ (CI 119: «No data found for resource») ← نقرا السجل من السيرفر بنفس التوثيق
+  const bodyOf = async (r) => { try { return await r.json(); } catch (e) {
+    const auth = r.request().headers()['authorization']; const own = r.request().method() === 'POST' ? null : r.url();
+    if (!own) throw e;
+    return page.evaluate(async ([u, a]) => (await fetch(u, { headers: { Authorization: a, Accept: 'application/json' } })).json(), [own, auth]);
+  } };
+  const lastSaved = async (method) => { const r = await page.waitForResponse((x) => /\/api\/v1\/employees(\/[^/?]+)?$/.test(x.url()) && x.request().method() === method); return [r.status(), await bodyOf(r)]; };
   await openNew('', '#btnAddEmployee');
   eq(await page.inputValue('#empLeaveBal'), '21', 'رصيد الإجازة الافتراضي من الإعدادات');
   ok(!(await page.$('#empResignDate')), 'مفيش خانة تاريخ استقالة (زي القديمة)');
   await page.fill('#empName', 'موظف الواجهة'); await page.fill('#empPos', 'مشتريات'); await page.fill('#empSalary', '6500.555'); await page.fill('#empEmail', ' n@x.com '); await page.fill('#empLeaveBal', '15');
   let [st, b] = await Promise.all([lastSaved('POST'), page.click('#btnSaveEmp')]).then((x) => x[0]);
-  eq([st, b.code, b.employmentType, b.salary, b.email, b.leaveBalance, b.position, 'departmentId' in b], [201, 'EMP-007', 'full', 6500.56, 'n@x.com', 15, 'مشتريات', false], 'إضافة موظف (من غير قسم، و«full» افتراضي)');
+  eq([st, b.code, b.employmentType, b.salary, b.email, b.leaveBalance, b.position, 'departmentId' in b], [201, 'EMP-008', 'full', 6500.56, 'n@x.com', 15, 'مشتريات', false], 'إضافة موظف (من غير قسم، و«full» افتراضي)');
   await page.waitForSelector('.btn-edit-emp[data-id="e4"]'); await page.click('.btn-edit-emp[data-id="e4"]'); await page.waitForSelector('#empStatus');
   await page.selectOption('#empStatus', 'resigned');
   [st, b] = await Promise.all([lastSaved('PATCH'), page.click('#btnSaveEmp')]).then((x) => x[0]);
