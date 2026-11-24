@@ -6,6 +6,7 @@ import { PROJECT_COLUMNS } from '../migrations/1765100000000-ProjectsCutover';
 import { WORKER_COLUMNS } from '../migrations/1765200000000-WorkersCutover';
 import { DRIVER_COLUMNS, SUPERVISOR_COLUMNS } from '../migrations/1765300000000-SupervisorsDriversCutover';
 import { EMPLOYEE_COLUMNS } from '../migrations/1765400000000-EmployeesCutover';
+import { LEAVE_COLUMNS } from '../migrations/1765500000000-LeavesCutover';
 
 export type { CutoverReport } from './module-cutover';
 
@@ -111,7 +112,17 @@ export const EMPLOYEES: ModuleSpec = {
   clearTables: ['employees'],
 };
 
-export const MODULES: Record<string, ModuleSpec> = { parties: PARTIES, warehouses: WAREHOUSES, 'supplier-invoices': SUPPLIER_INVOICES, 'supplier-payments': SUPPLIER_PAYMENTS, projects: PROJECTS, workers: WORKERS, 'supervisors-drivers': SUPERVISORS_DRIVERS, employees: EMPLOYEES };
+/** 8.4 — الإجازات (DEC-0127). نفس الطريقة */
+export const LEAVES: ModuleSpec = {
+  label: 'leaves',
+  collections: [
+    { collection: 'leaves', table: 'leaves', write: 'legacy_write_leave', read: 'leave_to_legacy',
+      normalized: `(r.data || jsonb_build_object('id', r.id))`, typedKeys: LEAVE_COLUMNS.map(([, k]) => k) },
+  ],
+  clearTables: ['leaves'],
+};
+
+export const MODULES: Record<string, ModuleSpec> = { parties: PARTIES, warehouses: WAREHOUSES, 'supplier-invoices': SUPPLIER_INVOICES, 'supplier-payments': SUPPLIER_PAYMENTS, projects: PROJECTS, workers: WORKERS, 'supervisors-drivers': SUPERVISORS_DRIVERS, employees: EMPLOYEES, leaves: LEAVES };
 
 export const partiesCutover = (ds: DataSource, by: string, mode: CutoverReport['mode']) => cutoverModule(ds, PARTIES, by, mode);
 export const partiesRollback = (ds: DataSource, by: string) => rollbackModule(ds, PARTIES, by);

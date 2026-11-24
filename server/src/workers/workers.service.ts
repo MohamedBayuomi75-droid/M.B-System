@@ -4,6 +4,7 @@ import type { AuthUser } from '../auth/auth.types';
 import { hasPagePermission } from '../authz/effective-permissions';
 import type { RecordChangeDto } from '../data/data.dto';
 import { DataService } from '../data/data.service';
+import { LeavesService } from '../leaves/leaves.service';
 import { DUP_TEXT, findEntityDuplicates } from '../common/person-duplicates';
 import { canRead, canWrite, hiddenFields, inProjectScope, stripHidden } from '../data/policy';
 import { cairoTodayIso } from '../parties/parties.service';
@@ -29,7 +30,7 @@ const uid = () => `id_${Date.now().toString(36)}${randomBytes(4).toString('hex')
  */
 @Injectable()
 export class WorkersService {
-  constructor(private readonly data: DataService, private readonly repo: WorkersRepository) {}
+  constructor(private readonly data: DataService, private readonly repo: WorkersRepository, private readonly leaves: LeavesService) {}
 
   private async ctx(qr?: QueryRunner): Promise<Ctx & { raw: Record<string, Row[]> }> {
     const em = qr?.manager;
@@ -52,6 +53,7 @@ export class WorkersService {
 
   async list(u: AuthUser, q: ListWorkersQuery) {
     this.assert(u, 'view');
+    await this.leaves.ensureToday(u); // حالة «في إجازة» مرة كل يوم (DEC-0127 د-2)
     const [rows, c] = await Promise.all([this.repo.rows(COLL), this.ctx()]);
     const hide = hiddenFields(u, COLL);
     const all: J[] = this.visible(u, rows);

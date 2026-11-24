@@ -11,7 +11,7 @@
 | المسارات في DATA | 117 (doc 27، meta-flag 5، legacy-ref 3، collection 53، system-table 2، lookup 27) |
 | مجموعات ليها شكل حقول من البيانات الحقيقية | 20 |
 | مجموع السجلات الحقيقية (من الزحف السابق) | 4,900 في 29 مسار فيه بيانات |
-| جداول السيرفر | 44 من الـ migrations + جدول `migrations` بتاع TypeORM = 45 (نفس العدد اللي المرحلة 2 قاسته) |
+| جداول السيرفر | 45 من الـ migrations + جدول `migrations` بتاع TypeORM = 46 (نفس العدد اللي المرحلة 2 قاسته) |
 
 ## 2. ترحيلات شكل البيانات في الواجهة القديمة (1 ← 9)
 | الإصدار | الوصف | الدالة |
@@ -988,6 +988,18 @@
 | `payload` | `jsonb` | NOT NULL |
 | `occurred_at` | `timestamptz` | NOT NULL DEFAULT now() |
 | `created_by` | `uuid` | — |
+
+### `leaves` — `1765500000000-LeavesCutover`
+| العمود | النوع | قيود |
+|---|---|---|
+| `id` | `text` | PRIMARY KEY |
+| `legacy_extra` | `jsonb` | NOT NULL DEFAULT '{}'::jsonb |
+| `row_version` | `int` | NOT NULL DEFAULT 1 |
+| `created_at` | `timestamptz` | NOT NULL DEFAULT now() |
+| `updated_at` | `timestamptz` | NOT NULL DEFAULT now() |
+| `deleted_at` | `timestamptz` | — |
+
+**قيود الجدول:** `${COLS.map(([c, , t]) => `"${c}" ${SQL_TYPE[t]}`).join(', ')}`
 
 ### `module_cutover` — `1764100000000-PartiesCutover`
 | العمود | النوع | قيود |

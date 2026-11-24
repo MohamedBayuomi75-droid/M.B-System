@@ -1419,6 +1419,17 @@
     ],
     "type": "object"
    },
+   "LeaveRevDto": {
+    "properties": {
+     "rev": {
+      "type": "number"
+     }
+    },
+    "required": [
+     "rev"
+    ],
+    "type": "object"
+   },
    "LevelDto": {
     "properties": {
      "approvers": {
@@ -1977,6 +1988,43 @@
      "date",
      "isReturn",
      "baseValue"
+    ],
+    "type": "object"
+   },
+   "SaveLeaveDto": {
+    "properties": {
+     "days": {
+      "description": "عدد الأيام (فاضي أو صفر ← من التاريخين)",
+      "type": "string"
+     },
+     "from": {
+      "type": "string"
+     },
+     "personId": {
+      "type": "string"
+     },
+     "personKind": {
+      "enum": [
+       "employee",
+       "worker",
+       "supervisor",
+       "driver"
+      ],
+      "type": "string"
+     },
+     "reason": {
+      "type": "string"
+     },
+     "to": {
+      "type": "string"
+     },
+     "type": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "personKind",
+     "personId"
     ],
     "type": "object"
    },
@@ -2640,6 +2688,47 @@
      }
     },
     "required": [
+     "rev"
+    ],
+    "type": "object"
+   },
+   "UpdateLeaveDto": {
+    "properties": {
+     "days": {
+      "description": "عدد الأيام (فاضي أو صفر ← من التاريخين)",
+      "type": "string"
+     },
+     "from": {
+      "type": "string"
+     },
+     "personId": {
+      "type": "string"
+     },
+     "personKind": {
+      "enum": [
+       "employee",
+       "worker",
+       "supervisor",
+       "driver"
+      ],
+      "type": "string"
+     },
+     "reason": {
+      "type": "string"
+     },
+     "rev": {
+      "type": "number"
+     },
+     "to": {
+      "type": "string"
+     },
+     "type": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "personKind",
+     "personId",
      "rev"
     ],
     "type": "object"
@@ -5932,6 +6021,346 @@
     "summary": "تاريخ سجل: كل تعديل بقيمته قبل وبعد والمستخدم والوقت",
     "tags": [
      "v1 history"
+    ]
+   }
+  },
+  "/api/v1/leaves": {
+   "get": {
+    "operationId": "LeavesController_list",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "personKind",
+      "required": false,
+      "schema": {
+       "enum": [
+        "",
+        "employee",
+        "worker",
+        "supervisor",
+        "driver"
+       ],
+       "type": "string"
+      }
+     },
+     {
+      "description": "الشخص",
+      "in": "query",
+      "name": "employeeId",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "type",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "status",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "from",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "to",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "q",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "القايمة بنفس فلاتر صفحة الإجازات القديمة، والكروت الأربعة (ومزامنة حالة الأشخاص مرة كل يوم — د-2)",
+    "tags": [
+     "v1 leaves"
+    ]
+   },
+   "post": {
+    "operationId": "LeavesController_create",
+    "parameters": [],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/SaveLeaveDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "طلب إجازة («قيد الانتظار»، Idempotency-Key إلزامي) + حدث leave.requested",
+    "tags": [
+     "v1 leaves"
+    ]
+   }
+  },
+  "/api/v1/leaves/balances": {
+   "get": {
+    "operationId": "LeavesController_balances",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "ids",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "رصيد الإجازة السنوية للموظفين (employeeLeaveBalance — د-3)",
+    "tags": [
+     "v1 leaves"
+    ]
+   }
+  },
+  "/api/v1/leaves/form-options": {
+   "get": {
+    "operationId": "LeavesController_formOptions",
+    "parameters": [],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "خيارات نافذة الإجازة: الأنواع، والأقسام والأشخاص لكل فئة",
+    "tags": [
+     "v1 leaves"
+    ]
+   }
+  },
+  "/api/v1/leaves/{id}": {
+   "delete": {
+    "operationId": "LeavesController_remove",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "rev",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "حذف إجازة (rev إلزامي في الـ query) + مزامنة حالة الأشخاص",
+    "tags": [
+     "v1 leaves"
+    ]
+   },
+   "get": {
+    "operationId": "LeavesController_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "tags": [
+     "v1 leaves"
+    ]
+   },
+   "patch": {
+    "operationId": "LeavesController_update",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/UpdateLeaveDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "تعديل إجازة (rev إلزامي): الحالة بتفضل زي ما هي، والأيام من التاريخين لو فاضية، ومزامنة حالة الأشخاص",
+    "tags": [
+     "v1 leaves"
+    ]
+   }
+  },
+  "/api/v1/leaves/{id}/approve": {
+   "post": {
+    "operationId": "LeavesController_approve",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/LeaveRevDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "موافقة ✓ (للطلب المعلّق بس — د-1) + مزامنة حالة الأشخاص",
+    "tags": [
+     "v1 leaves"
+    ]
+   }
+  },
+  "/api/v1/leaves/{id}/reject": {
+   "post": {
+    "operationId": "LeavesController_reject",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/LeaveRevDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "رفض ✗ (للطلب المعلّق بس)",
+    "tags": [
+     "v1 leaves"
     ]
    }
   },

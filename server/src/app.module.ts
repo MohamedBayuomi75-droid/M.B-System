@@ -15,6 +15,7 @@ import { CommonModule } from './common/common.module';
 import { ProjectsModule } from './projects/projects.module';
 import { WorkersModule } from './workers/workers.module';
 import { PeopleModule } from './people/people.module';
+import { LeavesModule } from './leaves/leaves.module';
 import { NumberingModule } from './numbering/numbering.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { ApprovalsModule } from './approvals/approvals.module';
@@ -62,7 +63,7 @@ import { HistoryModule } from './history/history.module';
     HealthModule,
     FilesModule,
     ProjectsModule,
-    WorkersModule, PeopleModule,
+    WorkersModule, PeopleModule, LeavesModule,
     NumberingModule,
     NotificationsModule,
     ApprovalsModule,

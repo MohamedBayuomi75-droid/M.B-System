@@ -9,7 +9,7 @@ import * as path from 'node:path';
  *  - موديول مايستوردش Repository موديول تاني (بيستخدم الـ Service المعلن بس).
  * أي موديول جديد بيتضاف للقائمة دي.
  */
-const LAYERED_MODULES = ['projects', 'workers', 'people', 'approvals', 'history', 'parties', 'finance-rules', 'stock', 'warehouses'];
+const LAYERED_MODULES = ['projects', 'workers', 'people', 'leaves', 'approvals', 'history', 'parties', 'finance-rules', 'stock', 'warehouses'];
 const SRC = path.join(__dirname);
 
 describe('architecture: layer boundaries for layered modules', () => {

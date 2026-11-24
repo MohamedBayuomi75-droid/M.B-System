@@ -5,6 +5,7 @@ import { hasPagePermission } from '../authz/effective-permissions';
 import { DUP_TEXT, findEntityDuplicates } from '../common/person-duplicates';
 import type { RecordChangeDto } from '../data/data.dto';
 import { DataService } from '../data/data.service';
+import { LeavesService } from '../leaves/leaves.service';
 import { canRead, canWrite, hiddenFields, inProjectScope, stripHidden } from '../data/policy';
 import { cairoTodayIso } from '../parties/parties.service';
 import {
@@ -36,7 +37,7 @@ const LABEL: Record<PeopleKind, { one: string; many: string; code: string }> = {
  */
 @Injectable()
 export class PeopleService {
-  constructor(private readonly data: DataService, private readonly repo: PeopleRepository) {}
+  constructor(private readonly data: DataService, private readonly repo: PeopleRepository, private readonly leaves: LeavesService) {}
 
   private async ctx(qr?: QueryRunner): Promise<Ctx & { raw: Record<string, Row[]> }> {
     const em = qr?.manager;
@@ -60,6 +61,7 @@ export class PeopleService {
 
   async list(kind: PeopleKind, u: AuthUser, q: ListPeopleQuery) {
     this.assert(kind, u, 'view');
+    await this.leaves.ensureToday(u); // حالة «في إجازة» مرة كل يوم (DEC-0127 د-2)
     const coll = COLL_OF[kind];
     const [rows, c, workerRows] = await Promise.all([this.repo.rows(coll), this.ctx(), kind === 'supervisor' ? this.repo.rows('workers') : Promise.resolve([] as Row[])]);
     const hide = hiddenFields(u, coll);
