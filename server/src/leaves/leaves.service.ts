@@ -97,7 +97,14 @@ export class LeavesService {
       departments: Object.fromEntries(KINDS.map((k) => [k, byName(dl.filter((d) => !d.kind || d.kind === KIND_COLL[k] || d.kind === 'all'), (d) => d.name).map((d) => ({ id: d.id, name: d.name }))])),
       people: Object.fromEntries(KINDS.map((k) => [k, byName(people[k].filter((p) => p && p.id), (p) => p.name || p.code || '')
         .map((p) => ({ id: p.id, name: p.name || '', code: p.code || '', departmentId: p.departmentId || p.categoryId || '' }))])),
+      layout: await this.layoutDocs(),
     };
+  }
+  /** تخطيط نافذة الإجازة المحفوظ (applyFormLayout في القديمة — قراية بس، نفس شكل صفحات الأشخاص) (UAT 8.4 V3) */
+  private async layoutDocs() {
+    const [fl, af, cf, df, rk, f1, f2, f3, al] = await Promise.all(['formLayouts', 'autoFields', 'customFieldDefs', 'deadFields', '_cfRegKeys', '_cfAllHiddenFixed', '_cfAutoFlagsReset', '_cfShowInTableMigrated', '_cfAligned2'].map((k) => this.repo.docValue(k)));
+    const pick = (o: unknown) => { const src = o && typeof o === 'object' ? (o as J) : {}; return src[COLL] !== undefined ? { [COLL]: src[COLL] } : {}; };
+    return { formLayouts: pick(fl), autoFields: pick(af), customFieldDefs: pick(cf), deadFields: pick(df), cfRegKeys: pick(rk), aligned: pick(al), flags: { allHiddenFixed: !!f1, autoFlagsReset: !!f2, showInTableMigrated: !!f3 } };
   }
   /** رصيد الإجازة السنوية للموظفين (employeeLeaveBalance) — بالسنة الحالية بتوقيت القاهرة */
   async balances(u: AuthUser, ids?: string[]) {
