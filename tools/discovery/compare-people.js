@@ -1,5 +1,5 @@
-// مقارنة الشكل: صفحتي المشرفين والسواقين ونوافذهم في الواجهة القديمة ↔ /app/supervisors و/app/drivers جنب بعض
-// (خطة v1.4.5 — المرحلة 8، الحزمة 8.2، معيار DEC-0093). نفس السيرفر ونفس البيانات المُركّبة ونفس الجلسة.
+// مقارنة الشكل: صفحات المشرفين والسواقين والموظفين ونوافذهم في الواجهة القديمة ↔ /app/supervisors و/app/drivers و/app/employees جنب بعض
+// (خطة v1.4.5 — المرحلة 8، الحزمتين 8.2 و8.3، معيار DEC-0093). نفس السيرفر ونفس البيانات المُركّبة ونفس الجلسة.
 // الفروق المقصودة: من غير عمود التحديد الجماعي، وكشف الحساب و👁/✕/التصدير بيفتحوا الشاشة الكاملة (DEC-0123).
 // التشغيل: node tools/discovery/compare-people.js   (محتاج build للسيرفر والواجهة الجديدة + PostgreSQL للاختبار)
 // المخرج: docs/reports/v1.4.5/phase8-visual/people-*.png
@@ -18,10 +18,14 @@ const seed = {
   workers: [P('w1', { code: 'WRK-001', name: 'عامل', workerType: 'temporary', status: 'active', supervisorId: 's1' })],
   drivers: [P('d1', { code: 'DRV-001', name: 'أحمد السواق', status: 'active', salary: 5000, licenseGrade: 'درجة أولى', licenseExpiry: '2099-01-01', nationalId: '29001011234567', phone: '01112223333', position: 'سائق نقل' }),
     P('d2', { code: 'DRV-002', name: 'محمود خارجي', status: 'active', external: true, dailyWage: 200, phone: '01223334444', position: 'سائق' })],
+  employees: [P('e1', { code: 'EMP-001', name: 'أحمد المحاسب', status: 'active', employmentType: 'full', position: 'محاسب', nationalId: '28501011234567', phone: '01001234567', salary: 8000, hireDate: '2022-01-01', email: 'a@x.com', leaveBalance: 21 }),
+    P('e2', { code: 'EMP-002', name: 'حسن مستقيل', status: 'resigned', resignedAt: '2025-06-01', hireDate: '2020-06-01', position: 'مهندس', departmentId: '__resigned_employee__', categoryId: '__resigned_employee__', previousDepartmentId: '__core_employees__' })],
 };
 // [اسم، صفحة، قسم، نافذة القديمة، زرار الجديدة]
 const PAIRS = [['sup-list', 'supervisors', '', null, null], ['sup-modal', 'supervisors', '', ['openSupervisorModal', 's1'], '.btn-edit-sup[data-id="s1"]'],
-  ['drv-list', 'drivers', '', null, null], ['drv-modal', 'drivers', '', ['openDriverModal', 'd1'], '.btn-edit-drv[data-id="d1"]'], ['ext-list', 'drivers', '__core_drivers_ext__', null, null]];
+  ['drv-list', 'drivers', '', null, null], ['drv-modal', 'drivers', '', ['openDriverModal', 'd1'], '.btn-edit-drv[data-id="d1"]'], ['ext-list', 'drivers', '__core_drivers_ext__', null, null],
+  ['emp-list', 'employees', '', null, null], ['emp-modal', 'employees', '', ['openEmployeeModal', 'e1'], '.btn-edit-emp[data-id="e1"]'], ['emp-resigned', 'employees', '__resigned_employee__', null, null]];
+const FILTERS = { supervisors: 'supervisorFilters', drivers: 'driverFilters', employees: 'employeeFilters' };
 
 (async () => {
   fs.mkdirSync(OUT, { recursive: true });
@@ -32,7 +36,7 @@ const PAIRS = [['sup-list', 'supervisors', '', null, null], ['sup-modal', 'super
   const legacy = {}, app = {};
   for (const [name, pg, d, modal] of PAIRS) {
     await page.evaluate(() => { try { closeModal(); } catch (e) { /* */ } }); await page.waitForTimeout(250);
-    await page.evaluate(([pg, d]) => { goToPage(pg); const F = pg === 'supervisors' ? supervisorFilters : driverFilters; Object.keys(F).forEach((k) => { F[k] = ''; }); F._boardLevel = 'list'; F.departmentId = d; rerenderCurrentPage(); }, [pg, d]);
+    await page.evaluate(([pg, d, fv]) => { goToPage(pg); const F = window.eval(fv); Object.keys(F).forEach((k) => { F[k] = ''; }); F._boardLevel = 'list'; F.departmentId = d; rerenderCurrentPage(); }, [pg, d, FILTERS[pg]]);
     await page.waitForTimeout(400);
     if (modal) await page.evaluate(([f, i]) => window[f](i), modal);
     await settle(); legacy[name] = await shot();

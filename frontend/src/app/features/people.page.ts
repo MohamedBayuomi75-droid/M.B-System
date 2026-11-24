@@ -12,16 +12,19 @@ import { Cell, customCols, customValue, effectiveLayout, Head, LayoutDocs, layou
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 type P = any;
-type Kind = 'supervisor' | 'driver';
+type Kind = 'supervisor' | 'driver' | 'employee';
 interface Board { id: string; name: string; icon: string; count: number }
 interface Card { label: string; value?: string | number; parts?: { n: number; l: string; tone?: string }[]; tone?: string; ico: string }
-interface Opts { nextCode: string; today: string; statuses: { code: string; label: string }[]; contractTypes: { code: string; label: string }[]; licenseGrades: string[]; hiddenFields: string[] }
+interface Opts { nextCode: string; today: string; statuses: { code: string; label: string }[]; contractTypes: { code: string; label: string }[]; licenseGrades: string[]; hiddenFields: string[]; employmentTypes?: { code: string; label: string }[]; defaultLeaveDays?: number }
 const PAGE_SIZE = 20;
-const EMPTY = { q: '', status: '', xCard: '', xLic: '', xIns: '', xDocs: '', xData: '' };
+const EMPTY = { q: '', status: '', xCard: '', xLic: '', xIns: '', xDocs: '', xData: '', employmentType: '', position: '', insuranceStatus: '', resignYear: '' };
+const EMPLOYMENT_TYPES = [{ code: 'full', label: 'دوام كامل' }, { code: 'part', label: 'دوام جزئي' }, { code: 'contract', label: 'عقد مؤقت' }, { code: 'intern', label: 'تدريب' }];
 const EXT = '__core_drivers_ext__';
 const CONTRACT_STATUS = [{ code: 'active', label: 'ساري' }, { code: 'expired', label: 'منتهي' }, { code: 'suspended', label: 'موقوف' }];
 const INS_STATUS = [{ code: 'insured', label: 'مؤمَّن' }, { code: 'none', label: 'غير مؤمن عليه' }, { code: 'pending', label: 'قيد التسجيل' }];
 const DOC_STATUS: Record<string, string> = { valid: 'سارية', expired: 'منتهية', none: 'لا يوجد' };
+/** selectOptions (helpers.js) بيرتّب الخيارات بالاسم (localeCompare 'ar') — نفس الترتيب في القوايم المنسدلة */
+const byAr = <T extends { label: string }>(xs: readonly T[]) => xs.slice().sort((a, b) => String(a.label).localeCompare(String(b.label), 'ar', { sensitivity: 'base' }));
 const fmtNum = (n: unknown) => (Number(n) || 0).toLocaleString('ar-EG', { maximumFractionDigits: 2 });
 const fmtMoney = (n: unknown) => `${fmtNum(n)} ج.م`;
 const fmtDate = (v: unknown) => { const m = String(v || '').match(/^(\d{4})-(\d{2})-(\d{2})/); return m ? `${Number(m[3])}/${Number(m[2])}/${m[1]}` : v ? String(v) : '—'; };
@@ -29,6 +32,7 @@ const toInt2 = (v: unknown) => (v ? String(Math.round(Number(v) * 100) / 100) : 
 const T = {
   supervisor: { page: 'supervisors', title: 'المشرفون', pfx: 'sup', api: '/api/v1/supervisors', search: 'بحث: اسم، كود، هاتف، قومي، وظيفة، عنوان...', empty: 'لا يوجد مشرفون — أضف مشرفاً أولاً', emptySpan: 11 },
   driver: { page: 'drivers', title: 'السائقون', pfx: 'drv', api: '/api/v1/drivers', search: 'بحث: اسم، كود، درجة الرخصة، هاتف، قومي، مشروع...', empty: 'لا سائقين', emptySpan: 19 },
+  employee: { page: 'employees', title: 'الموظفين', pfx: 'emp', api: '/api/v1/employees', search: 'بحث: اسم، كود، هاتف، قومي، وظيفة، عنوان...', empty: 'لا يوجد موظفون — اضغط "إضافة موظف"', emptySpan: 9 },
 } as const;
 
 /**
@@ -38,6 +42,8 @@ const T = {
  * القايمة واللوحات والكروت والملاحظات والحفظ من السيرفر بنفس الدوال القديمة (tests-merge/phase76.js).
  * **الأجور (B-48):** اليومية والراتب مابيظهروش ولا بيتبعتوا لو السيرفر قال إنها مخفية.
  * من الشاشة الكاملة: كشف حساب المشرف وصفحة الشخص (د-2)، والحذف والإجراءات الجماعية والتصدير وتعديل التخطيط (د-3).
+ * والموظفين (8.3.5، DEC-0125) — renderEmployeesPage (pages-employees.js) وopenEmployeeModal: الفلاتر (نوع التوظيف والوظيفة)، و**قسم المستقيلين
+ * والمعاشات بكروته وفلاتره وجدوله الخاص** (resignedEmployees*Html — ومن غير تخطيط الأعمدة زي القديمة)، والنافذة بالبريد ورصيد الإجازة (tests-merge/phase78.js).
  */
 @Component({
   selector: 'app-people',
@@ -73,6 +79,7 @@ const T = {
               <a class="btn btn-primary" [href]="full" id="btnSectionAction" title="من الشاشة الكاملة">{{ section() === 'retired' ? '🏖️ إحالة للمعاش' : '🚪 إضافة مستقيل' }}</a>
             } @else if (canAdd) {
               @if (kind === 'supervisor') { <button type="button" class="btn btn-primary" id="btnAddSup" (click)="openEdit(null)">+ إضافة مشرف</button> }
+              @else if (kind === 'employee') { <button type="button" class="btn btn-primary" id="btnAddEmployee" (click)="openEdit(null)">+ إضافة موظف</button> }
               @else {
                 @if (dept() !== ext) { <button type="button" class="btn btn-primary" id="btnAddDriver" (click)="openEdit(null)">+ سائق</button> }
                 @if (dept() !== '__core_drivers__') { <button type="button" class="btn btn-primary" id="btnAddExtDriver" (click)="openEdit(null, true)">+ إضافة سائق خارجي</button> }
@@ -91,16 +98,29 @@ const T = {
             </div>
           }
         </div>
+        @if (empSection()) {
+          <!-- resignedEmployeesFiltersHtml: بحث، وحالة التأمين، وسنة الاستقالة (أو الإحالة) -->
+          <div class="filters-bar">
+            <input type="search" id="empSearch" class="input" [placeholder]="t.search" [(ngModel)]="f.q" (ngModelChange)="reload(true)" style="min-width:200px;">
+            <select id="empFilterIns" class="input" [(ngModel)]="f.insuranceStatus" (ngModelChange)="reload()"><option value="">حالة التأمين: الكل</option>@for (c of insStatus; track c.code) { <option [value]="c.code">{{ c.label }}</option> }</select>
+            <select id="empFilterResYear" class="input" [(ngModel)]="f.resignYear" (ngModelChange)="reload()"><option value="">{{ section() === 'retired' ? 'سنة الإحالة للمعاش' : 'سنة الاستقالة' }}: الكل</option>@for (y of options().resignYears || []; track y) { <option [value]="y">{{ y }}</option> }</select>
+          </div>
+        } @else {
         <div class="filters-bar" style="align-items:center;">
           <input type="search" [id]="t.pfx + 'Search'" class="input" [placeholder]="t.search" [(ngModel)]="f.q" (ngModelChange)="reload(true)" style="min-width:200px;">
           <select [id]="t.pfx + 'FilterStatus'" class="input" [(ngModel)]="f.status" (ngModelChange)="reload()"><option value="">كل الحالات</option>@for (s of statuses; track s.code) { <option [value]="s.code">{{ s.label }}</option> }</select>
+          @if (kind === 'employee') {
+            <select id="empFilterType" class="input" [(ngModel)]="f.employmentType" (ngModelChange)="reload()"><option value="">كل أنواع التوظيف</option>@for (c of employmentTypes; track c.code) { <option [value]="c.code">{{ c.label }}</option> }</select>
+            <select id="empFilterPos" class="input" [(ngModel)]="f.position" (ngModelChange)="reload()"><option value="">كل الوظائف</option>@for (v of options().positions || []; track v) { <option [value]="v">{{ v }}</option> }</select>
+          }
           <select [id]="t.pfx + 'XCard'" class="input" title="البطاقة" [(ngModel)]="f.xCard" (ngModelChange)="reload()"><option value="">البطاقة: الكل</option><option value="valid">سارية</option><option value="soon">قاربت على الانتهاء</option><option value="expired">منتهية</option><option value="none">بدون تاريخ</option></select>
           <select [id]="t.pfx + 'XLic'" class="input" title="الرخصة" [(ngModel)]="f.xLic" (ngModelChange)="reload()"><option value="">الرخصة: الكل</option><option value="valid">سارية</option><option value="soon">قاربت على الانتهاء</option><option value="expired">منتهية</option><option value="none">بدون تاريخ</option><option value="nolic">بدون رخصة (لا تاريخ ولا صورة)</option></select>
           <select [id]="t.pfx + 'XIns'" class="input" title="حالة التأمين" [(ngModel)]="f.xIns" (ngModelChange)="reload()"><option value="">حالة التأمين: الكل</option><option value="insured">مؤمَّن</option><option value="none">غير مؤمن عليه</option><option value="pending">قيد التسجيل</option><option value="empty">بدون تحديد</option></select>
           <select [id]="t.pfx + 'XDocs'" class="input" title="الأوراق" [(ngModel)]="f.xDocs" (ngModelChange)="reload()"><option value="">الأوراق: الكل</option><option value="missing">أوراق ناقصة</option><option value="complete">أوراق مكتملة</option></select>
           <select [id]="t.pfx + 'XData'" class="input" title="البيانات الأساسية" [(ngModel)]="f.xData" (ngModelChange)="reload()"><option value="">البيانات: الكل</option><option value="missing">بيانات أساسية ناقصة</option></select>
-          @if (f.xCard || f.xLic || f.xIns || f.xDocs || f.xData) { <button type="button" class="btn btn-outline btn-sm" [id]="t.pfx + 'XClear'" (click)="f = { ...empty, q: f.q, status: f.status }; reload()">مسح الفلاتر</button> }
+          @if (f.xCard || f.xLic || f.xIns || f.xDocs || f.xData) { <button type="button" class="btn btn-outline btn-sm" [id]="t.pfx + 'XClear'" (click)="f = { ...empty, q: f.q, status: f.status, employmentType: f.employmentType, position: f.position }; reload()">مسح الفلاتر</button> }
         </div>
+        }
         @if (error() && !modal()) { <div class="err" role="alert" id="pplError">{{ error() }}</div> }
         <div class="table-wrap"><table class="data-table" id="pplTable" [attr.data-layout-ent]="mode() === 'external' ? 'driversExt' : null">
           <!-- الأعمدة بتخطيط الأعمدة المحفوظ زي القديمة (DEC-0122، د-5): legacy-table-layout.ts -->
@@ -117,6 +137,7 @@ const T = {
                     @case ('lic') { <td [style.display]="c.hide ? 'none' : null">@if (rec(r.id).licenseStatusNow) { <span class="badge {{ rec(r.id).licenseStatusNow === 'expired' ? 'badge-err' : 'badge-ok' }}">{{ docLabel(rec(r.id).licenseStatusNow) }}</span> } @else { — }</td> }
                     @case ('contract') { <td [style.display]="c.hide ? 'none' : null">@if (rec(r.id).contractStatus) { <span class="badge {{ rec(r.id).contractStatus === 'active' ? 'badge-ok' : 'badge-err' }}">{{ label(contractStatus, rec(r.id).contractStatus) }}</span> } @else { — }</td> }
                     @case ('ins') { <td [style.display]="c.hide ? 'none' : null">@if (rec(r.id).insuranceStatus) { <span class="badge {{ rec(r.id).insuranceStatus === 'insured' ? 'badge-ok' : rec(r.id).insuranceStatus === 'pending' ? 'badge-warn' : 'badge-err' }}">{{ label(insStatus, rec(r.id).insuranceStatus) }}</span> } @else { — }</td> }
+                    @case ('secstatus') { <td><span class="badge badge-err">{{ c.v }}</span></td> }
                     @case ('notes') { <td class="notes-cell" [style.display]="c.hide ? 'none' : null">@if (rec(r.id).issues.length) { <ul class="notes-list" [title]="rec(r.id).issues.join('\\n')">@for (i of rec(r.id).issues.slice(0, 3); track $index) { <li>{{ i }}</li> }@if (rec(r.id).issues.length > 3) { <li class="notes-more">+{{ rec(r.id).issues.length - 3 }} أخرى</li> }</ul> } @else { <span class="notes-ok">✓ مكتمل</span> }</td> }
                     @case ('actions') { <td style="white-space:nowrap;">@if (kind === 'supervisor') { <a class="btn btn-outline btn-sm btn-stmt-sup" [href]="full" title="كشف الحساب من الشاشة الكاملة (د-2)">كشف حساب</a> }<div class="row-actions" style="display:inline-flex;"><a class="row-btn btn-view-{{ t.pfx }}" [href]="full" title="صفحة الشخص (الشاشة الكاملة)">👁</a>@if (canEdit) { <button type="button" class="row-btn btn-edit-{{ t.pfx }}" [attr.data-id]="r.id" title="تعديل" (click)="openEditById(r.id)">✎</button> }@if (canDelete) { <a class="row-btn del btn-del-{{ t.pfx }}" [href]="full" title="الحذف من الشاشة الكاملة (د-3)">✕</a> }</div></td> }
                     @case ('cust') { <td style="font-size:12.5px;max-width:140px;overflow:hidden;text-overflow:ellipsis;" [title]="c.v" [style.display]="c.hide ? 'none' : null">{{ c.v || '—' }}</td> }
@@ -145,8 +166,8 @@ const T = {
           <div class="modal-body">
             <div class="form-grid form-grid-2" [id]="t.pfx + 'FormGrid'">
               <!-- ترتيب الخانات زي ما النوافذ القديمة بتظهر بعد applyFormLayout -->
-              <label [style.order]="ord('Code')" [style.display]="hid('Code') ? 'none' : null">{{ lb('Code', 'الكود') }}<input class="input" [id]="t.pfx + 'Code'" [(ngModel)]="e.code" [placeholder]="kind === 'supervisor' ? 'SUP-001' : 'DRV-001'"></label>
-              <label [style.order]="ord('Name')" [style.display]="hid('Name') ? 'none' : null">{{ lb('Name', 'الاسم') }}<input class="input" [id]="t.pfx + 'Name'" [(ngModel)]="e.name"></label>
+              <label [style.order]="ord('Code')" [style.display]="hid('Code') ? 'none' : null">{{ lb('Code', kind === 'employee' ? 'كود الموظف (تلقائي — قابل للتعديل)' : 'الكود') }}<input class="input" [id]="t.pfx + 'Code'" [(ngModel)]="e.code" [placeholder]="kind === 'supervisor' ? 'SUP-001' : kind === 'employee' ? 'EMP-001' : 'DRV-001'"></label>
+              <label [style.order]="ord('Name')" [style.display]="hid('Name') ? 'none' : null">{{ lb('Name', kind === 'employee' ? 'الاسم *' : 'الاسم') }}<input class="input" [id]="t.pfx + 'Name'" [(ngModel)]="e.name"></label>
               @if (e.external) {
                 <label [style.order]="ord('Nid')" [style.display]="hid('Nid') ? 'none' : null">{{ lb('Nid', 'الرقم القومي') }}<input class="input" id="drvNid" [(ngModel)]="e.nationalId" placeholder="14 رقم"></label>
                 <label [style.order]="ord('Phone')" [style.display]="hid('Phone') ? 'none' : null">{{ lb('Phone', 'الهاتف') }}<input class="input" id="drvPhone" [(ngModel)]="e.phone" placeholder="01xxxxxxxxx"></label>
@@ -155,19 +176,41 @@ const T = {
                 @if (wages()) { <label [style.order]="ord('Wage')" [style.display]="hid('Wage') ? 'none' : null">{{ lb('Wage', 'اليومية (ج.م)') }}<input class="input" id="drvWage" type="number" min="0" step="0.01" [(ngModel)]="e.dailyWage"></label> }
                 <label [style.order]="ord('Address')" [style.display]="hid('Address') ? 'none' : null">{{ lb('Address', 'العنوان') }}<input class="input" id="drvAddress" [(ngModel)]="e.address"></label>
                 <label [style.order]="ord('Status')" [style.display]="hid('Status') ? 'none' : null">{{ lb('Status', 'الحالة') }}<select class="input" id="drvStatus" [(ngModel)]="e.status">@if (!e.id) { <option value="">— اختر —</option> }@for (s of statuses; track s.code) { <option [value]="s.code">{{ s.label }}</option> }</select></label>
+              } @else if (kind === 'employee') {
+                <!-- openEmployeeModal بترتيب الـ DOM (القسم، والحالة، ونوع التوظيف، وpersonHrFieldsHtml بالراتب والرخصة، والبريد، ورصيد الإجازة). مفيش خانة تاريخ استقالة -->
+                <label [style.order]="ord('Dept')" [style.display]="hid('Dept') ? 'none' : null">{{ lb('Dept', 'القسم (من الوظيفة)') }}<input class="input" id="empDept" readonly tabindex="-1" [value]="e.position" placeholder="يُقرأ من خانة الوظيفة" style="background:var(--paper-2);cursor:default;"></label>
+                <label [style.order]="ord('Status')" [style.display]="hid('Status') ? 'none' : null">{{ lb('Status', 'الحالة') }}<select class="input" id="empStatus" [(ngModel)]="e.status">@if (!e.id) { <option value="">— اختر —</option> }@for (s of statuses; track s.code) { <option [value]="s.code">{{ s.label }}</option> }</select></label>
+                <label [style.order]="ord('Type')" [style.display]="hid('Type') ? 'none' : null">{{ lb('Type', 'نوع التوظيف') }}<select class="input" id="empType" [(ngModel)]="e.employmentType">@if (!e.id) { <option value="">— اختر —</option> }@for (c of employmentTypes; track c.code) { <option [value]="c.code">{{ c.label }}</option> }</select></label>
+                <label [style.order]="ord('Pos')" [style.display]="hid('Pos') ? 'none' : null">{{ lb('Pos', 'الوظيفة') }}<input class="input" id="empPos" [(ngModel)]="e.position" placeholder="مهندس، محاسب، نجار..."></label>
+                <label [style.order]="ord('Nid')" [style.display]="hid('Nid') ? 'none' : null">{{ lb('Nid', 'الرقم القومي') }}<input class="input" id="empNid" [(ngModel)]="e.nationalId" placeholder="14 رقم"></label>
+                <label [style.order]="ord('Birth')" [style.display]="hid('Birth') ? 'none' : null">{{ lb('Birth', 'تاريخ الميلاد') }}<input class="input" id="empBirth" type="date" [(ngModel)]="e.birthDate"></label>
+                <label [style.order]="ord('IdCardExp')" [style.display]="hid('IdCardExp') ? 'none' : null">{{ lb('IdCardExp', 'تاريخ انتهاء البطاقة الشخصية') }}<input class="input" id="empIdCardExp" type="date" [(ngModel)]="e.idCardExpiry"></label>
+                <label [style.order]="ord('IdCardStatus')" [style.display]="hid('IdCardStatus') ? 'none' : null">{{ lb('IdCardStatus', 'حالة البطاقة') }}<select class="input" id="empIdCardStatus" disabled><option value="">—</option><option value="valid" [selected]="fromDate(e.idCardExpiry) === 'valid'">سارية</option><option value="none">لا يوجد</option><option value="expired" [selected]="fromDate(e.idCardExpiry) === 'expired'">منتهية</option></select></label>
+                <label [style.order]="ord('LicExp')" [style.display]="hid('LicExp') ? 'none' : null">{{ lb('LicExp', 'تاريخ انتهاء الرخصة الشخصية') }}<input class="input" id="empLicExp" type="date" [(ngModel)]="e.licenseExpiry"></label>
+                <label [style.order]="ord('LicStatus')" [style.display]="hid('LicStatus') ? 'none' : null">{{ lb('LicStatus', 'حالة الرخصة') }}<select class="input" id="empLicStatus" disabled><option value="">—</option><option value="valid" [selected]="fromDate(e.licenseExpiry) === 'valid'">سارية</option><option value="none">لا يوجد</option><option value="expired" [selected]="fromDate(e.licenseExpiry) === 'expired'">منتهية</option></select></label>
+                <label [style.order]="ord('Hire')" [style.display]="hid('Hire') ? 'none' : null">{{ lb('Hire', 'تاريخ التعيين') }}<input class="input" id="empHire" type="date" [(ngModel)]="e.hireDate"></label>
+                <label [style.order]="ord('ContractType')" [style.display]="hid('ContractType') ? 'none' : null">{{ lb('ContractType', 'نوع العقد') }}<select class="input" id="empContractType" [(ngModel)]="e.contractType"><option value="">—</option>@for (c of byAr(o.contractTypes); track c.code) { <option [value]="c.code">{{ c.label }}</option> }</select></label>
+                <label [style.order]="ord('ContractStatus')" [style.display]="hid('ContractStatus') ? 'none' : null">{{ lb('ContractStatus', 'حالة العقد') }}<select class="input" id="empContractStatus" [(ngModel)]="e.contractStatus"><option value="">—</option>@for (c of contractStatus; track c.code) { <option [value]="c.code">{{ c.label }}</option> }</select></label>
+                @if (wages()) { <label [style.order]="ord('Salary')" [style.display]="hid('Salary') ? 'none' : null">{{ lb('Salary', 'الراتب الأساسي') }}<input class="input" id="empSalary" type="number" min="0" step="0.01" [(ngModel)]="e.salary"></label> }
+                <label [style.order]="ord('InsNo')" [style.display]="hid('InsNo') ? 'none' : null">{{ lb('InsNo', 'الرقم التأميني') }}<input class="input" id="empInsNo" [(ngModel)]="e.insuranceNumber" placeholder="رقم التأمين"></label>
+                <label [style.order]="ord('InsStatus')" [style.display]="hid('InsStatus') ? 'none' : null">{{ lb('InsStatus', 'حالة التأمين') }}<select class="input" id="empInsStatus" [(ngModel)]="e.insuranceStatus"><option value="">—</option>@for (c of insStatus; track c.code) { <option [value]="c.code">{{ c.label }}</option> }</select></label>
+                <label [style.order]="ord('Phone')" [style.display]="hid('Phone') ? 'none' : null">{{ lb('Phone', 'الهاتف') }}<input class="input" id="empPhone" [(ngModel)]="e.phone" placeholder="01xxxxxxxxx"></label>
+                <label [style.order]="ord('Email')" [style.display]="hid('Email') ? 'none' : null">{{ lb('Email', 'البريد الإلكتروني') }}<input class="input" id="empEmail" type="email" [(ngModel)]="e.email"></label>
+                <label [style.order]="ord('LeaveBal')" [style.display]="hid('LeaveBal') ? 'none' : null">{{ lb('LeaveBal', 'رصيد الإجازة السنوية') }}<input class="input" id="empLeaveBal" type="number" min="0" [(ngModel)]="e.leaveBalance"></label>
+                <label [style.order]="ord('Address')" [style.display]="hid('Address') ? 'none' : null">{{ lb('Address', 'العنوان') }}<input class="input" id="empAddress" [(ngModel)]="e.address"></label>
               } @else {
                 <label [style.order]="ord('Nid')" [style.display]="hid('Nid') ? 'none' : null">{{ lb('Nid', 'الرقم القومي') }}<input class="input" [id]="t.pfx + 'Nid'" [(ngModel)]="e.nationalId" placeholder="14 رقم"></label>
                 <label [style.order]="ord('Birth')" [style.display]="hid('Birth') ? 'none' : null">{{ lb('Birth', 'تاريخ الميلاد') }}<input class="input" [id]="t.pfx + 'Birth'" type="date" [(ngModel)]="e.birthDate"></label>
                 <label [style.order]="ord('Pos')" [style.display]="hid('Pos') ? 'none' : null">{{ lb('Pos', 'الوظيفة') }}<input class="input" [id]="t.pfx + 'Pos'" [(ngModel)]="e.position" placeholder="مهندس، محاسب، نجار..."></label>
                 <label [style.order]="ord('Phone')" [style.display]="hid('Phone') ? 'none' : null">{{ lb('Phone', 'الهاتف') }}<input class="input" [id]="t.pfx + 'Phone'" [(ngModel)]="e.phone" placeholder="01xxxxxxxxx"></label>
                 @if (kind === 'supervisor') { <label [style.order]="ord('Dept')" [style.display]="hid('Dept') ? 'none' : null">{{ lb('Dept', 'القسم') }}<input class="input" id="supDept" readonly tabindex="-1" [value]="e.position" placeholder="يُقرأ من خانة الوظيفة" style="background:var(--paper-2);cursor:default;"></label> }
-                @else { <label [style.order]="ord('LicGrade')" [style.display]="hid('LicGrade') ? 'none' : null">{{ lb('LicGrade', 'درجة الرخصة') }}<select class="input" id="drvLicGrade" [(ngModel)]="e.licenseGrade"><option value="">—</option>@for (g of gradeOptions(o); track g) { <option [value]="g">{{ g }}</option> }</select></label> }
+                @else { <label [style.order]="ord('LicGrade')" [style.display]="hid('LicGrade') ? 'none' : null">{{ lb('LicGrade', 'درجة الرخصة') }}<select class="input" id="drvLicGrade" [(ngModel)]="e.licenseGrade"><option value="">— اختر —</option>@for (g of gradeOptions(o); track g) { <option [value]="g">{{ g }}</option> }</select></label> }
                 <label [style.order]="ord('IdCardExp')" [style.display]="hid('IdCardExp') ? 'none' : null">{{ lb('IdCardExp', 'تاريخ انتهاء البطاقة الشخصية') }}<input class="input" [id]="t.pfx + 'IdCardExp'" type="date" [(ngModel)]="e.idCardExpiry"></label>
-                <label [style.order]="ord('IdCardStatus')" [style.display]="hid('IdCardStatus') ? 'none' : null">{{ lb('IdCardStatus', 'حالة البطاقة') }}<select class="input" [id]="t.pfx + 'IdCardStatus'" disabled><option value="">—</option><option value="valid" [selected]="fromDate(e.idCardExpiry) === 'valid'">سارية</option><option value="expired" [selected]="fromDate(e.idCardExpiry) === 'expired'">منتهية</option><option value="none">لا يوجد</option></select></label>
+                <label [style.order]="ord('IdCardStatus')" [style.display]="hid('IdCardStatus') ? 'none' : null">{{ lb('IdCardStatus', 'حالة البطاقة') }}<select class="input" [id]="t.pfx + 'IdCardStatus'" disabled><option value="">—</option><option value="valid" [selected]="fromDate(e.idCardExpiry) === 'valid'">سارية</option><option value="none">لا يوجد</option><option value="expired" [selected]="fromDate(e.idCardExpiry) === 'expired'">منتهية</option></select></label>
                 <label [style.order]="ord('LicExp')" [style.display]="hid('LicExp') ? 'none' : null">{{ lb('LicExp', kind === 'supervisor' ? 'تاريخ انتهاء الرخصة الشخصية' : 'تاريخ انتهاء الرخصة') }}<input class="input" [id]="t.pfx + 'LicExp'" type="date" [(ngModel)]="e.licenseExpiry"></label>
-                <label [style.order]="ord('LicStatus')" [style.display]="hid('LicStatus') ? 'none' : null">{{ lb('LicStatus', 'حالة الرخصة') }}<select class="input" [id]="t.pfx + 'LicStatus'" disabled><option value="">—</option><option value="valid" [selected]="fromDate(e.licenseExpiry) === 'valid'">سارية</option><option value="expired" [selected]="fromDate(e.licenseExpiry) === 'expired'">منتهية</option><option value="none">لا يوجد</option></select></label>
+                <label [style.order]="ord('LicStatus')" [style.display]="hid('LicStatus') ? 'none' : null">{{ lb('LicStatus', 'حالة الرخصة') }}<select class="input" [id]="t.pfx + 'LicStatus'" disabled><option value="">—</option><option value="valid" [selected]="fromDate(e.licenseExpiry) === 'valid'">سارية</option><option value="none">لا يوجد</option><option value="expired" [selected]="fromDate(e.licenseExpiry) === 'expired'">منتهية</option></select></label>
                 <label [style.order]="ord('Hire')" [style.display]="hid('Hire') ? 'none' : null">{{ lb('Hire', 'تاريخ التعيين') }}<input class="input" [id]="t.pfx + 'Hire'" type="date" [(ngModel)]="e.hireDate"></label>
-                <label [style.order]="ord('ContractType')" [style.display]="hid('ContractType') ? 'none' : null">{{ lb('ContractType', 'نوع العقد') }}<select class="input" [id]="t.pfx + 'ContractType'" [(ngModel)]="e.contractType"><option value="">—</option>@for (c of o.contractTypes; track c.code) { <option [value]="c.code">{{ c.label }}</option> }</select></label>
+                <label [style.order]="ord('ContractType')" [style.display]="hid('ContractType') ? 'none' : null">{{ lb('ContractType', 'نوع العقد') }}<select class="input" [id]="t.pfx + 'ContractType'" [(ngModel)]="e.contractType"><option value="">—</option>@for (c of byAr(o.contractTypes); track c.code) { <option [value]="c.code">{{ c.label }}</option> }</select></label>
                 <label [style.order]="ord('ContractStatus')" [style.display]="hid('ContractStatus') ? 'none' : null">{{ lb('ContractStatus', 'حالة العقد') }}<select class="input" [id]="t.pfx + 'ContractStatus'" [(ngModel)]="e.contractStatus"><option value="">—</option>@for (c of contractStatus; track c.code) { <option [value]="c.code">{{ c.label }}</option> }</select></label>
                 @if (wages()) {
                   @if (kind === 'supervisor') { <label [style.order]="ord('Wage')" [style.display]="hid('Wage') ? 'none' : null">{{ lb('Wage', 'اليومية') }}<input class="input" id="supWage" type="number" min="0" step="0.01" [(ngModel)]="e.dailyWage"></label> }
@@ -188,14 +231,14 @@ const T = {
               }
               <!-- customFieldsFormHtml: الخانات الإضافية قبل الملاحظات -->
               @if (!e.external) { @for (x of e.extraFields; track $index) { <label [style.order]="ord('extra')">{{ x.label }}<input class="input" [(ngModel)]="x.value" [name]="'ef' + $index"></label> } }
-              <label [style.order]="ord('Notes')" [style.display]="hid('Notes') ? 'none' : null" style="grid-column:1/-1;">{{ lb('Notes', 'الملاحظات') }}<textarea class="input" [id]="t.pfx + 'Notes'" rows="4" [(ngModel)]="e.notes"></textarea></label>
+              <label [style.order]="ord('Notes')" [style.display]="hid('Notes') ? 'none' : null" style="grid-column:1/-1;">{{ lb('Notes', kind === 'employee' ? 'ملاحظات' : 'الملاحظات') }}<textarea class="input" [id]="t.pfx + 'Notes'" [rows]="kind === 'employee' ? 2 : 4" [(ngModel)]="e.notes"></textarea></label>
             </div>
             @if (e.id) { <div class="section-title" style="margin-top:12px;font-size:14px;">المرفقات والمستندات</div><app-attachments [collection]="t.page" [recordId]="e.id" [canEdit]="canEdit" [legacyDocs]="e.legacyAttachments" /> }
             @if (error()) { <div class="err" role="alert" id="pplModalError">{{ error() }}</div> }
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-outline" (click)="close()">إلغاء</button>
-            <button type="button" class="btn btn-primary" [id]="kind === 'supervisor' ? 'btnSaveSup' : 'btnSaveDriver'" [disabled]="saving()" (click)="save()">{{ e.id ? (kind === 'supervisor' ? 'حفظ التعديلات' : 'حفظ التعديل') : 'إضافة' }}</button>
+            <button type="button" class="btn btn-primary" [id]="saveId" [disabled]="saving()" (click)="save()">{{ e.id ? (kind === 'driver' ? 'حفظ التعديل' : 'حفظ التعديلات') : 'إضافة' }}</button>
           </div>
         </div>
       </div>
@@ -228,14 +271,17 @@ export class PeoplePage implements OnInit {
   private readonly http = inject(HttpClient);
   private readonly session = inject(SessionService);
   private readonly toast = new LegacyToast();
-  readonly kind: Kind = inject(ActivatedRoute).snapshot.data['kind'] === 'driver' ? 'driver' : 'supervisor';
+  private readonly routeKind = inject(ActivatedRoute).snapshot.data['kind'];
+  readonly kind: Kind = this.routeKind === 'driver' ? 'driver' : this.routeKind === 'employee' ? 'employee' : 'supervisor';
+  readonly saveId = { supervisor: 'btnSaveSup', driver: 'btnSaveDriver', employee: 'btnSaveEmp' }[this.kind];
+  readonly employmentTypes = byAr(EMPLOYMENT_TYPES);
   readonly t = T[this.kind];
   readonly ext = EXT;
   readonly canAdd = this.session.can(this.t.page, 'add');
   readonly canEdit = this.session.can(this.t.page, 'edit');
   readonly canDelete = this.session.can(this.t.page, 'delete');
   readonly full = legacyUrl(this.t.page);
-  readonly empty = EMPTY; readonly contractStatus = CONTRACT_STATUS; readonly insStatus = INS_STATUS;
+  readonly empty = EMPTY; readonly contractStatus = byAr(CONTRACT_STATUS); readonly insStatus = byAr(INS_STATUS); byAr = byAr;
   readonly statuses = [{ code: 'active', label: 'نشط' }, { code: 'on_leave', label: 'في إجازة' }, { code: 'resigned', label: 'مستقيل' }, { code: 'retired', label: 'على المعاش' }];
   readonly pageSize = PAGE_SIZE;
   f = { ...EMPTY };
@@ -243,7 +289,9 @@ export class PeoplePage implements OnInit {
   readonly boards = signal<Board[]>([]);
   readonly cards = signal<Card[]>([]);
   readonly rows = signal<P[]>([]);
-  readonly mode = signal<'company' | 'external'>('company');
+  readonly mode = signal<'company' | 'external' | 'resigned' | 'retired'>('company');
+  /** الموظفين: خيارات فلتر الوظيفة وسنين قسم المستقيلين (من السيرفر) */
+  readonly options = signal<{ positions?: string[]; resignYears?: string[] }>({});
   readonly hidden = signal<string[]>([]);
   readonly layoutDocs = signal<LayoutDocs | null>(null);
   readonly error = signal('');
@@ -254,8 +302,10 @@ export class PeoplePage implements OnInit {
   readonly dup = signal<{ hard: boolean; title: string; message: string; matches: { code: string; name: string; kind: string; reasons: string[]; strength: string }[] } | null>(null);
   readonly kindLab: Record<string, string> = { employee: 'موظف', worker: 'عامل', supervisor: 'مشرف', driver: 'سائق', equipment: 'معدة/مركبة' };
   kindUrl = (k: string) => legacyUrl(k === 'equipment' ? 'equipment' : k + 's');
-  readonly wages = computed(() => !this.hidden().includes('dailyWage'));
+  readonly wages = computed(() => !this.hidden().includes('dailyWage') && !this.hidden().includes('salary'));
   readonly section = computed(() => { const d = this.dept() || ''; return /^__retired_/.test(d) ? 'retired' : /^__resigned_/.test(d) ? 'resigned' : ''; });
+  /** قسم المستقيلين أو المعاشات في صفحة الموظفين: كروت وفلاتر وجدول خاص (employeesInResignedSection) */
+  readonly empSection = computed(() => this.kind === 'employee' && !!this.section());
   readonly deptLabel = computed(() => { const d = this.dept(); if (d === null || d === '') return 'الكل'; return this.boards().find((b) => b.id === d)?.name ?? d; });
   readonly pages = computed(() => Math.max(1, Math.ceil(this.rows().length / PAGE_SIZE)));
   readonly curPage = computed(() => Math.min(this.page(), this.pages()));
@@ -274,20 +324,45 @@ export class PeoplePage implements OnInit {
   cardValue = (c: Card) => (typeof c.value === 'number' ? (/إجمالي/.test(c.label) ? fmtMoney(c.value) : fmtNum(c.value)) : c.value);
   fromDate = (d: unknown) => { const v = String(d || ''); if (!v || !this.opts()) return ''; return v < this.opts()!.today ? 'expired' : 'valid'; };
   resigned = () => ['resigned', 'left', 'terminated', 'retired'].includes(String(this.e['status'] || '').toLowerCase());
-  modalTitle = () => (this.e['external'] ? (this.e['id'] ? 'تعديل سائق خارجي' : 'إضافة سائق خارجي') : this.kind === 'supervisor' ? (this.e['id'] ? 'تعديل مشرف' : 'إضافة مشرف جديد') : this.e['id'] ? 'تعديل سائق' : 'إضافة سائق جديد');
+  modalTitle = () => (this.e['external'] ? (this.e['id'] ? 'تعديل سائق خارجي' : 'إضافة سائق خارجي') : this.kind === 'employee' ? (this.e['id'] ? 'تعديل موظف' : 'إضافة موظف جديد') : this.kind === 'supervisor' ? (this.e['id'] ? 'تعديل مشرف' : 'إضافة مشرف جديد') : this.e['id'] ? 'تعديل سائق' : 'إضافة سائق جديد');
   /** درجة الرخصة: القايمة الثابتة، والقيمة القديمة لو مش فيها بتتضاف أولها (زي openDriverModal) */
   gradeOptions = (o: Opts) => { const cur = String(this.e['licenseGrade'] || ''); return cur && !o.licenseGrades.includes(cur) ? [cur, ...o.licenseGrades] : o.licenseGrades; };
 
   /** نفس جداول renderSupervisorsPage / renderDriversPage بالموضع (thIf/tdIf بنفس المفاتيح)، وبعدين تخطيط الأعمدة المحفوظ زي القديمة */
   readonly tbl = computed(() => {
     const rows = this.pageRows(), wages = this.wages(), extMode = this.mode() === 'external';
-    const ent = this.kind === 'supervisor' ? 'supervisors' : extMode ? 'driversExt' : 'drivers';
+    const ent = this.kind === 'supervisor' ? 'supervisors' : this.kind === 'employee' ? 'employees' : extMode ? 'driversExt' : 'drivers';
     const layout = effectiveLayout(ent, this.layoutDocs());
     const H = (text: string, key?: string): Head => ({ text, key });
     const C = (t: string, key?: string, v?: string): Cell => ({ t, key, v });
     const X = (v: unknown, key?: string): Cell => ({ t: 'txt', key, v: v == null || v === '' ? '—' : String(v) });
     let head: Head[]; let body: Row[];
-    if (this.kind === 'supervisor') {
+    if (this.empSection()) {
+      // resignedEmployeesTableHtml — والقديمة مابتطبّقش تخطيط الأعمدة على قسم المستقيلين في صفحة الموظفين
+      const ret = this.section() === 'retired';
+      const SL: Record<string, string> = { active: 'نشط', on_leave: 'في إجازة', resigned: 'مستقيل', retired: 'على المعاش' };
+      head = [H('كود الموظف'), H('الاسم'), H('الوظيفة'), H('الرقم القومي'), H('تاريخ التعيين'), H(ret ? 'تاريخ الإحالة للمعاش' : 'تاريخ الاستقالة'), H('حالة التأمين'), H('الرقم التأميني'),
+        H('رقم التليفون'), H('العنوان'), H('القسم'), H('الحالة'), H('الملاحظات'), H('')];
+      body = rows.map((p) => ({ id: String(p['id']), cells: [C('txt', undefined, p['code'] || ''), C('name', undefined, 'plain'), C('txt', undefined, p['position'] || ''), X(p['nationalId']),
+        C('txt', undefined, fmtDate(p['hireDate'])), C('txt', undefined, fmtDate(ret ? p['retiredAt'] : p['resignedAt'] || p['resignDate'])), C('ins'), X(p['insuranceNumber']), X(p['phone']), X(p['address']),
+        X(p['previousDepartmentName']), C('secstatus', undefined, SL[p['status']] || (ret ? 'على المعاش' : 'مستقيل')), C('notes'), C('actions')] }));
+      if (!body.length) body = [{ id: '', cells: [{ t: 'empty', v: ret ? 'لا يوجد متقاعدون' : 'لا يوجد مستقيلون' }] }];
+      return { head, rows: body };
+    }
+    if (this.kind === 'employee') {
+      const customs = customCols(layout);
+      head = [H('كود الموظف', 'code'), H('الاسم', 'name'), H('الوظيفة', 'position'), H('الرقم القومي', 'nationalId'), H('انتهاء البطاقة'), H('حالة البطاقة'), H('انتهاء الرخصة'), H('حالة الرخصة'),
+        H('تاريخ التعيين'), H('نوع العقد'), H('حالة العقد'), ...(wages ? [H('الراتب الأساسي')] : []), H('حالة التأمين'), H('الرقم التأميني'), H('رقم التليفون', 'phone'), H('تاريخ الميلاد', 'birthDate'),
+        H('العنوان', 'address'), H('القسم', 'department'), H('الحالة', 'status'), H('الملاحظات', 'notes'), ...customs.map((d) => H(d.label)), H('')];
+      body = rows.map((p) => ({ id: String(p['id']), cells: [C('txt', 'code', p['code'] || ''), C('name', 'name'), C('txt', undefined, p['position'] || ''), X(p['nationalId'], 'nationalId'), C('txt', undefined, fmtDate(p['idCardExpiry'])),
+        C('card'), C('txt', undefined, fmtDate(p['licenseExpiry'])), C('lic'), C('txt', undefined, fmtDate(p['hireDate'])), X(p['contractTypeLabel']), C('contract'), ...(wages ? [C('txt', undefined, fmtMoney(p['salary']))] : []),
+        C('ins'), X(p['insuranceNumber']), X(p['phone'], 'phone'), C('txt', 'birthDate', p['birthDate'] ? fmtDate(p['birthDate']) : '—'), X(p['address'], 'address'),
+        // عمود «القسم» في القديمة بيعرض الوظيفة الأول (e.position || e.job || e.jobTitle || departmentName)
+        X(p['position'] || p['job'] || p['jobTitle'] || (p['departmentName'] === '—' ? '' : p['departmentName']), 'department'),
+        // **القديمة مابتكتبش خلايا الخانات الإضافية في صفوف الموظفين** (العناوين بس — customFieldsTableHeaders): الصف بيبقى أقصر من العناوين،
+        // فتخطيط الأعمدة بيرتّب العناوين من غير الصفوف (زي القديمة بالظبط — ملاحظة في EMPLOYEES_ACCEPTANCE)
+        C('status', 'status'), C('notes', 'notes'), C('actions')] }));
+    } else if (this.kind === 'supervisor') {
       const customs = customCols(layout);
       head = [H('كود المشرف', 'code'), H('الاسم', 'name'), H('الوظيفة'), H('الرقم القومي', 'nationalId'), H('انتهاء البطاقة'), H('حالة البطاقة'), H('انتهاء الرخصة'), H('حالة الرخصة'),
         H('تاريخ التعيين'), H('نوع العقد'), H('حالة العقد'), ...(wages ? [H('اليومية')] : []), H('حالة التأمين'), H('الرقم التأميني'), H('رقم التليفون'), H('تاريخ الميلاد', 'birthDate'),
@@ -326,8 +401,8 @@ export class PeoplePage implements OnInit {
     try {
       let params = new HttpParams();
       for (const [k, v] of Object.entries({ ...this.f, departmentId: this.dept() ?? '' })) if (v) params = params.set(k, v);
-      const r = await firstValueFrom(this.http.get<{ boards: Board[]; cards: Card[]; rows: P[]; mode: 'company' | 'external'; hiddenFields: string[]; layout?: LayoutDocs }>(this.t.api, { params }));
-      this.boards.set(r.boards); this.cards.set(r.cards); this.rows.set(r.rows); this.mode.set(r.mode); this.hidden.set(r.hiddenFields); this.layoutDocs.set(r.layout ?? null);
+      const r = await firstValueFrom(this.http.get<{ boards: Board[]; cards: Card[]; rows: P[]; mode: 'company' | 'external' | 'resigned' | 'retired'; hiddenFields: string[]; layout?: LayoutDocs; options?: { positions?: string[]; resignYears?: string[] } }>(this.t.api, { params }));
+      this.boards.set(r.boards); this.cards.set(r.cards); this.rows.set(r.rows); this.mode.set(r.mode); this.hidden.set(r.hiddenFields); this.layoutDocs.set(r.layout ?? null); this.options.set(r.options ?? {});
     } catch (err) { this.error.set(errorMessage(err, 'تعذر التحميل')); }
   }
   async openEditById(id: string) {
@@ -343,7 +418,9 @@ export class PeoplePage implements OnInit {
       const isExt = this.kind === 'driver' && (p ? !!p['external'] : external);
       this.e = {
         id: p ? p['id'] : '', rev: p ? p['rev'] : 0, external: isExt, code: (p && p['code']) || o.nextCode, name: s(p?.['name']), status: s(p?.['status']), resignedAt: s(p?.['resignedAt'] || p?.['resignDate']),
-        position: isExt ? s(p?.['position']) || 'سائق' : this.kind === 'supervisor' ? s(p && (p['skill'] || p['position'])) : s(p && (p['position'] || p['jobTitle'] || p['skill'])) || 'سائق',
+        position: isExt ? s(p?.['position']) || 'سائق' : this.kind === 'supervisor' ? s(p && (p['skill'] || p['position'])) : this.kind === 'employee' ? s(p && (p['position'] || p['jobTitle'] || p['skill'])) : s(p && (p['position'] || p['jobTitle'] || p['skill'])) || 'سائق',
+        // الموظف: نوع التوظيف («— اختر —» في الإضافة، و«full» في التعديل لو فاضي)، والبريد، ورصيد الإجازة (الافتراضي من الإعدادات)
+        employmentType: p ? s(p['employmentType']) || 'full' : '', email: s(p?.['email']), leaveBalance: p && p['leaveBalance'] != null ? s(p['leaveBalance']) : String(o.defaultLeaveDays || 21),
         nationalId: s(p?.['nationalId']), phone: s(p?.['phone']), address: s(p?.['address']), notes: s(p?.['notes']), birthDate: s(p?.['birthDate']), idCardExpiry: s(p?.['idCardExpiry']),
         licenseExpiry: s(p?.['licenseExpiry']), hireDate: s(p?.['hireDate']) || o.today, contractType: s(p?.['contractType']), contractStatus: s(p?.['contractStatus']),
         insuranceNumber: s(p?.['insuranceNumber']), insuranceStatus: s(p?.['insuranceStatus']), licenseGrade: s(p?.['licenseGrade']),
@@ -372,7 +449,8 @@ export class PeoplePage implements OnInit {
       ? { external: true, code: e['code'], name: e['name'], status: e['status'], nationalId: e['nationalId'], position: e['position'], phone: e['phone'], address: e['address'], notes: e['notes'] }
       : { code: e['code'], name: e['name'], status: e['status'], resignedAt: this.resigned() ? e['resignedAt'] : '', position: e['position'], nationalId: e['nationalId'], birthDate: e['birthDate'],
         idCardExpiry: e['idCardExpiry'], licenseExpiry: e['licenseExpiry'], hireDate: e['hireDate'], contractType: e['contractType'], contractStatus: e['contractStatus'], insuranceNumber: e['insuranceNumber'],
-        insuranceStatus: e['insuranceStatus'], phone: e['phone'], address: e['address'], notes: e['notes'], extraFields: e['extraFields'], ...(this.kind === 'driver' ? { licenseGrade: e['licenseGrade'] } : {}) };
+        insuranceStatus: e['insuranceStatus'], phone: e['phone'], address: e['address'], notes: e['notes'], extraFields: e['extraFields'], ...(this.kind === 'driver' ? { licenseGrade: e['licenseGrade'] } : {}),
+        ...(this.kind === 'employee' ? { employmentType: e['employmentType'], email: e['email'], leaveBalance: String(e['leaveBalance'] ?? ''), resignedAt: '' } : {}) };
     if (this.wages()) { if (e['external'] || this.kind === 'supervisor') body['dailyWage'] = String(e['dailyWage'] ?? ''); else body['salary'] = String(e['salary'] ?? ''); }
     if (confirmDuplicates) body['confirmDuplicates'] = true;
     try {

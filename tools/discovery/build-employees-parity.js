@@ -34,8 +34,8 @@ const hrAt = helpers.indexOf('function collectPersonHrFields(');
 const hrBody = helpers.slice(hrAt, helpers.indexOf('\nfunction ', hrAt + 10));
 const fromHr = [...hrBody.matchAll(/^\s{4}([A-Za-z_]\w*)\s*:/gm), ...hrBody.matchAll(/out\.([A-Za-z_]\w*)\s*=/g)].map((m) => m[1]);
 const fromSave = ['departmentId', 'categoryId', 'archiveGroup', 'resignedAt', 'retiredAt', 'previousDepartmentId'];
-// الشاشة الجديدة: بتتحط هنا في 8.3.5 (لحد كده «الشاشة في 8.3.5»)
-const PAGE = null;
+// الشاشة الجديدة (8.3.5): نفس مكوّن المشرفين والسواقين بالنوع employee
+const PAGE = 'frontend/src/app/features/people.page.ts';
 const SOURCES = {
   employees: { label: 'الموظفين', modal: [...payloadKeys(emp, 'openEmployeeModal'), ...fromHr, ...fromSave, 'leaveAuto'], page: PAGE },
 };

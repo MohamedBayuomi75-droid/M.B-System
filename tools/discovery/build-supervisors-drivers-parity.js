@@ -42,6 +42,7 @@ const SOURCES = {
   drivers: { label: 'السواقين', modal: [...payloadKeys(ops, 'openDriverModal'), ...payloadKeys(ops, 'openExternalDriverModal'), ...fromHr, ...fromSave], page: 'frontend/src/app/features/people.page.ts' },
 };
 const SYSTEM = { id: 'المفتاح الأساسي `id`' };
+const EMPLOYEE_ONLY = ['retiredAt'];
 const DEFERRED = { custom: 'خانات «تعديلات مخصصة» القديمة — في الشاشة الكاملة', dismissedNotes: 'الملاحظات المخفية — من الشاشة الكاملة',
   legacyDepartmentId: 'قسم قديم قبل الأقسام الأساسية — للعرض في القديمة بس', previousDepartmentId: 'القسم قبل الاستقالة — بيتحسب في السيرفر', archiveGroup: 'بيتحسب في السيرفر مع الاستقالة',
   retiredAt: 'الإحالة للمعاش من الشاشة الكاملة', projectSince: 'تاريخ الانضمام للمشروع — بيتختم في السيرفر', attachments: 'المرفقات من لوحة المرفقات', categoryId: 'نسخة من القسم (بتتكتب معاه)',
@@ -58,7 +59,8 @@ for (const [coll, src] of Object.entries(SOURCES)) {
   const cols = TABLES[coll]; const byKey = Object.fromEntries(cols.map((c) => [c.key, c]));
   const real = shape[coll] || {};
   const page = readIf(src.page);
-  const inNew = (k) => page && new RegExp(`\\b${k}\\b`).test(page);
+  // المكوّن مشترك مع الموظفين (8.3.5): حقول بتتعرض في شاشة الموظفين بس مابتتحسبش هنا
+  const inNew = (k) => page && !EMPLOYEE_ONLY.includes(k) && new RegExp(`\\b${k}\\b`).test(page);
   const fields = [...new Set([...src.modal, 'id', ...Object.keys(real)])].filter((k) => /^[a-z]/.test(k) && !/^(hr|hrS|name2)$/.test(k)).sort();
   const counts = { column: 0, extra: 0, mismatch: 0 };
   let rows = '';

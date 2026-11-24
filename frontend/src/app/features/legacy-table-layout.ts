@@ -28,6 +28,13 @@ const AUTO_HDR_ALIAS: Record<string, string[]> = {
 const autoFieldSuffix = (sel: string) => String(sel || '').replace(/^#/, '').replace(/^(emp|wrk|sup|drv|eq)/, '');
 type Def = { key: string; label: string; selector: string; table?: boolean; size?: string };
 const FORM_BUILTIN_FIELDS: Record<string, Def[]> = {
+  employees: [
+    { key: 'code', label: 'الكود', selector: '#empCode' }, { key: 'name', label: 'الاسم', selector: '#empName' }, { key: 'nationalId', label: 'الرقم القومي', selector: '#empNid' },
+    { key: 'birthDate', label: 'تاريخ الميلاد', selector: '#empBirth', table: false }, { key: 'phone', label: 'الهاتف', selector: '#empPhone' }, { key: 'department', label: 'القسم', selector: '#empDept' },
+    { key: 'position', label: 'الوظيفة', selector: '#empPos' }, { key: 'salary', label: 'الراتب', selector: '#empSalary' }, { key: 'hireDate', label: 'تاريخ التعيين', selector: '#empHire' },
+    { key: 'status', label: 'الحالة', selector: '#empStatus' }, { key: 'address', label: 'العنوان', selector: '#empAddress' }, { key: 'cardExpiry', label: 'تاريخ انتهاء البطاقة الشخصية', selector: '#empIdCardExp' },
+    { key: 'insuranceNo', label: 'الرقم التأميني', selector: '#empInsNo' }, { key: 'insuranceStatus', label: 'حالة التأمين', selector: '#empInsStatus' }, { key: 'notes', label: 'الملاحظات', selector: '#empNotes' },
+  ],
   workers: [
     { key: 'code', label: 'الكود', selector: '#wrkCode' }, { key: 'name', label: 'الاسم', selector: '#wrkName' }, { key: 'nationalId', label: 'الرقم القومي', selector: '#wrkNid' },
     { key: 'birthDate', label: 'تاريخ الميلاد', selector: '#wrkBirth', table: false }, { key: 'phone', label: 'الهاتف', selector: '#wrkPhone' },

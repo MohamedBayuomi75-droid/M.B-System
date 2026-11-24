@@ -94,12 +94,16 @@ async function modals(seed = base(), onlyLabels = false) {
   // الترتيب الظاهر (CSS order من applyPeopleFormOrder، وبعده ترتيب الـ DOM) — مش ترتيب الـ DOM لوحده
   const labels = (root) => page.evaluate((r) => [...document.querySelectorAll(r + ' .modal-body label')].filter((l) => l.offsetParent !== null && getComputedStyle(l).display !== 'none').map((l, i) => [l, Number(getComputedStyle(l).order) || 0, i]).sort((a, b) => a[1] - b[1] || a[2] - b[2]).map((x) => x[0])
     .map((l) => { const c = l.cloneNode(true); c.querySelectorAll('input,select,textarea,small,button').forEach((n) => n.remove()); return (c.textContent || '').replace(/\s+/g, ' ').replace(/\*/g, '').trim(); }).filter((x) => x && !/^(المرفقات|إرفاق|رفع مرفق)/.test(x)), root);
+  // خيارات القوايم المنسدلة بالترتيب (selectOptions في القديمة بيرتّب بالاسم)
+  const opts = (r) => page.evaluate((r) => Object.fromEntries([...document.querySelectorAll(r + ' .modal-body select')].filter((x) => x.id).map((x) => [x.id, [...x.options].map((o) => o.textContent.trim())]).sort(([a], [b]) => a.localeCompare(b))), r);
+  const legacyOpts = [];
   const LEG = [['supervisors', 'openSupervisorModal', null, 'sup'], ['supervisors', 'openSupervisorModal', 's1', 'sup'], ['drivers', 'openDriverModal', null, 'drv'], ['drivers', 'openDriverModal', 'd1', 'drv'], ['drivers', 'openDriverModal', 'd2', 'drv']];
   const legacy = [];
   for (const [pg, fn, id] of LEG) {
     await page.evaluate(() => { try { closeModal(); } catch (e) { /* */ } }); await page.waitForTimeout(300);
     await page.evaluate(([pg, fn, id]) => { goToPage(pg); window[fn](id); }, [pg, fn, id]); await page.waitForTimeout(500);
     legacy.push(await labels('#appModal'));
+    legacyOpts.push(await opts('#appModal'));
   }
   // الخارجي الجديد: زرار «سائق خارجي»
   await page.evaluate(() => { try { closeModal(); } catch (e) { /* */ } }); await page.waitForTimeout(300);
@@ -114,7 +118,10 @@ async function modals(seed = base(), onlyLabels = false) {
   };
   const NEW = [['supervisors', '', '#btnAddSup'], ['supervisors', '', '.btn-edit-sup[data-id="s1"]'], ['drivers', '__core_drivers__', '#btnAddDriver'], ['drivers', '', '.btn-edit-drv[data-id="d1"]'], ['drivers', '', '.btn-edit-drv[data-id="d2"]'], ['drivers', '__core_drivers_ext__', '#btnAddExtDriver']];
   const names = ['مشرف جديد', 'تعديل مشرف', 'سائق شركة جديد', 'تعديل سائق شركة', 'تعديل سائق خارجي', 'سائق خارجي جديد'];
-  for (const [i, [pg, d, how]] of NEW.entries()) { await openNew(pg, d, how); eq(await labels('#appModal'), legacy[i], `${names[i]}: نفس الخانات بالترتيب`); }
+  for (const [i, [pg, d, how]] of NEW.entries()) {
+    await openNew(pg, d, how); eq(await labels('#appModal'), legacy[i], `${names[i]}: نفس الخانات بالترتيب`);
+    if (legacyOpts[i]) eq(await opts('#appModal'), legacyOpts[i], `${names[i]}: نفس خيارات القوايم بالترتيب`);
+  }
 
   if (onlyLabels) { ok(legacy[0].includes('انتهاء رخصة القيادة'), 'الاسم المتغيّر ظاهر فعلًا في نافذة المشرف القديمة', legacy[0]); eq(errors, [], 'النوافذ (تخطيط محفوظ): من غير أخطاء'); await browser.close(); return; }
   console.log('[الحفظ من الشاشة الجديدة]');
