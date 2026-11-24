@@ -39,13 +39,53 @@ const grab = () => {
   };
 };
 const modalOf = () => ({
-  labels: [...document.querySelectorAll('#appModal .modal-body label')].map((l) => { const c = l.cloneNode(true); c.querySelectorAll('input,select,textarea,div').forEach((n) => n.remove()); return c.textContent.replace(/\s+/g, ' ').trim(); }),
+  // الترتيب الظاهر: CSS order (الجديدة) وبعده ترتيب الـ DOM (القديمة بتحرّك العناصر نفسها — applyFormLayout)، والمخفي برّه
+  labels: [...document.querySelectorAll('#appModal .modal-body label')].filter((l) => l.offsetParent !== null && getComputedStyle(l).display !== 'none')
+    .map((l, i) => [l, Number(getComputedStyle(l).order) || 0, i]).sort((x, y) => x[1] - y[1] || x[2] - y[2]).map((x) => x[0]).map((l) => { const c = l.cloneNode(true); c.querySelectorAll('input,select,textarea,div').forEach((n) => n.remove()); return c.textContent.replace(/\s+/g, ' ').replace(/\*/g, '').trim(); }),
   options: Object.fromEntries(['lvKind', 'lvType', 'lvDept'].map((id) => [id, [...document.getElementById(id).options].map((o) => o.textContent.trim())])),
   values: Object.fromEntries(['lvKind', 'lvType', 'lvDays', 'lvFromD', 'lvToD', 'lvReason', 'lvDept'].map((id) => [id, document.getElementById(id).value])),
   person: document.getElementById('lvEmp').value,
 });
 
+/** تخطيط نافذة الإجازة المحفوظ زي البيانات الحقيقية (UAT 8.4 V3): خانات تلقائية بترتيب تاني (القسم، والنوع، والفئة، والشخص…)، واسم متغيّر، وخانة مخفية */
+const SAVED = {
+  _cfAutoFlagsReset: true,
+  autoFields: { leaves: [{ key: 'f_lvKind', label: 'الفئة', selector: '#lvKind' }, { key: 'f_lvEmp_text', label: 'الشخص', selector: '#lvEmp_text' }, { key: 'f_lvDays', label: 'عدد الأيام', selector: '#lvDays' },
+    { key: 'f_lvFromD', label: 'من تاريخ', selector: '#lvFromD' }, { key: 'f_lvToD', label: 'إلى تاريخ', selector: '#lvToD' }, { key: 'f_lvReason', label: 'السبب', selector: '#lvReason' }] },
+  formLayouts: { leaves: [
+    { key: 'department', label: 'القسم', type: 'builtin' }, { key: 'type', label: 'نوع الإجازة', type: 'builtin' },
+    { key: 'f_lvKind', label: 'فئة الموظف', type: 'builtin', selector: '#lvKind', auto: true }, { key: 'f_lvEmp_text', label: 'الشخص', type: 'builtin', selector: '#lvEmp_text', auto: true, size: 'lg' },
+    { key: 'f_lvFromD', label: 'من تاريخ', type: 'builtin', selector: '#lvFromD', auto: true }, { key: 'f_lvToD', label: 'إلى تاريخ', type: 'builtin', selector: '#lvToD', auto: true },
+    { key: 'f_lvDays', label: 'عدد الأيام', type: 'builtin', selector: '#lvDays', auto: true, visible: false }, { key: 'f_lvReason', label: 'السبب', type: 'builtin', selector: '#lvReason', auto: true, size: 'lg' },
+  ] },
+};
+/** النافذة بتخطيط محفوظ: نفس الخانات بنفس الترتيب الظاهر والأسماء والإخفاء في الواجهتين */
+async function savedLayoutModal() {
+  const { browser, page, base: url, errors } = await openWebApp({ ...seed, ...SAVED });
+  // القديمة بتفتح النافذة الأول وبتحفظ التخطيط الفعلي (syncAutoFields) — زي البيانات الحقيقية
+  await page.evaluate(() => { goToPage('leaves'); openLeaveModal(); }); await page.waitForTimeout(500);
+  await page.evaluate(async () => { try { closeModal(); } catch (e) { /* */ } await WebSync.save(DATA); });
+  await page.reload(); await page.waitForFunction(() => typeof DATA !== 'undefined' && window.WebSync && WebSync._state.meta && (DATA.leaves || []).length > 0, null, { timeout: 30000 });
+  const legacy = [];
+  for (const id of [null, 'l6']) {
+    await page.evaluate(() => { try { closeModal(); } catch (e) { /* */ } }); await page.waitForTimeout(300);
+    await page.evaluate((id) => { goToPage('leaves'); openLeaveModal(id); }, id); await page.waitForTimeout(500);
+    legacy.push(await page.evaluate(modalOf));
+  }
+  console.log('[النافذة بتخطيط محفوظ] نفس الترتيب والأسماء والإخفاء');
+  await page.goto(url + '/app/leaves'); await page.waitForSelector('#lvTable tbody tr'); await page.waitForTimeout(300);
+  for (const [i, sel] of ['#btnAddLeave', '.btn-edit-lv[data-id="l6"]'].entries()) {
+    await page.click(sel); await page.waitForSelector('#appModal #btnSaveLv'); await page.waitForTimeout(250);
+    eq(await page.evaluate(modalOf), legacy[i], `${['طلب جديد', 'تعديل'][i]}: نفس النافذة بالتخطيط المحفوظ`);
+    await page.click('#appModal .modal-close'); await page.waitForTimeout(200);
+  }
+  ok(legacy[0].labels[0] === 'القسم' && legacy[0].labels.includes('فئة الموظف') && !legacy[0].labels.includes('عدد الأيام'), 'التخطيط اتطبّق فعلًا في القديمة (ترتيب، واسم، وإخفاء)', legacy[0].labels);
+  eq(errors, [], 'النافذة بتخطيط محفوظ: من غير أخطاء');
+  await browser.close();
+}
+
 (async () => {
+  await savedLayoutModal();
   const { browser, page, base: url, errors } = await openWebApp(seed);
   const legacyAt = async (f) => { await page.evaluate((f) => { goToPage('leaves'); Object.keys(leaveFilters).forEach((k) => { leaveFilters[k] = ''; }); Object.assign(leaveFilters, f); rerenderCurrentPage(); }, f); await page.waitForTimeout(400); return page.evaluate(grab); };
   const VIEWS = [{}, { status: 'approved', personKind: 'employee' }, { q: 'سامي' }];
