@@ -93,16 +93,20 @@ const grab = (sel) => {
   const labels = () => page.evaluate(() => [...document.querySelectorAll('#appModal .modal-body label')].filter((l) => l.offsetParent !== null && getComputedStyle(l).display !== 'none')
     .map((l, i) => [l, Number(getComputedStyle(l).order) || 0, i]).sort((a, b) => a[1] - b[1] || a[2] - b[2])
     .map(([l]) => { const c = l.cloneNode(true); c.querySelectorAll('input,select,textarea,small,button').forEach((n) => n.remove()); return (c.textContent || '').replace(/\s+/g, ' ').replace(/\*/g, '').trim(); }).filter((x) => x && !/^(المرفقات|إرفاق|رفع مرفق)/.test(x)));
-  const leg = {};
+  // خيارات كل قايمة ظاهرة (select بـ id) بالترتيب — زي opts في people-layout-e2e. الظاهرة بس: القديمة بتسيب قوايم كتلة HR مخفية
+  // في نافذة المؤقت. «المشرف» في القديمة combo بالكتابة (مش select) فمالهاش خيارات تتقارن.
+  const opts = () => page.evaluate(() => Object.fromEntries([...document.querySelectorAll('#appModal .modal-body select')].filter((x) => x.id && x.id !== 'wrkSupervisor' && x.offsetParent !== null).map((x) => [x.id, [...x.options].map((o) => o.textContent.trim())]).sort(([a], [b]) => a.localeCompare(b))));
+  const leg = {}; const legOpts = {};
   await page.goto(base + '/legacy/'); await page.waitForFunction(() => typeof DATA !== 'undefined' && window.WebSync && WebSync._state.meta, null, { timeout: 30000 });
   for (const [k, id, o] of [['إضافة شركة', null, { defaultType: 'company' }], ['تعديل شركة', 'w2', null], ['إضافة مؤقت', null, { defaultType: 'temporary' }]]) {
     await page.evaluate(() => { try { closeModal(); } catch (e) { /* */ } }); await page.waitForTimeout(300);
-    await page.evaluate(([i, o]) => { goToPage('workers'); openWorkerModal(i, o || undefined); }, [id, o]); await page.waitForTimeout(500); leg[k] = await labels();
+    await page.evaluate(([i, o]) => { goToPage('workers'); openWorkerModal(i, o || undefined); }, [id, o]); await page.waitForTimeout(500); leg[k] = await labels(); legOpts[k] = await opts();
   }
   for (const [k, how] of [['إضافة شركة', '#btnAddWorker'], ['تعديل شركة', '.btn-edit-wrk[data-id="w2"]'], ['إضافة مؤقت', '#btnAddTempWorker']]) {
     await page.goto(base + '/app/workers'); await page.waitForSelector('#wkBoards .entity-dept-board'); await page.click('#wkBoards .entity-dept-board[data-dept=""]'); await page.waitForSelector('#wkTable tr[data-id="w2"]');
     await page.click(how); await page.waitForSelector('#btnSaveWrk'); await page.waitForTimeout(300);
     eq(await labels(), leg[k], `${k}: نفس الخانات بالترتيب`);
+    eq(await opts(), legOpts[k], `${k}: نفس خيارات القوايم بالترتيب`);
   }
   ok(leg['إضافة شركة'].includes('المقاس'), 'الخانة الإضافية ظاهرة في الإضافة', leg['إضافة شركة']);
 

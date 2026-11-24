@@ -19,6 +19,8 @@ const EMPTY = { q: '', status: '', supervisorId: '', type: '', project: '', xCar
 const TYPES = [{ code: 'temporary', label: 'عامل مؤقت' }, { code: 'company', label: 'عامل شركة' }, { code: 'daily', label: 'عامل يومية' }];
 const CONTRACT_STATUS = [{ code: 'active', label: 'ساري' }, { code: 'expired', label: 'منتهي' }, { code: 'suspended', label: 'موقوف' }];
 const INS_STATUS = [{ code: 'insured', label: 'مؤمَّن' }, { code: 'none', label: 'غير مؤمن عليه' }, { code: 'pending', label: 'قيد التسجيل' }];
+/** selectOptions القديمة (helpers.js) بترتّب بالاسم: localeCompare(..., 'ar', { sensitivity: 'base' }) — زي people.page */
+const byAr = <T extends { label: string }>(xs: readonly T[]) => xs.slice().sort((a, b) => String(a.label).localeCompare(String(b.label), 'ar', { sensitivity: 'base' }));
 const CARD_STATUS: Record<string, string> = { valid: 'سارية', expired: 'منتهية', none: 'لا يوجد' };
 /** fmtNum / fmtMoney / fmtDate القديمة — للعرض بس */
 const fmtNum = (n: unknown) => (Number(n) || 0).toLocaleString('ar-EG', { maximumFractionDigits: 2 });
@@ -156,8 +158,8 @@ const fmtDate = (v: unknown) => { const m = String(v || '').match(/^(\d{4})-(\d{
                 <label [style.order]="ord('Dept')" [style.display]="hid('Dept') ? 'none' : null">{{ lb('Dept', 'القسم') }}<input class="input" id="wrkDept" readonly tabindex="-1" [value]="e.position" placeholder="يُقرأ من خانة الوظيفة" style="background:var(--paper-2);cursor:default;"></label>
                 <label [style.order]="ord('Hire')" [style.display]="hid('Hire') ? 'none' : null">{{ lb('Hire', 'تاريخ التعيين') }}<input class="input" id="wrkHire" type="date" [(ngModel)]="e.hireDate"></label>
                 <label [style.order]="ord('IdCardExp')" [style.display]="hid('IdCardExp') ? 'none' : null">{{ lb('IdCardExp', 'تاريخ انتهاء البطاقة الشخصية') }}<input class="input" id="wrkIdCardExp" type="date" [(ngModel)]="e.idCardExpiry"></label>
-                <label [style.order]="ord('IdCardStatus')" [style.display]="hid('IdCardStatus') ? 'none' : null">{{ lb('IdCardStatus', 'حالة البطاقة') }}<select class="input" id="wrkIdCardStatus" disabled><option value="">—</option><option value="valid" [selected]="cardFromDate() === 'valid'">سارية</option><option value="expired" [selected]="cardFromDate() === 'expired'">منتهية</option><option value="none">لا يوجد</option></select></label>
-                <label [style.order]="ord('ContractType')" [style.display]="hid('ContractType') ? 'none' : null">{{ lb('ContractType', 'نوع العقد') }}<select class="input" id="wrkContractType" [(ngModel)]="e.contractType"><option value="">—</option>@for (c of o.contractTypes; track c.code) { <option [value]="c.code">{{ c.label }}</option> }</select></label>
+                <label [style.order]="ord('IdCardStatus')" [style.display]="hid('IdCardStatus') ? 'none' : null">{{ lb('IdCardStatus', 'حالة البطاقة') }}<select class="input" id="wrkIdCardStatus" disabled><option value="">—</option><option value="valid" [selected]="cardFromDate() === 'valid'">سارية</option><option value="none">لا يوجد</option><option value="expired" [selected]="cardFromDate() === 'expired'">منتهية</option></select></label>
+                <label [style.order]="ord('ContractType')" [style.display]="hid('ContractType') ? 'none' : null">{{ lb('ContractType', 'نوع العقد') }}<select class="input" id="wrkContractType" [(ngModel)]="e.contractType"><option value="">—</option>@for (c of byAr(o.contractTypes); track c.code) { <option [value]="c.code">{{ c.label }}</option> }</select></label>
                 <label [style.order]="ord('ContractStatus')" [style.display]="hid('ContractStatus') ? 'none' : null">{{ lb('ContractStatus', 'حالة العقد') }}<select class="input" id="wrkContractStatus" [(ngModel)]="e.contractStatus"><option value="">—</option>@for (c of contractStatus; track c.code) { <option [value]="c.code">{{ c.label }}</option> }</select></label>
                 <label [style.order]="ord('InsNo')" [style.display]="hid('InsNo') ? 'none' : null">{{ lb('InsNo', 'الرقم التأميني') }}<input class="input" id="wrkInsNo" [(ngModel)]="e.insuranceNumber" placeholder="رقم التأمين"></label>
                 <label [style.order]="ord('InsStatus')" [style.display]="hid('InsStatus') ? 'none' : null">{{ lb('InsStatus', 'حالة التأمين') }}<select class="input" id="wrkInsStatus" [(ngModel)]="e.insuranceStatus"><option value="">—</option>@for (c of insStatus; track c.code) { <option [value]="c.code">{{ c.label }}</option> }</select></label>
@@ -214,7 +216,7 @@ export class WorkersPage implements OnInit {
   readonly canEdit = this.session.can('workers', 'edit');
   readonly canDelete = this.session.can('workers', 'delete');
   readonly full = legacyUrl('workers');
-  readonly empty = EMPTY; readonly types = TYPES; readonly contractStatus = CONTRACT_STATUS; readonly insStatus = INS_STATUS;
+  readonly empty = EMPTY; readonly types = TYPES; readonly contractStatus = byAr(CONTRACT_STATUS); readonly insStatus = byAr(INS_STATUS); byAr = byAr;
   readonly statuses = [{ code: 'active', label: 'نشط' }, { code: 'on_leave', label: 'في إجازة' }, { code: 'resigned', label: 'مستقيل' }, { code: 'retired', label: 'على المعاش' }];
   readonly pageSize = PAGE_SIZE;
   f = { ...EMPTY };
