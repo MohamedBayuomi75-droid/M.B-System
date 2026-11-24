@@ -340,12 +340,14 @@ export class PeoplePage implements OnInit {
     if (this.empSection()) {
       // resignedEmployeesTableHtml — والقديمة مابتطبّقش تخطيط الأعمدة على قسم المستقيلين في صفحة الموظفين
       const ret = this.section() === 'retired';
-      const SL: Record<string, string> = { active: 'نشط', on_leave: 'في إجازة', resigned: 'مستقيل', retired: 'على المعاش' };
+      // labelOf(EMPLOYEE_STATUS, status) في القديمة: القايمة، وبعدين STATUS_LEGACY_LABELS، وبعدين الكود نفسه، وإلا «—» ← («مستقيل» الاحتياطي عمره ما بيتنفّذ) (UAT 8.3 E5)
+      const SL0: Record<string, string> = { active: 'نشط', on_leave: 'في إجازة', resigned: 'مستقيل', retired: 'على المعاش', inactive: 'غير نشط', left: 'غادر', terminated: 'منتهي الخدمة', temporary: 'مؤقت' };
+      const SL = (s: unknown) => { const k = String(s ?? ''); return SL0[k] || k || '—'; };
       head = [H('كود الموظف'), H('الاسم'), H('الوظيفة'), H('الرقم القومي'), H('تاريخ التعيين'), H(ret ? 'تاريخ الإحالة للمعاش' : 'تاريخ الاستقالة'), H('حالة التأمين'), H('الرقم التأميني'),
         H('رقم التليفون'), H('العنوان'), H('القسم'), H('الحالة'), H('الملاحظات'), H('')];
       body = rows.map((p) => ({ id: String(p['id']), cells: [C('txt', undefined, p['code'] || ''), C('name', undefined, 'plain'), C('txt', undefined, p['position'] || ''), X(p['nationalId']),
         C('txt', undefined, fmtDate(p['hireDate'])), C('txt', undefined, fmtDate(ret ? p['retiredAt'] : p['resignedAt'] || p['resignDate'])), C('ins'), X(p['insuranceNumber']), X(p['phone']), X(p['address']),
-        X(p['previousDepartmentName']), C('secstatus', undefined, SL[p['status']] || (ret ? 'على المعاش' : 'مستقيل')), C('notes'), C('actions')] }));
+        X(p['previousDepartmentName']), C('secstatus', undefined, SL(p['status'])), C('notes'), C('actions')] }));
       if (!body.length) body = [{ id: '', cells: [{ t: 'empty', v: ret ? 'لا يوجد متقاعدون' : 'لا يوجد مستقيلون' }] }];
       return { head, rows: body };
     }
