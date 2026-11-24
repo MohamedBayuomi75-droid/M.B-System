@@ -15,6 +15,11 @@ export class LeavesRepository {
     const [r] = await em.query(`SELECT data FROM docs WHERE key = $1`, [key]);
     return r?.data && typeof r.data === 'object' ? r.data : {};
   }
+  /** قيمة مستند زي ما هي (ومنها العلامات true/false) — لتخطيط النافذة */
+  async docValue(key: string, em: EntityManager = this.ds.manager): Promise<unknown> {
+    const [r] = await em.query(`SELECT data FROM docs WHERE key = $1`, [key]);
+    return r ? r.data : undefined;
+  }
   events(id: string, em: EntityManager = this.ds.manager): Promise<{ type: string; key: string }[]> {
     return em.query(`SELECT event_type AS type, idempotency_key AS key FROM integration_events WHERE aggregate_type = 'leave' AND aggregate_id = $1 ORDER BY seq`, [id]);
   }
