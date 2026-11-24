@@ -11,8 +11,8 @@
 | `CHG-` | APPROVED-CHANGE | 14 |
 | `TECH-` | TECHNICAL | 18 |
 | `NEW-` | NEW-REQUIREMENT | 9 |
-| `DEC-` | OPEN-DECISION (المفتوح والمحسوم) | 123 (مفتوح: 40) |
-| **الإجمالي** | | **518** |
+| `DEC-` | OPEN-DECISION (المفتوح والمحسوم) | 124 (مفتوح: 40) |
+| **الإجمالي** | | **519** |
 
 **عناصر LEG حسب النوع:** page 54 · calc 120 · data-write 30 · modal 63 · export/print 37 · permission 8 · electron-capability 42
 
@@ -553,4 +553,5 @@
 | DEC-0121 | decision | قرارات | نطاق الحزمة 8.1 معتمد (العمال بس): صفحة العامل وكشف مستحقاته في القديمة، والحذف في القديمة، والاستقالة بتنسخ لأرشيف المستقيلين زي القديم، والكود `WRK-` زي القدي | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
 | DEC-0122 | decision | قرارات | العمال (الحزمة 8.1) Accepted. ترتيب الأعمدة (M2): الاختيار (أ) — الشاشة الجديدة بتقرا تخطيط الأعمدة المحفوظ (`formLayouts.workers` و`workersTemp`) وتطبّقه زي ال | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
 | DEC-0123 | decision | قرارات | نطاق الحزمة 8.2 معتمد (المشرفين والسواقين بنوعيهم): كشف حساب المشرف وصفحة الشخص في القديمة، والحذف والإجراءات الجماعية والتصدير وتعديل التخطيط في القديمة، ونافذ | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
+| DEC-0124 | decision | قرارات | المشرفين والسواقين (الحزمة 8.2) Accepted، وقلب توجيه «المشرفون» و«السائقون» للشاشات الجديدة دلوقتي (القديمة «الشاشة الكاملة»). والحزمة الجاية المقترحة 8.3 = الم | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
 

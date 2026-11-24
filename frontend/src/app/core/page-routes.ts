@@ -11,6 +11,8 @@
  *   والتصدير (DEC-0117). الرجوع: السطرين دول.
  * المرحلة 8.1 (قلب التوجيه بموافقة 2026-11-23، DEC-0122): «العمال» → Angular، بتخطيط الأعمدة المحفوظ زي القديمة. الشاشة الكاملة
  *   لصفحة العامل وكشف المستحقات والحذف والإجراءات الجماعية والتصدير وتعديل التخطيط (DEC-0121). الرجوع: السطرين دول.
+ * المرحلة 8.2 (قلب التوجيه بموافقة 2026-11-24، DEC-0124): «المشرفون» و«السائقون» → Angular. الشاشة الكاملة لكشف الحساب وصفحة الشخص
+ *   والحذف والإجراءات الجماعية والتصدير وتعديل التخطيط (DEC-0123). الرجوع: الأربع سطور دول.
  */
 export interface PageRoute { key: string; label: string; icon: string; target: 'legacy' | 'angular'; path?: string; pilot?: boolean }
 
@@ -28,10 +30,10 @@ export const PAGE_ROUTES: readonly PageRoute[] = [
   { key: 'ledger.payments', label: 'الدفعات — الشاشة الكاملة', icon: 'payments', target: 'legacy' },
   { key: 'workers', label: 'العمال', icon: 'engineering', target: 'angular', path: '/workers' },
   { key: 'workers', label: 'العمال — الشاشة الكاملة', icon: 'badge', target: 'legacy' },
-  { key: 'supervisors', label: 'المشرفون (الشاشة الجديدة)', icon: 'engineering', target: 'angular', path: '/supervisors', pilot: true },
-  { key: 'supervisors', label: 'المشرفون', icon: 'badge', target: 'legacy' },
-  { key: 'drivers', label: 'السائقون (الشاشة الجديدة)', icon: 'local_shipping', target: 'angular', path: '/drivers', pilot: true },
-  { key: 'drivers', label: 'السائقون', icon: 'local_shipping', target: 'legacy' },
+  { key: 'supervisors', label: 'المشرفون', icon: 'engineering', target: 'angular', path: '/supervisors' },
+  { key: 'supervisors', label: 'المشرفون — الشاشة الكاملة', icon: 'badge', target: 'legacy' },
+  { key: 'drivers', label: 'السائقون', icon: 'local_shipping', target: 'angular', path: '/drivers' },
+  { key: 'drivers', label: 'السائقون — الشاشة الكاملة', icon: 'local_shipping', target: 'legacy' },
   { key: 'workerDues', label: 'المستحقات', icon: 'payments', target: 'legacy' },
   { key: 'clients.customers', label: 'العملاء', icon: 'groups', target: 'angular', path: '/customers' },
   { key: 'clients.customers', label: 'العملاء — الشاشة الكاملة', icon: 'contact_page', target: 'legacy' },

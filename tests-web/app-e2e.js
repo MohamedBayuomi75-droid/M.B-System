@@ -67,7 +67,7 @@ async function login(page, username, password) {
     ok((await A.page.textContent('#whoami')).includes('مدير النظام'), 'shell shows the user and role');
     eq(await A.page.evaluate(() => getComputedStyle(document.body).direction), 'rtl', 'page direction is RTL');
     const nav = await A.page.evaluate(() => ({ app: [...document.querySelectorAll('#nav [data-page]')].map((a) => a.getAttribute('data-page')), legacy: [...document.querySelectorAll('#nav [data-legacy]')].map((a) => a.getAttribute('href')) }));
-    ok(nav.app.includes('ledger.suppliers') && nav.app.includes('clients.customers') && nav.app.includes('workers') && nav.legacy.includes('/legacy/#dashboard') && nav.legacy.includes('/legacy/#transfers'), 'legacy sections (DEC-0093): sections with a moved page open it here (HR → workers since 8.1), the others open their legacy board/page', nav);
+    ok(nav.app.includes('ledger.suppliers') && nav.app.includes('clients.customers') && nav.app.includes('supervisors') && nav.legacy.includes('/legacy/#dashboard') && nav.legacy.includes('/legacy/#transfers'), 'legacy sections (DEC-0093): sections with a moved page open it here (HR → its first moved page: supervisors since 8.2), the others open their legacy board/page', nav);
     ok(!!(await A.page.$('.lx .top .brand img.mark-logo')) && !!(await A.page.$('.lx nav.nav.nav-sections')), 'legacy header and section tabs');
   }
   r = await api('POST', '/api/auth/login', { username: 'admin', password: PW });
@@ -124,6 +124,12 @@ async function login(page, username, password) {
     await A.page.click('#navWorkers');
     await A.page.waitForSelector('#wkBoards .entity-dept-board');
     ok(/\/app\/workers$/.test(A.page.url()), 'section link opens /app/workers', A.page.url());
+    // قلب التوجيه 8.2 (DEC-0124): «المشرفون» و«السائقون» في نفس الصف بيفتحوا الشاشات الجديدة
+    for (const [id, path] of [['#navSupervisors', '/app/supervisors'], ['#navDrivers', '/app/drivers']]) {
+      await A.page.click(id); await A.page.waitForURL((u) => u.pathname.endsWith(path)); await A.page.waitForSelector('#pplBoards .entity-dept-board');
+      ok(A.page.url().endsWith(path), `section link opens ${path}`, A.page.url());
+    }
+    await A.page.click('#navWorkers'); await A.page.waitForSelector('#wkBoards .entity-dept-board');
     const boards = await A.page.$$eval('#wkBoards .entity-dept-board', (bs) => bs.map((b) => [b.getAttribute('data-dept'), b.querySelector('.num').textContent.trim()]));
     eq(boards.slice(0, 1).concat(boards.filter(([d]) => d.startsWith('__core_workers'))), [['', '2'], ['__core_workers_perm__', '1'], ['__core_workers_temp__', '1']], 'department boards with counts');
     await A.page.click('#wkBoards .entity-dept-board[data-dept=""]');
