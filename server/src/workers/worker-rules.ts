@@ -22,7 +22,7 @@ export const CORE_WORKER_DEPTS = [{ id: '__core_workers_perm__', name: 'عمال
 export const RESIGNED_DEPT = '__resigned_worker__';
 export const RETIRED_DEPT = '__retired_worker__';
 /** أنواع الأشخاص اللي القواعد دي بتخدمها (personNotesIssues(kind)، syncPersonResignedState(kind)…) — 8.2 عمّمها */
-export type PersonKind = 'worker' | 'supervisor' | 'driver';
+export type PersonKind = 'worker' | 'supervisor' | 'driver' | 'employee';
 export const resignedDeptOf = (k: PersonKind) => `__resigned_${k}__`;
 export const retiredDeptOf = (k: PersonKind) => `__retired_${k}__`;
 const HIRE_REQUIRED_DOCS = [
@@ -150,6 +150,8 @@ export function notesIssues(c: Ctx, p: J, kind: PersonKind = 'worker'): string[]
   if (!String(p.name || '').trim()) issues.push('الاسم ناقص');
   if (!String(p.nationalId || p.idNumber || '').trim()) issues.push('الرقم القومي ناقص');
   if (!String(p.phone || p.mobile || '').trim()) issues.push('رقم الهاتف ناقص');
+  // الموظف: «بدون قسم» من departmentId أو department بس (مش categoryId — زي القديمة)
+  if (kind === 'employee' && !String(p.departmentId || p.department || '').trim()) issues.push('بدون قسم');
   if (kind === 'worker') {
     if (!p.supervisorId) issues.push('بدون مشرف');
     if (!String(p.departmentId || p.categoryId || p.department || '').trim()) issues.push('بدون قسم');
@@ -210,6 +212,7 @@ export function filterWorkers(c: Ctx, all: J[], f: WorkerFilters): J[] {
 // ---------------- لوحات الأقسام
 export const CORE_DEPTS_OF: Record<PersonKind, { id: string; name: string }[]> = {
   worker: CORE_WORKER_DEPTS, supervisor: [{ id: '__core_supervisors__', name: 'المشرفين' }], driver: [{ id: '__core_drivers__', name: 'سائقين الشركة' }, { id: '__core_drivers_ext__', name: 'سائقون من خارج الشركة' }],
+  employee: [{ id: '__core_employees__', name: 'الموظفين' }],
 };
 export function boards(c: Ctx, all: J[], kind: PersonKind = 'worker') {
   const coll = `${kind}s`, core = CORE_DEPTS_OF[kind], RES = resignedDeptOf(kind), RET = retiredDeptOf(kind);
@@ -219,7 +222,7 @@ export function boards(c: Ctx, all: J[], kind: PersonKind = 'worker') {
   const deps = [...core.map((x) => ({ ...x, ...(sys.find((d) => d.id === x.id) ? { name: sys.find((d) => d.id === x.id)!.name || x.name } : {}) })),
     ...sys.filter((d) => !order.includes(d.id) && !isResignedDeptId(d.id)).sort((a, b) => String(a.name || '').localeCompare(String(b.name || ''), 'ar'))];
   const count = (id: string) => (id === DEPT_NONE ? all.filter((x) => entityNoDeptOrJob(x)).length : id === '' ? all.length : all.filter((x) => entityDepartmentId(x) === id).length);
-  return [{ id: '', name: 'الكل', icon: '📋' }, { id: DEPT_NONE, name: 'بدون قسم أو وظيفة', icon: '📂' }, ...fixed.map((d) => ({ ...d, icon: d.id === RES ? '🚪' : '🏖️' })), ...deps.map((d) => ({ id: d.id, name: d.name, icon: ({ worker: '🧑‍🔧', supervisor: '👷', driver: '🧑‍🚒' } as Record<PersonKind, string>)[kind] }))]
+  return [{ id: '', name: 'الكل', icon: '📋' }, { id: DEPT_NONE, name: 'بدون قسم أو وظيفة', icon: '📂' }, ...fixed.map((d) => ({ ...d, icon: d.id === RES ? '🚪' : '🏖️' })), ...deps.map((d) => ({ id: d.id, name: d.name, icon: ({ worker: '🧑‍🔧', supervisor: '👷', driver: '🧑‍🚒', employee: '👔' } as Record<PersonKind, string>)[kind] }))]
     .map((b) => ({ ...b, count: count(b.id) }));
 }
 

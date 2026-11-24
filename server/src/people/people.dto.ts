@@ -13,6 +13,10 @@ export class ListPeopleQuery {
   @ApiPropertyOptional({ enum: ['', 'insured', 'none', 'pending', 'empty'] }) @IsOptional() @IsIn(['', 'insured', 'none', 'pending', 'empty']) xIns?: string;
   @ApiPropertyOptional({ enum: ['', 'missing', 'complete'] }) @IsOptional() @IsIn(['', 'missing', 'complete']) xDocs?: string;
   @ApiPropertyOptional({ enum: ['', 'missing'] }) @IsOptional() @IsIn(['', 'missing']) xData?: string;
+  @ApiPropertyOptional({ description: 'الموظفين: نوع التوظيف' }) @IsOptional() @IsString() @MaxLength(40) employmentType?: string;
+  @ApiPropertyOptional({ description: 'الموظفين: الوظيفة' }) @IsOptional() @IsString() @MaxLength(200) position?: string;
+  @ApiPropertyOptional({ description: 'الموظفين — قسم المستقيلين: حالة التأمين' }) @IsOptional() @IsString() @MaxLength(40) insuranceStatus?: string;
+  @ApiPropertyOptional({ description: 'الموظفين — قسم المستقيلين: سنة الاستقالة (أو الإحالة)' }) @IsOptional() @IsString() @MaxLength(4) resignYear?: string;
 }
 /** نافذة المشرف ونافذتي السواق (الشركة والخارجي): نفس الخانات كنصوص، والسيرفر بيحسب زي زرار الحفظ القديم */
 export class SavePersonDto {
@@ -36,6 +40,9 @@ export class SavePersonDto {
   @ApiPropertyOptional({ description: 'اليومية (المشرف والسواق الخارجي) — حقل محمي (B-48)' }) @IsOptional() @IsString() @MaxLength(40) dailyWage?: string;
   @ApiPropertyOptional({ description: 'الراتب (سواق الشركة) — حقل محمي (B-48)' }) @IsOptional() @IsString() @MaxLength(40) salary?: string;
   @ApiPropertyOptional({ description: 'درجة الرخصة (سواق الشركة)' }) @IsOptional() @IsString() @MaxLength(60) licenseGrade?: string;
+  @ApiPropertyOptional({ description: 'الموظف: نوع التوظيف («full» لو فاضي)' }) @IsOptional() @IsString() @MaxLength(40) employmentType?: string;
+  @ApiPropertyOptional({ description: 'الموظف: البريد' }) @IsOptional() @IsString() @MaxLength(200) email?: string;
+  @ApiPropertyOptional({ description: 'الموظف: رصيد الإجازة السنوية (بيتحفظ زي ما هو — د-4)' }) @IsOptional() @IsString() @MaxLength(20) leaveBalance?: string;
   @ApiPropertyOptional({ description: 'سواق من خارج الشركة (الإضافة بس؛ التعديل بياخد نوع السجل المخزن)' }) @IsOptional() @IsBoolean() external?: boolean;
   @ApiPropertyOptional({ type: [ExtraFieldDto] }) @IsOptional() @IsArray() @ArrayMaxSize(50) @ValidateNested({ each: true }) @Type(() => ExtraFieldDto) extraFields?: ExtraFieldDto[];
   @ApiPropertyOptional({ description: '«حفظ على أي حال» بعد تنبيه التشابه (DUPLICATE_SOFT)' }) @IsOptional() @IsBoolean() confirmDuplicates?: boolean;

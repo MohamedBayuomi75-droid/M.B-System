@@ -5,6 +5,9 @@
  *    (الترتيب بالاسم الأول، والحالة الفاضية = «نشط»)، والفلاتر الإضافية (applyExtraPersonFilters ومنها الرخصة xLic).
  *  - الكروت (_entityStatCardsBase + _builtinExtraCards): المشرفين بـ «عمال تابعون»، والسواقين بـ «رخص منتهية».
  *  - الحفظ: openSupervisorModal، وopenDriverModal (سواق الشركة)، وopenExternalDriverModal (**من غير دمج**).
+ * الموظفين (8.3.4، DEC-0125) — pages-employees.js وmodals-employees.js، والمقارنة في tests-merge/phase78.js:
+ *  - القايمة filteredEmployees (ومنها فلاتر قسم المستقيلين الخاصة: التأمين، وسنة الاستقالة)، والكروت (وكروت قسم المستقيلين الخاصة الأربعة).
+ *  - الحفظ openEmployeeModal: **مفيش قسم بيتحفظ** (personDeptOnSave مش بيتنادى)، ومفيش خانة تاريخ استقالة، ورصيد الإجازة زي ما هو (د-4).
  */
 import { smartPersonBlob, smartSearchList } from '../common/smart-search';
 import {
@@ -12,15 +15,22 @@ import {
   isResignedStatus, J, mergePerson, requiredDocs, resignedDeptOf, retiredDeptOf, sectionCards, statusFromExpiry, supName, toInt, xInsNorm,
 } from '../workers/worker-rules';
 
-export type PeopleKind = 'supervisor' | 'driver';
-export const COLL_OF: Record<PeopleKind, 'supervisors' | 'drivers'> = { supervisor: 'supervisors', driver: 'drivers' };
+export type PeopleKind = 'supervisor' | 'driver' | 'employee';
+export const COLL_OF: Record<PeopleKind, 'supervisors' | 'drivers' | 'employees'> = { supervisor: 'supervisors', driver: 'drivers', employee: 'employees' };
+/** EMPLOYMENT_TYPES (state.js) وINSURANCE_STATUS_OPTS (helpers.js) */
+export const EMPLOYMENT_TYPES = [{ code: 'full', label: 'دوام كامل' }, { code: 'part', label: 'دوام جزئي' }, { code: 'contract', label: 'عقد مؤقت' }, { code: 'intern', label: 'تدريب' }];
+export const INSURANCE_STATUS_OPTS = [{ code: 'insured', label: 'مؤمَّن' }, { code: 'none', label: 'غير مؤمن عليه' }, { code: 'pending', label: 'قيد التسجيل' }];
 export const EXT_DEPT = '__core_drivers_ext__';
 
 /** coreDeptIdFor('supervisors' | 'drivers', p) */
-export const coreDeptOf = (kind: PeopleKind, p: J) => (kind === 'supervisor' ? '__core_supervisors__' : p && p.external ? EXT_DEPT : '__core_drivers__');
+export const coreDeptOf = (kind: PeopleKind, p: J) => (kind === 'employee' ? '__core_employees__' : kind === 'supervisor' ? '__core_supervisors__' : p && p.external ? EXT_DEPT : '__core_drivers__');
 
 // ---------------- القايمة
-export interface PeopleFilters { q?: string; status?: string; departmentId?: string; xCard?: string; xLic?: string; xIns?: string; xDocs?: string; xData?: string }
+export interface PeopleFilters {
+  q?: string; status?: string; departmentId?: string; xCard?: string; xLic?: string; xIns?: string; xDocs?: string; xData?: string;
+  /** الموظفين: نوع التوظيف، والوظيفة، وفلاتر قسم المستقيلين (حالة التأمين، وسنة الاستقالة / الإحالة) */
+  employmentType?: string; position?: string; insuranceStatus?: string; resignYear?: string;
+}
 const deptFilter = (list: J[], deptF: string) => (!deptF ? list : deptF === DEPT_NONE || deptF === 'none' ? list.filter((e) => entityNoDeptOrJob(e)) : list.filter((e) => entityDepartmentId(e) === deptF));
 /** xHasLicenseAny: تاريخ رخصة، أو مستند «صورة الرخصة الشخصية» */
 const hasLicenseAny = (c: Ctx, p: J) => !!p.licenseExpiry || hasDoc(c, p, { code: 'driver_license_img', label: 'صورة الرخصة الشخصية' });
@@ -60,10 +70,51 @@ export function filterDrivers(c: Ctx, all: J[], f: PeopleFilters): J[] {
   return deptFilter(list, f.departmentId || '');
 }
 
+/** filteredEmployees: القسم ← (قسم المستقيلين: التأمين وسنة الاستقالة) ← الحالة ونوع التوظيف (برا القسم) ← الوظيفة ← البحث ← الفلاتر الإضافية ← الترتيب بالاسم (لو مفيش بحث) */
+export function filterEmployees(c: Ctx, all: J[], f: PeopleFilters): J[] {
+  const deptF = f.departmentId || '';
+  let list = deptFilter(all.slice(), deptF);
+  const inRes = isResignedDeptId(deptF);
+  if (inRes) {
+    if (f.insuranceStatus) list = list.filter((e) => String(e.insuranceStatus || '') === f.insuranceStatus);
+    if (f.resignYear) list = list.filter((e) => String((deptF.indexOf('__retired_') === 0 ? e.retiredAt : e.resignedAt || e.resignDate) || '').slice(0, 4) === String(f.resignYear));
+  }
+  if (f.status && !inRes) list = list.filter((e) => e.status === f.status);
+  if (f.employmentType && !inRes) list = list.filter((e) => e.employmentType === f.employmentType);
+  if (f.position) list = list.filter((e) => String(e.position || e.job || '').trim() === f.position);
+  if (f.q) list = search(c, list, f.q);
+  list = extraFilters(c, 'employee', list, f);
+  return f.q && String(f.q).trim() ? list : byNameAr(list);
+}
+/** خيارات فلتر الوظيفة (من كل الموظفين) وسنين قسم المستقيلين (resignedEmployeesFiltersHtml) */
+export const employeePositions = (all: J[]) => Array.from(new Set(all.map((e) => String(e.position || e.job || '').trim()).filter(Boolean))).sort((a, b) => a.localeCompare(b, 'ar'));
+export const employeeResignYears = (all: J[], retired: boolean) => Array.from(new Set(all.map((e) => String(retired ? e.retiredAt || '' : e.resignedAt || e.resignDate || '').slice(0, 4)).filter((y) => /^\d{4}$/.test(y)))).sort().reverse();
+
 // ---------------- الكروت
+/** resignedEmployeesCardsHtml: كروت قسم المستقيلين (والمعاشات) الخاصة بالموظفين — 4 كروت */
+export function employeeSectionCards(c: Ctx, rows: J[], retired: boolean): Card[] {
+  const yr = c.today.slice(0, 4);
+  const rd = (e: J) => String(retired ? e.retiredAt || '' : e.resignedAt || e.resignDate || '').slice(0, 10);
+  let months = 0, cnt = 0;
+  for (const e of rows) { const h = String(e.hireDate || '').slice(0, 10), r = rd(e); if (h && r && r >= h) { months += (Date.parse(r) - Date.parse(h)) / (1000 * 60 * 60 * 24 * 30.4375); cnt++; } }
+  const avg = cnt ? months / cnt : 0;
+  const avgTxt = !cnt ? '—' : avg >= 12 ? `${Math.round((avg / 12) * 10) / 10} سنة` : `${Math.round(avg)} شهر`;
+  const noDate = rows.filter((e) => !rd(e)).length;
+  return [
+    { ico: retired ? '🏖️' : '🚪', label: retired ? 'عدد المتقاعدين' : 'عدد المستقيلين', value: rows.length },
+    { ico: '📅', label: retired ? 'أُحيلوا للمعاش هذا العام' : 'استقالوا هذا العام', value: rows.filter((e) => rd(e).slice(0, 4) === yr).length, tone: 'ok' },
+    { ico: '⏳', label: 'متوسط مدة الخدمة', value: avgTxt },
+    { ico: '❗', label: retired ? 'بدون تاريخ إحالة' : 'بدون تاريخ استقالة', value: noDate, tone: noDate ? 'warn' : '' },
+  ];
+}
 /** workersOfSupervisor: كل العمال المربوطين (والمستقيل كمان) */
 export const workersOf = (workers: J[], supId: string) => (supId ? workers.filter((w) => w.supervisorId === supId).length : 0);
 export function peopleCards(c: Ctx, kind: PeopleKind, rows: J[], deptF: string, workers: J[]): Card[] {
+  if (kind === 'employee') {
+    if (isResignedDeptId(deptF)) return employeeSectionCards(c, rows, deptF.indexOf('__retired_') === 0);
+    const e = cardParts(c, kind, rows);
+    return [{ ico: '👔', label: 'عدد الموظفين', value: rows.length }, e.active, e.insurance, e.license, e.contract, e.idCard, e.payTotal];
+  }
   if (deptF === retiredDeptOf(kind)) return sectionCards(c, rows, 'retired');
   if (deptF && /^__resigned_/.test(deptF)) return sectionCards(c, rows, 'resigned');
   const k = cardParts(c, kind, rows);
@@ -83,6 +134,8 @@ export interface PeopleForm {
   code?: string; name?: string; status?: string; resignedAt?: string; position?: string; nationalId?: string; birthDate?: string; idCardExpiry?: string; licenseExpiry?: string;
   hireDate?: string; contractType?: string; contractStatus?: string; insuranceNumber?: string; insuranceStatus?: string; phone?: string; address?: string; notes?: string;
   dailyWage?: string; salary?: string; licenseGrade?: string; extraFields?: { label: string; value: string }[];
+  /** الموظف: نوع التوظيف، والبريد، ورصيد الإجازة السنوية */
+  employmentType?: string; email?: string; leaveBalance?: string;
 }
 const s = (v: unknown) => (v == null ? '' : String(v));
 /** collectPersonHrFields(prefix, opts) */
@@ -139,6 +192,19 @@ export function externalDriverPayload(f: PeopleForm, cur: J | null, all: J[]): J
     dailyWage: toInt(s(f.dailyWage).trim()), notes: s(f.notes).trim(), attachments: cur ? cur.attachments || [] : [],
   };
   deptOnSave('driver', cur, p);
+  return p;
+}
+/** openEmployeeModal → btnSaveEmp. **مفيش قسم** (personDeptOnSave مش بيتنادى)، ومفيش خانة تاريخ استقالة (readResignedDateFromForm ← فاضي) */
+export function employeePayload(f: PeopleForm, cur: J | null, all: J[], today: string): J {
+  const hr = hrFields(f, today, { wage: false, salary: true, skillFromPos: false });
+  const p: J = Object.assign({
+    code: ensureUniqueCode(s(f.code), all, 'EMP-', cur ? cur.id : undefined), name: s(f.name).trim(), employmentType: s(f.employmentType) || 'full',
+    status: s(f.status) || 'active', resignedAt: (cur && cur.resignedAt) || '', email: s(f.email).trim(), leaveBalance: Number(s(f.leaveBalance)) || 0,
+    address: s(f.address).trim(), notes: s(f.notes).trim(), extraFields: extraOf(f), attachments: cur ? cur.attachments || [] : [],
+  }, hr);
+  // syncDocStatusesFromDates
+  if (p.idCardExpiry) p.idCardStatus = statusFromExpiry(p.idCardExpiry, today);
+  if (p.licenseExpiry) p.licenseStatus = statusFromExpiry(p.licenseExpiry, today);
   return p;
 }
 /** commit: الدمج (المشرف وسواق الشركة)، أو **من غير دمج** (السواق الخارجي: كل خانة بتتكتب زي ما هي)، أو السجل الجديد */

@@ -8,18 +8,20 @@ import { DataService } from '../data/data.service';
 import { canRead, canWrite, hiddenFields, inProjectScope, stripHidden } from '../data/policy';
 import { cairoTodayIso } from '../parties/parties.service';
 import {
-  activeLeaveOf, boards, CONTRACT_TYPE_OPTS, Ctx, deptName, EMPLOYEE_STATUS, fmtDate, isResignedStatus, J, nextCode, notesIssues, resignedDeptOf, retiredDeptOf, stampMembership,
+  activeLeaveOf, boards, CONTRACT_TYPE_OPTS, Ctx, deptName, EMPLOYEE_STATUS, fmtDate, isResignedDeptId, isResignedStatus, J, nextCode, notesIssues, resignedDeptOf, retiredDeptOf, stampMembership,
   statusFromExpiry, statusLabel, syncResigned, warning,
 } from '../workers/worker-rules';
 import {
-  COLL_OF, commitPerson, driverPayload, EXT_DEPT, externalDriverPayload, filterDrivers, filterSupervisors, PeopleKind, peopleCards, supervisorPayload, workersOf,
+  COLL_OF, commitPerson, driverPayload, employeePayload, employeePositions, employeeResignYears, EMPLOYMENT_TYPES, EXT_DEPT, externalDriverPayload, filterDrivers,
+  filterEmployees, filterSupervisors, INSURANCE_STATUS_OPTS, PeopleKind, peopleCards, supervisorPayload, workersOf,
 } from './people-rules';
 import { ListPeopleQuery, SavePersonDto, UpdatePersonDto } from './people.dto';
 import { PeopleRepository, Row } from './people.repository';
 
 type QueryRunner = Parameters<NonNullable<NonNullable<Parameters<DataService['sync']>[2]>['before']>>[0];
 const uid = () => `id_${Date.now().toString(36)}${randomBytes(4).toString('hex').slice(0, 7)}`;
-const LABEL: Record<PeopleKind, { one: string; many: string; code: string }> = { supervisor: { one: 'المشرف', many: 'المشرفين', code: 'SUP-' }, driver: { one: 'السائق', many: 'السائقين', code: 'DRV-' } };
+const LABEL: Record<PeopleKind, { one: string; many: string; code: string }> = { supervisor: { one: 'المشرف', many: 'المشرفين', code: 'SUP-' }, driver: { one: 'السائق', many: 'السائقين', code: 'DRV-' },
+  employee: { one: 'الموظف', many: 'الموظفين', code: 'EMP-' } };
 
 /**
  * المشرفين والسواقين (8.2.4، DEC-0123) — طبقة الأعمال، بنفس طريقة العمال (8.1.4). القواعد في people-rules.ts وworker-rules.ts (المشتركة)،
@@ -29,6 +31,8 @@ const LABEL: Record<PeopleKind, { one: string; many: string; code: string }> = {
  *    والقسم، وأرشيف المستقيلين، ومنع التكرار، وتاريخ الانضمام للمشروع — في معاملة واحدة وبنفس صلاحيات /api/sync.
  *  - **الأجور (B-48):** اليومية والراتب مابيظهروش ومايتقبلوش من مستخدم مالوش صفحة الرواتب أو المستحقات، والقيمة المخزنة بتفضل.
  *  - كشف حساب المشرف، وصفحة الشخص، والحذف، والإجراءات الجماعية، والتصدير: من الشاشة الكاملة (د-2، د-3).
+ * والموظفين (8.3.4، DEC-0125) بنفس الطبقة: قايمة filteredEmployees وقسم المستقيلين الخاص (كروته وفلاتره وجدوله)، والحفظ **من غير قسم**
+ * زي القديمة، ورصيد الإجازة بيتحفظ زي ما هو (د-4)، والراتب محمي (B-48).
  */
 @Injectable()
 export class PeopleService {
@@ -61,14 +65,17 @@ export class PeopleService {
     const hide = hiddenFields(u, coll);
     const all: J[] = this.visible(u, coll, rows);
     const workers = canRead(u, 'workers') ? this.visible(u, 'workers', workerRows) : [];
-    const list = kind === 'supervisor' ? filterSupervisors(c, all, q) : filterDrivers(c, all, q);
+    const list = kind === 'supervisor' ? filterSupervisors(c, all, q) : kind === 'employee' ? filterEmployees(c, all, q) : filterDrivers(c, all, q);
     const deptF = q.departmentId || '';
+    // الموظفين: خيارات فلتر الوظيفة وسنين قسم المستقيلين (من كل الموظفين — زي القديمة)
+    const options = kind === 'employee' ? { positions: employeePositions(all), resignYears: employeeResignYears(all, deptF.indexOf('__retired_') === 0) } : undefined;
     return {
       source: await this.repo.source(coll), boards: boards(c, all, kind),
       cards: peopleCards(c, kind, list, deptF, workers).filter((x) => !hide.length || !['إجمالي الرواتب', 'إجمالي اليوميات'].includes(x.label)),
-      mode: kind === 'driver' && deptF === EXT_DEPT ? 'external' : 'company', hiddenFields: hide,
+      mode: kind === 'driver' && deptF === EXT_DEPT ? 'external' : kind === 'employee' && isResignedDeptId(deptF) ? (deptF.indexOf('__retired_') === 0 ? 'retired' : 'resigned') : 'company', hiddenFields: hide,
+      ...(options ? { options } : {}),
       rows: list.map((p) => this.view(kind, c, p, hide, workers)),
-      layout: await this.layoutDocs(kind === 'supervisor' ? ['supervisors'] : ['drivers', 'driversExt']),
+      layout: await this.layoutDocs(kind === 'supervisor' ? ['supervisors'] : kind === 'employee' ? ['employees'] : ['drivers', 'driversExt']),
     };
   }
   /** تخطيط أعمدة الجدول المحفوظ (DEC-0122/د-5، قراية بس) */
@@ -86,6 +93,7 @@ export class PeopleService {
       cardStatus: p.idCardExpiry ? statusFromExpiry(p.idCardExpiry, c.today) : p.idCardStatus || '', licenseStatusNow: p.licenseExpiry ? statusFromExpiry(p.licenseExpiry, c.today) : p.licenseStatus || '',
       contractTypeLabel: (CONTRACT_TYPE_OPTS.find((o) => o.code === p.contractType) || { label: p.contractType || '' }).label,
       workersCount: kind === 'supervisor' ? workersOf(workers, p.id) : undefined,
+      previousDepartmentName: kind === 'employee' ? deptName(c, p.previousDepartmentId || p.departmentId) : undefined,
       issues: notesIssues(c, p, kind), warning: warning(c, p, kind),
     };
   }
@@ -105,6 +113,7 @@ export class PeopleService {
     return {
       nextCode: nextCode(LABEL[kind].code, rows.map((r) => r.data)), today: cairoTodayIso(), statuses: EMPLOYEE_STATUS, contractTypes: CONTRACT_TYPE_OPTS,
       licenseGrades: ['درجة أولى', 'درجة ثانية', 'درجة ثالثة', 'رخصة شخصية'], hiddenFields: hiddenFields(u, coll),
+      ...(kind === 'employee' ? { employmentTypes: EMPLOYMENT_TYPES, insuranceStatuses: INSURANCE_STATUS_OPTS, defaultLeaveDays: (await this.repo.doc('settings')).defaultLeaveDays || 21 } : {}),
     };
   }
 
@@ -130,7 +139,7 @@ export class PeopleService {
   private async guardDuplicates(kind: PeopleKind, u: AuthUser, em: QueryRunner['manager'], payload: J, excludeId: string | null, own: Row[], confirmed: boolean) {
     const seen = async (coll: string, rows?: Row[]) => (canRead(u, coll) ? (rows ?? (await this.repo.rows(coll, em))).filter((r) => inProjectScope(u, coll, { ...r.data, id: r.id })).map((r) => ({ ...r.data, id: r.id })) : []);
     const lists = {
-      worker: await seen('workers'), employee: await seen('employees'),
+      worker: await seen('workers'), employee: kind === 'employee' ? await seen('employees', own) : await seen('employees'),
       supervisor: kind === 'supervisor' ? await seen('supervisors', own) : await seen('supervisors'), driver: kind === 'driver' ? await seen('drivers', own) : await seen('drivers'),
     };
     const matches = findEntityDuplicates(kind, payload, excludeId, lists);
@@ -162,7 +171,8 @@ export class PeopleService {
         const external = kind === 'driver' && (p0 ? !!p0.external : !!dto.external);
         // الأجر المخفي عن المستخدم: النافذة القديمة مابتعرضوش، والقيمة المخزنة بتفضل (الخارجي من غير دمج ← بنبعت المخزن)
         const form = { ...dto, ...(hide.includes('dailyWage') && external && p0 ? { dailyWage: String(p0.dailyWage ?? '') } : {}) };
-        const payload = kind === 'supervisor' ? supervisorPayload(form, p0, all, c.today) : external ? externalDriverPayload(form, p0, all) : driverPayload(form, p0, all, c.today);
+        const payload = kind === 'supervisor' ? supervisorPayload(form, p0, all, c.today) : kind === 'employee' ? employeePayload(form, p0, all, c.today)
+          : external ? externalDriverPayload(form, p0, all) : driverPayload(form, p0, all, c.today);
         await this.guardDuplicates(kind, u, em, payload, p0 ? id : null, rows, !!dto.confirmDuplicates);
         const rec = commitPerson(payload, p0, id, !external);
         const arch = syncResigned(rec, archive.map((a) => ({ ...a.data, id: a.id })), c.today, new Date().toISOString(), uid, kind);

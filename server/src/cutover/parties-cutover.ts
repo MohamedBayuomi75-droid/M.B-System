@@ -5,6 +5,7 @@ import { SUPPLIER_PAYMENT_COLUMNS } from '../migrations/1765000000000-SupplierPa
 import { PROJECT_COLUMNS } from '../migrations/1765100000000-ProjectsCutover';
 import { WORKER_COLUMNS } from '../migrations/1765200000000-WorkersCutover';
 import { DRIVER_COLUMNS, SUPERVISOR_COLUMNS } from '../migrations/1765300000000-SupervisorsDriversCutover';
+import { EMPLOYEE_COLUMNS } from '../migrations/1765400000000-EmployeesCutover';
 
 export type { CutoverReport } from './module-cutover';
 
@@ -100,7 +101,17 @@ export const SUPERVISORS_DRIVERS: ModuleSpec = {
   clearTables: ['drivers', 'supervisors'],
 };
 
-export const MODULES: Record<string, ModuleSpec> = { parties: PARTIES, warehouses: WAREHOUSES, 'supplier-invoices': SUPPLIER_INVOICES, 'supplier-payments': SUPPLIER_PAYMENTS, projects: PROJECTS, workers: WORKERS, 'supervisors-drivers': SUPERVISORS_DRIVERS };
+/** 8.3 — الموظفين (DEC-0125). نفس الطريقة */
+export const EMPLOYEES: ModuleSpec = {
+  label: 'employees',
+  collections: [
+    { collection: 'employees', table: 'employees', write: 'legacy_write_employee', read: 'employee_to_legacy',
+      normalized: `(r.data || jsonb_build_object('id', r.id))`, typedKeys: EMPLOYEE_COLUMNS.map(([, k]) => k) },
+  ],
+  clearTables: ['employees'],
+};
+
+export const MODULES: Record<string, ModuleSpec> = { parties: PARTIES, warehouses: WAREHOUSES, 'supplier-invoices': SUPPLIER_INVOICES, 'supplier-payments': SUPPLIER_PAYMENTS, projects: PROJECTS, workers: WORKERS, 'supervisors-drivers': SUPERVISORS_DRIVERS, employees: EMPLOYEES };
 
 export const partiesCutover = (ds: DataSource, by: string, mode: CutoverReport['mode']) => cutoverModule(ds, PARTIES, by, mode);
 export const partiesRollback = (ds: DataSource, by: string) => rollbackModule(ds, PARTIES, by);
