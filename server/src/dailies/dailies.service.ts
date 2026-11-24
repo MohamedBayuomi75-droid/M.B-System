@@ -123,7 +123,7 @@ export class DailiesService {
     const kind = attType(a, c.people), owner = ownerOf(a, c.people);
     const n = newNet(a, owner, flags.get(a.id));
     const name = kind === 'supervisor' ? (owner ? owner.name || owner.code || attPersonId(a) : '—') : kind === 'driver' ? (owner ? owner.name : '') : (owner ? owner.name || owner.code || attPersonId(a) : '—');
-    const out: J = { ...rec, rev: _rev, kind, personName: name, kindLabel: kind === 'supervisor' ? 'مشرف' : kind === 'driver' ? 'سائق' : 'عامل', statusLabel: (ATTENDANCE_STATUS.find((s) => s.code === a.status) || { label: '' }).label,
+    const out: J = { ...rec, rev: _rev, kind, personName: name, kindLabel: kind === 'supervisor' ? 'مشرف' : kind === 'driver' ? 'سائق' : 'عامل', statusLabel: (ATTENDANCE_STATUS.find((s) => s.code === a.status) || { label: a.status || '' }).label, // labelOf: الكود نفسه لو مش معروف
       daysText: fmtAttendanceDays(a), credit: daysCredit(a), flags: flags.get(a.id) || [], flagLabels: (flags.get(a.id) || []).map((f) => FLAG_LABEL[f]), pending: n.pending };
     if (wages) Object.assign(out, { wage: dayWage(a, owner), net: n.net, legacyNet: legacyNet(a, owner) });
     else { delete out.dayWage; delete out.deduction; }
@@ -277,7 +277,7 @@ export class DailiesService {
     const employees = emps.map((r) => ({ ...r.data, id: r.id }) as J);
     const list = filterAttendance(rows.map((r) => ({ ...r.data, id: r.id, _rev: r.rev })), employees, q);
     const name = (id: string) => { const e = employees.find((x) => x.id === id); return e ? e.name || e.code || id : '—'; };
-    const label = (s: string) => (ATTENDANCE_STATUS.find((x) => x.code === s) || { label: '' }).label;
+    const label = (s: string) => (ATTENDANCE_STATUS.find((x) => x.code === s) || { label: s || '' }).label;
     const dl = deps.map((r) => ({ ...r.data, id: r.id }) as J).filter((d) => !d.kind || d.kind === 'employees' || d.kind === 'all').sort((a, b) => String(a.name || '').localeCompare(String(b.name || ''), 'ar', { sensitivity: 'base' }));
     return {
       source: await this.repo.source(ATT),
