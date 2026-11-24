@@ -67,7 +67,15 @@ const FORM_BUILTIN_FIELDS: Record<string, Def[]> = {
     { key: 'dailyWage', label: 'اليومية', selector: '#drvWage' }, { key: 'phone', label: 'الهاتف', selector: '#drvPhone' }, { key: 'address', label: 'العنوان', selector: '#drvAddress' },
     { key: 'notes', label: 'الملاحظات', selector: '#drvNotes' },
   ],
+  // نافذة الإجازة (8.4 V3): زي القديمة بالظبط — أغلب الـ selectors دي مش موجودة في النافذة، والترتيب الفعلي بييجي من الخانات التلقائية والتخطيط المحفوظ
+  leaves: [
+    { key: 'department', label: 'القسم', selector: '#lvDept' }, { key: 'person', label: 'الشخص', selector: '#lvPerson' }, { key: 'type', label: 'نوع الإجازة', selector: '#lvType' },
+    { key: 'from', label: 'من تاريخ', selector: '#lvFrom' }, { key: 'to', label: 'إلى تاريخ', selector: '#lvTo' }, { key: 'status', label: 'الحالة', selector: '#lvStatus' },
+    { key: 'notes', label: 'ملاحظات', selector: '#lvNotes' },
+  ],
 };
+/** FORM_BUILTIN_FIELDS[entity] (للـ selector والاسم الافتراضي في applyFormLayout) */
+export function builtinFields(entity: string): { key: string; label: string; selector: string }[] { return FORM_BUILTIN_FIELDS[entity] || []; }
 const clone = <T>(x: T): T => JSON.parse(JSON.stringify(x ?? null));
 
 /* --- helpers.js: _cfEnforceOrder --- */
