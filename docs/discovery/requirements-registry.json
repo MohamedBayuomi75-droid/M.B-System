@@ -6,7 +6,7 @@
   "TECH": 19,
   "NEW": 10,
   "CHG": 15,
-  "DEC": 129
+  "DEC": 135
  },
  "entries": [
   {
@@ -1250,13 +1250,13 @@
    "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",
    "tests": [],
    "target": "—",
-   "notes": "مفتوح",
+   "notes": "محسوم",
    "aliases": [
     "B-46"
    ],
-   "decisionStatus": "open",
+   "decisionStatus": "resolved",
    "priorityStatus": "—",
-   "status": "open"
+   "status": "resolved"
   },
   {
    "id": "DEC-0047",
@@ -1270,13 +1270,13 @@
    "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",
    "tests": [],
    "target": "—",
-   "notes": "مفتوح",
+   "notes": "محسوم",
    "aliases": [
     "B-47"
    ],
-   "decisionStatus": "open",
+   "decisionStatus": "resolved",
    "priorityStatus": "—",
-   "status": "open"
+   "status": "resolved"
   },
   {
    "id": "DEC-0048",
@@ -1290,13 +1290,13 @@
    "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",
    "tests": [],
    "target": "—",
-   "notes": "مفتوح",
+   "notes": "محسوم",
    "aliases": [
     "B-48"
    ],
-   "decisionStatus": "open",
+   "decisionStatus": "resolved",
    "priorityStatus": "—",
-   "status": "open"
+   "status": "resolved"
   },
   {
    "id": "DEC-0049",
@@ -1850,13 +1850,13 @@
    "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",
    "tests": [],
    "target": "—",
-   "notes": "مفتوح",
+   "notes": "محسوم",
    "aliases": [
     "B-76"
    ],
-   "decisionStatus": "open",
+   "decisionStatus": "resolved",
    "priorityStatus": "—",
-   "status": "open"
+   "status": "resolved"
   },
   {
    "id": "DEC-0077",
@@ -2795,6 +2795,114 @@
    "classification": "OPEN-DECISION",
    "kind": "decision",
    "title": "الإجازات (الحزمة 8.4) Accepted، وقلب توجيه «الإجازات» للشاشة الجديدة دلوقتي (القديمة «الشاشة الكاملة» للطباعة والتقارير والتصدير). والخطوة الجاية: تقرير «بعد» ل",
+   "module": "قرارات",
+   "priority": "—",
+   "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",
+   "tests": [],
+   "target": "—",
+   "notes": "محسوم",
+   "aliases": [],
+   "decisionStatus": "resolved",
+   "priorityStatus": "—",
+   "status": "resolved"
+  },
+  {
+   "id": "DEC-0129",
+   "key": "decision:DEC-0129",
+   "prefix": "DEC",
+   "classification": "OPEN-DECISION",
+   "kind": "decision",
+   "title": "معاملات حالات الحضور (القرار 1): حاضر = 1، ونصف يوم = ½، ومتأخر = 1 ناقص الخصم المسجّل، وغائب = 0، وعطلة = 0، وأي حالة تانية بتتعزل للمراجعة (مش بتتدفع تلقائي).",
+   "module": "قرارات",
+   "priority": "—",
+   "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",
+   "tests": [],
+   "target": "—",
+   "notes": "محسوم",
+   "aliases": [],
+   "decisionStatus": "resolved",
+   "priorityStatus": "—",
+   "status": "resolved"
+  },
+  {
+   "id": "DEC-0130",
+   "key": "decision:DEC-0130",
+   "prefix": "DEC",
+   "classification": "OPEN-DECISION",
+   "kind": "decision",
+   "title": "أجر اليوم (القرار 2): (أ) الأجر المحفوظ مع اليومية؛ تغيير أجر الشخص بعدين مابيغيّرش اليوميات القديمة. اليومية من غير أجر محفوظ بتاخد الأجر الحالي وقت النقل، وبي",
+   "module": "قرارات",
+   "priority": "—",
+   "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",
+   "tests": [],
+   "target": "—",
+   "notes": "محسوم",
+   "aliases": [],
+   "decisionStatus": "resolved",
+   "priorityStatus": "—",
+   "status": "resolved"
+  },
+  {
+   "id": "DEC-0131",
+   "key": "decision:DEC-0131",
+   "prefix": "DEC",
+   "classification": "OPEN-DECISION",
+   "kind": "decision",
+   "title": "دورة الصرف (القرار 3): المقترح معتمد (مراجعة ← اعتماد ← صرف بمحرك الاعتمادات). لحد ما أسماء المراجع والمعتمد والصارف والحدود تتحدد: البديل المؤقت — الصرف زي الق",
+   "module": "قرارات",
+   "priority": "—",
+   "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",
+   "tests": [],
+   "target": "—",
+   "notes": "محسوم",
+   "aliases": [],
+   "decisionStatus": "resolved",
+   "priorityStatus": "—",
+   "status": "resolved"
+  },
+  {
+   "id": "DEC-0132",
+   "key": "decision:DEC-0132",
+   "prefix": "DEC",
+   "classification": "OPEN-DECISION",
+   "kind": "decision",
+   "title": "الصرف فوق المستحق (القرار 4): (أ) ممنوع إلا بسلفة معتمدة؛ الزيادة بتتسجّل «سلفة» ليها اعتماد، وبتتخصم من المستحقات الجاية. بيقفل B-47",
+   "module": "قرارات",
+   "priority": "—",
+   "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",
+   "tests": [],
+   "target": "—",
+   "notes": "محسوم",
+   "aliases": [],
+   "decisionStatus": "resolved",
+   "priorityStatus": "—",
+   "status": "resolved"
+  },
+  {
+   "id": "DEC-0133",
+   "key": "decision:DEC-0133",
+   "prefix": "DEC",
+   "classification": "OPEN-DECISION",
+   "kind": "decision",
+   "title": "اليوميات المكررة واليتيمة (القرار 5): قايمة مراجعة في الشاشة الجديدة، والمسؤول بيقرر لكل يومية (تتحسب، أو تتلغي بسبب)، ومفيش حذف. المسؤول: صاحب صلاحية «تعديل» ع",
+   "module": "قرارات",
+   "priority": "—",
+   "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",
+   "tests": [],
+   "target": "—",
+   "notes": "محسوم",
+   "aliases": [],
+   "decisionStatus": "resolved",
+   "priorityStatus": "—",
+   "status": "resolved"
+  },
+  {
+   "id": "DEC-0134",
+   "key": "decision:DEC-0134",
+   "prefix": "DEC",
+   "classification": "OPEN-DECISION",
+   "kind": "decision",
+   "title": "رؤية الأجور (القرار 6): تثبيت الموجود — الأجر والراتب بيظهروا ويتكتبوا بس لمستخدم عنده صفحة «الرواتب» أو «المستحقات» (`field-guards.ts`). بيقفل B-48",
    "module": "قرارات",
    "priority": "—",
    "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",
