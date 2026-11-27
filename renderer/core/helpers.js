@@ -7816,8 +7816,38 @@ function getEquipmentDailyLogs(equipmentId, from, to){
   }).slice().sort((a,b)=>(b.date||'').localeCompare(a.date||''));
 }
 /** تكلفة يومية معدة: (أيام × سعر اليومية) + (ساعات × تكلفة الساعة) + وقود + إضافي */
+/** DEC-0140 (8.7.6): تكلفة يومية المعدة بالحساب الجديد — نفس newCost في السيرفر (server/src/equipment/equipment-rules.ts).
+ *  التوقف بنسبة settings.equipmentIdlePercent (افتراضي 50%)، والنقل بتكلفته (moveCost)، والتكلفة الإضافية محسوبة. بيشتغل بس مع settings.newDayPay. */
+function equipmentIdlePercent(){ try{ const v = DATA && DATA.settings && DATA.settings.equipmentIdlePercent; return v !== undefined && Number(v) >= 0 ? Number(v) : 50; }catch(_e){ return 50; } }
+function equipmentDailyCostNew(log, eq){
+  if(!log) return 0;
+  eq = eq || (typeof getEquipment==='function' ? getEquipment(log.equipmentId) : null);
+  const r2 = (x) => Number((Math.round(Number(x) * 1e6) / 1e6).toFixed(6)); // نفس Money.round() في السيرفر (6 خانات)
+  const kind = String(log.kind || 'work');
+  let days = Number(log.days); if(!Number.isFinite(days) || days < 0) days = 0;
+  let hours = Number(log.hours); if(!Number.isFinite(hours) || hours < 0) hours = 0;
+  const recorded = (log.cost != null && log.cost !== '' && Number.isFinite(Number(log.cost))) ? Number(log.cost) : null;
+  const dailyRate = toInt(log.dailyCost != null ? log.dailyCost : (eq && eq.dailyCost));
+  const hourRate = toInt(log.hourlyCost != null ? log.hourlyCost : (eq && (eq.hourlyCost||eq.hourRate)));
+  let base = 0;
+  if(kind === 'move') base = Number(log.moveCost) > 0 ? Number(log.moveCost) : (recorded != null ? recorded : 0);
+  else {
+    if(recorded != null) base = recorded;
+    else if(days > 0 && dailyRate > 0) base = days * dailyRate;
+    else if(hours > 0 && hourRate > 0) base = hours * hourRate;
+    else if(days > 0 && hourRate > 0) base = days * 8 * hourRate;
+    else if(hours > 0 && dailyRate > 0) base = hours * dailyRate / 8;
+    if(kind === 'idle') base = base * equipmentIdlePercent() / 100;
+  }
+  let total = r2(base);
+  const fuel = Number(log.fuelLiters)||0;
+  const fuelPrice = toInt(log.fuelPrice != null && log.fuelPrice !== '' ? log.fuelPrice : (eq && (eq.fuelPrice != null && eq.fuelPrice !== '' ? eq.fuelPrice : eq.fuelPricePerLiter)));
+  if(!(recorded != null && kind !== 'move') && fuel > 0 && fuelPrice > 0) total = r2(total + r2(fuel * fuelPrice));
+  return r2(total + toInt(log.extraCost));
+}
 function equipmentDailyCost(log, eq){
   if(!log) return 0;
+  if(newDayPayOn()) return equipmentDailyCostNew(log, eq);
   eq = eq || (typeof getEquipment==='function' ? getEquipment(log.equipmentId) : null);
   let days = Number(log.days);
   if(!Number.isFinite(days) || days < 0) days = 0;
