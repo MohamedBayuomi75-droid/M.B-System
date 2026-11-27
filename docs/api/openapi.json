@@ -1419,6 +1419,34 @@
     ],
     "type": "object"
    },
+   "ItemsDto": {
+    "properties": {
+     "add": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array"
+     },
+     "pool": {
+      "enum": [
+       "paymentItemPool",
+       "dailyPayItemPool",
+       "penaltyItemPool"
+      ],
+      "type": "string"
+     },
+     "remove": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array"
+     }
+    },
+    "required": [
+     "pool"
+    ],
+    "type": "object"
+   },
    "LeaveRevDto": {
     "properties": {
      "rev": {
@@ -1750,6 +1778,97 @@
      "add",
      "edit",
      "delete"
+    ],
+    "type": "object"
+   },
+   "PayDto": {
+    "properties": {
+     "advance": {
+      "description": "سلفة (DEC-0132): مطلوبة لو المبلغ أكبر من المتبقي",
+      "type": "boolean"
+     },
+     "bonusIds": {
+      "description": "الإضافات المستحقة اللي بتتدفع (payKind = extras)",
+      "items": {
+       "type": "string"
+      },
+      "type": "array"
+     },
+     "date": {
+      "type": "string"
+     },
+     "lines": {
+      "items": {
+       "$ref": "#/components/schemas/PayLineDto"
+      },
+      "type": "array"
+     },
+     "mode": {
+      "description": "pay = دفع مستحق · extras = بدلات ومكافآت (مستحق) · penalty = خصم / جزاء",
+      "enum": [
+       "pay",
+       "extras",
+       "penalty"
+      ],
+      "type": "string"
+     },
+     "notes": {
+      "type": "string"
+     },
+     "payKind": {
+      "description": "نوع المستحق للدفع",
+      "enum": [
+       "salary",
+       "extras",
+       "daily"
+      ],
+      "type": "string"
+     },
+     "personId": {
+      "type": "string"
+     },
+     "personType": {
+      "enum": [
+       "worker",
+       "supervisor",
+       "driver",
+       "employee"
+      ],
+      "type": "string"
+     },
+     "salary": {
+      "description": "مبلغ الراتب (payKind = salary)",
+      "type": "string"
+     },
+     "scope": {
+      "description": "نطاق صرف المشرف",
+      "enum": [
+       "self",
+       "workers",
+       "close_account"
+      ],
+      "type": "string"
+     }
+    },
+    "required": [
+     "mode",
+     "personType",
+     "personId"
+    ],
+    "type": "object"
+   },
+   "PayLineDto": {
+    "properties": {
+     "amount": {
+      "description": "المبلغ (نص أو رقم زي خانة النافذة)",
+      "type": "string"
+     },
+     "item": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "amount"
     ],
     "type": "object"
    },
@@ -6033,6 +6152,236 @@
     "summary": "تعديل سائق (rev إلزامي): سواق الشركة بالدمج، والخارجي من غير دمج زي القديمة",
     "tags": [
      "v1 drivers"
+    ]
+   }
+  },
+  "/api/v1/dues/boards": {
+   "get": {
+    "operationId": "DuesController_boards",
+    "parameters": [],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "لوحات الأنواع والأقسام",
+    "tags": [
+     "v1 dues"
+    ]
+   }
+  },
+  "/api/v1/dues/items": {
+   "put": {
+    "operationId": "DuesController_items",
+    "parameters": [],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ItemsDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "إدارة بنود الصرف والخصم",
+    "tags": [
+     "v1 dues"
+    ]
+   }
+  },
+  "/api/v1/dues/pay": {
+   "post": {
+    "operationId": "DuesController_pay",
+    "parameters": [],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/PayDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "دفع مستحق، أو بدلات ومكافآت (مستحق)، أو خصم — بنفس سجلات النافذة القديمة؛ فوق المتبقي = سلفة بس (DEC-0132) — Idempotency-Key إلزامي",
+    "tags": [
+     "v1 dues"
+    ]
+   }
+  },
+  "/api/v1/dues/pay-options": {
+   "get": {
+    "operationId": "DuesController_payOptions",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "kind",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "خيارات نافذة الصرف: الأشخاص، والإضافات المستحقة، والراتب المسجّل، والمتبقي، والبنود",
+    "tags": [
+     "v1 dues"
+    ]
+   }
+  },
+  "/api/v1/dues/table": {
+   "get": {
+    "operationId": "DuesController_table",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "tab",
+      "required": false,
+      "schema": {
+       "enum": [
+        "workers",
+        "supervisors",
+        "drivers",
+        "employees"
+       ],
+       "type": "string"
+      }
+     },
+     {
+      "description": "القسم («» = الكل، و__none__ = بدون قسم)",
+      "in": "query",
+      "name": "dept",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "from",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "to",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "q",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "جدول المستحقات لنوع (المستحق والمتبقي بالحساب الجديد DEC-0129، ومعاهم القديم)، والكروت، وسجل الصرف والخصومات",
+    "tags": [
+     "v1 dues"
+    ]
+   }
+  },
+  "/api/v1/dues/{src}/{id}": {
+   "delete": {
+    "operationId": "DuesController_remove",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "src",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "rev",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "حذف من السجل (src = pay أو empPen، وrev في الـ query)",
+    "tags": [
+     "v1 dues"
     ]
    }
   },
