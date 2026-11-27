@@ -15,6 +15,7 @@ export class DuesRepository {
     const [r] = await em.query(`SELECT data, rev FROM docs WHERE key = $1`, [key]);
     return r ? { data: r.data, rev: Number(r.rev) } : null;
   }
+  async docValue(key: string, em: EntityManager = this.ds.manager): Promise<unknown> { return (await this.doc(key, em))?.data; }
   async addEvent(em: EntityManager, action: string, id: string, payload: Record<string, unknown>, by: string): Promise<void> {
     const [{ n }] = await em.query(`SELECT count(*)::int AS n FROM integration_events WHERE aggregate_type = 'payment' AND aggregate_id = $1`, [id]);
     await em.query(`INSERT INTO integration_events (event_type, aggregate_type, aggregate_id, idempotency_key, payload, created_by) VALUES ($1, 'payment', $2, $3, $4::jsonb, $5)

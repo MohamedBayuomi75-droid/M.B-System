@@ -77,6 +77,12 @@ const FORM_BUILTIN_FIELDS: Record<string, Def[]> = {
     { key: 'date', label: 'التاريخ', selector: '#wattDate' }, { key: 'days', label: 'عدد الأيام', selector: '#wattDays' }, { key: 'deduction', label: 'خصم', selector: '#wattDed' },
     { key: 'project', label: 'المشروع', selector: '#wattProject' }, { key: 'notes', label: 'ملاحظات', selector: '#wattNotes' },
   ],
+  // نافذة الصرف الموحّدة (8.6.5): items وtotal مالهمش label في النافذة (applyFormLayout في القديمة بيحط اسمهم غلط — DUES_ACCEPTANCE §3)
+  payments: [
+    { key: 'type', label: 'النوع', selector: '#upType' }, { key: 'department', label: 'القسم', selector: '#upDept' }, { key: 'person', label: 'الشخص', selector: '#upPerson' },
+    { key: 'date', label: 'التاريخ', selector: '#upDate' }, { key: 'payKind', label: 'نوع المستحق', selector: '#upPayKind' }, { key: 'items', label: 'بنود اليوميات / الإضافات', selector: '#upLines', size: 'lg' },
+    { key: 'total', label: 'الإجمالي', selector: '#upTotal', size: 'lg' }, { key: 'notes', label: 'ملاحظات', selector: '#upNotes', size: 'lg' },
+  ],
   // نافذة الإجازة (8.4 V3): زي القديمة بالظبط — أغلب الـ selectors دي مش موجودة في النافذة، والترتيب الفعلي بييجي من الخانات التلقائية والتخطيط المحفوظ
   leaves: [
     { key: 'department', label: 'القسم', selector: '#lvDept' }, { key: 'person', label: 'الشخص', selector: '#lvPerson' }, { key: 'type', label: 'نوع الإجازة', selector: '#lvType' },

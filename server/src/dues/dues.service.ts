@@ -10,7 +10,7 @@ import { flagsOf, toInt } from '../dailies/dailies-rules';
 import { cairoTodayIso } from '../parties/parties.service';
 import { CORE_DEPTS_OF, J } from '../workers/worker-rules';
 import {
-  configuredSalary, Ctx, employeeRow, laborRow, logTotals, logView, paymentsLog, PKind, smartMatch, supervisorRow, supervisorStatement, unpaidBonuses,
+  configuredSalary, Ctx, employeePenaltyTotal, employeeRow, expensesTotal, isActualPayment, laborRow, logTotals, logView, paymentsLog, PKind, smartMatch, supervisorRow, supervisorStatement, unpaidBonuses,
 } from './dues-rules';
 import { DuesQuery, ItemsDto, PayDto } from './dues.dto';
 import { DuesRepository, Row } from './dues.repository';
@@ -140,15 +140,28 @@ export class DuesService {
       if (!seeded) def.items.forEach((x) => { if (!arr.includes(x)) arr.push(x); });
       return [key, arr];
     })));
-    const out: J = { today: cairoTodayIso(), people, pools, departments: Object.fromEntries((['employee', 'supervisor', 'worker', 'driver'] as PKind[]).map((pk) => [pk, this.deptsFor(c, pk).map((d) => ({ id: d.id, name: d.name || '' }))])) };
+    const out: J = { today: cairoTodayIso(), people, pools, layout: await this.layoutDocs('payments'), departments: Object.fromEntries((['employee', 'supervisor', 'worker', 'driver'] as PKind[]).map((pk) => [pk, this.deptsFor(c, pk).map((d) => ({ id: d.id, name: d.name || '' }))])) };
     if (id) {
       const p = c.people[k].find((x) => x.id === id);
       if (!p) throw new NotFoundException({ statusCode: 404, code: 'NOT_FOUND', message: 'الشخص غير موجود' });
-      out.person = { id, kind: k, salary: configuredSalary(c, k, id), balance: this.balanceOf(c, k, id, 'self'),
+      // fillSalaryCap: المتبقي من الراتب = الراتب المسجّل − المدفوع − الخصومات − المصاريف (من غير فترة)
+      const cap = configuredSalary(c, k, id);
+      let paidAll = 0, penAll = 0;
+      c.pays.forEach((x) => { const match = (x.personType === k && x.personId === id) || (k === 'worker' && (x.workerId === id || (x.personType === 'worker' && x.personId === id))); if (!match) return; if (isActualPayment(x)) paidAll += toInt(x.amount); if (x.type === 'penalty' || x.type === 'deduction') penAll += toInt(x.amount); });
+      if (k === 'employee') penAll = Math.max(penAll, employeePenaltyTotal(c, id));
+      const salaryRemaining = cap > 0 ? Math.max(0, toInt(cap - paidAll - penAll - expensesTotal(c, k, id))) : 0;
+      const dep = c.departments.find((d) => d.id === deptOf(p));
+      out.person = { id, kind: k, salary: cap, salaryRemaining, departmentId: deptOf(p), departmentName: deptOf(p) ? dep?.name || deptOf(p) : '', balance: this.balanceOf(c, k, id, 'self'),
         unpaidBonuses: unpaidBonuses(c, k, id).map((b) => ({ id: b.id, date: b.date || '', item: b.payCategory || 'مكافأة', amount: toInt(b.amount || b.extrasAmount) })) };
       if (k === 'supervisor') { const st = supervisorStatement(c, p); out.supervisor = { ownDue: st.ownDue, ownBal: st.ownBal, workersDue: st.workersDue, workersBal: st.workersBal, totalDue: st.totalDue, totalPenalty: st.totalPenalty, totalExpenses: st.totalExpenses, totalPaid: st.totalPaid, totalBal: st.totalBal }; }
     }
     return out;
+  }
+  /** تخطيط نافذة الصرف المحفوظ (applyFormLayout في القديمة — قراية بس، نفس شكل الإجازات واليوميات) */
+  private async layoutDocs(coll: string) {
+    const [fl, af, cf, df, rk, f1, f2, f3, al] = await Promise.all(['formLayouts', 'autoFields', 'customFieldDefs', 'deadFields', '_cfRegKeys', '_cfAllHiddenFixed', '_cfAutoFlagsReset', '_cfShowInTableMigrated', '_cfAligned2'].map((k) => this.repo.docValue(k)));
+    const pick = (o: unknown) => { const src = o && typeof o === 'object' ? (o as J) : {}; return src[coll] !== undefined ? { [coll]: src[coll] } : {}; };
+    return { formLayouts: pick(fl), autoFields: pick(af), customFieldDefs: pick(cf), deadFields: pick(df), cfRegKeys: pick(rk), aligned: pick(al), flags: { allHiddenFixed: !!f1, autoFlagsReset: !!f2, showInTableMigrated: !!f3 } };
   }
   /** المتبقي (الحساب الجديد، من غير فترة — زي workerBalance(w.id) في النافذة القديمة) */
   private balanceOf(c: Ctx, kind: PKind, id: string, scope: 'self' | 'workers' | 'close_account'): string {

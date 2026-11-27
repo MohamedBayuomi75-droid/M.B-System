@@ -17,7 +17,9 @@ const save = dues.slice(dues.indexOf("getElementById('btnSaveUp')"), dues.indexO
 const pushKeys = (needle) => [...save.matchAll(new RegExp(`${needle}\\.push\\(\\{([\\s\\S]*?)\\}\\);`, 'g'))].flatMap((m) => [...(',' + m[1]).matchAll(/[{,]\s*([a-z][A-Za-z_]*)\s*(?=[:,}])/g)].map((x) => x[1]));
 const keysIn = (src, start, end) => { const a = src.indexOf(start); const body = src.slice(a, src.indexOf(end, a)); return [...body.matchAll(/[{,]\s*([A-Za-z_]\w*)\s*(?=[:,}])/g)].map((m) => m[1]).filter((k) => /^[a-z]/.test(k)); }; // المفتاح بعد { أو , بس (مش القيمة)
 // الشاشة الجديدة (8.6.5)
-const PAGES = { workerPayments: null, employeePenalties: null };
+// الشاشة + الخدمة (السجلات بتتبني في السيرفر بنفس شكل النافذة القديمة)
+const SCREEN = ['frontend/src/app/features/worker-dues.page.ts', 'server/src/dues/dues.service.ts', 'server/src/dues/dues-rules.ts'];
+const PAGES = { workerPayments: SCREEN, employeePenalties: SCREEN };
 const SOURCES = {
   workerPayments: { label: 'الصرف والخصومات', table: 'worker_payments', cols: colsOf('WORKER_PAYMENT_COLUMNS'),
     keys: [...pushKeys('DATA\\.workerPayments'), 'status', 'paidDate', 'project', 'isAdvance', 'advanceApprovedBy', 'advanceApprovedAt'] },
@@ -25,7 +27,7 @@ const SOURCES = {
 };
 const JSON_TYPE = { text: 'string', number: 'number', json: 'object', bool: 'boolean' };
 const SYSTEM = { id: 'المفتاح الأساسي `id`' };
-const DEFERRED = { workerId: 'نسخة من personId للعامل', advanceApprovedBy: 'في التدقيق', advanceApprovedAt: 'في التدقيق' };
+const DEFERRED = { project: 'مابيتكتبش من النافذة (القديمة بتقراه بس في كشف المشرف بالمشروع) — بيتحفظ زي ما هو' };
 let md = `# مصفوفة تطابق الحقول — الصرف والخصومات وخصومات الموظفين (خطة v1.4.5 — المرحلة 8، الحزمة 8.6)
 
 > **مولَّد** بـ \`node tools/discovery/build-worker-payments-parity.js\`. ماتعدّلش الملف باليد.
@@ -35,7 +37,7 @@ let md = `# مصفوفة تطابق الحقول — الصرف والخصوما
 for (const [coll, src] of Object.entries(SOURCES)) {
   const byKey = Object.fromEntries(src.cols.map((c) => [c.key, c]));
   const real = shape[coll] || {};
-  const page = readIf(PAGES[coll]);
+  const page = PAGES[coll] ? PAGES[coll].map(readIf).filter(Boolean).join('\n') : null;
   const inNew = (k) => page && new RegExp(`\\b${k}\\b`).test(page);
   const fields = [...new Set([...src.keys, 'id', ...Object.keys(real)])].filter((k) => /^[a-z]/.test(k)).sort();
   const counts = { column: 0, extra: 0, mismatch: 0 }; let rows = '';
