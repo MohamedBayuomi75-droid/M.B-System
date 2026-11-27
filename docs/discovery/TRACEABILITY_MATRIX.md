@@ -1,7 +1,7 @@
 # مصفوفة التتبّع (خطة v1.4.5 — المرحلة 3)
 
 > **مولَّد** بـ `node tools/discovery/build-traceability.js` من `requirements-registry.json` + ملفات الاختبار. ماتعدّلش الملف باليد.
-> **الاختبارات** بتتلاقى بالبحث عن اسم الدالة أو الصفحة في `tests-merge/` و`tests-web/` و`tools/formulas/` و`server/test/` (146 ملف). ده **دليل إن الاختبار بيلمس العنصر**، مش إثبات إنه بيغطي كل حالاته.
+> **الاختبارات** بتتلاقى بالبحث عن اسم الدالة أو الصفحة في `tests-merge/` و`tests-web/` و`tools/formulas/` و`server/test/` (147 ملف). ده **دليل إن الاختبار بيلمس العنصر**، مش إثبات إنه بيغطي كل حالاته.
 > **الحالات** (`02` §20): Implemented ≠ Verified ≠ Accepted. **مفيش حاجة هنا Accepted**: القبول بيكون لكل موديول ببوابة.
 > **الأولويات مقترحة.**
 
@@ -135,7 +135,7 @@
 | LEG-0005 | page | الموارد البشرية | صفحة «المشرفون» (supervisors) | renderer/modules/hr/pages-supervisors.js:12 | angular /supervisors | phase27.js، phase42.js، phase43.js، phase49.js، phase50.js، phase53.js (+40) | Implemented (اتنقل) | DEC-0045 (B-45)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0042 (B-42) |
 | LEG-0006 | page | الموارد البشرية | صفحة «العمال» (workers) | renderer/modules/hr/pages-workers.js:29 | angular /workers | phase24.js، phase26.js، phase27.js، phase28.js، phase29.js، phase30.js (+56) | Implemented (اتنقل) | DEC-0045 (B-45)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0042 (B-42) |
 | LEG-0007 | page | الموارد البشرية | صفحة «السائقون» (drivers) | renderer/modules/hr/pages-ops.js:6 | angular /drivers | phase27.js، phase42.js، phase44.js، phase45.js، phase49.js، phase50.js (+31) | Implemented (اتنقل) | DEC-0045 (B-45)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0042 (B-42) |
-| LEG-0008 | page | الموارد البشرية | صفحة «معدات ومركبات» (equipment) | renderer/modules/hr/pages-equipment.js:32 | legacy /legacy/ | phase23.js، phase24.js، phase25.js، phase26.js، phase27.js، phase31.js (+23) | Verified (باختبار) | DEC-0045 (B-45)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0042 (B-42) |
+| LEG-0008 | page | الموارد البشرية | صفحة «معدات ومركبات» (equipment) | renderer/modules/hr/pages-equipment.js:32 | legacy /legacy/ | phase23.js، phase24.js، phase25.js، phase26.js، phase27.js، phase31.js (+25) | Verified (باختبار) | DEC-0045 (B-45)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0042 (B-42) |
 | LEG-0009 | page | الموارد البشرية | صفحة «حضور الموظفين» (attendance) | renderer/modules/hr/pages-attendance.js:19 | legacy /legacy/ | phase61.js، phase59.js، phase81.js، phase82.js، dailies-e2e.js، legacy-runner.js (+6) | Verified (باختبار) | DEC-0045 (B-45)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0042 (B-42) |
 | LEG-0010 | page | الموارد البشرية | صفحة «اليوميات» (workerAttendance) | renderer/modules/hr/pages-worker-attendance.js:195 | legacy /legacy/ | phase24.js، phase26.js، phase27.js، phase28.js، phase39.js، phase40.js (+26) | Verified (باختبار) | DEC-0045 (B-45)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0042 (B-42) |
 | LEG-0011 | page | الموارد البشرية | صفحة «الإجازات» (leaves) | renderer/modules/hr/pages-leaves.js:48 | angular /leaves | phase41.js، phase13.js، phase30.js، phase31.js، phase33.js، phase36.js (+24) | Implemented (اتنقل) | DEC-0045 (B-45)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0042 (B-42) |

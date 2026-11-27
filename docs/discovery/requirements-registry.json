@@ -6,7 +6,7 @@
   "TECH": 19,
   "NEW": 10,
   "CHG": 15,
-  "DEC": 140
+  "DEC": 141
  },
  "entries": [
   {
@@ -2993,6 +2993,24 @@
    "classification": "OPEN-DECISION",
    "kind": "decision",
    "title": "نطاق الحزمة 8.7 معتمد (المعدات ويومياتها ومستحقاتها): الجدول والنافذة بالتخطيط المحفوظ، واليوميات، ومستحقات المعدات بقاعدة السلفة؛ «أيام التشغيل» = مجموع الأيام",
+   "module": "قرارات",
+   "priority": "—",
+   "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",
+   "tests": [],
+   "target": "—",
+   "notes": "محسوم",
+   "aliases": [],
+   "decisionStatus": "resolved",
+   "priorityStatus": "—",
+   "status": "resolved"
+  },
+  {
+   "id": "DEC-0140",
+   "key": "decision:DEC-0140",
+   "prefix": "DEC",
+   "classification": "OPEN-DECISION",
+   "kind": "decision",
+   "title": "تكلفة يوميات المعدات (8.7): (1) يوم «توقف» = 50% من تكلفة اليوم (اليومية / الساعات)، والوقود بيتحسب زي ما هو؛ (2) يوم «نقل» = تكلفة بيكتبها اللي بيسجّل النقل لك",
    "module": "قرارات",
    "priority": "—",
    "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",
