@@ -7927,11 +7927,13 @@ function projectCostSummary(projectName, from, to){
   });
   // مصروفات وتكاليف مربوطة بالمشروع
   let expenses = 0, costsAmt = 0;
+  // DEC-0142 (8.8.6): بمفتاح الحساب الجديد، المصروف بكل سطوره (تصليح F-10) — نفس expenseAmount في السيرفر
+  const newCost = newDayPayOn();
   (DATA.expenses||[]).forEach(e=>{
     if(!e || String(e.project||'').trim()!==name) return;
     if(from && (e.date||'')<from) return;
     if(to && (e.date||'')>to) return;
-    expenses += toInt(e.amount);
+    expenses += (newCost && Array.isArray(e.lines) && e.lines.length) ? e.lines.reduce((s,l)=>s+toInt(l && l.amount),0) : toInt(e.amount);
   });
   (DATA.costs||[]).forEach(c=>{
     if(!c || String(c.project||'').trim()!==name) return;
@@ -7973,7 +7975,9 @@ function projectSupplyCostLines(projectName, from, to){
   wh.forEach(m => { if(m && (m.type==='in'||m.type==='adjust_in') && m.supplierInvoiceId) stocked[m.supplierInvoiceId] = true; });
   (L.invoices||[]).forEach(inv => {
     if(!inv || inv.cancelled || String(inv.project||'').trim() !== name || stocked[inv.id] || !inRange(inv.date)) return;
-    const amt = (inv.isReturn ? -1 : 1) * Number(inv.totalInvoice||0);
+    // DEC-0142 (8.8.6): بمفتاح الحساب الجديد، الفاتورة بالصافي بعد الخصم (تصليح F-11)، والقديمة من غير صافي بإجماليها
+    const useNet = newDayPayOn() && inv.netInvoice != null && inv.netInvoice !== '' && Number.isFinite(Number(inv.netInvoice));
+    const amt = (inv.isReturn ? -1 : 1) * (useNet ? Number(inv.netInvoice) : Number(inv.totalInvoice||0));
     const sup = (L.suppliers||[]).find(s => s.id === inv.supplierId);
     out.push({ source:'supplier', date: inv.date||'', ref: inv.invoiceNo||inv.id, party: sup?sup.name:'', desc: inv.isReturn?'مرتجع مورد':'فاتورة مورد', amount: amt, recordId: inv.id });
   });
