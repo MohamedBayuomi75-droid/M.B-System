@@ -544,6 +544,88 @@
     ],
     "type": "object"
    },
+   "CostItemDto": {
+    "properties": {
+     "kind": {
+      "enum": [
+       "worker",
+       "supervisor",
+       "driver",
+       "employee",
+       "equipment"
+      ],
+      "type": "string"
+     },
+     "label": {
+      "type": "string"
+     },
+     "op": {
+      "enum": [
+       "add",
+       "rename",
+       "remove"
+      ],
+      "type": "string"
+     },
+     "to": {
+      "description": "الاسم الجديد (rename)",
+      "type": "string"
+     }
+    },
+    "required": [
+     "kind",
+     "op",
+     "label"
+    ],
+    "type": "object"
+   },
+   "CostLineDto": {
+    "properties": {
+     "amount": {
+      "description": "نص زي خانة القديمة (toInt)",
+      "type": "string"
+     },
+     "item": {
+      "type": "string"
+     }
+    },
+    "type": "object"
+   },
+   "CostSectionDto": {
+    "properties": {
+     "name": {
+      "type": "string"
+     },
+     "op": {
+      "enum": [
+       "add",
+       "rename",
+       "delete"
+      ],
+      "type": "string"
+     },
+     "tab": {
+      "enum": [
+       "workers",
+       "supervisors",
+       "drivers",
+       "employees",
+       "equipment"
+      ],
+      "type": "string"
+     },
+     "to": {
+      "description": "الاسم الجديد (rename)",
+      "type": "string"
+     }
+    },
+    "required": [
+     "tab",
+     "op",
+     "name"
+    ],
+    "type": "object"
+   },
    "CreateAdjustmentDto": {
     "properties": {
      "direction": {
@@ -2064,6 +2146,45 @@
     ],
     "type": "object"
    },
+   "SaveCostDto": {
+    "properties": {
+     "date": {
+      "type": "string"
+     },
+     "lines": {
+      "items": {
+       "$ref": "#/components/schemas/CostLineDto"
+      },
+      "type": "array"
+     },
+     "notes": {
+      "type": "string"
+     },
+     "personId": {
+      "type": "string"
+     },
+     "personKind": {
+      "enum": [
+       "worker",
+       "supervisor",
+       "driver",
+       "employee",
+       "equipment"
+      ],
+      "type": "string"
+     },
+     "project": {
+      "type": "string"
+     },
+     "section": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "personKind"
+    ],
+    "type": "object"
+   },
    "SaveDailyDto": {
     "properties": {
      "date": {
@@ -2884,6 +3005,49 @@
     "required": [
      "employeeId",
      "date",
+     "rev"
+    ],
+    "type": "object"
+   },
+   "UpdateCostDto": {
+    "properties": {
+     "date": {
+      "type": "string"
+     },
+     "lines": {
+      "items": {
+       "$ref": "#/components/schemas/CostLineDto"
+      },
+      "type": "array"
+     },
+     "notes": {
+      "type": "string"
+     },
+     "personId": {
+      "type": "string"
+     },
+     "personKind": {
+      "enum": [
+       "worker",
+       "supervisor",
+       "driver",
+       "employee",
+       "equipment"
+      ],
+      "type": "string"
+     },
+     "project": {
+      "type": "string"
+     },
+     "rev": {
+      "type": "number"
+     },
+     "section": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "personKind",
      "rev"
     ],
     "type": "object"
@@ -5480,6 +5644,332 @@
     ],
     "tags": [
      "v1 attendance"
+    ]
+   }
+  },
+  "/api/v1/costs": {
+   "post": {
+    "operationId": "CostsController_create",
+    "parameters": [],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/SaveCostDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "إضافة تكلفة بالسطور (Idempotency-Key إلزامي)",
+    "tags": [
+     "v1 costs"
+    ]
+   }
+  },
+  "/api/v1/costs/boards": {
+   "get": {
+    "operationId": "CostsController_boards",
+    "parameters": [],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "لوحات الفئات (العدد والإجمالي) وإجمالي التكلفة الشاملة بالحسابين",
+    "tags": [
+     "v1 costs"
+    ]
+   }
+  },
+  "/api/v1/costs/form-options": {
+   "get": {
+    "operationId": "CostsController_formOptions",
+    "parameters": [],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "خيارات نافذة التكلفة (الأشخاص، والأقسام، والبنود المقترحة، والمشاريع)",
+    "tags": [
+     "v1 costs"
+    ]
+   }
+  },
+  "/api/v1/costs/items": {
+   "post": {
+    "operationId": "CostsController_item",
+    "parameters": [],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/CostItemDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "إدارة بنود التكاليف: إضافة، وتغيير اسم (بيغيّر التكاليف)، وحذف من القايمة",
+    "tags": [
+     "v1 costs"
+    ]
+   }
+  },
+  "/api/v1/costs/sections": {
+   "post": {
+    "operationId": "CostsController_section",
+    "parameters": [],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/CostSectionDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "إضافة قسم، أو تغيير اسمه (بيغيّر التكاليف)، أو حذفه (بيفضّي قسم التكاليف)",
+    "tags": [
+     "v1 costs"
+    ]
+   }
+  },
+  "/api/v1/costs/table": {
+   "get": {
+    "operationId": "CostsController_table",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "tab",
+      "required": true,
+      "schema": {
+       "enum": [
+        "workers",
+        "supervisors",
+        "drivers",
+        "employees",
+        "equipment"
+       ],
+       "type": "string"
+      }
+     },
+     {
+      "description": "القسم (لوحة)؛ فاضي مع all=1 = «الكل»",
+      "in": "query",
+      "name": "section",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "all",
+      "required": false,
+      "schema": {
+       "enum": [
+        "",
+        "1"
+       ],
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "q",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "item",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "project",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "from",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "to",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "لوحات أقسام الفئة والجدول بنفس فلاتر الصفحة القديمة",
+    "tags": [
+     "v1 costs"
+    ]
+   }
+  },
+  "/api/v1/costs/{id}": {
+   "delete": {
+    "operationId": "CostsController_remove",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "rev",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "tags": [
+     "v1 costs"
+    ]
+   },
+   "get": {
+    "operationId": "CostsController_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "tags": [
+     "v1 costs"
+    ]
+   },
+   "patch": {
+    "operationId": "CostsController_update",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/UpdateCostDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "تعديل تكلفة (rev إلزامي)",
+    "tags": [
+     "v1 costs"
     ]
    }
   },
@@ -8449,6 +8939,124 @@
     "summary": "فحص فجوات ترقيم نطاق (NO_GAPS)",
     "tags": [
      "v1 numbering"
+    ]
+   }
+  },
+  "/api/v1/project-cost": {
+   "get": {
+    "operationId": "ProjectCostController_comprehensive",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "q",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "from",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "to",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "تكلفة المشاريع الشاملة بالحسابين (الأعمدة التسعة، والمحصّل، والأسماء الغير مسجّلة)",
+    "tags": [
+     "v1 project-cost"
+    ]
+   }
+  },
+  "/api/v1/project-cost/by-project": {
+   "get": {
+    "operationId": "ProjectCostController_byProject",
+    "parameters": [],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "التكلفة وحالة الميزانية لكل مشروع مسجّل (عمود صفحة المشاريع)",
+    "tags": [
+     "v1 project-cost"
+    ]
+   }
+  },
+  "/api/v1/project-cost/one": {
+   "get": {
+    "operationId": "ProjectCostController_one",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "q",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "from",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "to",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "name",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "تكلفة مشروع واحد بالحسابين وبنود الموردين والمخازن",
+    "tags": [
+     "v1 project-cost"
     ]
    }
   },
