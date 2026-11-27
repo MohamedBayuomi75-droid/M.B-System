@@ -22,6 +22,7 @@ export const routes: Routes = [
       { path: 'attendance', canActivate: [pageGuard], data: { page: 'attendance', skin: 'legacy' }, loadComponent: () => import('./features/attendance.page').then((m) => m.AttendancePage), title: 'حضور الموظفين' },
       { path: 'worker-dues', canActivate: [pageGuard], data: { page: 'workerDues', skin: 'legacy' }, loadComponent: () => import('./features/worker-dues.page').then((m) => m.WorkerDuesPage), title: 'المستحقات' },
       { path: 'equipment', canActivate: [pageGuard], data: { page: 'equipment', skin: 'legacy' }, loadComponent: () => import('./features/equipment.page').then((m) => m.EquipmentPage), title: 'المعدات والمركبات' },
+      { path: 'costs', canActivate: [pageGuard], data: { page: 'costs', skin: 'legacy' }, loadComponent: () => import('./features/costs.page').then((m) => m.CostsPage), title: 'التكاليف' },
       { path: 'projects', canActivate: [pageGuard], data: { page: 'projects', skin: 'legacy' }, loadComponent: () => import('./features/projects.page').then((m) => m.ProjectsPage), title: 'المشاريع' },
       { path: 'suppliers', canActivate: [pageGuard], data: { page: 'ledger.suppliers', skin: 'legacy', bodyClass: 'module-ledger' }, loadComponent: () => import('./features/suppliers.page').then((m) => m.SuppliersPage), title: 'الموردين' },
       { path: 'customers', canActivate: [pageGuard], data: { page: 'clients.customers', skin: 'legacy' }, loadComponent: () => import('./features/customers.page').then((m) => m.CustomersPage), title: 'العملاء' },

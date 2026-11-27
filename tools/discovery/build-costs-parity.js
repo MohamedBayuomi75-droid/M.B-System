@@ -15,14 +15,15 @@ const colsOf = (name) => { const b = mig.slice(mig.indexOf(`export const ${name}
 const cstSrc = read('renderer/modules/hr/pages-costs.js');
 const keysIn = (src, start, end) => { const i = src.indexOf(start); const body = src.slice(src.indexOf('{', i), src.indexOf(end, i)); return [...body.matchAll(/[{,]\s*([a-z][A-Za-z_]*)\s*(?=[:,}])/g)].map((m) => m[1]); };
 // الشاشة + الخدمة (السجلات بتتبني في السيرفر بنفس شكل النافذة القديمة)
-const PAGES = { costs: null };
+const SCREEN = ['frontend/src/app/features/costs.page.ts', 'server/src/costs/costs.service.ts', 'server/src/costs/cost-rules.ts'];
+const PAGES = { costs: SCREEN };
 const SOURCES = {
   costs: { label: 'التكاليف', table: 'costs', cols: colsOf('COST_COLUMNS'), keys: [...keysIn(cstSrc, 'const rec = {', '\n    };'), 'id'] },
 };
 const JSON_TYPE = { text: 'string', number: 'number', json: 'object', bool: 'boolean' };
 const typeOk = (real, col) => real === JSON_TYPE[col] || (col === 'json' && real === 'array');
 const SYSTEM = { id: 'المفتاح الأساسي `id`' };
-const DEFERRED = {};
+const DEFERRED = { departmentId: 'مش في نافذة القديمة — محفوظ زي ما هو', projectId: 'الربط بالاسم زي القديمة (DEC-0142 د-4) — محفوظ زي ما هو' };
 let md = `# مصفوفة تطابق الحقول — التكاليف (خطة v1.4.5 — المرحلة 8، الحزمة 8.8)
 
 > **مولَّد** بـ \`node tools/discovery/build-costs-parity.js\`. ماتعدّلش الملف باليد.

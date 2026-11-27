@@ -26,7 +26,7 @@ const fmtMoney = (n: unknown) => `${(Number(n) || 0).toLocaleString('ar-EG', { m
  * المشاريع — بنفس شكل الواجهة القديمة (DEC-0093): renderer/modules/hr/pages-projects.js (renderProjectsPage) ونافذة المشروع (openProjectModal)،
  * بكلاسات legacy-skin.css. القايمة والفلاتر والكروت والموارد والملاحظات من السيرفر بنفس الدوال القديمة (tests-merge/phase72.js).
  * الحفظ والتحقق ونشر تغيير الاسم وتحريك مسار المشروع في السيرفر (DEC-0117 د-1، د-2).
- * المرفقات بالإصدارات (المرحلة 5) في نافذة التعديل. من الشاشة الكاملة: كشف المشروع والتكلفة (F-12: عمود التكلفة وفلتر حالة الميزانية — د-6)، ومسار المشروع التفاعلي (د-1)، والحذف (د-3)، والتصدير.
+ * المرفقات بالإصدارات (المرحلة 5) في نافذة التعديل. **عمود التكلفة وفلتر حالة الميزانية وكارت التكلفة بالحساب الجديد (DEC-0142، TR-10)**. من الشاشة الكاملة: كشف المشروع (F-12)، ومسار المشروع التفاعلي (د-1)، والحذف (د-3)، والتصدير.
  */
 @Component({
   selector: 'app-projects',
@@ -51,14 +51,14 @@ const fmtMoney = (n: unknown) => `${(Number(n) || 0).toLocaleString('ar-EG', { m
           @if (c.inSection) {
             <div class="stat-card"><div class="num">{{ c.count }}</div><div class="lbl">مشاريع «{{ section }}»</div></div>
             <div class="stat-card"><div class="num">{{ c.customers }}</div><div class="lbl">عدد العملاء</div></div>
-            <div class="stat-card" title="التكلفة اللحظية من الشاشة الكاملة (F-12)"><div class="num"><a [href]="full">—</a></div><div class="lbl">التكلفة اللحظية</div></div>
+            <div class="stat-card" id="projSectionCost" [title]="'بالحساب الجديد (TR-10) — بالحساب القديم: ' + money(sectionCost().legacy)"><div class="num">{{ fmtNew(sectionCost().total) }}</div><div class="lbl">التكلفة اللحظية</div></div>
             <div class="stat-card"><div class="num">{{ money(c.totalValue) }}</div><div class="lbl">إجمالي قيم المرحلة</div></div>
           } @else {
             <div class="stat-card"><div class="num">{{ c.count }}</div><div class="lbl">كل المشاريع</div></div>
             <div class="stat-card"><div class="num">{{ c.active }}</div><div class="lbl">جارٍ العمل</div></div>
             <div class="stat-card"><div class="num">{{ c.done }}</div><div class="lbl">مكتمل</div></div>
             <div class="stat-card"><div class="num">{{ money(c.totalValue) }}</div><div class="lbl">إجمالي القيم</div></div>
-            <div class="stat-card"><div class="num">{{ c.shown }}</div><div class="lbl">نتيجة البحث</div></div>
+            <div class="stat-card"><div class="num">{{ f.budget && f.budget !== 'none' ? rows().length : c.shown }}</div><div class="lbl">نتيجة البحث</div></div>
           }
         }
       </div>
@@ -71,8 +71,8 @@ const fmtMoney = (n: unknown) => `${(Number(n) || 0).toLocaleString('ar-EG', { m
           <select id="projStatus" class="input" style="min-width:180px;" [(ngModel)]="f.stageSel" (ngModelChange)="reload()"><option value="">كل المراحل</option>@for (s of stages(); track s.value) { <option [value]="s.value">{{ s.value }}</option> }</select>
         }
         <select id="projHasRes" class="input" style="min-width:150px;" [(ngModel)]="f.hasRes" (ngModelChange)="reload()"><option value="">الموارد: الكل</option><option value="with">بها موارد</option><option value="empty">بدون موارد</option></select>
-        <select id="projBudget" class="input" style="min-width:160px;" [(ngModel)]="f.budget" (ngModelChange)="reload()" title="حالة الميزانية (تحت/قريب/تجاوز) من الشاشة الكاملة — بتعتمد على التكلفة (F-12)">
-          <option value="">الميزانية: الكل</option><option value="ok" disabled>تحت الميزانية</option><option value="warn" disabled>قريب من الميزانية</option><option value="over" disabled>تجاوز الميزانية</option><option value="none">بدون ميزانية/قيمة</option>
+        <select id="projBudget" class="input" style="min-width:160px;" [(ngModel)]="f.budget" (ngModelChange)="reload()" title="حالة الميزانية بالتكلفة الجديدة (TR-10)">
+          <option value="">الميزانية: الكل</option><option value="ok">تحت الميزانية</option><option value="warn">قريب من الميزانية</option><option value="over">تجاوز الميزانية</option><option value="none">بدون ميزانية/قيمة</option>
         </select>
         <button type="button" class="btn btn-outline btn-sm" id="projClear" (click)="f = { ...empty }; reload()">مسح الفلاتر</button>
       </div>
@@ -90,7 +90,7 @@ const fmtMoney = (n: unknown) => `${(Number(n) || 0).toLocaleString('ar-EG', { m
               <td style="white-space:nowrap;">{{ p.shownValue ? money(p.shownValue) : '—' }}</td>
               <td>{{ p.progress != null && $any(p.progress) !== '' ? p.progress + '%' : '—' }}</td>
               <td title="مشرفين / عمال / معدات">{{ p.resources.supervisors }}/{{ p.resources.workers }}/{{ p.resources.equipment }}</td>
-              <td style="white-space:nowrap;" title="التكلفة اللحظية من الشاشة الكاملة (F-12)"><a [href]="full">—</a></td>
+              <td style="white-space:nowrap;" class="proj-cost" [title]="costOf(p.id).legacyTotal !== +costOf(p.id).total ? 'بالحساب الجديد (TR-10) — بالحساب القديم: ' + money(costOf(p.id).legacyTotal) : ''"><strong>{{ fmtNew(costOf(p.id).total) }}</strong></td>
               <td class="notes-cell">
                 @if (p.issues.length) {
                   <ul class="notes-list" [title]="p.issues.join('\\n')">@for (i of p.issues.slice(0, 3); track $index) { <li>{{ i }}</li> }@if (p.issues.length > 3) { <li class="notes-more">+{{ p.issues.length - 3 }} أخرى</li> }</ul>
@@ -169,7 +169,15 @@ export class ProjectsPage implements OnInit {
   /** قسم المرحلة (زي أقسام القايمة الجانبية القديمة): ?status=... */
   readonly section = inject(ActivatedRoute).snapshot.queryParamMap.get('status') ?? '';
   f = { ...EMPTY };
-  readonly rows = signal<Proj[]>([]);
+  readonly allRows = signal<Proj[]>([]);
+  /** التكلفة وحالة الميزانية لكل مشروع (/api/v1/project-cost/by-project — DEC-0142) */
+  readonly costs = signal<Record<string, { total: string; legacyTotal: number; budgetStatus: string }>>({});
+  /** فلتر حالة الميزانية (تحت / قريب / تجاوز) بالتكلفة الجديدة — «بدون ميزانية» من السيرفر زي ما هو */
+  readonly rows = computed(() => { const b = this.budgetSel(); const all = this.allRows(); return b && b !== 'none' ? all.filter((p) => this.costOf(p.id).budgetStatus === b) : all; });
+  readonly budgetSel = signal('');
+  readonly sectionIds = signal<string[]>([]);
+  /** كارت «التكلفة اللحظية» في القسم = كل مشاريع المرحلة (من غير الفلاتر) زي القديمة */
+  readonly sectionCost = computed(() => { const c = this.costs(); const ps = this.sectionIds().map((id) => ({ id })); return { total: ps.reduce((a, p) => a + (Number(c[p.id]?.total) || 0), 0), legacy: ps.reduce((a, p) => a + (c[p.id]?.legacyTotal || 0), 0) }; });
   readonly cards = signal<Cards | null>(null);
   readonly stages = signal<Stage[]>([]);
   readonly customers = signal<{ value: string; label: string }[]>([]);
@@ -185,6 +193,8 @@ export class ProjectsPage implements OnInit {
   readonly pageRows = computed(() => this.rows().slice((this.curPage() - 1) * PAGE_SIZE, this.curPage() * PAGE_SIZE));
   private qTimer?: ReturnType<typeof setTimeout>;
   money = fmtMoney;
+  fmtNew = (v: unknown) => `${(Number(v) || 0).toLocaleString('ar-EG', { maximumFractionDigits: 6 })} ج.م`;
+  costOf = (id: string) => this.costs()[id] || { total: '0', legacyTotal: 0, budgetStatus: 'none' };
   min = Math.min;
 
   ngOnInit() { void this.load(); }
@@ -199,9 +209,12 @@ export class ProjectsPage implements OnInit {
     this.error.set('');
     try {
       let params = new HttpParams();
-      for (const [k, v] of Object.entries({ ...this.f, status: this.section })) if (v) params = params.set(k, v);
+      for (const [k, v] of Object.entries({ ...this.f, status: this.section, budget: this.f.budget === 'none' ? 'none' : '' })) if (v) params = params.set(k, v);
+      this.budgetSel.set(this.f.budget);
       const r = await firstValueFrom(this.http.get<{ rows: Proj[]; cards: Cards; stages: Stage[]; customers: { value: string; label: string }[] }>('/api/v1/projects', { params }));
-      this.rows.set(r.rows); this.cards.set(r.cards); this.stages.set(r.stages); this.customers.set(r.customers);
+      this.allRows.set(r.rows); this.cards.set(r.cards); this.stages.set(r.stages); this.customers.set(r.customers);
+      if (this.section) { try { const all = await firstValueFrom(this.http.get<{ rows: Proj[] }>('/api/v1/projects', { params: new HttpParams().set('status', this.section) })); this.sectionIds.set(all.rows.map((x) => x.id)); } catch { this.sectionIds.set([]); } }
+      try { this.costs.set(await firstValueFrom(this.http.get<Record<string, { total: string; legacyTotal: number; budgetStatus: string }>>('/api/v1/project-cost/by-project'))); } catch { this.costs.set({}); }
     } catch (e) { this.error.set(errorMessage(e, 'تعذر تحميل المشروعات')); }
     finally { this.loaded.set(true); }
   }

@@ -173,6 +173,9 @@ jobs:
       - name: Equipment page, table, modals and monthly grid = legacy, save/daily/move cost/delete (DEC-0139, DEC-0140)
         if: matrix.suite == 'web-app-security'
         run: node tests-web/equipment-e2e.js
+      - name: Costs page, comprehensive cost and projects cost column = legacy, save/sections/items/delete (DEC-0142)
+        if: matrix.suite == 'web-app-security'
+        run: node tests-web/costs-e2e.js
       - name: XSS probe
         if: matrix.suite == 'web-app-security'
         run: node tools/security/xss-probe.js
