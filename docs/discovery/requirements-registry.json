@@ -7870,7 +7870,7 @@
    "title": "دالة حساب equipmentDailyCost",
    "module": "مشترك (core)",
    "priority": "P0",
-   "evidence": "renderer/core/helpers.js:7779",
+   "evidence": "renderer/core/helpers.js:7819",
    "tests": [
     "tests-merge/phase59.js",
     "tools/formulas/compare.js"
@@ -7946,7 +7946,7 @@
    "title": "دالة حساب supervisorOwnDue",
    "module": "مشترك (core)",
    "priority": "P0",
-   "evidence": "renderer/core/helpers.js:2066",
+   "evidence": "renderer/core/helpers.js:2106",
    "tests": [
     "tests-merge/phase59.js",
     "tools/formulas/compare.js"

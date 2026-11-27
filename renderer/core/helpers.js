@@ -284,6 +284,7 @@ function attendanceDaysCredit(a){
  * - غائب/إجازة: 0
  */
 function attendanceNetPay(a, worker){
+  if(newDayPayOn()) return attendanceNetPayNew(a, worker);
   if(!a || !isPayableAttendance(a.status)) return 0;
   const base = attendanceDayWage(a, worker);
   const days = attendanceDaysCredit(a);
@@ -292,6 +293,45 @@ function attendanceNetPay(a, worker){
   const ded = toInt(a.deduction);
   if(ded > 0) total = Math.max(0, total - ded);
   return toInt(total);
+}
+/**
+ * الحساب الجديد للأيام (DEC-0129/0130، DEC-0133 — د-2 في DEC-0137): مقفول لحد البوابة المجمّعة (DEC-0136)، وبيتفعّل بـ settings.newDayPay = true
+ * علشان كشوف الحساب والتقارير ولوحة المتابعة في الشاشة الكاملة يطلعوا نفس رقم الشاشات الجديدة. نفس قاعدة السيرفر (dailies-rules.ts: newNet):
+ * - قرار المراجعة «تتلغي» ← 0؛ واليومية المعلّمة (مكررة، أو صاحبها مش موجود، أو أجر صفر، أو حالة مش معروفة) ← 0 لحد قرار «تتحسب».
+ * - غائب / عطلة ← 0؛ وإلا الأجر × الأيام (6 خانات) − الخصم، بحد أدنى صفر.
+ */
+function newDayPayOn(){ try{ return !!(DATA && DATA.settings && DATA.settings.newDayPay === true); }catch(_e){ return false; } }
+let __attFlagCache = { arr: null, len: -1, at: 0, map: null };
+function attendanceReviewFlags(a){
+  const arr = (DATA && DATA.workerAttendance) || [];
+  const now = Date.now();
+  if(__attFlagCache.arr !== arr || __attFlagCache.len !== arr.length || now - __attFlagCache.at > 1000){
+    const map = new Map(), seen = new Set(), KNOWN = new Set(['present','absent','late','half','holiday']);
+    arr.forEach(x=>{
+      if(!x) return;
+      const f = [];
+      const t = attType(x), pid = attPersonId(x);
+      const k = t+'|'+pid+'|'+x.date+'|'+String(x.project||'').trim();
+      if(seen.has(k)) f.push('duplicate'); else seen.add(k);
+      const owner = t==='supervisor' ? getSupervisor(pid) : t==='driver' ? getDriver(pid) : getWorker(pid);
+      if(!owner) f.push('orphan');
+      if(isPayableAttendance(x.status) && attendanceDayWage(x, owner) === 0) f.push('zeroWage');
+      if(!KNOWN.has(String(x.status||'').toLowerCase())) f.push('unknownStatus');
+      if(f.length) map.set(x.id, f);
+    });
+    __attFlagCache = { arr, len: arr.length, at: now, map };
+  }
+  return (a && __attFlagCache.map.get(a.id)) || [];
+}
+function attendanceNetPayNew(a, worker){
+  if(!a) return 0;
+  const dec = String(a.reviewDecision||'');
+  if(dec === 'void') return 0;
+  if(attendanceReviewFlags(a).length && dec !== 'count') return 0;
+  const st = String(a.status||'').toLowerCase();
+  if(st === 'absent' || st === 'holiday') return 0;
+  const v = Number((attendanceDayWage(a, worker) * attendanceDaysCredit(a)).toFixed(6)) - toInt(a.deduction);
+  return v > 0 ? Number(v.toFixed(6)) : 0;
 }
 function workerAttendanceInRange(workerId, from, to){
   return indexedRecords('workerAttendance','aw',a=>attType(a)==='worker'?(a.workerId||a.personId):'',workerId).filter(a=>{
