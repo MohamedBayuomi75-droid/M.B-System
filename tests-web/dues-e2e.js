@@ -93,10 +93,10 @@ const { baseUser, eq, ok, summary } = require(path.join(__dirname, '../tests-mer
   const fixLegacy = (m) => ({ ...m, labels: m.labels.map((l, i) => (i === 0 && (l === 'بنود اليوميات / الإضافات' || l === 'نوع المستحق') ? 'النوع' : l)),
     sections: m.sections.filter((x) => !(x === 'بنود الإضافات والمكافآت (تسجيل مستحق)' && m.title !== 'بدلات ومكافآت')), values: { ...m.values, upPayKind: m.title === 'بدلات ومكافآت' ? null : m.values.upPayKind } });
   const L = { kinds: await legacy('', null, grabBoards), depts: await legacy('workers', null, grabBoards), pages: {}, modals: [] };
-  const TABS = ['workers', 'supervisors', 'drivers', 'employees'];
+  const TABS = ['workers', 'supervisors', 'drivers', 'employees', 'equipment'];
   for (const tab of TABS) L.pages[tab] = await legacy(tab, '', grabPage);
   L.pages.temp = await legacy('workers', '__core_workers_temp__', grabPage);
-  const MODALS = [['workers', '#btnAddWPay'], ['workers', '.btn-pay-wrk[data-id="w1"]'], ['employees', '.btn-pay-emp[data-id="e1"]'], ['workers', '#btnAddWExtras'], ['workers', '.btn-pen-wrk[data-id="w2"]'], ['supervisors', '.btn-pay-sup[data-id="s1"]']];
+  const MODALS = [['workers', '#btnAddWPay'], ['workers', '.btn-pay-wrk[data-id="w1"]'], ['employees', '.btn-pay-emp[data-id="e1"]'], ['workers', '#btnAddWExtras'], ['workers', '.btn-pen-wrk[data-id="w2"]'], ['supervisors', '.btn-pay-sup[data-id="s1"]'], ['equipment', '.btn-pay-eq[data-id="q1"]']];
   for (const [tab, sel] of MODALS) { await legacy(tab, '', () => 0); await page.click(`#pageContent ${sel}`); await page.waitForSelector('#appModal #btnSaveUp'); await settle(500); L.modals.push(fixLegacy(await page.evaluate(modalOf))); }
   // دفع إضافات مستحقة لـ w2
   await legacy('workers', '', () => 0); await page.click('#pageContent .btn-pay-wrk[data-id="w2"]'); await page.waitForSelector('#appModal #btnSaveUp'); await page.selectOption('#upPayKind', 'extras'); await settle(400);
@@ -112,7 +112,7 @@ const { baseUser, eq, ok, summary } = require(path.join(__dirname, '../tests-mer
   };
   console.log('[اللوحات]');
   await page.goto(url + '/app/worker-dues'); await page.waitForSelector('#duesKinds .board-card'); await settle(200);
-  eq(await page.evaluate(grabBoards), L.kinds, 'لوحات الأنواع (والمعدات ← الشاشة الكاملة)');
+  eq(await page.evaluate(grabBoards), L.kinds, 'لوحات الأنواع (والمعدات)');
   await page.click('[data-dues-tab="workers"]'); await page.waitForSelector('#duesDepts .board-card'); await settle(200);
   eq(await page.evaluate(grabBoards), L.depts, 'لوحات أقسام العمال');
   console.log('[الجداول] نفس الكروت والعناوين والصفوف والسجل');

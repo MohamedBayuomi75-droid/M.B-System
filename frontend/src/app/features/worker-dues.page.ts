@@ -32,15 +32,15 @@ function fmtDays(n: unknown): string {
   const sym = frac === 0.5 ? '½' : frac === 0.25 ? '¼' : frac === 0.75 ? '¾' : '';
   return sym ? (whole === 0 ? sym : `${whole}${sym}`) : String(r);
 }
-const TYPE_OF_TAB: Record<string, string> = { workers: 'worker', supervisors: 'supervisor', drivers: 'driver', employees: 'employee' };
+const TYPE_OF_TAB: Record<string, string> = { workers: 'worker', supervisors: 'supervisor', drivers: 'driver', employees: 'employee', equipment: 'equipment' };
 const PERSON_LABEL: Record<string, string> = { employee: 'الموظف', supervisor: 'المشرف', worker: 'العامل', driver: 'السائق', equipment: 'المعدة / المركبة' };
-const PAGER: Record<string, string> = { workers: 'duesWorkers', supervisors: 'duesSup', drivers: 'duesDrv', employees: 'duesEmp' };
+const PAGER: Record<string, string> = { workers: 'duesWorkers', supervisors: 'duesSup', drivers: 'duesDrv', employees: 'duesEmp', equipment: 'duesEq' };
 
 /**
  * المستحقات — بنفس شكل الواجهة القديمة (DEC-0093، DEC-0137): renderWorkerDuesPage وopenUnifiedPayModal (pages-worker-dues.js).
  * لوحات الأنواع ← الأقسام ← الجدول لكل نوع (الكروت، والفترة، والبحث، والصفوف، وسجل الصرف والخصومات) ← نافذة الصرف الموحّدة.
  * الأرقام والحفظ من السيرفر بنفس الدوال القديمة (tests-merge/phase84.js). **المستحق والمتبقي بالحساب الجديد للأيام (DEC-0129)**،
- * و**الصرف فوق المتبقي سلفة بس (DEC-0132)**. مستحقات المعدات (8.7) وكشوف الحساب والتصدير من الشاشة الكاملة.
+ * و**الصرف فوق المتبقي سلفة بس (DEC-0132)**. وتبويب المعدات بالتكلفة الجديدة (DEC-0140). كشوف الحساب والتصدير من الشاشة الكاملة.
  */
 @Component({
   selector: 'app-worker-dues',
@@ -54,11 +54,7 @@ const PAGER: Record<string, string> = { workers: 'duesWorkers', supervisors: 'du
         </div>
         <div class="board-grid exp-kind-boards" id="duesKinds">
           @for (b of boards().kinds; track b.id) {
-            @if (b.id === 'equipment') {
-              <a class="board-card dues-kind-board" data-dues-tab="equipment" [href]="full" title="مستحقات المعدات من الشاشة الكاملة (الحزمة 8.7)"><div class="board-card-icon">{{ b.icon }}</div><div class="board-card-title">{{ b.label }}</div><div class="board-card-meta"><span>{{ b.count }} سجل</span><span>{{ b.depts }} قسم</span></div></a>
-            } @else {
-              <button type="button" class="board-card dues-kind-board" [attr.data-dues-tab]="b.id" (click)="tab.set(b.id); dept.set(null)"><div class="board-card-icon">{{ b.icon }}</div><div class="board-card-title">{{ b.label }}</div><div class="board-card-meta"><span>{{ b.count }} سجل</span><span>{{ b.depts }} قسم</span></div></button>
-            }
+            <button type="button" class="board-card dues-kind-board" [attr.data-dues-tab]="b.id" (click)="tab.set(b.id); dept.set(null)"><div class="board-card-icon">{{ b.icon }}</div><div class="board-card-title">{{ b.label }}</div><div class="board-card-meta"><span>{{ b.count }} سجل</span><span>{{ b.depts }} قسم</span></div></button>
           }
         </div>
       </div>
@@ -100,12 +96,17 @@ const PAGER: Record<string, string> = { workers: 'duesWorkers', supervisors: 'du
         </div>
         @if (error() && !modal()) { <div class="err" role="alert" id="duesError">{{ error() }}</div> }
         @if (t().cards; as c) {
+          @if (c.equipment) {
+            <div class="stats-row" style="margin-bottom:12px;" id="duesCards"><div class="stat-card"><div class="num">{{ fmtNew(c.due) }}</div><div class="lbl">تكلفة التشغيل</div></div></div>
+            @if (c.legacyDue !== +c.due) { <div id="duesDiff" style="margin:-4px 0 12px;font-size:12.5px;color:var(--ink-soft);">التكلفة بالحساب الجديد للمعدات (DEC-0140) — بالحساب القديم: {{ fmtMoney(c.legacyDue) }}</div> }
+          } @else {
           <div class="stats-row" style="margin-bottom:12px;" id="duesCards">
             <div class="stat-card"><div class="num">{{ fmtNew(c.due) }}</div><div class="lbl">{{ tab() === 'supervisors' ? 'إجمالي المستحقات' : 'المستحق' }}</div></div>
             <div class="stat-card"><div class="num">{{ fmtMoney(c.paid) }}</div><div class="lbl">المدفوع</div></div>
             <div class="stat-card" [class.debt]="+c.bal > 0"><div class="num">{{ fmtNew(c.bal) }}</div><div class="lbl">المتبقي</div></div>
           </div>
           @if (c.legacyBal !== +c.bal) { <div id="duesDiff" style="margin:-4px 0 12px;font-size:12.5px;color:var(--ink-soft);">المتبقي بالحساب الجديد للأيام (DEC-0129) — بالحساب القديم: {{ fmtMoney(c.legacyBal) }}</div> }
+          }
         }
         <div class="table-wrap" [style.overflow]="tab() === 'supervisors' ? 'auto' : null"><table class="data-table" id="duesTable">
           <thead><tr>
@@ -113,6 +114,7 @@ const PAGER: Record<string, string> = { workers: 'duesWorkers', supervisors: 'du
               @case ('workers') { <th>الكود</th><th>الاسم</th><th>المشرف</th><th>اليومية</th><th>أيام العمل</th><th>غياب</th><th>بدلات ومكافآت</th><th>المستحق</th><th>خصم / جزاء</th><th>المصاريف</th><th>المدفوع</th><th>المتبقي</th><th>حالة</th><th></th> }
               @case ('supervisors') { <th>الكود</th><th>الاسم</th><th>اليومية</th><th>أيام</th><th>بدلات ومكافآت</th><th>مستحق المشرف</th><th>مستحق العمال</th><th>مصاريف</th><th>معدات</th><th>خصم / جزاء</th><th>المدفوع</th><th>المتبقي</th><th>حالة</th><th></th> }
               @case ('drivers') { <th>الكود</th><th>الاسم</th><th>اليومية</th><th>أيام العمل</th><th>غياب</th><th>بدلات ومكافآت</th><th>المستحق</th><th>خصم / جزاء</th><th>المصاريف</th><th>المدفوع</th><th>المتبقي</th><th>حالة</th><th></th> }
+              @case ('equipment') { <th>الكود</th><th>الاسم</th><th>المشرف</th><th>تكلفة/س</th><th>أيام التشغيل</th><th>ساعات</th><th>بدلات ومكافآت</th><th>المستحق (تكلفة)</th><th>خصم / جزاء</th><th>المصاريف</th><th>المدفوع</th><th>المتبقي</th><th>حالة</th><th></th> }
               @case ('employees') { <th>الكود</th><th>الاسم</th><th>القسم</th><th>الراتب</th><th>أيام العمل</th><th>غياب</th><th>بدلات ومكافآت</th><th>المستحق</th><th>خصم / جزاء</th><th>المصاريف</th><th>المدفوع</th><th>المتبقي</th><th>حالة</th><th></th> }
             }
           </tr></thead>
@@ -125,6 +127,7 @@ const PAGER: Record<string, string> = { workers: 'duesWorkers', supervisors: 'du
                   @case ('workers') { <td>{{ r.supervisorName }}</td><td>{{ fmtMoney(r.dailyWage) }}</td><td>{{ fmtDays(r.days) }}</td><td>{{ fmtNum(r.absent) }}</td><td>{{ fmtMoney(r.extras) }}</td><td>{{ fmtNew(r.due) }}</td><td>{{ fmtMoney(r.penalty) }}</td><td>{{ fmtMoney(r.expenses) }}</td><td>{{ fmtMoney(r.paid) }}</td> }
                   @case ('supervisors') { <td>{{ fmtMoney(r.dailyWage) }}</td><td>{{ fmtDays(r.days) }}</td><td>{{ fmtMoney(r.extras) }}</td><td>{{ fmtNew(r.due) }}</td><td>{{ fmtNew(r.workersDue) }}</td><td>{{ fmtMoney(r.expenses) }}</td><td>{{ fmtMoney(r.equipCost) }}</td><td>{{ fmtMoney(r.penalty) }}</td><td>{{ fmtMoney(r.paid) }}</td> }
                   @case ('drivers') { <td>{{ fmtMoney(r.dailyWage) }}</td><td>{{ fmtDays(r.days) }}</td><td>0</td><td>{{ fmtMoney(r.extras) }}</td><td>{{ fmtNew(r.due) }}</td><td>{{ fmtMoney(r.penalty) }}</td><td>{{ fmtMoney(r.expenses) }}</td><td>{{ fmtMoney(r.paid) }}</td> }
+                  @case ('equipment') { <td>{{ r.supervisorName }}</td><td>{{ fmtMoney(r.hourlyCost) }}</td><td>{{ fmtNum(r.legacyDays) }}</td><td>{{ fmtNum(r.hours) }}</td><td>{{ fmtMoney(r.extras) }}</td><td>{{ fmtNew(r.due) }}</td><td>{{ fmtMoney(r.penalty) }}</td><td>{{ fmtMoney(r.expenses) }}</td><td>{{ fmtMoney(r.paid) }}</td> }
                   @case ('employees') { <td>{{ r.departmentName }}</td><td>{{ fmtMoney(r.salary) }}</td><td>{{ fmtDays(r.days) }}</td><td>{{ fmtNum(r.absent) }}</td><td>{{ fmtMoney(r.extras) }}</td><td>{{ fmtNew(r.due) }}</td><td>{{ fmtMoney(r.penalty) }}</td><td>{{ fmtMoney(r.expenses) }}</td><td>{{ fmtMoney(r.paid) }}</td> }
                 }
                 <td [style.color]="+r.bal > 0 ? 'var(--debt)' : ''"><strong>{{ fmtNew(r.bal) }}</strong></td>
@@ -176,8 +179,7 @@ const PAGER: Record<string, string> = { workers: 'duesWorkers', supervisors: 'du
               <label [style.order]="fo.order['type']" [style.display]="fo.hide['type'] ? 'none' : null">{{ fo.label['type'] || 'النوع *' }}<select class="input" id="upType" [(ngModel)]="f.type" (ngModelChange)="f.dept = ''; f.person = ''; onPerson()"><option value="employee">موظف</option><option value="supervisor">مشرف</option><option value="worker">عامل</option><option value="driver">سائق</option><option value="equipment">معدة / مركبة</option></select></label>
               <label [style.order]="fo.order['dept']" [style.display]="fo.hide['dept'] ? 'none' : null">{{ fo.label['dept'] || 'القسم' }}<select class="input" id="upDept" [(ngModel)]="f.dept"><option value="">— كل الأقسام —</option>@for (d of o.departments[f.type] || []; track d.id) { <option [value]="d.id">{{ d.name }}</option> }</select></label>
               <label id="upPersonLab" [style.order]="fo.order['person']" [style.display]="fo.hide['person'] ? 'none' : null">{{ fo.label['person'] || personLabel() + ' *' }}
-                @if (f.type === 'equipment') { <a class="btn btn-outline btn-sm" [href]="full" style="display:block;margin-top:6px;">مستحقات المعدات من الشاشة الكاملة</a> }
-                @else { <select class="input" id="upPerson" [(ngModel)]="f.person" (ngModelChange)="onPerson()"><option value="">اكتب الاسم أو الكود...</option>@for (x of peopleOf(o); track x.id) { <option [value]="x.id">{{ (x.code ? x.code + ' — ' : '') + x.name }}</option> }</select> }
+                <select class="input" id="upPerson" [(ngModel)]="f.person" (ngModelChange)="onPerson()"><option value="">اكتب الاسم أو الكود...</option>@for (x of peopleOf(o); track x.id) { <option [value]="x.id">{{ (x.code ? x.code + ' — ' : '') + x.name }}</option> }</select>
               </label>
               <label [style.order]="fo.order['date']" [style.display]="fo.hide['date'] ? 'none' : null">{{ fo.label['date'] || 'التاريخ' }}<input class="input" id="upDate" type="date" [(ngModel)]="f.date"></label>
               @if (person(); as pp) { <label id="upPersonDeptHintLab" style="grid-column:1/-1;" [style.order]="fo.order['date'] ?? 3"><span style="font-size:12.5px;color:var(--ink-soft);">القسم التابع له الشخص: <strong id="upPersonDeptHint">{{ pp.departmentName || 'بدون قسم' }}</strong></span></label> }
@@ -322,7 +324,7 @@ export class WorkerDuesPage implements OnInit {
   async openPay(mode: Mode, personId: string) {
     this.error.set(''); this.mode = mode; this.kindTouched = false; this.bonus = {};
     const type = TYPE_OF_TAB[this.tab()] || 'worker';
-    this.f = { type, dept: '', person: personId, date: '', payKind: mode === 'pay' ? (type === 'employee' ? 'salary' : 'daily') : '', scope: 'self', salary: '', notes: '' };
+    this.f = { type, dept: '', person: personId, date: '', payKind: mode === 'pay' ? (type === 'employee' || type === 'equipment' ? 'salary' : 'daily') : '', scope: 'self', salary: '', notes: '' };
     this.lines = mode === 'extras' ? [{ item: 'مكافأة', amount: '' }] : mode === 'penalty' ? [{ item: '', amount: '' }] : [];
     try {
       const o = await firstValueFrom(this.http.get<P>('/api/v1/dues/pay-options', { params: new HttpParams().set('kind', type) }));
@@ -334,8 +336,8 @@ export class WorkerDuesPage implements OnInit {
   /** fillPeople / updatePersonDeptHint / fillSalaryCap / renderUnpaidBonuses / updateScopeHint */
   async onPerson() {
     const type = this.f['type'];
-    if (this.mode === 'pay' && !this.kindTouched) this.f['payKind'] = type === 'employee' ? 'salary' : 'daily';
-    if (!this.f['person'] || type === 'equipment') { this.person.set(null); this.sup.set(null); return; }
+    if (this.mode === 'pay' && !this.kindTouched) this.f['payKind'] = type === 'employee' || type === 'equipment' ? 'salary' : 'daily';
+    if (!this.f['person']) { this.person.set(null); this.sup.set(null); return; }
     try {
       const o = await firstValueFrom(this.http.get<P>('/api/v1/dues/pay-options', { params: new HttpParams().set('kind', type).set('id', this.f['person']) }));
       this.person.set(o.person); this.sup.set(o.supervisor || null);
@@ -369,7 +371,6 @@ export class WorkerDuesPage implements OnInit {
   delLine(list: Line[], i: number) { if (list.length > 1) list.splice(i, 1); else { list[0].item = ''; list[0].amount = ''; } }
   close() { this.modal.set(false); this.error.set(''); this.person.set(null); this.sup.set(null); }
   async save(advance: boolean) {
-    if (this.f['type'] === 'equipment') { location.href = this.full; return; }
     if (!this.f['person']) { this.toast.show('اختر الشخص'); return; }
     const body: P = { mode: this.mode, personType: this.f['type'], personId: this.f['person'], date: this.f['date'], notes: this.f['notes'] };
     if (this.mode === 'pay') { body['payKind'] = this.f['payKind']; if (this.f['type'] === 'supervisor') body['scope'] = this.f['scope']; }

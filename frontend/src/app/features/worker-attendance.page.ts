@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { legacyUrl } from '../core/page-routes';
 import { errorMessage, SessionService } from '../core/session.service';
@@ -47,11 +48,11 @@ function previewNet(status: string, wage: number, days: number, ded: number) {
  * اليوميات — بنفس شكل الواجهة القديمة (DEC-0093، DEC-0135): renderWorkerAttendancePage وopenWorkerAttModal وopenWattDaySitesModal (pages-worker-attendance.js).
  * لوحات الأنواع ← الأقسام ← الجدول الشهري (الفترة، والكروت، والفلاتر، والعلامة لكل يوم، و⚑ لأكتر من موقع) ← النافذة.
  * الأشخاص والسجلات والحفظ من السيرفر بنفس الدوال القديمة (tests-merge/phase82.js). **المستحق بالحساب الجديد (DEC-0129/0130)**، ومعاه تقرير الفرق
- * عن القديم (د-2)، وقايمة المراجعة (DEC-0133). الأجر والمستحق مابيظهروش من غير صلاحيتهم (DEC-0134). يوميات المعدات والتصدير من الشاشة الكاملة.
+ * عن القديم (د-2)، وقايمة المراجعة (DEC-0133). الأجر والمستحق مابيظهروش من غير صلاحيتهم (DEC-0134). يوميات المعدات من جدول المعدات (/app/equipment) والتصدير من الشاشة الكاملة.
  */
 @Component({
   selector: 'app-worker-attendance',
-  imports: [FormsModule],
+  imports: [FormsModule, RouterLink],
   template: `
     @if (!tab()) {
       <div class="page">
@@ -66,8 +67,8 @@ function previewNet(status: string, wage: number, days: number, ded: number) {
               <div class="board-card-meta"><span>{{ b.count }} سجل</span><span>{{ b.depts }} قسم</span></div>
             </button>
           }
-          <a class="board-card dailies-kind-board" data-dailies-tab="equipment" [href]="full" title="يوميات المعدات من الشاشة الكاملة (الحزمة 8.7)">
-            <div class="board-card-icon">🛻</div><div class="board-card-title">المعدات والمركبات</div><div class="board-card-meta"><span>الشاشة الكاملة</span></div>
+          <a class="board-card dailies-kind-board" data-dailies-tab="equipment" routerLink="/equipment" [queryParams]="{ view: 'daily' }" title="جدول كشف أيام المعدات (DEC-0139)">
+            <div class="board-card-icon">🛻</div><div class="board-card-title">المعدات والمركبات</div><div class="board-card-meta"><span>جدول كشف الأيام</span></div>
           </a>
         </div>
       </div>
@@ -169,7 +170,7 @@ function previewNet(status: string, wage: number, days: number, ded: number) {
             <div class="form-grid form-grid-2">
               <label [style.order]="fo.order['kind']" [style.display]="fo.hide['kind'] ? 'none' : null" [style.grid-column]="gc('kind', false)">{{ fo.label['kind'] || 'النوع *' }}<select class="input" id="wattType" [(ngModel)]="e.personType" (ngModelChange)="e.personId = ''; fillWage()"><option value="worker">عامل</option><option value="supervisor">مشرف</option><option value="driver">سائق</option><option value="equipment">معدة</option></select></label>
               <label id="wattPersonLabel" [style.order]="fo.order['person']" [style.display]="fo.hide['person'] ? 'none' : null" [style.grid-column]="gc('person', false)">{{ fo.label['person'] || 'الشخص / المعدة *' }}
-                @if (e.personType === 'equipment') { <a class="btn btn-outline btn-sm" [href]="full" style="display:block;margin-top:6px;">يوميات المعدات من الشاشة الكاملة</a> }
+                @if (e.personType === 'equipment') { <a class="btn btn-outline btn-sm" routerLink="/equipment" [queryParams]="{ view: 'daily' }" style="display:block;margin-top:6px;">يوميات المعدات من جدول المعدات</a> }
                 @else { <select class="input" id="wattPerson" [(ngModel)]="e.personId" (ngModelChange)="fillWage(); sameDay()"><option value="">اكتب الاسم أو الكود...</option>@for (p of o.people[e.personType] || []; track p.id) { <option [value]="p.id">{{ (p.code ? p.code + ' — ' : '') + p.name }}</option> }</select> }
               </label>
               <label [style.order]="fo.order['status']" [style.display]="fo.hide['status'] ? 'none' : null" [style.grid-column]="gc('status', false)">{{ fo.label['status'] || 'الحالة' }}<select class="input" id="wattStatus" [(ngModel)]="e.status" (ngModelChange)="onStatus()">@for (s of statusesByLabel; track s.code) { <option [value]="s.code">{{ s.label }}</option> }</select></label>
@@ -248,6 +249,7 @@ function previewNet(status: string, wage: number, days: number, ded: number) {
     }`,
 })
 export class WorkerAttendancePage implements OnInit {
+  private readonly router = inject(Router);
   private readonly http = inject(HttpClient);
   private readonly session = inject(SessionService);
   private readonly toast = new LegacyToast();
@@ -369,7 +371,7 @@ export class WorkerAttendancePage implements OnInit {
   close() { this.modal.set(false); this.error.set(''); this.same.set(null); }
   async save(addAnother: boolean) {
     const e = this.e;
-    if (e['personType'] === 'equipment') { location.href = this.full; return; }
+    if (e['personType'] === 'equipment') { void this.router.navigate(['/equipment'], { queryParams: { view: 'daily' } }); return; }
     if (!e['personId']) { this.toast.show('اختر الشخص / المعدة'); return; }
     this.saving.set(true); this.error.set('');
     const body: P = { personType: e['personType'], personId: e['personId'], date: e['date'], status: e['status'], days: String(e['days'] ?? ''), project: e['project'], site: e['site'], notes: e['notes'] };

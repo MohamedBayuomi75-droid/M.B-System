@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { legacyUrl } from '../core/page-routes';
 import { errorCode, errorMessage, SessionService } from '../core/session.service';
@@ -249,6 +250,7 @@ const DATE_FIELDS = new Set(['Inspection', 'LicIssue', 'VehLicExp', 'PurchaseDat
 })
 export class EquipmentPage implements OnInit {
   private readonly http = inject(HttpClient);
+  private readonly route = inject(ActivatedRoute);
   private readonly session = inject(SessionService);
   private readonly toast = new LegacyToast();
   readonly full = legacyUrl('equipment');
@@ -312,7 +314,7 @@ export class EquipmentPage implements OnInit {
     return layoutTable('equipment', false, head, body, layout, this.byId(), { date: fmtDate });
   });
 
-  ngOnInit() { void this.load(); }
+  ngOnInit() { void this.load(); if (this.route.snapshot.queryParamMap.get('view') === 'daily') this.openGrid(); }
   enter(id: string) { this.dept.set(id); this.f = { ...EMPTY }; this.page.set(1); void this.load(); }
   back() { this.dept.set(null); this.f = { ...EMPTY }; void this.load(); }
   reload(debounce = false) {
