@@ -30,6 +30,8 @@ async function login(page, username, password) {
   await page.fill('#username', username); await page.fill('#password', password); await page.click('#loginBtn');
 }
 
+/** يقرا الـ body أول ما الرد يوصل (قبل ما الشاشة تحدّث نفسها — وإلا Playwright بيرمي «No data found for resource») */
+const withBody = async (r) => { const body = await r.json().catch(() => null); return { status: () => r.status(), json: async () => body }; };
 (async () => {
   process.env.REQUIRE_2FA_ROLES = 'clientsSales';
   srv = await startWebServer();
@@ -143,7 +145,7 @@ async function login(page, username, password) {
     await A.page.click('#btnAddTempWorker'); await A.page.waitForSelector('#btnSaveWrk');
     eq(await A.page.inputValue('#wrkCode'), 'WRK-003', 'auto code prefilled');
     await A.page.fill('#wrkName', 'عامل الواجهة'); await A.page.fill('#wrkWageTemp', '275.555'); await A.page.fill('#wrkPosTemp', 'مساعد');
-    const [pr] = await Promise.all([A.page.waitForResponse((r) => r.url().endsWith('/api/v1/workers') && r.request().method() === 'POST'), A.page.click('#btnSaveWrk')]);
+    const [pr] = await Promise.all([A.page.waitForResponse((r) => r.url().endsWith('/api/v1/workers') && r.request().method() === 'POST').then(withBody), A.page.click('#btnSaveWrk')]);
     eq(pr.status(), 201, 'temporary worker created through the modal');
     const created = await pr.json();
     ok(created.dailyWage === 275.56 && created.departmentId === '__core_workers_temp__' && created.insuranceStatus === 'none', 'saved like the legacy modal (round2, temp department)', created);
@@ -153,7 +155,7 @@ async function login(page, username, password) {
     await A.page.fill('#wrkName', 'عامل الواجهة');
     await A.page.click('#btnSaveWrk'); await A.page.waitForSelector('#appSubModal #btnDupForce');
     eq(await A.page.$eval('#appSubModal h3', (h) => h.textContent.trim()), '⚠️ يوجد سجلات متشابهة', 'duplicate name → similarity dialog (legacy guardEntityDuplicates)');
-    const [pd] = await Promise.all([A.page.waitForResponse((r) => r.url().endsWith('/api/v1/workers') && r.request().method() === 'POST'), A.page.click('#appSubModal #btnDupForce')]);
+    const [pd] = await Promise.all([A.page.waitForResponse((r) => r.url().endsWith('/api/v1/workers') && r.request().method() === 'POST').then(withBody), A.page.click('#appSubModal #btnDupForce')]);
     eq(pd.status(), 201, '«حفظ على أي حال» saves');
     await A.page.click('.btn-edit-wrk[data-id="w2"]'); await A.page.waitForSelector('#wrkSalary');
     ok(!!(await A.page.inputValue('#wrkHire')), 'hire date prefilled with today when empty (legacy form)');
@@ -425,7 +427,7 @@ async function login(page, username, password) {
     await A.page.waitForFunction(() => (document.getElementById('appToast')?.textContent || '').includes('الرصيد غير كافٍ'));
     ok(!!(await A.page.$('#appModal')), 'over-availability transfer blocked in the modal (legacy toast)');
     await A.page.fill('#whModalForm [data-field="qty"]', '2');
-    const [pt] = await Promise.all([A.page.waitForResponse((r) => r.url().endsWith('/api/v1/warehouses/transfers') && r.request().method() === 'POST'), A.page.click('#whModalSave')]);
+    const [pt] = await Promise.all([A.page.waitForResponse((r) => r.url().endsWith('/api/v1/warehouses/transfers') && r.request().method() === 'POST').then(withBody), A.page.click('#whModalSave')]);
     eq(pt.status(), 201, 'valid transfer from the screen');
     ok(/^MV-\d{4}$/.test((await pt.json()).id), 'transfer code in the legacy format (MV-NNNN)');
     await A.page.waitForSelector('#whMoves tr[data-id]');
@@ -508,7 +510,7 @@ async function login(page, username, password) {
     await A.page.fill('#inv_baseValue', '1000'); await A.page.fill('#inv_vat', '140'); await A.page.fill('#inv_discountRate', '1');
     eq(await A.page.inputValue('#inv_withheld'), '10', 'withheld suggested = base x rate (legacy suggestWithheld)');
     ok((await A.page.inputValue('#inv_netInvoice')).startsWith('١,١٣٠'), 'net shown live (display only)');
-    const [pr] = await Promise.all([A.page.waitForResponse((r) => r.url().endsWith('/api/v1/supplier-invoices') && r.request().method() === 'POST'), A.page.click('#m_save')]);
+    const [pr] = await Promise.all([A.page.waitForResponse((r) => r.url().endsWith('/api/v1/supplier-invoices') && r.request().method() === 'POST').then(withBody), A.page.click('#m_save')]);
     eq(pr.status(), 201, 'saved from the modal (Idempotency-Key sent)');
     const inv = await pr.json();
     ok(/^PI-2026-\d{5}$/.test(inv.internalNo) && inv.netInvoice === 1130 && inv.description === 'أسمنت\nحديد' && inv.quantity === '10\n', 'server formula + internal number + item rows joined like the legacy modal', inv);
@@ -529,7 +531,7 @@ async function login(page, username, password) {
     await A.page.selectOption('#inv_linkedInvoice', inv.id);
     await A.page.fill('#inv_number', 'UI-R1'); await A.page.fill('#inv_date', '2026-05-03'); await A.page.fill('#inv_baseValue', '1130');
     ok((await A.page.textContent('#inv_linkedHint')).includes('مرتجع كامل'), 'linked hint: full return cancels the original');
-    const [rr] = await Promise.all([A.page.waitForResponse((r) => r.url().endsWith('/api/v1/supplier-invoices') && r.request().method() === 'POST'), A.page.click('#m_save')]);
+    const [rr] = await Promise.all([A.page.waitForResponse((r) => r.url().endsWith('/api/v1/supplier-invoices') && r.request().method() === 'POST').then(withBody), A.page.click('#m_save')]);
     eq([rr.status(), (await rr.json()).internalNo.slice(0, 3)], [201, 'PR-'], 'return saved with a PR- number');
     await A.page.goto(srv.base + '/app/supplier-invoices'); await A.page.waitForSelector(`#invTable tr[data-viewinv="${inv.id}"]`);
     ok((await A.page.textContent(`#invTable tr[data-viewinv="${inv.id}"]`)).includes('فاتورة ملغاة'), 'original shows «فاتورة ملغاة»');
@@ -565,9 +567,10 @@ async function login(page, username, password) {
     eq(await A.page.inputValue('.m_pay_inv_amt[data-invid="pay-ui-i1"]'), '1130', 'checking an invoice pre-fills its remaining (legacy)');
     await A.page.fill('.m_pay_inv_amt[data-invid="pay-ui-i1"]', '700');
     ok((await A.page.textContent('#m_pay_allocHint')).includes('متبقي للتوزيع'), 'allocation hint: remainder');
-    const [pr] = await Promise.all([A.page.waitForResponse((r) => r.url().endsWith('/api/v1/supplier-payments') && r.request().method() === 'POST'), A.page.click('#m_pay_save')]);
-    eq(pr.status(), 201, 'saved from the modal (Idempotency-Key sent)');
-    const pay = await pr.json();
+    // الـ body بيتقري أول ما الرد يوصل (قبل ما الشاشة تحدّث نفسها — وإلا Playwright بيرمي «No data found for resource»)
+    const [pr] = await Promise.all([A.page.waitForResponse((r) => r.url().endsWith('/api/v1/supplier-payments') && r.request().method() === 'POST').then(async (r) => ({ status: r.status(), body: await r.json() })), A.page.click('#m_pay_save')]);
+    eq(pr.status, 201, 'saved from the modal (Idempotency-Key sent)');
+    const pay = pr.body;
     eq(pay.batch.map((b) => [b.invoiceId, b.amount]), [['pay-ui-i1', 700], ['', 300]], 'one record per invoice + the remainder, same batch');
     ok(/^PV-2026-\d{5}$/.test(pay.internalNo), 'PV- internal number');
     await A.page.waitForSelector(`#payTable tr[data-viewpay="${pay.id}"]`);

@@ -7924,7 +7924,7 @@
    "title": "دالة حساب equipmentDailyCost",
    "module": "مشترك (core)",
    "priority": "P0",
-   "evidence": "renderer/core/helpers.js:7819",
+   "evidence": "renderer/core/helpers.js:7848",
    "tests": [
     "tests-merge/phase59.js",
     "tools/formulas/compare.js"
