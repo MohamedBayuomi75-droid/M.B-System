@@ -10,7 +10,7 @@ import { flagsOf, toInt } from '../dailies/dailies-rules';
 import { cairoTodayIso } from '../parties/parties.service';
 import { CORE_DEPTS_OF, J } from '../workers/worker-rules';
 import {
-  configuredSalary, Ctx, employeePenaltyTotal, employeeRow, expensesTotal, isActualPayment, laborRow, logTotals, logView, paymentsLog, PKind, smartMatch, supervisorRow, supervisorStatement, unpaidBonuses,
+  configuredSalary, Ctx, employeePenaltyTotal, employeeRow, equipmentRow, expensesTotal, isActualPayment, laborRow, logTotals, logView, paymentsLog, PKind, smartMatch, supervisorRow, supervisorStatement, unpaidBonuses,
 } from './dues-rules';
 import { DuesQuery, ItemsDto, PayDto } from './dues.dto';
 import { DuesRepository, Row } from './dues.repository';
@@ -57,7 +57,7 @@ export class DuesService {
     const [w, s, d, e, q, att, eAtt, pays, pens, costs, exps, supExp, eqd, payroll, deps] = r.map(flat);
     const settings = ((await this.repo.doc('settings', em))?.data || {}) as J;
     const people = { worker: w, supervisor: s, driver: d, employee: e, equipment: q };
-    return { people, att, empAtt: eAtt, pays, empPens: pens, costs, expenses: exps, supExpenses: supExp, eqDaily: eqd, payroll, settings, departments: deps,
+    return { people, att, empAtt: eAtt, pays, empPens: pens, costs, expenses: exps, supExpenses: supExp, eqDaily: eqd, payroll, settings, departments: deps, idlePercent: settings.equipmentIdlePercent !== undefined && Number(settings.equipmentIdlePercent) >= 0 ? Number(settings.equipmentIdlePercent) : 50,
       flags: flagsOf(att, { worker: w, supervisor: s, driver: d }), rows: { pays: r[7], pens: r[8] } };
   }
   private assert(u: AuthUser, action: 'view' | 'add' | 'edit' | 'delete') {
@@ -111,10 +111,11 @@ export class DuesService {
     if (query) list = list.filter((p) => smartMatch(p.name, query) || smartMatch(p.code, query));
     const supName = (id: string) => { const s = c.people.supervisor.find((x) => x.id === id); return s ? s.name || '' : '—'; };
     const depName = (id: string) => { const d = c.departments.find((x) => x.id === id); return d ? d.name || '' : ''; };
-    const rows = kind === 'supervisor' ? list.map((s) => supervisorRow(c, s, F, T))
+    const rows = kind === 'equipment' ? list.map((e) => equipmentRow(c, e, F, T, e.supervisorId ? supName(e.supervisorId) : '—'))
+      : kind === 'supervisor' ? list.map((s) => supervisorRow(c, s, F, T))
       : kind === 'employee' ? list.map((e) => employeeRow(c, e, F, T, depName(e.departmentId)))
       : list.map((p) => laborRow(c, kind as 'worker' | 'driver', p, F, T, kind === 'worker' ? supName(p.supervisorId) : ''));
-    const cards = kind === 'employee' ? null : {
+    const cards = kind === 'employee' ? null : kind === 'equipment' ? { due: sumMoney(rows.map((r) => r.due)), legacyDue: Math.round(rows.reduce((s, r) => s + r.legacyDue, 0) * 100) / 100, equipment: true } : {
       due: sumMoney(rows.map((r) => (kind === 'supervisor' ? r.totalDue : r.due))), paid: Math.round(rows.reduce((s, r) => s + r.paid, 0) * 100) / 100, bal: sumMoney(rows.map((r) => r.bal)),
       legacyDue: Math.round(rows.reduce((s, r) => s + (kind === 'supervisor' ? r.legacyTotalDue : r.legacyDue), 0) * 100) / 100, legacyBal: Math.round(rows.reduce((s, r) => s + r.legacyBal, 0) * 100) / 100,
     };
@@ -131,16 +132,16 @@ export class DuesService {
   async payOptions(u: AuthUser, kind: string, id: string) {
     this.assert(u, 'view');
     const c = await this.ctx();
-    const k = (['worker', 'supervisor', 'driver', 'employee'].includes(kind) ? kind : 'worker') as PKind;
+    const k = (['worker', 'supervisor', 'driver', 'employee', 'equipment'].includes(kind) ? kind : 'worker') as PKind;
     const byName = (xs: J[]) => xs.slice().sort((a, b) => String(a.name || '').localeCompare(String(b.name || ''), 'ar', { sensitivity: 'base' }));
-    const people = Object.fromEntries((['employee', 'supervisor', 'worker', 'driver'] as PKind[]).map((pk) => [pk, byName(c.people[pk]).map((p) => ({ id: p.id, name: p.name || '', code: p.code || '', departmentId: deptOf(p) }))]));
+    const people = Object.fromEntries((['employee', 'supervisor', 'worker', 'driver', 'equipment'] as PKind[]).map((pk) => [pk, byName(c.people[pk]).map((p) => ({ id: p.id, name: p.name || '', code: p.code || '', departmentId: deptOf(p) }))]));
     const pools = Object.fromEntries(await Promise.all(Object.entries(DEFAULT_POOLS).map(async ([key, def]) => {
       const cur = (await this.repo.doc(key))?.data; const seeded = (await this.repo.doc(def.seed))?.data;
       const arr = Array.isArray(cur) ? (cur as string[]).slice() : [];
       if (!seeded) def.items.forEach((x) => { if (!arr.includes(x)) arr.push(x); });
       return [key, arr];
     })));
-    const out: J = { today: cairoTodayIso(), people, pools, layout: await this.layoutDocs('payments'), departments: Object.fromEntries((['employee', 'supervisor', 'worker', 'driver'] as PKind[]).map((pk) => [pk, this.deptsFor(c, pk).map((d) => ({ id: d.id, name: d.name || '' }))])) };
+    const out: J = { today: cairoTodayIso(), people, pools, layout: await this.layoutDocs('payments'), departments: Object.fromEntries((['employee', 'supervisor', 'worker', 'driver', 'equipment'] as PKind[]).map((pk) => [pk, this.deptsFor(c, pk).map((d) => ({ id: d.id, name: d.name || '' }))])) };
     if (id) {
       const p = c.people[k].find((x) => x.id === id);
       if (!p) throw new NotFoundException({ statusCode: 404, code: 'NOT_FOUND', message: 'الشخص غير موجود' });
@@ -170,7 +171,7 @@ export class DuesService {
       const st = supervisorStatement(c, p);
       return scope === 'close_account' ? st.totalBal : scope === 'workers' ? sumMoney(st.workers.map((w) => (Number(w.bal) > 0 ? w.bal : '0'))) : st.ownBal;
     }
-    return String(kind === 'employee' ? employeeRow(c, p).bal : laborRow(c, kind as 'worker' | 'driver', p).bal);
+    return String(kind === 'employee' ? employeeRow(c, p).bal : kind === 'equipment' ? equipmentRow(c, p).bal : laborRow(c, kind as 'worker' | 'driver', p).bal);
   }
 
   /** حفظ النافذة (btnSaveUp) — نفس السجلات اللي القديمة بتخزنها، ومعاها قاعدة السلفة */

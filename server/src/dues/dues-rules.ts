@@ -7,13 +7,14 @@
  */
 import { Money } from '../common/money';
 import { attPersonId, attType, daysCredit, DKind, Flag, legacyNet, newNet, round2, toInt } from '../dailies/dailies-rules';
+import { newCost } from '../equipment/equipment-rules';
 
 type J = Record<string, any>;
 export type PKind = 'worker' | 'supervisor' | 'driver' | 'employee' | 'equipment';
 export interface Ctx {
   people: { worker: J[]; supervisor: J[]; driver: J[]; employee: J[]; equipment: J[] };
   att: J[]; empAtt: J[]; pays: J[]; empPens: J[]; costs: J[]; expenses: J[]; supExpenses: J[]; eqDaily: J[]; payroll: J[];
-  settings: J; flags: Map<string, Flag[]>; departments: J[];
+  settings: J; flags: Map<string, Flag[]>; departments: J[]; idlePercent?: number;
 }
 const m = (v: Money) => v.toFixed().replace(/\.?0+$/, '') || '0';
 const inRange = (d: unknown, F?: string, T?: string) => !(F && String(d || '') < F) && !(T && String(d || '') > T);
@@ -236,6 +237,21 @@ export function supervisorRow(c: Ctx, s: J, F?: string, T?: string): DuesRow {
   return { id: s.id, code: s.code || '', name: s.name || '', dailyWage: s.dailyWage ?? null, days: st.ownDays, extras: st.ownExtras, due: st.ownDue, workersDue: st.workersDue,
     expenses: st.totalExpenses, equipCost: st.equipCost, penalty: st.totalPenalty, paid: st.totalPaid, bal: st.totalBal, totalDue: st.totalDue,
     legacyDue: st.legacy.ownDue, legacyWorkersDue: st.legacy.workersDue, legacyBal: st.legacy.totalBal, legacyTotalDue: st.legacy.totalDue, paidBadge: badge(st.totalDue, st.totalPaid, st.totalBal) };
+}
+
+/**
+ * صف معدة (renderDuesEquipment): التكلفة القديمة (equipmentDailyCost) والجديدة (DEC-0140)، و«أيام التشغيل» = **مجموع الأيام** (DEC-0139 د-3)
+ * والقديمة (عدد السجلات) جنبها.
+ */
+export function equipmentRow(c: Ctx, eq: J, F?: string, T?: string, supName = ''): DuesRow {
+  const logs = c.eqDaily.filter((d) => d.equipmentId === eq.id && inRange(d.date, F, T));
+  const hours = logs.reduce((s, d) => s + (Number(d.hours) || 0), 0);
+  const baseL = toInt(logs.reduce((s, d) => s + equipmentDailyCost(d, eq), 0)), baseN = Money.sum(logs.map((d) => newCost(d, eq, c.idlePercent ?? 50)).concat(['0']));
+  const paid = paidTotal(c, 'equipment', eq.id, F, T), penalty = penaltyTotal(c, 'equipment', eq.id, F, T), expenses = expensesTotal(c, 'equipment', eq.id, F, T), extras = extrasTotal(c, 'equipment', eq.id, F, T);
+  const legacyDue = toInt(baseL + extras), legacyBal = toInt(legacyDue - paid - penalty - expenses);
+  const due = baseN.plus(String(extras)), bal = due.minus(String(paid)).minus(String(penalty)).minus(String(expenses));
+  return { id: eq.id, code: eq.code || '', name: eq.name || '', supervisorName: supName, hourlyCost: toInt(eq.hourlyCost), days: Math.round(logs.reduce((s, d) => s + (Number(d.days) > 0 ? Number(d.days) : 1), 0) * 100) / 100,
+    legacyDays: logs.length, hours: Math.round(hours * 10) / 10, extras, penalty, expenses, paid, baseDue: m(baseN), due: m(due), bal: m(bal), legacyBaseDue: baseL, legacyDue, legacyBal, paidBadge: badge(m(due), paid, m(bal)) };
 }
 
 // ---------------- سجل الصرف والخصومات (renderDuesPaymentsList)

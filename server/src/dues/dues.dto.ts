@@ -3,7 +3,7 @@ import { Type } from 'class-transformer';
 import { ArrayMaxSize, IsArray, IsBoolean, IsIn, IsInt, IsOptional, IsString, MaxLength, Min, ValidateNested } from 'class-validator';
 
 export class DuesQuery {
-  @ApiPropertyOptional({ enum: ['workers', 'supervisors', 'drivers', 'employees'] }) @IsOptional() @IsIn(['workers', 'supervisors', 'drivers', 'employees']) tab?: string;
+  @ApiPropertyOptional({ enum: ['workers', 'supervisors', 'drivers', 'employees', 'equipment'] }) @IsOptional() @IsIn(['workers', 'supervisors', 'drivers', 'employees', 'equipment']) tab?: string;
   @ApiPropertyOptional({ description: 'القسم («» = الكل، و__none__ = بدون قسم)' }) @IsOptional() @IsString() @MaxLength(80) dept?: string;
   @ApiPropertyOptional() @IsOptional() @IsString() @MaxLength(10) from?: string;
   @ApiPropertyOptional() @IsOptional() @IsString() @MaxLength(10) to?: string;
@@ -16,7 +16,7 @@ export class PayLineDto {
 export class PayDto {
   @ApiProperty({ enum: ['pay', 'extras', 'penalty'], description: 'pay = دفع مستحق · extras = بدلات ومكافآت (مستحق) · penalty = خصم / جزاء' })
   @IsIn(['pay', 'extras', 'penalty']) mode: 'pay' | 'extras' | 'penalty';
-  @ApiProperty({ enum: ['worker', 'supervisor', 'driver', 'employee'] }) @IsIn(['worker', 'supervisor', 'driver', 'employee']) personType: 'worker' | 'supervisor' | 'driver' | 'employee';
+  @ApiProperty({ enum: ['worker', 'supervisor', 'driver', 'employee', 'equipment'] }) @IsIn(['worker', 'supervisor', 'driver', 'employee', 'equipment']) personType: 'worker' | 'supervisor' | 'driver' | 'employee' | 'equipment';
   @ApiProperty() @IsString() @MaxLength(80) personId: string;
   @ApiPropertyOptional() @IsOptional() @IsString() @MaxLength(10) date?: string;
   @ApiPropertyOptional() @IsOptional() @IsString() @MaxLength(2000) notes?: string;

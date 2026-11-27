@@ -44,7 +44,7 @@ const DOC_ALIASES: Record<string, string[]> = {
   res_military: ['جيش', 'عسكري', 'شهادة الجيش'], res_resign_request: ['طلب استقالة', 'استقالة'], res_clearance: ['إخلاء طرف', 'اخلاء طرف'],
   res_final_settlement: ['مخالصة', 'مخالصة مالية', 'مخالصة نهائية'], res_docs_receipt: ['إيصال استلام', 'استلام أصول', 'أصول المستندات'],
 };
-const DOC_EXCLUDE_WORDS: Record<string, string[]> = { driver_license_img: ['بيانات'], driver_license: ['بيانات'], vehicle_license: ['سائق', 'قيادة'], photo: ['بطاقة'] };
+export const DOC_EXCLUDE_WORDS: Record<string, string[]> = { driver_license_img: ['بيانات'], driver_license: ['بيانات'], vehicle_license: ['سائق', 'قيادة'], photo: ['بطاقة'] };
 
 // ---------------- أرقام وتواريخ
 export function round2(n: unknown): number { const x = Number(n); if (!Number.isFinite(x)) return 0; return Math.round((x + (x < 0 ? -Number.EPSILON : Number.EPSILON)) * 100) / 100; }

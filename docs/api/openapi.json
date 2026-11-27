@@ -1832,7 +1832,8 @@
        "worker",
        "supervisor",
        "driver",
-       "employee"
+       "employee",
+       "equipment"
       ],
       "type": "string"
      },
@@ -2109,6 +2110,143 @@
      "date",
      "project"
     ],
+    "type": "object"
+   },
+   "SaveEquipmentDailyDto": {
+    "properties": {
+     "dailyCost": {
+      "type": "string"
+     },
+     "date": {
+      "type": "string"
+     },
+     "days": {
+      "type": "string"
+     },
+     "equipmentId": {
+      "type": "string"
+     },
+     "extraCost": {
+      "type": "string"
+     },
+     "fuelLiters": {
+      "type": "string"
+     },
+     "fuelPrice": {
+      "type": "string"
+     },
+     "hourlyCost": {
+      "type": "string"
+     },
+     "hours": {
+      "type": "string"
+     },
+     "kind": {
+      "enum": [
+       "work",
+       "idle",
+       "move"
+      ],
+      "type": "string"
+     },
+     "moveCost": {
+      "description": "تكلفة النقل (DEC-0140) — إلزامية ليوم «نقل»",
+      "type": "string"
+     },
+     "notes": {
+      "type": "string"
+     },
+     "productivity": {
+      "type": "string"
+     },
+     "project": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "equipmentId",
+     "date"
+    ],
+    "type": "object"
+   },
+   "SaveEquipmentDto": {
+    "properties": {
+     "carType": {
+      "description": "نوع السيارة",
+      "type": "string"
+     },
+     "chassisNumber": {
+      "type": "string"
+     },
+     "code": {
+      "type": "string"
+     },
+     "color": {
+      "type": "string"
+     },
+     "confirmDuplicates": {
+      "description": "تأكيد الحفظ رغم التشابه",
+      "type": "boolean"
+     },
+     "driverId": {
+      "type": "string"
+     },
+     "extraFields": {
+      "items": {
+       "type": "object"
+      },
+      "type": "array"
+     },
+     "inspectionDate": {
+      "type": "string"
+     },
+     "insuranceNumber": {
+      "type": "string"
+     },
+     "insuranceStatus": {
+      "type": "string"
+     },
+     "lastMaintenance": {
+      "type": "string"
+     },
+     "licenseIssueDate": {
+      "type": "string"
+     },
+     "model": {
+      "type": "string"
+     },
+     "motorNumber": {
+      "type": "string"
+     },
+     "nextMaintenance": {
+      "type": "string"
+     },
+     "notes": {
+      "type": "string"
+     },
+     "ownership": {
+      "type": "string"
+     },
+     "purchaseDate": {
+      "type": "string"
+     },
+     "purchasePrice": {
+      "type": "string"
+     },
+     "status": {
+      "type": "string"
+     },
+     "type": {
+      "description": "نوع الترخيص: معرّف قسم من أقسام المعدات أو اسم جديد",
+      "type": "string"
+     },
+     "vehicleLicenseExpiry": {
+      "type": "string"
+     },
+     "vehicleNumber": {
+      "type": "string"
+     }
+    },
     "type": "object"
    },
    "SaveInvoiceDto": {
@@ -2856,6 +2994,153 @@
      "personId",
      "date",
      "project",
+     "rev"
+    ],
+    "type": "object"
+   },
+   "UpdateEquipmentDailyDto": {
+    "properties": {
+     "dailyCost": {
+      "type": "string"
+     },
+     "date": {
+      "type": "string"
+     },
+     "days": {
+      "type": "string"
+     },
+     "equipmentId": {
+      "type": "string"
+     },
+     "extraCost": {
+      "type": "string"
+     },
+     "fuelLiters": {
+      "type": "string"
+     },
+     "fuelPrice": {
+      "type": "string"
+     },
+     "hourlyCost": {
+      "type": "string"
+     },
+     "hours": {
+      "type": "string"
+     },
+     "kind": {
+      "enum": [
+       "work",
+       "idle",
+       "move"
+      ],
+      "type": "string"
+     },
+     "moveCost": {
+      "description": "تكلفة النقل (DEC-0140) — إلزامية ليوم «نقل»",
+      "type": "string"
+     },
+     "notes": {
+      "type": "string"
+     },
+     "productivity": {
+      "type": "string"
+     },
+     "project": {
+      "type": "string"
+     },
+     "rev": {
+      "type": "number"
+     }
+    },
+    "required": [
+     "equipmentId",
+     "date",
+     "rev"
+    ],
+    "type": "object"
+   },
+   "UpdateEquipmentDto": {
+    "properties": {
+     "carType": {
+      "description": "نوع السيارة",
+      "type": "string"
+     },
+     "chassisNumber": {
+      "type": "string"
+     },
+     "code": {
+      "type": "string"
+     },
+     "color": {
+      "type": "string"
+     },
+     "confirmDuplicates": {
+      "description": "تأكيد الحفظ رغم التشابه",
+      "type": "boolean"
+     },
+     "driverId": {
+      "type": "string"
+     },
+     "extraFields": {
+      "items": {
+       "type": "object"
+      },
+      "type": "array"
+     },
+     "inspectionDate": {
+      "type": "string"
+     },
+     "insuranceNumber": {
+      "type": "string"
+     },
+     "insuranceStatus": {
+      "type": "string"
+     },
+     "lastMaintenance": {
+      "type": "string"
+     },
+     "licenseIssueDate": {
+      "type": "string"
+     },
+     "model": {
+      "type": "string"
+     },
+     "motorNumber": {
+      "type": "string"
+     },
+     "nextMaintenance": {
+      "type": "string"
+     },
+     "notes": {
+      "type": "string"
+     },
+     "ownership": {
+      "type": "string"
+     },
+     "purchaseDate": {
+      "type": "string"
+     },
+     "purchasePrice": {
+      "type": "string"
+     },
+     "rev": {
+      "type": "number"
+     },
+     "status": {
+      "type": "string"
+     },
+     "type": {
+      "description": "نوع الترخيص: معرّف قسم من أقسام المعدات أو اسم جديد",
+      "type": "string"
+     },
+     "vehicleLicenseExpiry": {
+      "type": "string"
+     },
+     "vehicleNumber": {
+      "type": "string"
+     }
+    },
+    "required": [
      "rev"
     ],
     "type": "object"
@@ -6285,7 +6570,8 @@
         "workers",
         "supervisors",
         "drivers",
-        "employees"
+        "employees",
+        "equipment"
        ],
        "type": "string"
       }
@@ -6648,6 +6934,427 @@
     "summary": "تعديل موظف (rev إلزامي): الدمج، والاستقالة (النهارده)، وأرشيف المستقيلين — في معاملة واحدة",
     "tags": [
      "v1 employees"
+    ]
+   }
+  },
+  "/api/v1/equipment": {
+   "get": {
+    "operationId": "EquipmentController_list",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "q",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "status",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "ownership",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "project",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "type",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "description": "القسم (لوحة)، و«__none__» = بدون قسم أو نوع ترخيص",
+      "in": "query",
+      "name": "departmentId",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "xLic",
+      "required": false,
+      "schema": {
+       "enum": [
+        "",
+        "valid",
+        "soon",
+        "expired",
+        "none"
+       ],
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "xIns",
+      "required": false,
+      "schema": {
+       "enum": [
+        "",
+        "insured",
+        "none",
+        "pending",
+        "empty"
+       ],
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "xDocs",
+      "required": false,
+      "schema": {
+       "enum": [
+        "",
+        "missing",
+        "complete"
+       ],
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "المعدات بنفس فلاتر الصفحة القديمة، واللوحات، والكروت (تكلفة الشهر بالحسابين)، والملاحظات",
+    "tags": [
+     "v1 equipment"
+    ]
+   },
+   "post": {
+    "operationId": "EquipmentController_create",
+    "parameters": [],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/SaveEquipmentDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "إضافة معدة (Idempotency-Key إلزامي) بنفس زرار الحفظ القديم",
+    "tags": [
+     "v1 equipment"
+    ]
+   }
+  },
+  "/api/v1/equipment/daily": {
+   "get": {
+    "operationId": "EquipmentController_daily",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "from",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "to",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "q",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "status",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "project",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "dept",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "الجدول الشهري ولوحة المعدات في اليوميات وسجلات الفترة (التكلفة القديمة والجديدة DEC-0140)",
+    "tags": [
+     "v1 equipment"
+    ]
+   },
+   "post": {
+    "operationId": "EquipmentController_createDaily",
+    "parameters": [],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/SaveEquipmentDailyDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "تسجيل يومية معدة (Idempotency-Key إلزامي) — ويوم «نقل» بتكلفة النقل",
+    "tags": [
+     "v1 equipment"
+    ]
+   }
+  },
+  "/api/v1/equipment/daily/{id}": {
+   "delete": {
+    "operationId": "EquipmentController_removeDaily",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "rev",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "tags": [
+     "v1 equipment"
+    ]
+   },
+   "get": {
+    "operationId": "EquipmentController_getDaily",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "tags": [
+     "v1 equipment"
+    ]
+   },
+   "patch": {
+    "operationId": "EquipmentController_updateDaily",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/UpdateEquipmentDailyDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "tags": [
+     "v1 equipment"
+    ]
+   }
+  },
+  "/api/v1/equipment/form-options": {
+   "get": {
+    "operationId": "EquipmentController_formOptions",
+    "parameters": [],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "خيارات نافذة المعدة واليومية",
+    "tags": [
+     "v1 equipment"
+    ]
+   }
+  },
+  "/api/v1/equipment/{id}": {
+   "get": {
+    "operationId": "EquipmentController_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "tags": [
+     "v1 equipment"
+    ]
+   },
+   "patch": {
+    "operationId": "EquipmentController_update",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/UpdateEquipmentDto"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": ""
+     }
+    },
+    "security": [
+     {
+      "bearer": []
+     }
+    ],
+    "summary": "تعديل معدة (rev إلزامي)",
+    "tags": [
+     "v1 equipment"
     ]
    }
   },

@@ -18,6 +18,7 @@ import { PeopleModule } from './people/people.module';
 import { LeavesModule } from './leaves/leaves.module';
 import { DailiesModule } from './dailies/dailies.module';
 import { DuesModule } from './dues/dues.module';
+import { EquipmentModule } from './equipment/equipment.module';
 import { NumberingModule } from './numbering/numbering.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { ApprovalsModule } from './approvals/approvals.module';
@@ -65,7 +66,7 @@ import { HistoryModule } from './history/history.module';
     HealthModule,
     FilesModule,
     ProjectsModule,
-    WorkersModule, PeopleModule, LeavesModule, DailiesModule, DuesModule,
+    WorkersModule, PeopleModule, LeavesModule, DailiesModule, DuesModule, EquipmentModule,
     NumberingModule,
     NotificationsModule,
     ApprovalsModule,
