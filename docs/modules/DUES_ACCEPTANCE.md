@@ -1,7 +1,7 @@
 # قبول المستحقات والصرف — الحزمة 8.6 (خطة v1.4.5، المرحلة 8)
 
 > **المرجع:** `PHASE_08_6_BEFORE_REPORT.md` (DEC-0137)، و`LABOR_ATTENDANCE_DECISIONS.md` (DEC-0129 لـ DEC-0134). الواجهة القديمة: `renderer/modules/hr/pages-worker-dues.js`، ودوال الأرصدة في `renderer/core/helpers.js`.
-> **الحالة:** 8.6.1 خلص (الاستكشاف واختبارات القديمة `phase83.js`). الجداول والـ API والشاشة جاية.
+> **الحالة:** 8.6.1–8.6.2 خلصوا (الاستكشاف واختبارات القديمة `phase83.js`، والجداول والنقل). الـ API والشاشة جايين.
 
 ## 1. الوظايف ← القديم ← الاختبار ← الحالة
 | # | الوظيفة | القديم | الاختبار على القديمة | الحالة |
@@ -43,3 +43,9 @@
 
 ## 4. البيانات الحقيقية
 `workerPayments` = 0، و`employeePenalties` = 0، و`payroll` = 0، و`expenses` = 0؛ و`costs` = 41، واليوميات = 880. الأثر الحقيقي في المستحق والمتبقي بس.
+
+## 5. الجداول والنقل (8.6.2)
+- جدولين: `worker_payments` و`employee_penalties` — `server/src/migrations/1765700000000-WorkerPaymentsCutover.ts`. كل حقل في عموده **لو نوعه مطابق**، والباقي في `legacy_extra` (DEC-0107). وأعمدة السلفة (DEC-0132): `is_advance` و`advance_approved_by` و`advance_approved_at`.
+- أمر النقل `npm run cutover -- worker-payments dry-run|execute|rollback` (`WORKER_PAYMENTS` في `parties-cutover.ts`). **مفيش تطبيع** (0 سجل حقيقي).
+- مصفوفة الحقول: `WORKER_PAYMENTS_FIELD_PARITY.md` (في الـ CI): الصرف 22 حقل، وخصومات الموظفين 7، و0 ضايع.
+- الاختبارات: `worker-payments-cutover.e2e` (كل أنواع الصرف، وسجل قديم من غير نوع، وقيم نوعها مختلف، والكتابة من القديمة فوق الجداول، والرجوع)، و`phase83.js` فوق الجداول (`WEB_CUTOVER` في الـ CI بقى فيه `worker-payments`).

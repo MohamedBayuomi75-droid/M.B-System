@@ -8,6 +8,7 @@ import { DRIVER_COLUMNS, SUPERVISOR_COLUMNS } from '../migrations/1765300000000-
 import { EMPLOYEE_COLUMNS } from '../migrations/1765400000000-EmployeesCutover';
 import { LEAVE_COLUMNS } from '../migrations/1765500000000-LeavesCutover';
 import { ATTENDANCE_COLUMNS, WORKER_ATTENDANCE_COLUMNS } from '../migrations/1765600000000-AttendanceCutover';
+import { EMPLOYEE_PENALTY_COLUMNS, WORKER_PAYMENT_COLUMNS } from '../migrations/1765700000000-WorkerPaymentsCutover';
 
 export type { CutoverReport } from './module-cutover';
 
@@ -154,7 +155,19 @@ export const ATTENDANCE: ModuleSpec = {
   clearTables: ['worker_attendance', 'attendance'],
 };
 
-export const MODULES: Record<string, ModuleSpec> = { parties: PARTIES, warehouses: WAREHOUSES, 'supplier-invoices': SUPPLIER_INVOICES, 'supplier-payments': SUPPLIER_PAYMENTS, projects: PROJECTS, workers: WORKERS, 'supervisors-drivers': SUPERVISORS_DRIVERS, employees: EMPLOYEES, leaves: LEAVES, attendance: ATTENDANCE };
+/** 8.6 — الصرف والخصومات وخصومات الموظفين (DEC-0137). مفيش تطبيع — نسخ زي ما هو (0 سجل حقيقي). */
+export const WORKER_PAYMENTS: ModuleSpec = {
+  label: 'worker-payments',
+  collections: [
+    { collection: 'workerPayments', table: 'worker_payments', write: 'legacy_write_worker_payment', read: 'worker_payment_to_legacy',
+      normalized: `(r.data || jsonb_build_object('id', r.id))`, typedKeys: WORKER_PAYMENT_COLUMNS.map(([, k]) => k) },
+    { collection: 'employeePenalties', table: 'employee_penalties', write: 'legacy_write_employee_penalty', read: 'employee_penalty_to_legacy',
+      normalized: `(r.data || jsonb_build_object('id', r.id))`, typedKeys: EMPLOYEE_PENALTY_COLUMNS.map(([, k]) => k) },
+  ],
+  clearTables: ['worker_payments', 'employee_penalties'],
+};
+
+export const MODULES: Record<string, ModuleSpec> = { parties: PARTIES, warehouses: WAREHOUSES, 'supplier-invoices': SUPPLIER_INVOICES, 'supplier-payments': SUPPLIER_PAYMENTS, projects: PROJECTS, workers: WORKERS, 'supervisors-drivers': SUPERVISORS_DRIVERS, employees: EMPLOYEES, leaves: LEAVES, attendance: ATTENDANCE, 'worker-payments': WORKER_PAYMENTS };
 
 export const partiesCutover = (ds: DataSource, by: string, mode: CutoverReport['mode']) => cutoverModule(ds, PARTIES, by, mode);
 export const partiesRollback = (ds: DataSource, by: string) => rollbackModule(ds, PARTIES, by);
