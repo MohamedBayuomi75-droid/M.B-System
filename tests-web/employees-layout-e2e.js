@@ -135,9 +135,14 @@ async function modals(seed = base()) {
   console.log('[الحفظ من الشاشة الجديدة]');
   // جسم الرد ممكن يختفي لو الصفحة حدّثت نفسها بعد الحفظ (CI 119: «No data found for resource») ← نقرا السجل من السيرفر بنفس التوثيق
   const bodyOf = async (r) => { try { return await r.json(); } catch (e) {
-    const auth = r.request().headers()['authorization']; const own = r.request().method() === 'POST' ? null : r.url();
-    if (!own) throw e;
-    return page.evaluate(async ([u, a]) => (await fetch(u, { headers: { Authorization: a, Accept: 'application/json' } })).json(), [own, auth]);
+    const auth = r.request().headers()['authorization'];
+    const get = (u) => page.evaluate(async ([u, a]) => (await fetch(u, { headers: { Authorization: a, Accept: 'application/json' } })).json(), [u, auth]);
+    if (r.request().method() !== 'POST') return get(r.url());
+    // POST (CI 173): السجل الجديد بالاسم من القايمة، وبعدين نقراه بمعرّفه
+    const name = String((JSON.parse(r.request().postData() || '{}').name) || '').trim(); if (!name) throw e;
+    const list = await get(`${r.url()}?q=${encodeURIComponent(name)}`); const row = (list.rows || list.items || []).find((x) => String(x.name || '').trim() === name);
+    if (!row) throw e;
+    return get(`${r.url()}/${encodeURIComponent(row.id)}`);
   } };
   const lastSaved = async (method) => { const r = await page.waitForResponse((x) => /\/api\/v1\/employees(\/[^/?]+)?$/.test(x.url()) && x.request().method() === method); return [r.status(), await bodyOf(r)]; };
   await openNew('', '#btnAddEmployee');
