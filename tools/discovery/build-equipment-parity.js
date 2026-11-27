@@ -15,7 +15,8 @@ const colsOf = (name) => { const b = mig.slice(mig.indexOf(`export const ${name}
 const eqSrc = read('renderer/modules/hr/pages-equipment.js');
 const keysIn = (src, start, end) => { const i = src.indexOf(start); const body = src.slice(src.indexOf('{', i), src.indexOf(end, i)); return [...body.matchAll(/[{,]\s*([a-z][A-Za-z_]*)\s*(?=[:,}])/g)].map((m) => m[1]); };
 // الشاشة + الخدمة (السجلات بتتبني في السيرفر بنفس شكل النافذة القديمة)
-const PAGES = { equipment: null, equipmentDaily: null };
+const SCREEN = ['frontend/src/app/features/equipment.page.ts', 'server/src/equipment/equipment.service.ts', 'server/src/equipment/equipment-rules.ts'];
+const PAGES = { equipment: SCREEN, equipmentDaily: SCREEN };
 const SOURCES = {
   equipment: { label: 'المعدات', table: 'equipment', cols: colsOf('EQUIPMENT_COLUMNS'), keys: [...keysIn(eqSrc, 'const payload = {\n      code:', '\n    };'), 'code', 'plate', 'licenseExpiry', 'licenseStatus', 'id'] },
   equipmentDaily: { label: 'يوميات المعدات', table: 'equipment_daily', cols: colsOf('EQUIPMENT_DAILY_COLUMNS'), keys: [...keysIn(eqSrc, 'const payload = {\n      equipmentId:', '\n    };'), 'equipmentId', 'moveCost', 'cost'] },

@@ -67,6 +67,17 @@ const FORM_BUILTIN_FIELDS: Record<string, Def[]> = {
     { key: 'dailyWage', label: 'اليومية', selector: '#drvWage' }, { key: 'phone', label: 'الهاتف', selector: '#drvPhone' }, { key: 'address', label: 'العنوان', selector: '#drvAddress' },
     { key: 'notes', label: 'الملاحظات', selector: '#drvNotes' },
   ],
+  // المعدات (8.7.5): نافذة المعدة وعناوين الجدول (applyFormLayout وextras.js apply)
+  equipment: [
+    { key: 'code', label: 'الكود', selector: '#eqCode' }, { key: 'licenseType', label: 'نوع الترخيص', selector: '#eqType' }, { key: 'carType', label: 'نوع السيارة', selector: '#eqCarType' },
+    { key: 'status', label: 'الحالة', selector: '#eqStatus' }, { key: 'ownership', label: 'الملكية', selector: '#eqOwnership' }, { key: 'vehicleNumber', label: 'رقم اللوحة', selector: '#eqVehicleNumber' },
+    { key: 'color', label: 'اللون', selector: '#eqColor' }, { key: 'motorNumber', label: 'رقم الماتور', selector: '#eqMotor' }, { key: 'chassisNumber', label: 'رقم الشاسيه', selector: '#eqChassis' },
+    { key: 'insuranceNumber', label: 'الرقم التأميني', selector: '#eqInsNo' }, { key: 'insuranceStatus', label: 'حالة التأمين', selector: '#eqInsStatus' }, { key: 'model', label: 'الموديل', selector: '#eqModel' },
+    { key: 'driverName', label: 'اسم السائق', selector: '#eqDriver_text' }, { key: 'purchasePrice', label: 'سعر الشراء', selector: '#eqPurchasePrice' }, { key: 'inspectionDate', label: 'تاريخ الفحص', selector: '#eqInspection' },
+    { key: 'licenseIssueDate', label: 'تاريخ إصدار الرخصة', selector: '#eqLicIssue' }, { key: 'vehicleLicenseExpiry', label: 'تاريخ انتهاء رخصة السيارة', selector: '#eqVehLicExp' },
+    { key: 'purchaseDate', label: 'تاريخ الشراء', selector: '#eqPurchaseDate', table: false }, { key: 'lastMaintenance', label: 'تاريخ آخر صيانة', selector: '#eqLastMaint', table: false },
+    { key: 'nextMaintenance', label: 'موعد الصيانة القادمة', selector: '#eqNextMaint', table: false }, { key: 'notes', label: 'الملاحظات', selector: '#eqNotes' },
+  ],
   // نافذة اليومية وحضور الموظفين (8.5.5): زي القديمة — الترتيب والأسماء الافتراضية من هنا (applyFormLayout)
   attendance: [
     { key: 'date', label: 'التاريخ', selector: '#attDate' }, { key: 'department', label: 'القسم', selector: '#attDept' }, { key: 'employee', label: 'الموظف', selector: '#attEmp' },
