@@ -1,7 +1,7 @@
 # مصفوفة التتبّع (خطة v1.4.5 — المرحلة 3)
 
 > **مولَّد** بـ `node tools/discovery/build-traceability.js` من `requirements-registry.json` + ملفات الاختبار. ماتعدّلش الملف باليد.
-> **الاختبارات** بتتلاقى بالبحث عن اسم الدالة أو الصفحة في `tests-merge/` و`tests-web/` و`tools/formulas/` و`server/test/` (152 ملف). ده **دليل إن الاختبار بيلمس العنصر**، مش إثبات إنه بيغطي كل حالاته.
+> **الاختبارات** بتتلاقى بالبحث عن اسم الدالة أو الصفحة في `tests-merge/` و`tests-web/` و`tools/formulas/` و`server/test/` (153 ملف). ده **دليل إن الاختبار بيلمس العنصر**، مش إثبات إنه بيغطي كل حالاته.
 > **الحالات** (`02` §20): Implemented ≠ Verified ≠ Accepted. **مفيش حاجة هنا Accepted**: القبول بيكون لكل موديول ببوابة.
 > **الأولويات مقترحة.**
 
@@ -156,7 +156,7 @@
 | LEG-0029 | page | الحسابات | صفحة «المستحقات» (workerDues) | renderer/modules/hr/pages-worker-dues.js:79 | legacy /legacy/ | phase61.js، phase83.js، phase84.js، phase86.js، dues-e2e.js | Verified (باختبار) | DEC-0013 (B-13)، DEC-0014 (B-14)، DEC-0015 (B-15)، DEC-0016 (B-16) |
 | LEG-0030 | page | الحسابات | صفحة «الدفعات» (ledger.payments) | renderer/modules/ledger/pages-payments.js:33 | angular /supplier-payments | phase61.js، phase21.js، phase69.js، app-e2e.js، parties.e2e-spec.ts، sp-cutover.e2e-spec.ts (+1) | Implemented (اتنقل) | DEC-0013 (B-13)، DEC-0014 (B-14)، DEC-0015 (B-15)، DEC-0016 (B-16) |
 | LEG-0031 | page | الحسابات | صفحة «مصاريف شاملة» (expenses) | renderer/modules/hr/pages-ops.js:1244 | legacy /legacy/ | phase17.js، phase26.js، phase53.js، phase59.js، phase18.js، phase19.js (+16) | Verified (باختبار) | DEC-0013 (B-13)، DEC-0014 (B-14)، DEC-0015 (B-15)، DEC-0016 (B-16) |
-| LEG-0032 | page | الحسابات | صفحة «تكاليف شاملة» (costs) | renderer/modules/hr/pages-costs.js:98 | legacy /legacy/ | phase17.js، phase59.js، phase18.js، phase83.js، phase84.js، phase85.js (+10) | Verified (باختبار) | DEC-0013 (B-13)، DEC-0014 (B-14)، DEC-0015 (B-15)، DEC-0016 (B-16) |
+| LEG-0032 | page | الحسابات | صفحة «تكاليف شاملة» (costs) | renderer/modules/hr/pages-costs.js:98 | legacy /legacy/ | phase17.js، phase59.js، phase18.js، phase83.js، phase84.js، phase85.js (+12) | Verified (باختبار) | DEC-0013 (B-13)، DEC-0014 (B-14)، DEC-0015 (B-15)، DEC-0016 (B-16) |
 | LEG-0033 | page | الحسابات | صفحة «الإيرادات» (clients.collections) | renderer/modules/clients/pages-collections.js:28 | legacy /legacy/ | phase13.js، phase20.js | Verified (باختبار) | DEC-0013 (B-13)، DEC-0014 (B-14)، DEC-0015 (B-15)، DEC-0016 (B-16) |
 | LEG-0034 | page | الحسابات | صفحة «حسابات العملاء» (clients.accounts) | renderer/modules/clients/pages-accounts.js:73 | legacy /legacy/ | phase61.js | Verified (باختبار) | DEC-0013 (B-13)، DEC-0014 (B-14)، DEC-0015 (B-15)، DEC-0016 (B-16) |
 | LEG-0035 | page | التقارير | صفحة «تقارير الموارد البشرية» (reports) | renderer/modules/hr/pages-reports.js:56 | legacy /legacy/ | phase22.js، phase61.js، foundation.e2e-spec.ts، parties.e2e-spec.ts، security.e2e-spec.ts | Verified (باختبار) | — |

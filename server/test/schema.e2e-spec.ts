@@ -32,6 +32,8 @@ const LAYER1_TABLES = ['attachments', 'audit_log', 'changes', 'docs', 'records',
   'worker_payments', 'employee_penalties',
   // 8.7 — فاضيين: النقل أمر تشغيل بموافقة
   'equipment', 'equipment_daily',
+  // 8.8 — فاضي: النقل أمر تشغيل بموافقة
+  'costs',
   // 6.2-ب — فاضية: النقل بأمر تشغيل
   'wh_items', 'wh_locations', 'wh_movements',
   // B-20 — فاضية: المكتبة بتدخل كمسودات بأمر منفصل

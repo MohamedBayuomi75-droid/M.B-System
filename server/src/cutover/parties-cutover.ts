@@ -10,6 +10,7 @@ import { LEAVE_COLUMNS } from '../migrations/1765500000000-LeavesCutover';
 import { ATTENDANCE_COLUMNS, WORKER_ATTENDANCE_COLUMNS } from '../migrations/1765600000000-AttendanceCutover';
 import { EMPLOYEE_PENALTY_COLUMNS, WORKER_PAYMENT_COLUMNS } from '../migrations/1765700000000-WorkerPaymentsCutover';
 import { EQUIPMENT_COLUMNS, EQUIPMENT_DAILY_COLUMNS } from '../migrations/1765800000000-EquipmentCutover';
+import { COST_COLUMNS } from '../migrations/1765900000000-CostsCutover';
 
 export type { CutoverReport } from './module-cutover';
 
@@ -180,7 +181,17 @@ export const EQUIPMENT: ModuleSpec = {
   clearTables: ['equipment', 'equipment_daily'],
 };
 
-export const MODULES: Record<string, ModuleSpec> = { parties: PARTIES, warehouses: WAREHOUSES, 'supplier-invoices': SUPPLIER_INVOICES, 'supplier-payments': SUPPLIER_PAYMENTS, projects: PROJECTS, workers: WORKERS, 'supervisors-drivers': SUPERVISORS_DRIVERS, employees: EMPLOYEES, leaves: LEAVES, attendance: ATTENDANCE, 'worker-payments': WORKER_PAYMENTS, equipment: EQUIPMENT };
+/** 8.8 — التكاليف (DEC-0142). مفيش تطبيع — نسخ زي ما هو. */
+export const COSTS: ModuleSpec = {
+  label: 'costs',
+  collections: [
+    { collection: 'costs', table: 'costs', write: 'legacy_write_cost', read: 'cost_to_legacy',
+      normalized: `(r.data || jsonb_build_object('id', r.id))`, typedKeys: COST_COLUMNS.map(([, k]) => k) },
+  ],
+  clearTables: ['costs'],
+};
+
+export const MODULES: Record<string, ModuleSpec> = { parties: PARTIES, warehouses: WAREHOUSES, 'supplier-invoices': SUPPLIER_INVOICES, 'supplier-payments': SUPPLIER_PAYMENTS, projects: PROJECTS, workers: WORKERS, 'supervisors-drivers': SUPERVISORS_DRIVERS, employees: EMPLOYEES, leaves: LEAVES, attendance: ATTENDANCE, 'worker-payments': WORKER_PAYMENTS, equipment: EQUIPMENT, costs: COSTS };
 
 export const partiesCutover = (ds: DataSource, by: string, mode: CutoverReport['mode']) => cutoverModule(ds, PARTIES, by, mode);
 export const partiesRollback = (ds: DataSource, by: string) => rollbackModule(ds, PARTIES, by);

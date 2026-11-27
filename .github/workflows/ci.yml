@@ -44,7 +44,7 @@ jobs:
         run: node tools/web/build-web.js --check
       - name: Generated discovery docs are up to date
         run: |
-          for t in build-registry build-functional-inventory build-data-dictionary build-formula-catalogue build-electron-capabilities build-traceability build-parties-parity build-warehouses-parity build-supplier-invoices-parity build-supplier-payments-parity build-projects-parity build-workers-parity build-supervisors-drivers-parity build-employees-parity build-leaves-parity build-attendance-parity build-worker-payments-parity build-equipment-parity; do
+          for t in build-registry build-functional-inventory build-data-dictionary build-formula-catalogue build-electron-capabilities build-traceability build-parties-parity build-warehouses-parity build-supplier-invoices-parity build-supplier-payments-parity build-projects-parity build-workers-parity build-supervisors-drivers-parity build-employees-parity build-leaves-parity build-attendance-parity build-worker-payments-parity build-equipment-parity build-costs-parity; do
             node tools/discovery/$t.js --check
           done
           node tools/ui/build-legacy-skin.js --check
@@ -142,7 +142,7 @@ jobs:
         run: node tests-merge/run-all.js
         env:
           WEB_MODE: '1'
-          WEB_CUTOVER: parties,warehouses,supplier-invoices,supplier-payments,projects,workers,supervisors-drivers,employees,leaves,attendance,worker-payments,equipment
+          WEB_CUTOVER: parties,warehouses,supplier-invoices,supplier-payments,projects,workers,supervisors-drivers,employees,leaves,attendance,worker-payments,equipment,costs
       - name: Web e2e (multi-browser session, 2FA, headers)
         if: matrix.suite == 'web-app-security'
         run: node tests-web/web-e2e.js
