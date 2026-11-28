@@ -11,8 +11,8 @@
 | `CHG-` | APPROVED-CHANGE | 14 |
 | `TECH-` | TECHNICAL | 18 |
 | `NEW-` | NEW-REQUIREMENT | 9 |
-| `DEC-` | OPEN-DECISION (المفتوح والمحسوم) | 143 (مفتوح: 36) |
-| **الإجمالي** | | **538** |
+| `DEC-` | OPEN-DECISION (المفتوح والمحسوم) | 144 (مفتوح: 36) |
+| **الإجمالي** | | **539** |
 
 **عناصر LEG حسب النوع:** page 54 · calc 120 · data-write 30 · modal 63 · export/print 37 · permission 8 · electron-capability 42
 
@@ -573,4 +573,5 @@
 | DEC-0141 | decision | قرارات | الحزمة 8.7 مقفولة بالاختبارات الآلية (المعدات ويومياتها ومستحقاتها): الشاشات بشكل القديمة، والتكلفة بالحسابين (DEC-0140)، ومفتاح `settings.newDayPay` بقى بيغطي  | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
 | DEC-0142 | decision | قرارات | نطاق الحزمة 8.8 معتمد (تكلفة المشروع ومعاها التكاليف): محرك `projectCostSummary` في السيرفر بالحسابين — القديم بالظبط، والجديد = TR-10 (المصروف بكل سطوره، والفا | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
 | DEC-0143 | decision | قرارات | الحزمة 8.8 مقفولة بالاختبارات الآلية (تكلفة المشروع والتكاليف): المحرك بالحسابين، و`/app/costs`، وعمود التكلفة وفلتر الميزانية في `/app/projects`، ومفتاح `setti | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
+| DEC-0144 | decision | قرارات | المعدة اللي نوع ترخيصها يتشال بترجع «بدون قسم» (زي القديمة): القسم ونوع الترخيص بيتفضّوا، ومن غير قسم جديد ومن غير تغيير الاسم (DEC-0140 بند 4 زي ما هو). ملاحظة | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
 

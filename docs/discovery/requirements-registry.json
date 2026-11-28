@@ -6,7 +6,7 @@
   "TECH": 19,
   "NEW": 10,
   "CHG": 15,
-  "DEC": 144
+  "DEC": 145
  },
  "entries": [
   {
@@ -3065,6 +3065,24 @@
    "classification": "OPEN-DECISION",
    "kind": "decision",
    "title": "الحزمة 8.8 مقفولة بالاختبارات الآلية (تكلفة المشروع والتكاليف): المحرك بالحسابين، و`/app/costs`، وعمود التكلفة وفلتر الميزانية في `/app/projects`، ومفتاح `setti",
+   "module": "قرارات",
+   "priority": "—",
+   "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",
+   "tests": [],
+   "target": "—",
+   "notes": "محسوم",
+   "aliases": [],
+   "decisionStatus": "resolved",
+   "priorityStatus": "—",
+   "status": "resolved"
+  },
+  {
+   "id": "DEC-0144",
+   "key": "decision:DEC-0144",
+   "prefix": "DEC",
+   "classification": "OPEN-DECISION",
+   "kind": "decision",
+   "title": "المعدة اللي نوع ترخيصها يتشال بترجع «بدون قسم» (زي القديمة): القسم ونوع الترخيص بيتفضّوا، ومن غير قسم جديد ومن غير تغيير الاسم (DEC-0140 بند 4 زي ما هو). ملاحظة",
    "module": "قرارات",
    "priority": "—",
    "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",
