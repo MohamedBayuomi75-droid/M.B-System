@@ -8,27 +8,27 @@
 ## 1. التغطية حسب النوع (LEG)
 | النوع | العدد | ليه اختبار بيلمسه | اتنقل للنظام الجديد |
 |---|---|---|---|
-| page | 54 | 54 (100%) | 12 |
+| page | 54 | 54 (100%) | 17 |
 | calc | 120 | 56 (47%) | 0 |
 | data-write | 30 | 20 (67%) | 0 |
 | modal | 63 | 28 (44%) | 0 |
 | export/print | 37 | 5 (14%) | 0 |
 | permission | 8 | 0 (0%) | 8 |
 | electron-capability | 42 | 6 (14%) | 0 |
-| **الإجمالي** | **354** | **169 (48%)** | **20** |
+| **الإجمالي** | **354** | **169 (48%)** | **25** |
 
 ## 2. التغطية حسب الموديول (LEG)
 | الموديول | العدد | منها P0 (مقترح) | ليه اختبار | اتنقل | قرارات مفتوحة بتمنعه |
 |---|---|---|---|---|---|
 | مشترك (core) | 97 | 10 | 36 (37%) | 0 | — |
-| الموارد البشرية | 69 | 21 | 28 (41%) | 5 | DEC-0045 (B-45)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0042 (B-42) |
+| الموارد البشرية | 69 | 21 | 28 (41%) | 8 | DEC-0045 (B-45)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0042 (B-42) |
 | الموردون | 58 | 22 | 31 (53%) | 3 | — |
 | ديسكتوب | 42 | 15 | 6 (14%) | 0 | — |
 | العملاء والمشاريع | 38 | 11 | 28 (74%) | 2 | DEC-0035 (B-35) |
 | المخازن | 13 | 8 | 11 (85%) | 1 | DEC-0077 (B-77) |
 | الإعدادات | 11 | 1 | 3 (27%) | 8 | DEC-0035 (B-35) |
 | (خارج القايمة) | 10 | 0 | 10 (100%) | 0 | — |
-| الحسابات | 6 | 0 | 6 (100%) | 1 | DEC-0013 (B-13)، DEC-0014 (B-14)، DEC-0015 (B-15)، DEC-0016 (B-16) |
+| الحسابات | 6 | 0 | 6 (100%) | 3 | DEC-0013 (B-13)، DEC-0014 (B-14)، DEC-0015 (B-15)، DEC-0016 (B-16) |
 | التقارير | 4 | 0 | 4 (100%) | 0 | — |
 | الأرشيف | 3 | 0 | 3 (100%) | 0 | DEC-0061 (B-61) |
 | مركز المتابعة | 1 | 0 | 1 (100%) | 0 | — |
@@ -132,9 +132,9 @@
 | LEG-0005 | page | الموارد البشرية | صفحة «المشرفون» (supervisors) | renderer/modules/hr/pages-supervisors.js:12 | angular /supervisors | phase27.js، phase42.js، phase43.js، phase49.js، phase50.js، phase53.js (+47) | Implemented (اتنقل) | DEC-0045 (B-45)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0042 (B-42) |
 | LEG-0006 | page | الموارد البشرية | صفحة «العمال» (workers) | renderer/modules/hr/pages-workers.js:29 | angular /workers | phase24.js، phase26.js، phase27.js، phase28.js، phase29.js، phase30.js (+61) | Implemented (اتنقل) | DEC-0045 (B-45)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0042 (B-42) |
 | LEG-0007 | page | الموارد البشرية | صفحة «السائقون» (drivers) | renderer/modules/hr/pages-ops.js:6 | angular /drivers | phase27.js، phase42.js، phase44.js، phase45.js، phase49.js، phase50.js (+38) | Implemented (اتنقل) | DEC-0045 (B-45)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0042 (B-42) |
-| LEG-0008 | page | الموارد البشرية | صفحة «معدات ومركبات» (equipment) | renderer/modules/hr/pages-equipment.js:32 | legacy /legacy/ | phase23.js، phase24.js، phase25.js، phase26.js، phase27.js، phase31.js (+33) | Verified (باختبار) | DEC-0045 (B-45)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0042 (B-42) |
-| LEG-0009 | page | الموارد البشرية | صفحة «حضور الموظفين» (attendance) | renderer/modules/hr/pages-attendance.js:19 | legacy /legacy/ | phase61.js، phase59.js، phase81.js، phase82.js، dailies-e2e.js، equipment-e2e.js (+7) | Verified (باختبار) | DEC-0045 (B-45)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0042 (B-42) |
-| LEG-0010 | page | الموارد البشرية | صفحة «اليوميات» (workerAttendance) | renderer/modules/hr/pages-worker-attendance.js:195 | legacy /legacy/ | phase24.js، phase26.js، phase27.js، phase28.js، phase39.js، phase40.js (+31) | Verified (باختبار) | DEC-0045 (B-45)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0042 (B-42) |
+| LEG-0008 | page | الموارد البشرية | صفحة «معدات ومركبات» (equipment) | renderer/modules/hr/pages-equipment.js:32 | angular /equipment | phase23.js، phase24.js، phase25.js، phase26.js، phase27.js، phase31.js (+33) | Implemented (اتنقل) | DEC-0045 (B-45)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0042 (B-42) |
+| LEG-0009 | page | الموارد البشرية | صفحة «حضور الموظفين» (attendance) | renderer/modules/hr/pages-attendance.js:19 | angular /attendance | phase61.js، phase59.js، phase81.js، phase82.js، dailies-e2e.js، equipment-e2e.js (+7) | Implemented (اتنقل) | DEC-0045 (B-45)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0042 (B-42) |
+| LEG-0010 | page | الموارد البشرية | صفحة «اليوميات» (workerAttendance) | renderer/modules/hr/pages-worker-attendance.js:195 | angular /worker-attendance | phase24.js، phase26.js، phase27.js، phase28.js، phase39.js، phase40.js (+31) | Implemented (اتنقل) | DEC-0045 (B-45)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0042 (B-42) |
 | LEG-0011 | page | الموارد البشرية | صفحة «الإجازات» (leaves) | renderer/modules/hr/pages-leaves.js:48 | angular /leaves | phase41.js، phase13.js، phase30.js، phase31.js، phase33.js، phase36.js (+24) | Implemented (اتنقل) | DEC-0045 (B-45)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0042 (B-42) |
 | LEG-0012 | page | الموارد البشرية | صفحة «تقييم الأداء» (performance) | renderer/modules/hr/pages-ops.js:540 | legacy /legacy/ | phase61.js | Verified (باختبار) | DEC-0045 (B-45)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0042 (B-42) |
 | LEG-0013 | page | العملاء والمشاريع | صفحة «العملاء» (clients.customers) | renderer/modules/clients/pages-customers.js:14 | angular /customers | phase2.js، phase5.js، phase7.js، phase15.js، phase19.js، phase46.js (+10) | Implemented (اتنقل) | DEC-0035 (B-35) |
@@ -153,10 +153,10 @@
 | LEG-0026 | page | المخازن | صفحة «المخازن» (warehouses.home) | renderer/modules/warehouses/pages-home.js:6 | angular /warehouses | phase61.js، phase66.js، app-e2e.js، stock-adjustments.e2e-spec.ts | Implemented (اتنقل) | DEC-0077 (B-77) |
 | LEG-0027 | page | المخازن | صفحة «تقارير المخازن» (warehouses.reports) | renderer/modules/warehouses/pages-reports.js:2 | legacy /legacy/ | phase61.js | Verified (باختبار) | DEC-0077 (B-77) |
 | LEG-0028 | page | حركة الموارد | صفحة «حركة الموارد» (transfers) | renderer/modules/hr/pages-ops.js:336 | legacy /legacy/ | phase61.js، phase65.js، app-e2e.js، stock.e2e-spec.ts، warehouses.e2e-spec.ts | Verified (باختبار) | DEC-0045 (B-45)، DEC-0073 (B-73)، DEC-0074 (B-74)، DEC-0042 (B-42) |
-| LEG-0029 | page | الحسابات | صفحة «المستحقات» (workerDues) | renderer/modules/hr/pages-worker-dues.js:79 | legacy /legacy/ | phase61.js، phase83.js، phase84.js، phase86.js، dues-e2e.js | Verified (باختبار) | DEC-0013 (B-13)، DEC-0014 (B-14)، DEC-0015 (B-15)، DEC-0016 (B-16) |
+| LEG-0029 | page | الحسابات | صفحة «المستحقات» (workerDues) | renderer/modules/hr/pages-worker-dues.js:79 | angular /worker-dues | phase61.js، phase83.js، phase84.js، phase86.js، dues-e2e.js | Implemented (اتنقل) | DEC-0013 (B-13)، DEC-0014 (B-14)، DEC-0015 (B-15)، DEC-0016 (B-16) |
 | LEG-0030 | page | الحسابات | صفحة «الدفعات» (ledger.payments) | renderer/modules/ledger/pages-payments.js:33 | angular /supplier-payments | phase61.js، phase21.js، phase69.js، app-e2e.js، parties.e2e-spec.ts، sp-cutover.e2e-spec.ts (+1) | Implemented (اتنقل) | DEC-0013 (B-13)، DEC-0014 (B-14)، DEC-0015 (B-15)، DEC-0016 (B-16) |
 | LEG-0031 | page | الحسابات | صفحة «مصاريف شاملة» (expenses) | renderer/modules/hr/pages-ops.js:1244 | legacy /legacy/ | phase17.js، phase26.js، phase53.js، phase59.js، phase18.js، phase19.js (+20) | Verified (باختبار) | DEC-0013 (B-13)، DEC-0014 (B-14)، DEC-0015 (B-15)، DEC-0016 (B-16) |
-| LEG-0032 | page | الحسابات | صفحة «تكاليف شاملة» (costs) | renderer/modules/hr/pages-costs.js:98 | legacy /legacy/ | phase17.js، phase59.js، phase18.js، phase83.js، phase84.js، phase85.js (+16) | Verified (باختبار) | DEC-0013 (B-13)، DEC-0014 (B-14)، DEC-0015 (B-15)، DEC-0016 (B-16) |
+| LEG-0032 | page | الحسابات | صفحة «تكاليف شاملة» (costs) | renderer/modules/hr/pages-costs.js:98 | angular /costs | phase17.js، phase59.js، phase18.js، phase83.js، phase84.js، phase85.js (+16) | Implemented (اتنقل) | DEC-0013 (B-13)، DEC-0014 (B-14)، DEC-0015 (B-15)، DEC-0016 (B-16) |
 | LEG-0033 | page | الحسابات | صفحة «الإيرادات» (clients.collections) | renderer/modules/clients/pages-collections.js:28 | legacy /legacy/ | phase13.js، phase20.js | Verified (باختبار) | DEC-0013 (B-13)، DEC-0014 (B-14)، DEC-0015 (B-15)، DEC-0016 (B-16) |
 | LEG-0034 | page | الحسابات | صفحة «حسابات العملاء» (clients.accounts) | renderer/modules/clients/pages-accounts.js:73 | legacy /legacy/ | phase61.js | Verified (باختبار) | DEC-0013 (B-13)، DEC-0014 (B-14)، DEC-0015 (B-15)، DEC-0016 (B-16) |
 | LEG-0035 | page | التقارير | صفحة «تقارير الموارد البشرية» (reports) | renderer/modules/hr/pages-reports.js:56 | legacy /legacy/ | phase22.js، phase61.js، foundation.e2e-spec.ts، parties.e2e-spec.ts، security.e2e-spec.ts | Verified (باختبار) | — |

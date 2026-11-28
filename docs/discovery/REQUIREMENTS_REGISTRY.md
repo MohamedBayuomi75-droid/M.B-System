@@ -11,8 +11,8 @@
 | `CHG-` | APPROVED-CHANGE | 14 |
 | `TECH-` | TECHNICAL | 18 |
 | `NEW-` | NEW-REQUIREMENT | 9 |
-| `DEC-` | OPEN-DECISION (المفتوح والمحسوم) | 144 (مفتوح: 36) |
-| **الإجمالي** | | **539** |
+| `DEC-` | OPEN-DECISION (المفتوح والمحسوم) | 145 (مفتوح: 36) |
+| **الإجمالي** | | **540** |
 
 **عناصر LEG حسب النوع:** page 54 · calc 120 · data-write 30 · modal 63 · export/print 37 · permission 8 · electron-capability 42
 
@@ -26,9 +26,9 @@
 | LEG-0005 | page | الموارد البشرية | صفحة «المشرفون» (supervisors) | P1 | renderer/modules/hr/pages-supervisors.js:12 | angular /supervisors | phase27.js، phase42.js، phase43.js، phase49.js، phase50.js، phase53.js، phase54.js | verified-static | في القايمة، في مصفوفة الصلاحيات |
 | LEG-0006 | page | الموارد البشرية | صفحة «العمال» (workers) | P1 | renderer/modules/hr/pages-workers.js:29 | angular /workers | phase24.js، phase26.js، phase27.js، phase28.js، phase29.js، phase30.js، phase37.js، phase39.js، phase40.js، phase41.js، phase42.js، phase43.js، phase45.js، phase47.js، phase49.js، phase50.js، phase51.js، phase52.js، phase53.js، phase61.js | verified-static | في القايمة، في مصفوفة الصلاحيات |
 | LEG-0007 | page | الموارد البشرية | صفحة «السائقون» (drivers) | P1 | renderer/modules/hr/pages-ops.js:6 | angular /drivers | phase27.js، phase42.js، phase44.js، phase45.js، phase49.js، phase50.js، phase51.js | verified-static | في القايمة، في مصفوفة الصلاحيات |
-| LEG-0008 | page | الموارد البشرية | صفحة «معدات ومركبات» (equipment) | P1 | renderer/modules/hr/pages-equipment.js:32 | legacy /legacy/ | phase23.js، phase24.js، phase25.js، phase26.js، phase27.js، phase31.js، phase32.js، phase39.js، phase40.js، phase42.js، phase44.js، phase53.js، phase54.js، phase61.js | verified-static | في القايمة، في مصفوفة الصلاحيات |
-| LEG-0009 | page | الموارد البشرية | صفحة «حضور الموظفين» (attendance) | P1 | renderer/modules/hr/pages-attendance.js:19 | legacy /legacy/ | phase61.js | verified-static | في القايمة، في مصفوفة الصلاحيات |
-| LEG-0010 | page | الموارد البشرية | صفحة «اليوميات» (workerAttendance) | P1 | renderer/modules/hr/pages-worker-attendance.js:195 | legacy /legacy/ | phase24.js، phase26.js، phase27.js، phase28.js، phase39.js، phase40.js، phase41.js، phase43.js، phase49.js، phase50.js، phase51.js، phase53.js | verified-static | في القايمة، في مصفوفة الصلاحيات |
+| LEG-0008 | page | الموارد البشرية | صفحة «معدات ومركبات» (equipment) | P1 | renderer/modules/hr/pages-equipment.js:32 | angular /equipment | phase23.js، phase24.js، phase25.js، phase26.js، phase27.js، phase31.js، phase32.js، phase39.js، phase40.js، phase42.js، phase44.js، phase53.js، phase54.js، phase61.js | verified-static | في القايمة، في مصفوفة الصلاحيات |
+| LEG-0009 | page | الموارد البشرية | صفحة «حضور الموظفين» (attendance) | P1 | renderer/modules/hr/pages-attendance.js:19 | angular /attendance | phase61.js | verified-static | في القايمة، في مصفوفة الصلاحيات |
+| LEG-0010 | page | الموارد البشرية | صفحة «اليوميات» (workerAttendance) | P1 | renderer/modules/hr/pages-worker-attendance.js:195 | angular /worker-attendance | phase24.js، phase26.js، phase27.js، phase28.js، phase39.js، phase40.js، phase41.js، phase43.js، phase49.js، phase50.js، phase51.js، phase53.js | verified-static | في القايمة، في مصفوفة الصلاحيات |
 | LEG-0011 | page | الموارد البشرية | صفحة «الإجازات» (leaves) | P1 | renderer/modules/hr/pages-leaves.js:48 | angular /leaves | phase41.js | verified-static | في القايمة، في مصفوفة الصلاحيات |
 | LEG-0012 | page | الموارد البشرية | صفحة «تقييم الأداء» (performance) | P1 | renderer/modules/hr/pages-ops.js:540 | legacy /legacy/ | phase61.js | verified-static | في القايمة، في مصفوفة الصلاحيات |
 | LEG-0013 | page | العملاء والمشاريع | صفحة «العملاء» (clients.customers) | P1 | renderer/modules/clients/pages-customers.js:14 | angular /customers | phase2.js، phase5.js، phase7.js، phase15.js، phase19.js، phase46.js، phase48.js، phase55.js، pages-smoke.js | verified-static | في القايمة، في مصفوفة الصلاحيات |
@@ -47,10 +47,10 @@
 | LEG-0026 | page | المخازن | صفحة «المخازن» (warehouses.home) | P1 | renderer/modules/warehouses/pages-home.js:6 | angular /warehouses | phase61.js | verified-static | في القايمة، في مصفوفة الصلاحيات |
 | LEG-0027 | page | المخازن | صفحة «تقارير المخازن» (warehouses.reports) | P1 | renderer/modules/warehouses/pages-reports.js:2 | legacy /legacy/ | phase61.js | verified-static | في القايمة، في مصفوفة الصلاحيات |
 | LEG-0028 | page | حركة الموارد | صفحة «حركة الموارد» (transfers) | P1 | renderer/modules/hr/pages-ops.js:336 | legacy /legacy/ | phase61.js | verified-static | في القايمة، في مصفوفة الصلاحيات |
-| LEG-0029 | page | الحسابات | صفحة «المستحقات» (workerDues) | P1 | renderer/modules/hr/pages-worker-dues.js:79 | legacy /legacy/ | phase61.js | verified-static | في القايمة، في مصفوفة الصلاحيات |
+| LEG-0029 | page | الحسابات | صفحة «المستحقات» (workerDues) | P1 | renderer/modules/hr/pages-worker-dues.js:79 | angular /worker-dues | phase61.js | verified-static | في القايمة، في مصفوفة الصلاحيات |
 | LEG-0030 | page | الحسابات | صفحة «الدفعات» (ledger.payments) | P1 | renderer/modules/ledger/pages-payments.js:33 | angular /supplier-payments | phase61.js | verified-static | في القايمة، في مصفوفة الصلاحيات |
 | LEG-0031 | page | الحسابات | صفحة «مصاريف شاملة» (expenses) | P1 | renderer/modules/hr/pages-ops.js:1244 | legacy /legacy/ | phase17.js، phase26.js، phase53.js، phase59.js | verified-static | في القايمة، في مصفوفة الصلاحيات |
-| LEG-0032 | page | الحسابات | صفحة «تكاليف شاملة» (costs) | P1 | renderer/modules/hr/pages-costs.js:98 | legacy /legacy/ | phase17.js، phase59.js | verified-static | في القايمة، في مصفوفة الصلاحيات |
+| LEG-0032 | page | الحسابات | صفحة «تكاليف شاملة» (costs) | P1 | renderer/modules/hr/pages-costs.js:98 | angular /costs | phase17.js، phase59.js | verified-static | في القايمة، في مصفوفة الصلاحيات |
 | LEG-0033 | page | الحسابات | صفحة «الإيرادات» (clients.collections) | P1 | renderer/modules/clients/pages-collections.js:28 | legacy /legacy/ | phase13.js، phase20.js | verified-static | في القايمة، في مصفوفة الصلاحيات |
 | LEG-0034 | page | الحسابات | صفحة «حسابات العملاء» (clients.accounts) | P1 | renderer/modules/clients/pages-accounts.js:73 | legacy /legacy/ | phase61.js | verified-static | في القايمة، في مصفوفة الصلاحيات |
 | LEG-0035 | page | التقارير | صفحة «تقارير الموارد البشرية» (reports) | P1 | renderer/modules/hr/pages-reports.js:56 | legacy /legacy/ | phase22.js | verified-static | في القايمة، في مصفوفة الصلاحيات |
@@ -574,4 +574,5 @@
 | DEC-0142 | decision | قرارات | نطاق الحزمة 8.8 معتمد (تكلفة المشروع ومعاها التكاليف): محرك `projectCostSummary` في السيرفر بالحسابين — القديم بالظبط، والجديد = TR-10 (المصروف بكل سطوره، والفا | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
 | DEC-0143 | decision | قرارات | الحزمة 8.8 مقفولة بالاختبارات الآلية (تكلفة المشروع والتكاليف): المحرك بالحسابين، و`/app/costs`، وعمود التكلفة وفلتر الميزانية في `/app/projects`، ومفتاح `setti | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
 | DEC-0144 | decision | قرارات | المعدة اللي نوع ترخيصها يتشال بترجع «بدون قسم» (زي القديمة): القسم ونوع الترخيص بيتفضّوا، ومن غير قسم جديد ومن غير تغيير الاسم (DEC-0140 بند 4 زي ما هو). ملاحظة | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
+| DEC-0145 | decision | قرارات | المرحلة 8 Accepted بعد البروفة المجمّعة (66/67، وE2 اتصلّح بعدها، ومطابقة 100%)؛ قلب التوجيه مرة واحدة للخمس صفحات (اليوميات، وحضور الموظفين، والمستحقات، والمعد | — | docs/OPEN_BUSINESS_DECISIONS.md | — |  | resolved | محسوم |
 

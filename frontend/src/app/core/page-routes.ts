@@ -16,6 +16,8 @@
  * المرحلة 8.3 (قلب التوجيه بموافقة 2026-11-24، DEC-0126): «الموظفين» → Angular. الشاشة الكاملة لصفحة الموظف والحضور والحذف والإجراءات
  *   الجماعية والتصدير و«إضافة مستقيل» وتعديل التخطيط (DEC-0125). الرجوع: السطرين دول.
  * المرحلة 8.4 (قلب التوجيه بموافقة 2026-11-24، DEC-0128): «الإجازات» → Angular. الشاشة الكاملة للطباعة والتقارير والتصدير (DEC-0127). الرجوع: السطرين دول.
+ * بوابة المرحلة 8 (قلب التوجيه مرة واحدة بموافقة 2026-11-28، DEC-0145): «اليوميات» و«حضور الموظفين» و«المستحقات» و«المعدات» و«التكاليف» → Angular
+ *   بعد البروفة المجمّعة (DEC-0136). الشاشة الكاملة لكشوف الحساب وصفحة المعدة والتصدير والطباعة. الرجوع: العشر سطور دول.
  */
 export interface PageRoute { key: string; label: string; icon: string; target: 'legacy' | 'angular'; path?: string; pilot?: boolean }
 
@@ -41,7 +43,16 @@ export const PAGE_ROUTES: readonly PageRoute[] = [
   { key: 'drivers', label: 'السائقون — الشاشة الكاملة', icon: 'local_shipping', target: 'legacy' },
   { key: 'leaves', label: 'الإجازات', icon: 'event_busy', target: 'angular', path: '/leaves' },
   { key: 'leaves', label: 'الإجازات — الشاشة الكاملة', icon: 'event_note', target: 'legacy' },
-  { key: 'workerDues', label: 'المستحقات', icon: 'payments', target: 'legacy' },
+  { key: 'workerAttendance', label: 'اليوميات', icon: 'calendar_month', target: 'angular', path: '/worker-attendance' },
+  { key: 'workerAttendance', label: 'اليوميات — الشاشة الكاملة', icon: 'calendar_month', target: 'legacy' },
+  { key: 'attendance', label: 'حضور الموظفين', icon: 'how_to_reg', target: 'angular', path: '/attendance' },
+  { key: 'attendance', label: 'حضور الموظفين — الشاشة الكاملة', icon: 'how_to_reg', target: 'legacy' },
+  { key: 'workerDues', label: 'المستحقات', icon: 'payments', target: 'angular', path: '/worker-dues' },
+  { key: 'workerDues', label: 'المستحقات — الشاشة الكاملة', icon: 'payments', target: 'legacy' },
+  { key: 'equipment', label: 'المعدات والمركبات', icon: 'agriculture', target: 'angular', path: '/equipment' },
+  { key: 'equipment', label: 'المعدات والمركبات — الشاشة الكاملة', icon: 'agriculture', target: 'legacy' },
+  { key: 'costs', label: 'التكاليف', icon: 'request_quote', target: 'angular', path: '/costs' },
+  { key: 'costs', label: 'التكاليف — الشاشة الكاملة', icon: 'request_quote', target: 'legacy' },
   { key: 'clients.customers', label: 'العملاء', icon: 'groups', target: 'angular', path: '/customers' },
   { key: 'clients.customers', label: 'العملاء — الشاشة الكاملة', icon: 'contact_page', target: 'legacy' },
   { key: 'warehouses.home', label: 'المخازن', icon: 'inventory_2', target: 'angular', path: '/warehouses' },

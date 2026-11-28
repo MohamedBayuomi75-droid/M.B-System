@@ -6,7 +6,7 @@
   "TECH": 19,
   "NEW": 10,
   "CHG": 15,
-  "DEC": 145
+  "DEC": 146
  },
  "entries": [
   {
@@ -3095,6 +3095,24 @@
    "status": "resolved"
   },
   {
+   "id": "DEC-0145",
+   "key": "decision:DEC-0145",
+   "prefix": "DEC",
+   "classification": "OPEN-DECISION",
+   "kind": "decision",
+   "title": "المرحلة 8 Accepted بعد البروفة المجمّعة (66/67، وE2 اتصلّح بعدها، ومطابقة 100%)؛ قلب التوجيه مرة واحدة للخمس صفحات (اليوميات، وحضور الموظفين، والمستحقات، والمعد",
+   "module": "قرارات",
+   "priority": "—",
+   "evidence": "docs/OPEN_BUSINESS_DECISIONS.md",
+   "tests": [],
+   "target": "—",
+   "notes": "محسوم",
+   "aliases": [],
+   "decisionStatus": "resolved",
+   "priorityStatus": "—",
+   "status": "resolved"
+  },
+  {
    "id": "LEG-0001",
    "key": "page:dashboard",
    "prefix": "LEG",
@@ -3300,7 +3318,7 @@
     "phase54.js",
     "phase61.js"
    ],
-   "target": "legacy /legacy/",
+   "target": "angular /equipment",
    "notes": "في القايمة، في مصفوفة الصلاحيات",
    "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
@@ -3318,7 +3336,7 @@
    "tests": [
     "phase61.js"
    ],
-   "target": "legacy /legacy/",
+   "target": "angular /attendance",
    "notes": "في القايمة، في مصفوفة الصلاحيات",
    "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
@@ -3347,7 +3365,7 @@
     "phase51.js",
     "phase53.js"
    ],
-   "target": "legacy /legacy/",
+   "target": "angular /worker-attendance",
    "notes": "في القايمة، في مصفوفة الصلاحيات",
    "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
@@ -3717,7 +3735,7 @@
    "tests": [
     "phase61.js"
    ],
-   "target": "legacy /legacy/",
+   "target": "angular /worker-dues",
    "notes": "في القايمة، في مصفوفة الصلاحيات",
    "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
@@ -3775,7 +3793,7 @@
     "phase17.js",
     "phase59.js"
    ],
-   "target": "legacy /legacy/",
+   "target": "angular /costs",
    "notes": "في القايمة، في مصفوفة الصلاحيات",
    "priorityStatus": "approved (DEC-0085)",
    "status": "verified-static"
