@@ -143,7 +143,8 @@ export interface EqForm { code?: string; type?: string; carType?: string; status
   purchaseDate?: string; lastMaintenance?: string; nextMaintenance?: string; notes?: string; extraFields?: J[] }
 /**
  * نوع الترخيص: قسم من أقسام المعدات (بالمعرّف أو الاسم)، أو اسم جديد بيتعمل له قسم (ensureDepartmentSaved) — **بس لو المستخدم اختاره**:
- * لو الخانة فاضية، المعدة بتفضل من غير قسم ومن غير اسم متركّب جديد (القديمة كانت بتعمل قسم باسم نوع السيارة — DEC-0140).
+ * لو الخانة فاضية: مفيش قسم جديد ولا اسم متركّب جديد (DEC-0140 بند 4)، **والمعدة بترجع «بدون قسم»** — القسم ونوع الترخيص بيتفضّوا
+ * زي القديمة (eqCategory = '') — DEC-0144.
  */
 export function equipmentPayload(c: Ctx & { drivers: J[]; deps: J[] }, f: EqForm, cur: J | null, all: J[]): { payload: J; newDept: string | null } | string {
   const typeVal = String(f.type || '').trim();
@@ -162,11 +163,11 @@ export function equipmentPayload(c: Ctx & { drivers: J[]; deps: J[] }, f: EqForm
   const vExp = String(f.vehicleLicenseExpiry || '');
   const payload: J = {
     code: ensureUniqueCode(f.code, all, 'EQ-', cur?.id), name, type: fixed ? fixed.code : 'other', typeLabel: carType,
-    categoryId: deptId || (cur && !typeVal ? cur.categoryId || '' : ''), departmentId: deptId || (cur && !typeVal ? cur.departmentId || '' : ''),
+    categoryId: deptId, departmentId: deptId,
     status: f.status || 'working', ownership: f.ownership || 'owned', vehicleNumber: plate0, color: String(f.color || '').trim(), motorNumber: String(f.motorNumber || '').trim(),
     chassisNumber: String(f.chassisNumber || '').trim(), insuranceNumber: String(f.insuranceNumber || '').trim(), insuranceStatus: String(f.insuranceStatus || '').trim(), brand: carType,
     model: String(f.model || '').trim(), serial: '', inspectionDate: f.inspectionDate || '', licenseIssueDate: f.licenseIssueDate || '', vehicleLicenseExpiry: vExp,
-    vehicleLicenseStatus: statusFromExpiry(vExp, c.today), licenseCategory: licenseCat || (cur && !typeVal ? cur.licenseCategory || '' : ''),
+    vehicleLicenseStatus: statusFromExpiry(vExp, c.today), licenseCategory: licenseCat,
     driverId: drv ? drv.id : '', driverName: drv ? drv.name || '' : '', driverLicenseExpiry: drv ? drv.licenseExpiry || '' : '',
     driverLicenseStatus: drv && drv.licenseExpiry ? statusFromExpiry(drv.licenseExpiry, c.today) : '', hourlyCost: toInt(cur ? cur.hourlyCost : 0),
     purchaseDate: f.purchaseDate || '', purchasePrice: toInt(f.purchasePrice), lastMaintenance: last, nextMaintenance: next, notes: String(f.notes || '').trim(),
