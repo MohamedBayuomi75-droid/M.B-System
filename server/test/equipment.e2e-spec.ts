@@ -73,6 +73,11 @@ describe('8.7.3 equipment API', () => {
     const c = await post(E, { code: 'EQ-001', type: '__core_eq_trucks__', carType: ' مرسيدس ', status: 'working', ownership: 'rented', vehicleNumber: ' ن ق 9 ', driverId: 'd1', purchasePrice: '150000.555', vehicleLicenseExpiry: '2099-05-05', notes: ' ملاحظة ' }).expect(201);
     expect(c.body).toMatchObject({ code: 'EQ-004', name: 'سيارات النقل — مرسيدس — ن ق 9', typeLabel: 'مرسيدس', departmentId: '__core_eq_trucks__', licenseCategory: 'سيارات النقل', plate: 'ن ق 9',
       driverName: 'أحمد السواق', driverLicenseStatus: 'valid', vehicleLicenseStatus: 'valid', purchasePrice: 150000.56, notes: 'ملاحظة' });
+    // DEC-0144: شيل نوع الترخيص من معدة في قسم ← «بدون قسم» (زي القديمة)، والاسم مايتغيّرش ومفيش قسم جديد (DEC-0140 بند 4)
+    const cur = (await t.http().get(`${E}/${c.body.id}`).set(bearer(admin))).body;
+    const cl = await t.http().patch(`${E}/${c.body.id}`).set(bearer(admin)).send({ rev: cur.rev, carType: 'مرسيدس', vehicleNumber: 'ن ق 9', status: 'working', ownership: 'rented' }).expect(200);
+    expect([cl.body.name, cl.body.departmentId ?? '', cl.body.categoryId ?? '', cl.body.licenseCategory ?? '']).toEqual(['سيارات النقل — مرسيدس — ن ق 9', '', '', '']);
+    expect((await t.http().get(`${E}/form-options`).set(bearer(admin))).body.departments.map((d: { name: string }) => d.name)).toEqual(['المعدات', 'سيارات النقل']);
     const q3 = (await t.http().get(`${E}/q3`).set(bearer(admin))).body;
     const e = await t.http().patch(`${E}/q3`).set(bearer(admin)).send({ rev: q3.rev, carType: 'تويوتا', status: 'stopped', ownership: 'owned', notes: 'اتعدّلت' }).expect(200);
     expect([e.body.name, e.body.departmentId ?? '', e.body.licenseCategory ?? '', e.body.dailyCost]).toEqual(['ملاكي', '', '', 300]);
