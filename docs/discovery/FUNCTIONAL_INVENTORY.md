@@ -29,9 +29,9 @@
 | LEG-0005 | [المشرفون](#supervisors) | الموارد البشرية | angular /supervisors | 6 | 0 | [ديسكتوب](visual-baseline/desktop/supervisors.png) · [موبايل](visual-baseline/mobile/supervisors.png) |
 | LEG-0006 | [العمال](#workers) | الموارد البشرية | angular /workers | 7 | 0 | [ديسكتوب](visual-baseline/desktop/workers.png) · [موبايل](visual-baseline/mobile/workers.png) |
 | LEG-0007 | [السائقون](#drivers) | الموارد البشرية | angular /drivers | 7 | 0 | [ديسكتوب](visual-baseline/desktop/drivers.png) · [موبايل](visual-baseline/mobile/drivers.png) |
-| LEG-0008 | [معدات ومركبات](#equipment) | الموارد البشرية | legacy /legacy/ | 7 | 0 | [ديسكتوب](visual-baseline/desktop/equipment.png) · [موبايل](visual-baseline/mobile/equipment.png) |
-| LEG-0009 | [حضور الموظفين](#attendance) | الموارد البشرية | legacy /legacy/ | 6 | 1 | [ديسكتوب](visual-baseline/desktop/attendance.png) · [موبايل](visual-baseline/mobile/attendance.png) |
-| LEG-0010 | [اليوميات](#workerAttendance) | الموارد البشرية | legacy /legacy/ | 5 | 0 | [ديسكتوب](visual-baseline/desktop/workerAttendance.png) · [موبايل](visual-baseline/mobile/workerAttendance.png) |
+| LEG-0008 | [معدات ومركبات](#equipment) | الموارد البشرية | angular /equipment | 7 | 0 | [ديسكتوب](visual-baseline/desktop/equipment.png) · [موبايل](visual-baseline/mobile/equipment.png) |
+| LEG-0009 | [حضور الموظفين](#attendance) | الموارد البشرية | angular /attendance | 6 | 1 | [ديسكتوب](visual-baseline/desktop/attendance.png) · [موبايل](visual-baseline/mobile/attendance.png) |
+| LEG-0010 | [اليوميات](#workerAttendance) | الموارد البشرية | angular /worker-attendance | 5 | 0 | [ديسكتوب](visual-baseline/desktop/workerAttendance.png) · [موبايل](visual-baseline/mobile/workerAttendance.png) |
 | LEG-0011 | [الإجازات](#leaves) | الموارد البشرية | angular /leaves | 10 | 2 | [ديسكتوب](visual-baseline/desktop/leaves.png) · [موبايل](visual-baseline/mobile/leaves.png) |
 | LEG-0012 | [تقييم الأداء](#performance) | الموارد البشرية | legacy /legacy/ | 6 | 5 | [ديسكتوب](visual-baseline/desktop/performance.png) · [موبايل](visual-baseline/mobile/performance.png) |
 | LEG-0013 | [العملاء](#clientscustomers) | العملاء والمشاريع | angular /customers | 11 | 1 | [ديسكتوب](visual-baseline/desktop/clients.customers.png) · [موبايل](visual-baseline/mobile/clients.customers.png) |
@@ -50,10 +50,10 @@
 | LEG-0026 | [المخازن](#warehouseshome) | المخازن | angular /warehouses | 11 | 3 | [ديسكتوب](visual-baseline/desktop/warehouses.home.png) · [موبايل](visual-baseline/mobile/warehouses.home.png) |
 | LEG-0027 | [تقارير المخازن](#warehousesreports) | المخازن | legacy /legacy/ | 3 | 0 | [ديسكتوب](visual-baseline/desktop/warehouses.reports.png) · [موبايل](visual-baseline/mobile/warehouses.reports.png) |
 | LEG-0028 | [حركة الموارد](#transfers) | حركة الموارد | legacy /legacy/ | 6 | 1 | [ديسكتوب](visual-baseline/desktop/transfers.png) · [موبايل](visual-baseline/mobile/transfers.png) |
-| LEG-0029 | [المستحقات](#workerDues) | الحسابات | legacy /legacy/ | 8 | 0 | [ديسكتوب](visual-baseline/desktop/workerDues.png) · [موبايل](visual-baseline/mobile/workerDues.png) |
+| LEG-0029 | [المستحقات](#workerDues) | الحسابات | angular /worker-dues | 8 | 0 | [ديسكتوب](visual-baseline/desktop/workerDues.png) · [موبايل](visual-baseline/mobile/workerDues.png) |
 | LEG-0030 | [الدفعات](#ledgerpayments) | الحسابات | angular /supplier-payments | 12 | 3 | [ديسكتوب](visual-baseline/desktop/ledger.payments.png) · [موبايل](visual-baseline/mobile/ledger.payments.png) |
 | LEG-0031 | [مصاريف شاملة](#expenses) | الحسابات | legacy /legacy/ | 9 | 0 | [ديسكتوب](visual-baseline/desktop/expenses.png) · [موبايل](visual-baseline/mobile/expenses.png) |
-| LEG-0032 | [تكاليف شاملة](#costs) | الحسابات | legacy /legacy/ | 9 | 0 | [ديسكتوب](visual-baseline/desktop/costs.png) · [موبايل](visual-baseline/mobile/costs.png) |
+| LEG-0032 | [تكاليف شاملة](#costs) | الحسابات | angular /costs | 9 | 0 | [ديسكتوب](visual-baseline/desktop/costs.png) · [موبايل](visual-baseline/mobile/costs.png) |
 | LEG-0033 | [الإيرادات](#clientscollections) | الحسابات | legacy /legacy/ | 8 | 1 | [ديسكتوب](visual-baseline/desktop/clients.collections.png) · [موبايل](visual-baseline/mobile/clients.collections.png) |
 | LEG-0034 | [حسابات العملاء](#clientsaccounts) | الحسابات | legacy /legacy/ | 5 | 1 | [ديسكتوب](visual-baseline/desktop/clients.accounts.png) · [موبايل](visual-baseline/mobile/clients.accounts.png) |
 | LEG-0035 | [تقارير الموارد البشرية](#reports) | التقارير | legacy /legacy/ | 27 | 0 | [ديسكتوب](visual-baseline/desktop/reports.png) · [موبايل](visual-baseline/mobile/reports.png) |
@@ -194,7 +194,7 @@
 
 ### <a id="equipment"></a>معدات ومركبات — `equipment` — LEG-0008
 - **القسم:** الموارد البشرية · **في القايمة:** أيوه · **دالة الرسم:** `renderEquipmentPage` (renderer/modules/hr/pages-equipment.js:32)
-- **المكان المستهدف:** legacy /legacy/ · **الاختبارات:** phase23.js، phase24.js، phase25.js، phase26.js، phase27.js، phase31.js، phase32.js، phase39.js، phase40.js، phase42.js، phase44.js، phase53.js، phase54.js، phase61.js
+- **المكان المستهدف:** angular /equipment · **الاختبارات:** phase23.js، phase24.js، phase25.js، phase26.js، phase27.js، phase31.js، phase32.js، phase39.js، phase40.js، phase42.js، phase44.js، phase53.js، phase54.js، phase61.js
 - **العنوان الظاهر:** المعدات والمركبات · **التبويبات:** —
 - **اللقطات:** [ديسكتوب](visual-baseline/desktop/equipment.png) · [موبايل](visual-baseline/mobile/equipment.png)
 
@@ -209,7 +209,7 @@
 
 ### <a id="attendance"></a>حضور الموظفين — `attendance` — LEG-0009
 - **القسم:** الموارد البشرية · **في القايمة:** أيوه · **دالة الرسم:** `renderAttendancePage` (renderer/modules/hr/pages-attendance.js:19)
-- **المكان المستهدف:** legacy /legacy/ · **الاختبارات:** phase61.js
+- **المكان المستهدف:** angular /attendance · **الاختبارات:** phase61.js
 - **العنوان الظاهر:** حضور الموظفين · **التبويبات:** —
 - **اللقطات:** [ديسكتوب](visual-baseline/desktop/attendance.png) · [موبايل](visual-baseline/mobile/attendance.png)
 
@@ -232,7 +232,7 @@
 
 ### <a id="workerAttendance"></a>اليوميات — `workerAttendance` — LEG-0010
 - **القسم:** الموارد البشرية · **في القايمة:** أيوه · **دالة الرسم:** `renderWorkerAttendancePage` (renderer/modules/hr/pages-worker-attendance.js:195)
-- **المكان المستهدف:** legacy /legacy/ · **الاختبارات:** phase24.js، phase26.js، phase27.js، phase28.js، phase39.js، phase40.js، phase41.js، phase43.js، phase49.js، phase50.js، phase51.js، phase53.js
+- **المكان المستهدف:** angular /worker-attendance · **الاختبارات:** phase24.js، phase26.js، phase27.js، phase28.js، phase39.js، phase40.js، phase41.js، phase43.js، phase49.js، phase50.js، phase51.js، phase53.js
 - **العنوان الظاهر:** العمال · **التبويبات:** —
 - **اللقطات:** [ديسكتوب](visual-baseline/desktop/workerAttendance.png) · [موبايل](visual-baseline/mobile/workerAttendance.png)
 
@@ -674,7 +674,7 @@
 
 ### <a id="workerDues"></a>المستحقات — `workerDues` — LEG-0029
 - **القسم:** الحسابات · **في القايمة:** أيوه · **دالة الرسم:** `renderWorkerDuesPage` (renderer/modules/hr/pages-worker-dues.js:79)
-- **المكان المستهدف:** legacy /legacy/ · **الاختبارات:** phase61.js
+- **المكان المستهدف:** angular /worker-dues · **الاختبارات:** phase61.js
 - **العنوان الظاهر:** المستحقات · **التبويبات:** —
 - **اللقطات:** [ديسكتوب](visual-baseline/desktop/workerDues.png) · [موبايل](visual-baseline/mobile/workerDues.png)
 
@@ -732,7 +732,7 @@
 
 ### <a id="costs"></a>تكاليف شاملة — `costs` — LEG-0032
 - **القسم:** الحسابات · **في القايمة:** أيوه · **دالة الرسم:** `renderCostsPage` (renderer/modules/hr/pages-costs.js:98)
-- **المكان المستهدف:** legacy /legacy/ · **الاختبارات:** phase17.js، phase59.js
+- **المكان المستهدف:** angular /costs · **الاختبارات:** phase17.js، phase59.js
 - **العنوان الظاهر:** التكاليف · **التبويبات:** —
 - **اللقطات:** [ديسكتوب](visual-baseline/desktop/costs.png) · [موبايل](visual-baseline/mobile/costs.png)
 
