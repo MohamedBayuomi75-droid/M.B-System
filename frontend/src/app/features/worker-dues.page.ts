@@ -122,7 +122,7 @@ const PAGER: Record<string, string> = { workers: 'duesWorkers', supervisors: 'du
             @for (r of pageRows(); track r.id) {
               <tr [attr.data-id]="r.id">
                 <td>{{ r.code }}</td>
-                <td><strong>{{ r.name }}</strong> @if (r.paidBadge) { <span class="dues-paid-badge" title="تم سداد المستحقات">✓ تم الدفع</span> }</td>
+                <td><strong>{{ r.name }}</strong>@if (r.paidBadge) {{{ ' ' }}<span class="dues-paid-badge" title="تم سداد المستحقات">✓ تم الدفع</span> }</td>
                 @switch (tab()) {
                   @case ('workers') { <td>{{ r.supervisorName }}</td><td>{{ fmtMoney(r.dailyWage) }}</td><td>{{ fmtDays(r.days) }}</td><td>{{ fmtNum(r.absent) }}</td><td>{{ fmtMoney(r.extras) }}</td><td>{{ fmtNew(r.due) }}</td><td>{{ fmtMoney(r.penalty) }}</td><td>{{ fmtMoney(r.expenses) }}</td><td>{{ fmtMoney(r.paid) }}</td> }
                   @case ('supervisors') { <td>{{ fmtMoney(r.dailyWage) }}</td><td>{{ fmtDays(r.days) }}</td><td>{{ fmtMoney(r.extras) }}</td><td>{{ fmtNew(r.due) }}</td><td>{{ fmtNew(r.workersDue) }}</td><td>{{ fmtMoney(r.expenses) }}</td><td>{{ fmtMoney(r.equipCost) }}</td><td>{{ fmtMoney(r.penalty) }}</td><td>{{ fmtMoney(r.paid) }}</td> }

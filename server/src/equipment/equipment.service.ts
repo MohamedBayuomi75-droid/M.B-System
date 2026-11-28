@@ -19,7 +19,7 @@ import { EquipmentRepository, Row } from './equipment.repository';
 type QueryRunner = Parameters<NonNullable<NonNullable<Parameters<DataService['sync']>[2]>['before']>>[0];
 type Em = QueryRunner['manager'];
 const uid = () => `id_${Date.now().toString(36)}${randomBytes(4).toString('hex').slice(0, 7)}`;
-const COLL = 'equipment', DAILY = 'equipmentDaily';
+const COLL = 'equipment', DAILY = 'equipmentDaily', EXT = '__core_eq_external__';
 const m = (v: Money | string) => (typeof v === 'string' ? v : v.toFixed().replace(/\.?0+$/, '') || '0');
 const sumStr = (xs: string[]) => m(Money.sum(xs.length ? xs : ['0']));
 const deptOf = (e: J) => String(e.departmentId || e.categoryId || '').trim();
@@ -77,11 +77,14 @@ export class EquipmentService {
     const monthLogs = c.daily.filter((d) => ids.has(d.equipmentId) && (d.date || '') >= ms);
     const parts = cardParts(c, 'worker', list);
     const maint = list.filter((e) => e.status === 'maintenance' || e.status === 'stopped').length;
+    // قسم «سيارات خارجية»: كارت «توافر السيارات» بدل «حالة التأمين» (_builtinExtraCards — E2 في البروفة المجمّعة)
+    const av = list.filter((e) => e.status === 'working' || e.status === 'available').length, un = list.length - av;
+    const availability = { ico: '🚗', label: 'توافر السيارات', tone: un ? 'warn' : 'ok', parts: [{ n: av, l: 'متاحة', tone: 'ok' }, { n: un, l: 'غير متاحة', tone: un ? 'warn' : '' }] };
     const count = (id: string) => (id === '__none__' ? all.filter((e) => !String(e.licenseCategory || '').trim()).length : id === '' ? all.length : all.filter((e) => deptOf(e) === id).length);
     return {
       source: await this.repo.source(COLL),
       boards: [{ id: '', name: 'الكل', icon: '📋' }, { id: '__none__', name: 'بدون قسم أو نوع ترخيص', icon: '📂' }, ...deps.map((d) => ({ id: d.id, name: d.name || '', icon: '🛻' }))].map((b) => ({ ...b, count: count(b.id) })),
-      cards: [{ ico: '🚜', label: 'إجمالي القسم', value: list.length }, { ico: '🛠️', label: 'صيانة / عاطلة', value: maint, tone: maint ? 'warn' : '' }, parts.insurance, parts.license,
+      cards: [{ ico: '🚜', label: 'إجمالي القسم', value: list.length }, { ico: '🛠️', label: 'صيانة / عاطلة', value: maint, tone: maint ? 'warn' : '' }, q.departmentId === EXT ? availability : parts.insurance, parts.license,
         { ico: '💰', label: 'تكلفة تشغيل الشهر', value: toInt(monthLogs.reduce((s, d) => s + legacyCost(d, eqOf(d.equipmentId)), 0)), newValue: sumStr(monthLogs.map((d) => newCost(d, eqOf(d.equipmentId), c.idlePercent))) }],
       rows: list.map((e) => this.view(c, e)), layout: await this.layoutDocs(),
     };

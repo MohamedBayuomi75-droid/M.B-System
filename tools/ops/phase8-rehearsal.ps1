@@ -1,4 +1,4 @@
-<#
+﻿<#
   البروفة المجمّعة للمرحلة 8 (DEC-0136، DEC-0143) — اليوميات (8.5) ← الصرف (8.6) ← المعدات (8.7) ← التكاليف (8.8).
   الدليل: docs/modules/PHASE_08_COMBINED_REHEARSAL_RUNBOOK.md. السكربت بيعمل الخطوات الآلية بس، ويوقف عند كل خطوة محتاجة إنسان
   (النسخة الاحتياطية، والـ UAT). **مفيش أسماء ولا مبالغ أفراد في أي مخرج** — أعداد، وبصمات (أول 8 حروف)، ومجاميع، وأوقات.
@@ -31,7 +31,9 @@ if (-not (Test-Path $LOG)) { 'stage,step,seconds,exit' | Out-File -Encoding utf8
 
 function Cut([string[]]$a) {
   if (-not $BK) { throw 'حدد مسار النسخ: -BK أو $env:ERP_BACKUP_DIR' }
-  docker compose -p $P -f $F run --rm -v "${BK}:/backup:ro" server node dist/cli/cutover.js @a 2>&1
+  # Windows PowerShell 5.1: سطور Docker على stderr («Container … Running») مش أخطاء — exit code هو الحكم (البروفة المجمّعة §و 1)
+  $old = $ErrorActionPreference; $ErrorActionPreference = 'Continue'
+  try { docker compose -p $P -f $F run --rm -v "${BK}:/backup:ro" server node dist/cli/cutover.js @a 2>&1 | ForEach-Object { "$_" } } finally { $ErrorActionPreference = $old }
 }
 function Step([string]$name, [scriptblock]$body) {
   Write-Host "▶ $name" -ForegroundColor Cyan
@@ -56,9 +58,19 @@ function Same([string]$a, [string]$b, [switch]$IgnoreSource) {
   }
   return $ok
 }
+# الشهادة الداخلية مقبولة لـ 127.0.0.1 بس (البروفة المجمّعة §و 1)
+if ($PSVersionTable.PSVersion.Major -lt 6 -and $Base -match '^https://127\.0\.0\.1') {
+  Add-Type -TypeDefinition 'using System.Net; using System.Security.Cryptography.X509Certificates; public class LocalOnlyCert : ICertificatePolicy { public bool CheckValidationResult(ServicePoint sp, X509Certificate c, WebRequest r, int p) { return r.RequestUri.Host == "127.0.0.1"; } }' -ErrorAction SilentlyContinue
+  [System.Net.ServicePointManager]::CertificatePolicy = New-Object LocalOnlyCert
+  [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12
+}
 function Api([string]$path) {
-  if (-not $Base -or -not $Token) { throw 'حدد -Base و-Token (أو $env:ERP_BASE و$env:ERP_TOKEN)' }
-  return Invoke-RestMethod -Uri "$Base$path" -Headers @{ Authorization = "Bearer $Token" }
+  # التوكن بيتقري وقت كل طلب (بيخلص بعد فترة): $env:ERP_TOKEN أو ملف out\phase8x\token.txt (اللي برّه المستودع)
+  $tok = $env:ERP_TOKEN; $tf = Join-Path $Out 'token.txt'; if (Test-Path $tf) { $tok = (Get-Content -Raw $tf).Trim() }; if (-not $tok) { $tok = $Token }
+  if (-not $Base -or -not $tok) { throw 'حدد -Base والتوكن ($env:ERP_TOKEN أو out\phase8x\token.txt)' }
+  $req = @{ Uri = "$Base$path"; Headers = @{ Authorization = "Bearer $tok" } }
+  if ($PSVersionTable.PSVersion.Major -ge 6 -and $Base -match '^https://127\.0\.0\.1') { $req.SkipCertificateCheck = $true }
+  return Invoke-RestMethod @req
 }
 # مجاميع بس — مفيش أسماء ولا مبالغ أفراد
 function Snapshot([string]$tag) {
@@ -79,7 +91,7 @@ function Snapshot([string]$tag) {
     $snap | ConvertTo-Json -Depth 6 | Out-File -Encoding utf8 (Join-Path $Out "api.$tag.json")
   }
 }
-function Strip([string]$f) { (Get-Content (Join-Path $Out $f)) -replace '\d{4}-\d{2}-\d{2}T[\d:.]+Z?', '<t>' -replace '\d+(\.\d+)?\s*(ms|ث|s)\b', '<d>' | Where-Object { $_ -notmatch '^\s*$' } }
+function Strip([string]$f) { (Get-Content (Join-Path $Out $f) | Where-Object { $_ -notmatch '^\s*Container\s' }) -replace '\d{4}-\d{2}-\d{2}T[\d:.]+Z?', '<t>' -replace '\d+(\.\d+)?\s*(ms|ث|s)\b', '<d>' | Where-Object { $_ -notmatch '^\s*$' } }
 
 switch ($Stage) {
   'pre' {

@@ -21,6 +21,7 @@ const eq = (a, b, name) => { const A = JSON.stringify(a), B = JSON.stringify(b);
       E('q1', { code: 'EQ-001', name: 'المعدات — لودر', typeLabel: 'لودر', licenseCategory: 'المعدات', departmentId: '__core_eq_machinery__', categoryId: '__core_eq_machinery__', vehicleNumber: 'أ ب 1', dailyCost: 1000, hourlyCost: 150, supervisorId: 's1', project: 'مشروع الشروق', vehicleLicenseExpiry: '2020-01-01', insuranceStatus: 'insured', color: 'أصفر' }),
       E('q2', { code: 'EQ-002', name: 'سيارات النقل — قلاب', typeLabel: 'قلاب', licenseCategory: 'سيارات النقل', departmentId: '__core_eq_trucks__', categoryId: '__core_eq_trucks__', ownership: 'rented', status: 'maintenance', hourlyCost: 200, driverName: 'أحمد السواق', driverId: 'd1', purchasePrice: 250000 }),
       E('q3', { code: 'EQ-003', name: 'ملاكي', typeLabel: 'تويوتا', status: 'stopped', dailyCost: 300 }),
+      E('q4', { code: 'EQ-004', name: 'سيارات خارجية — ميكروباص', typeLabel: 'ميكروباص', licenseCategory: 'سيارات خارجية', departmentId: '__core_eq_external__', categoryId: '__core_eq_external__', ownership: 'rented', status: 'rented', vehicleLicenseExpiry: '2099-01-01' }),
     ],
     equipmentDaily: [
       D('ed1', { equipmentId: 'q1', date: '2026-03-02', project: 'مشروع الشروق', hours: 8, fuelLiters: 20, fuelPrice: 10 }),
@@ -59,6 +60,7 @@ const eq = (a, b, name) => { const A = JSON.stringify(a), B = JSON.stringify(b);
   const L = { boards: await legacy({ _boardLevel: '' }, grabBoards), views: [], machinery: null, modals: {} };
   for (const f of VIEWS) L.views.push(await legacy(Object.assign({ _boardLevel: 'list', departmentId: '' }, f), grabList));
   L.machinery = await legacy({ _boardLevel: 'list', departmentId: '__core_eq_machinery__' }, grabList);
+  L.external = await legacy({ _boardLevel: 'list', departmentId: '__core_eq_external__' }, grabList);
   for (const [k, id] of [['add', null], ['q1', 'q1'], ['q2', 'q2']]) { await legacy({ _boardLevel: 'list', departmentId: '' }, () => 0); await page.evaluate((id) => openEquipmentModal(id || undefined), id); await page.waitForSelector('#appModal #eqCode'); await settle(300); L.modals[k] = await page.evaluate(modalOf); }
   await legacy({ _boardLevel: 'list', departmentId: '' }, () => 0); await page.evaluate(() => openEquipmentDailyModal('q1', null, '2026-03-09')); await page.waitForSelector('#appModal #edDays'); await settle(300); L.daily = await page.evaluate(modalOf);
   await page.evaluate(() => { try { closeModal(); } catch (e) { /* */ } });
@@ -80,6 +82,8 @@ const eq = (a, b, name) => { const A = JSON.stringify(a), B = JSON.stringify(b);
   eq(await page.evaluate(grabBoards), L.boards, 'لوحات أقسام المعدات');
   for (const [i, f] of VIEWS.entries()) { await openList('', f); eq(await page.evaluate(grabList), L.views[i], `القايمة ${JSON.stringify(f)}: نفس الصفحة`); }
   await openList('__core_eq_machinery__'); eq(await page.evaluate(grabList), L.machinery, 'قسم المعدات: نفس الصفحة');
+  await openList('__core_eq_external__'); eq(await page.evaluate(grabList), L.external, 'قسم السيارات الخارجية: نفس الصفحة (كارت «توافر السيارات» — E2)');
+  ok(L.external.cards.some((c) => /توافر السيارات/.test(c)), 'الكارت موجود فعلًا في القديمة');
 
   console.log('[النوافذ] نفس الخانات والخيارات والقيم');
   await openList('');
@@ -114,7 +118,7 @@ const eq = (a, b, name) => { const A = JSON.stringify(a), B = JSON.stringify(b);
   await page.click('#btnEqDailyView'); await page.waitForSelector('#eqdGrid'); await settle(200);
   await page.selectOption('#eqdYear', { label: '2026' }); await settle(300); await page.selectOption('#eqdMonth', { label: 'مارس' }); await settle(600);
   ok(await page.evaluate(() => !!document.querySelector('#eqdGrid .eqd-cell.filled[data-eq="q1"][data-day="9"]')), 'اليومية في الجدول الشهري');
-  eq(await page.evaluate(() => [...document.querySelectorAll('#eqdGrid tbody tr')].map((tr) => tr.getAttribute('data-id'))).then((x) => x.slice().sort()), ['q1', 'q2', 'q3', ...[]].concat([]).sort().concat(await page.evaluate(() => [...document.querySelectorAll('#eqdGrid tbody tr')].map((tr) => tr.getAttribute('data-id')).filter((x) => !/^q\d$/.test(x)))).sort(), 'صفوف المعدات');
+  eq(await page.evaluate(() => [...document.querySelectorAll('#eqdGrid tbody tr')].map((tr) => tr.getAttribute('data-id'))).then((x) => x.slice().sort()), ['q1', 'q2', 'q3', 'q4'].concat([]).sort().concat(await page.evaluate(() => [...document.querySelectorAll('#eqdGrid tbody tr')].map((tr) => tr.getAttribute('data-id')).filter((x) => !/^q\d$/.test(x)))).sort(), 'صفوف المعدات');
   ok(await page.evaluate(() => !document.querySelector('#eqdDiff')), 'من غير توقف أو نقل: الحسابين واحد');
   // نقل بتكلفته (DEC-0140)
   await page.click('.eqd-cell.empty[data-eq="q2"][data-day="10"]'); await page.waitForSelector('#appModal #edDays'); await settle(300);
